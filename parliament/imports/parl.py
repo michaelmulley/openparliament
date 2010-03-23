@@ -1,9 +1,12 @@
-from mulley.parliament.models import *
 import urllib2, re
+
 from BeautifulSoup import BeautifulSoup
-from mulley.parliament import parsetools
 from django.contrib.localflavor.ca.ca_provinces import PROVINCES_NORMALIZED
 from django.db.models import Q
+
+from parliament.core import parsetools
+from parliament.core.models import *
+from parliament.election.models import Election, Candidacy
 
 # sample URL: http://www2.parl.gc.ca/Sites/LOP/HFER/hfer.asp?Language=E&Search=Bres&ridProvince=0&genElection=0&byElection=2009%2F11%2F09&submit1=Search
 

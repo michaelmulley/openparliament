@@ -1,7 +1,7 @@
 from django.template import Context, loader, RequestContext
 from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
 
-from parliament.hansard.models import Hansard, HansardCache, Statement
+from parliament.hansards.models import Hansard, HansardCache, Statement
 
 def hansard(request, hansard_id):
     hansard = Hansard.objects.get(pk=hansard_id)

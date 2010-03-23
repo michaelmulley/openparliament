@@ -1,4 +1,4 @@
-import gzip
+import gzip, sys, os
 
 from django.db import models
 from django.conf import settings
@@ -27,6 +27,10 @@ class Hansard(models.Model):
     
     def __unicode__ (self):
         return u"Hansard #%s for %s" % (self.number, self.date)
+        
+    @models.permalink
+    def get_absolute_url(self):
+        return ('parliament.hansards.views.hansard', [self.id])
 
 
 class HansardCache(models.Model):
@@ -81,6 +85,9 @@ class Statement(models.Model):
         if not self.wordcount:
             self.wordcount = parsetools.countWords(self.text)
         super(Statement, self).save(*args, **kwargs)
+        
+    def get_absolute_url(self):
+        return self.hansard.get_absolute_url() + "#s%d" % self.sequence
     
     def __unicode__ (self):
         return u"%s speaking about %s around %s on %s" % (self.who, self.topic, self.time, self.hansard.date)

@@ -1,11 +1,14 @@
-from mulley.parliament.models import *
 import sys, re, urllib2
+from collections import defaultdict
+
 from django.db import transaction
 from django.db.models import Count
 from BeautifulSoup import BeautifulSoup
-from mulley.parliament.imports import hans
-from mulley.parliament import parsetools
-from collections import defaultdict
+
+from parliament.imports import hans
+from parliament.core import parsetools
+from parliament.core.models import *
+from parliament.hansards.models import Hansard, HansardCache, Statement
 
 def export_words(outfile, queryset=None):
     if queryset is None:
@@ -17,7 +20,7 @@ def export_words(outfile, queryset=None):
 def corpus_for_pol(pol):
     
     r_splitter = re.compile(r'[^\w\'\-]+', re.UNICODE)
-    states = Statement.objects.filter(member__member=pol).order_by('time', 'sequence')
+    states = Statement.objects.filter(member__politician=pol).order_by('time', 'sequence')
     words = []
     for s in states:
         words.extend(re.split(r_splitter, s.text))
@@ -72,7 +75,9 @@ def cache_hansards():
         except Exception, e:
             print "Failure %s" % e
 
-def hansards_from_calendar(session):
+def hansards_from_calendar(session=None):
+    if not session:
+        session = Session.objects.current()
     SKIP_HANSARDS = {
     'http://www2.parl.gc.ca/HousePublications/Publication.aspx?Language=E&Mode=2&Parl=36&Ses=2&DocId=2332160' : True,
     }
@@ -107,13 +112,13 @@ def populate_members(election, session):
     for winner in Candidacy.objects.filter(election=election, elected=True):
         candidate = winner.candidate
         try:
-            member = ElectedMember.objects.get(session=session, member=candidate)
+            member = ElectedMember.objects.get(session=session, politician=candidate)
         except ElectedMember.DoesNotExist:
-            ElectedMember(session=session, member=candidate, party=winner.party, riding=winner.riding).save()
+            ElectedMember(session=session, politician=candidate, party=winner.party, riding=winner.riding).save()
             
 def copy_members(from_session, to_session):
     for member in ElectedMember.objects.filter(session=from_session):
-        ElectedMember(session=to_session, member=member.member, party=member.party, riding=member.riding).save()
+        ElectedMember(session=to_session, politician=member.politician, party=member.party, riding=member.riding).save()
 
 def populate_parlid():
     for pol in Politician.objects.filter(parlpage__isnull=False):
@@ -125,7 +130,7 @@ def populate_parlid():
             pol.save()
 
 def _merge_pols(good, bad):
-    ElectedMember.objects.filter(member=bad).update(member=good)
+    ElectedMember.objects.filter(politician=bad).update(politician=good)
     Candidacy.objects.filter(candidate=bad).update(candidate=good)
     bad.delete()
 
@@ -140,7 +145,7 @@ def merge_by_party(parties):
         fail = False
         events = []
         for pol in pols:
-            for em in ElectedMember.objects.filter(member=pol):
+            for em in ElectedMember.objects.filter(politician=pol):
                 if em.party not in parties:
                     fail = True
                     print "%s not acceptable" % em.party
@@ -180,7 +185,7 @@ def merge_by_party(parties):
 def merge_polnames():
     
     def _printout(pol):
-        for em in ElectedMember.objects.filter(member=pol):
+        for em in ElectedMember.objects.filter(politician=pol):
             print em
         for cand in Candidacy.objects.filter(candidate=pol):
             print cand
@@ -210,14 +215,14 @@ def merge_pols():
     print "Enter ID of primary pol object: ",
     goodid = int(sys.stdin.readline().strip())
     good = Politician.objects.get(pk=goodid)
-    for em in ElectedMember.objects.filter(member=good):
+    for em in ElectedMember.objects.filter(politician=good):
         print em
     for cand in Candidacy.objects.filter(candidate=good):
         print cand
     print "Enter ID of bad pol object: ",
     badid = int(sys.stdin.readline().strip())
     bad = Politician.objects.get(pk=badid)
-    for em in ElectedMember.objects.filter(member=bad):
+    for em in ElectedMember.objects.filter(politician=bad):
         print em
     for cand in Candidacy.objects.filter(candidate=bad):
         print cand

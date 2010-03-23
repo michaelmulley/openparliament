@@ -3,6 +3,7 @@ import re, urllib, urllib2, datetime, sys, codecs
 
 from BeautifulSoup import BeautifulSoup, Comment, NavigableString
 from django.db.models import Q
+from django.db import transaction
 
 from parliament.core.models import *
 from parliament.hansards.models import Hansard, Statement, HansardCache
@@ -78,6 +79,7 @@ def _getParser(hansard, html):
     else:
         return HansardParser2009(hansard, html)
 
+@transaction.commit_on_success
 def parseAndSave(arg):
     if isinstance(arg, Hansard):
         cache = loadHansard(arg)
@@ -104,6 +106,7 @@ def parseAndSave(arg):
         except Exception, e:
             print e
             raise Exception("Error %s saving statement: %s, %s" % (e, statement.who, statement.text))
+    return True
 
 def _getHansardNumber(page):
     title = re.search(r'<title>([^<]+)</title>', page).group(1)
@@ -477,14 +480,14 @@ class HansardParser1994(HansardParser):
                                 # Last-ditch: try a match by name...
                                 try:
                                     pol = Politician.objects.getByName(name, session=session)
-                                    member = ElectedMember.objects.get(session=session, member=pol)
+                                    member = ElectedMember.objects.get(session=session, politician=pol)
                                 except (Politician.DoesNotExist, Politician.MultipleObjectsReturned):
                                     # and, finally, just by last name
-                                    poss = ElectedMember.objects.filter(session=session, member__name_family__iexact=name)
+                                    poss = ElectedMember.objects.filter(session=session, politician__name_family__iexact=name)
                                     if riding:
                                         poss = poss.filter(riding=riding)
                                     if gender:
-                                        poss = poss.filter(Q(member__gender=gender) | Q(member__gender=''))
+                                        poss = poss.filter(Q(politician__gender=gender) | Q(politician__gender=''))
                                     if len(poss) == 1:
                                         member = poss[0]
                                         if VERBOSE: print "WARNING: Last-name-only match for %s -- %s" % (name, member)
@@ -521,7 +524,7 @@ class HansardParser1994(HansardParser):
                                         pass # we'll produce our own exception in a moment
                                 if pol is None:
                                     raise ParseException("Couldn't disambiguate politician: %s" % name)
-                            member = ElectedMember.objects.get(member=pol, session=session)
+                            member = ElectedMember.objects.get(politician=pol, session=session)
                             if riding is not None: riding = member.riding
                             # Save in the list for backreferences
                             members.insert(0, {'name':name, 'member':member, 'riding':riding, 'gender':gender})
@@ -662,7 +665,7 @@ class HansardParser2009(HansardParser):
                                         pol = Politician.objects.getByParlID(parlwebid, session=self.hansard.session)
                                     except Politician.DoesNotExist:
                                         print "WARNING: Couldn't find politician for ID %d" % parlwebid
-                            if pol is not None: t['member'] = ElectedMember.objects.get(member=pol, session=self.hansard.session)
+                            if pol is not None: t['member'] = ElectedMember.objects.get(politician=pol, session=self.hansard.session)
                     c = c.next
                     if not parsetools.isString(c): raise Exception("Expecting string in b for member name")
                     t['member_title'] = c.strip()

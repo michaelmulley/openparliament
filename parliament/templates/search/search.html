@@ -17,7 +17,7 @@
         {% if page.object_list %}
             {% for result in page.object_list %}
                 <p>
-                    <!-- {% ifequal result.model_name "politician" %}{{ result.object.name }}{% else %}{{ result.object.text}}{% endifequal %} -->{{ result.highlighted.text.0|safe }}
+                    {% if result.model_name == 'statement' %}<a href="{{ result.object.get_absolute_url }}">go</a> {% endif %}{{ result.highlighted.text.0|safe }}
                 </p>
             {% endfor %}
         {% else %}

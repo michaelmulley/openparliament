@@ -94,7 +94,7 @@ class PoliticianManager(models.Manager):
                 result = None
                 for p in poss:
                     # For each possibility, assemble a list of matching Members
-                    members = ElectedMember.objects.filter(member=p.target_id)
+                    members = ElectedMember.objects.filter(politician=p.target_id)
                     if riding: members = members.filter(riding=riding)
                     if session: members = members.filter(session=session)
                     if party: members = members.filter(party=party)
@@ -103,7 +103,7 @@ class PoliticianManager(models.Manager):
                             # can't disambiguate, raise exception
                             raise Politician.MultipleObjectsReturned()
                         # We match! Save the result.
-                        result = members[0].member
+                        result = members[0].politician
                 if result:
                     return result
             elif election:
@@ -279,10 +279,10 @@ class Riding(models.Model):
     
 class ElectedMember(models.Model):
     session = models.ForeignKey(Session)
-    member = models.ForeignKey(Politician)
+    politician = models.ForeignKey(Politician)
     riding = models.ForeignKey(Riding)
     party = models.ForeignKey(Party)
     
     def __unicode__ (self):
-        return u"%s (%s) was the member from %s during the %s" % (self.member, self.party, self.riding, self.session)
+        return u"%s (%s) was the member from %s during the %s" % (self.politician, self.party, self.riding, self.session)
 
