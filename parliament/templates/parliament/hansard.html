@@ -1,0 +1,14 @@
+{% load markup %}
+<html><head><title>Hansard for {{ hansard.date }} (#{{ hansard.number }})</title></head>
+
+<body>
+	<h1>Hansard #{{ hansard.number }} for {{ hansard.date }}</h1>
+	<h4>{{ hansard.session }}</h4>
+	<p><a href="./local/">(cache)</a> <a href="{{ hansard.url }}">(original version)</a></p>
+	
+{% for statement in statements %}
+<p><strong>{{ statement.who }}</strong> <small>({{ statement.member }})</small><br><small>{{ statement.heading }} / {{ statement.topic }} / {{ statement.time|date:"P" }}</small></p>
+{{ statement.text|markdown }}
+{% endfor %}
+
+</body></html>

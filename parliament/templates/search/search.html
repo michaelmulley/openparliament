@@ -1,0 +1,29 @@
+<html><body>
+
+{% block content %}
+    <h2>Search</h2>
+
+    <form method="get" action=".">
+        <table>
+            {{ form.as_table }}
+            <tr>
+                <td>&nbsp;</td>
+                <td>
+                    <input type="submit" value="Search">
+                </td>
+            </tr>
+        </table>
+
+        {% if page.object_list %}
+            {% for result in page.object_list %}
+                <p>
+                    <!-- {% ifequal result.model_name "politician" %}{{ result.object.name }}{% else %}{{ result.object.text}}{% endifequal %} -->{{ result.highlighted.text.0|safe }}
+                </p>
+            {% endfor %}
+        {% else %}
+            <p>No results found.</p>
+        {% endif %}
+    </form>
+{% endblock %}
+
+</body></html>

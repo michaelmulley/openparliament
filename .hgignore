@@ -1,0 +1,9 @@
+syntax:glob
+*.pyc
+*.dump
+*.txt
+*.gz
+*.py~
+*.tmproj
+*.json
+.DS_Store
