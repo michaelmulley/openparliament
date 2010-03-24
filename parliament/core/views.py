@@ -2,8 +2,9 @@ from django.template import Context, loader, RequestContext
 from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.db.models import Count
 
-from haystack.views import SearchView
-from haystack.forms import HighlightedModelSearchForm
+from haystack.views import FacetedSearchView
+from haystack.forms import FacetedSearchForm, HighlightedModelSearchForm
+from haystack.query import SearchQuerySet
 
 from parliament.core.models import Politician
 
@@ -16,4 +17,8 @@ def dupes(request):
     })
     return HttpResponse(t.render(c))
     
-tmpsearch = SearchView(form_class=HighlightedModelSearchForm)
+    
+class ParliamentSearchForm(FacetedSearchForm, HighlightedModelSearchForm):
+    pass
+    
+tmpsearch = FacetedSearchView(form_class=ParliamentSearchForm, searchqueryset=SearchQuerySet().facet('politician').facet('party').facet('province'))

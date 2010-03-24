@@ -1,4 +1,5 @@
 # Django settings for parliament project.
+import os
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -21,6 +22,8 @@ DATABASES = {
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
+
+PROJ_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 HANSARD_CACHE_DIR = '/hansard-cache/'
 
@@ -53,12 +56,12 @@ USE_L10N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = ''
+MEDIA_ROOT = PROJ_ROOT + '/static/'
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = ''
+MEDIA_URL = '/static/'
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -81,6 +84,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'parliament.urls'
@@ -105,6 +109,7 @@ INSTALLED_APPS = (
     'django_extensions',
     'haystack',
     'south',
+    'debug_toolbar',
     'parliament.core',
     'parliament.hansards',
     'parliament.elections',

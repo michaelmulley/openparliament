@@ -12,6 +12,12 @@ class InternalXref(models.Model):
     text_value = models.CharField(max_length=50, blank=True)
     int_value = models.IntegerField(blank=True, null=True)
     target_id = models.IntegerField()
+    
+    # CURRENT SCHEMAS
+    # party_names
+    # pol_names
+    # pol_parlid
+    # pol_parlinfoid
     schema = models.CharField(max_length=15)
 
 class PartyManager(models.Manager):
@@ -76,6 +82,9 @@ class Person(models.Model):
         ordering = ('name',)
 
 class PoliticianManager(models.Manager):
+    
+    def elected(self):
+        return self.get_query_set().annotate(electedcount=models.Count('electedmember')).filter(electedcount__gte=1)
     
     def filterByName(self, name):
         return [self.get_query_set().get(pk=x.target_id) for x in InternalXref.objects.filter(schema='pol_names', text_value=parsetools.normalizeName(name))]
@@ -177,6 +186,7 @@ class Politician(Person):
     site = models.URLField(blank=True, verify_exists=False)
     parlpage = models.URLField(blank=True, verify_exists=False)
     gender = models.CharField(max_length=1, blank=True, choices=GENDER_CHOICES)
+    headshot = models.ImageField(upload_to='polpics', blank=True, null=True)
     
     objects = PoliticianManager()
     
@@ -191,8 +201,7 @@ class Politician(Person):
             self.addAlternateName(self.name)
     
     def delete(self):
-        InternalXref.objects.filter(schema='pol_parlid', target_id=self.id).delete()
-        InternalXref.objects.filter(schema='pol_names', target_id=self.id).delete()
+        InternalXref.objects.filter(schema__startswith='pol_', target_id=self.id).delete()
         super(Politician, self).delete()
 
     def saveParlID(self, parlid):

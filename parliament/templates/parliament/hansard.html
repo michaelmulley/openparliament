@@ -7,7 +7,7 @@
 	<p><a href="./local/">(cache)</a> <a href="{{ hansard.url }}">(original version)</a></p>
 	
 {% for statement in statements %}
-<a name="s{{ statement.sequence }}"></a><p><strong>{{ statement.who }}</strong> <small>({{ statement.member }})</small><br><small>{{ statement.heading }} / {{ statement.topic }} / {{ statement.time|date:"P" }}</small></p>
+<a name="s{{ statement.sequence }}"></a>{% if statement.member.politician.headshot %}<img src="{{ statement.member.politician.headshot.url }}" style="float: left; padding: 2px; margin: 4px; border: 1px solid #666666;">{% endif %}<p><strong>{{ statement.who }}</strong> <small>({{ statement.member }})</small><br><small>{{ statement.heading }} / {{ statement.topic }} / {{ statement.time|date:"P" }}</small></p>
 {{ statement.text|markdown }}
 {% endfor %}
 

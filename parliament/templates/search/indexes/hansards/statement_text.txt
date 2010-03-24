@@ -1,0 +1,4 @@
+{{ object.who }}
+{{ object.heading }}
+{{ object.topic }}
+{{ object.text }}

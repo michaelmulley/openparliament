@@ -13,8 +13,28 @@
                 </td>
             </tr>
         </table>
+        {% if query %}
+        <!-- Begin faceting. -->
+        <h2>By Author</h2>
 
+        <div>
+            <dl>
+                {% if facets.fields.politician %}
+                    <dt>Politician</dt>
+                    {# Provide only the top 5 authors #}
+                    {% for politician in facets.fields.politician|slice:":5" %}
+                        <dd><a href="{{ request.get_full_path }}&amp;selected_facets=politician:{{ politician.0|urlencode }}">{{ politician.0 }}</a> ({{ politician.1 }})</dd>
+                    {% endfor %}
+                {% else %}
+                    <p>No politician facets.</p>
+                {% endif %}
+            </dl>
+        </div>
+        <!-- End faceting -->
+        {% endif %}
         {% if page.object_list %}
+        
+        
             {% for result in page.object_list %}
                 <p>
                     {% if result.model_name == 'statement' %}<a href="{{ result.object.get_absolute_url }}">go</a> {% endif %}{{ result.highlighted.text.0|safe }}

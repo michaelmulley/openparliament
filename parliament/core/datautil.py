@@ -1,8 +1,10 @@
-import sys, re, urllib2
+import sys, re, urllib, urllib2
 from collections import defaultdict
+import urlparse
 
 from django.db import transaction
 from django.db.models import Count
+from django.core.files import File
 from BeautifulSoup import BeautifulSoup
 
 from parliament.imports import hans
@@ -10,6 +12,28 @@ from parliament.core import parsetools
 from parliament.core.models import *
 from parliament.hansards.models import Hansard, HansardCache, Statement
 
+def load_pol_pics():
+    for pol in Politician.objects.exclude(parlpage='').filter(headshot__isnull=True):
+        print "#%d: %s" % (pol.id, pol)
+        print pol.parlpage
+        soup = BeautifulSoup(urllib2.urlopen(pol.parlpage))
+        img = soup.find('img', id='MasterPage_MasterPage_BodyContent_PageContent_Content_TombstoneContent_TombstoneContent_ucHeaderMP_imgPhoto')
+        if not img:
+            img = soup.find('img', id="ctl00_cphContent_imgParliamentarianPicture")
+            if not img:
+                raise Exception("Didn't work for %s" % pol.parlpage)
+        imgurl = urlparse.urljoin(pol.parlpage, urllib.quote(img['src'].encode('utf8')))
+        try:
+            content = urllib.urlretrieve(imgurl)
+        except Exception, e:
+            print "ERROR ON %s" % pol
+            print e
+            continue
+        #filename = urlparse.urlparse(imgurl).path.split('/')[-1]
+        pol.headshot.save(str(pol.id) + ".jpg", File(open(content[0])), save=True)
+        pol.save()
+        
+        
 def export_words(outfile, queryset=None):
     if queryset is None:
         queryset = Statement.objects.all()

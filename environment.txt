@@ -1,0 +1,11 @@
+BeautifulSoup==3.0.8
+Django==1.2-beta-1
+Markdown==2.0.3
+PIL==1.1.7
+South==0.7-rc1
+django-debug-toolbar==0.8.3
+django-extensions==0.4.1
+django-haystack==1.0.1-final
+psycopg2==2.0.14
+pysolr==2.0.9
+wsgiref==0.1.2
