@@ -7,6 +7,7 @@ from haystack.forms import FacetedSearchForm, HighlightedModelSearchForm
 from haystack.query import SearchQuerySet
 
 from parliament.core.models import Politician
+from parliament.hansards.models import Statement
 
 def dupes(request):
     dupelist = Politician.objects.values('name').annotate(namecount=Count('name')).filter(namecount__gt=1).order_by('-namecount')
@@ -17,7 +18,20 @@ def dupes(request):
     })
     return HttpResponse(t.render(c))
     
+def politician(request, pol_id):
+    try:
+        pol = Politician.objects.get(pk=pol_id)
+    except Politician.DoesNotExist:
+        raise Http404
     
+    c = RequestContext(request, {
+        'pol': pol,
+        'candidacies': pol.candidacy_set.all().order_by('-election__date'),
+        'statements': Statement.objects.filter(member__politician=pol).order_by('-time')[:10]
+    })
+    t = loader.get_template("parliament/politician.html")
+    return HttpResponse(t.render(c))
+
 class ParliamentSearchForm(FacetedSearchForm, HighlightedModelSearchForm):
     pass
     

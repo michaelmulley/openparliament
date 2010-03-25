@@ -217,6 +217,10 @@ class Politician(Person):
         # check if exists
         if InternalXref.objects.filter(schema='pol_names', target_id=self.id, text_value=name).count() == 0:
             InternalXref(schema='pol_names', target_id=self.id, text_value=name).save()
+            
+    @models.permalink
+    def get_absolute_url(self):
+        return ('parliament.core.views.politician', (self.id,))
 
         
 class SessionManager(models.Manager):

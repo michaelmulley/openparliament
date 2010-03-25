@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2>{{ year }}</h2>
+<ul>{% for hansard in object_list %}
+<li><a href="{{ hansard.get_absolute_url }}">{{ hansard }}</a></li>
+{% endfor %}</ul>
+
+{% endblock content %}

@@ -32,6 +32,20 @@ def load_pol_pics():
         #filename = urlparse.urlparse(imgurl).path.split('/')[-1]
         pol.headshot.save(str(pol.id) + ".jpg", File(open(content[0])), save=True)
         pol.save()
+
+def parse_all_hansards(): 
+    for hansard in Hansard.objects.all().annotate(scount=Count('statement')).exclude(scount__gt=0).order_by('?'):
+        try:
+            print "Trying %d %s... " % (hansard.id, hansard)
+            hans.parseAndSave(hansard)
+            print "SUCCESS for %s" % hansard
+        except Exception, e:
+            cache = HansardCache.objects.get(hansard=hansard.id)
+            print "******* FAILURE **********"
+            print "HANSARD %d: %s" % (cache.hansard.id, cache.hansard)
+            print "FILE: %s" % cache.filename
+            print "URL: %s" % cache.hansard.url
+            print "ERROR: %s" % e
         
         
 def export_words(outfile, queryset=None):

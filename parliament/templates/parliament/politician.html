@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% load markup thumbnail %}
+{% block pagetitle %}{{ pol }}{% endblock %}
+{% block content %}
+<h1>{{ pol }}</h1>
+{% if pol.headshot %}<img src="{{ pol.headshot.url }}" style="float: left; padding: 2px; margin: 4px; border: 1px solid #666666;">{% endif %}
+{% for candidacy in candidacies %}<p>{{ candidacy }}</p>{% endfor %}
+<h2>Statements in the House</h2>
+{% for statement in statements %}<p>{{ statement.text|truncatewords:80|markdown }} <a href="{{ statement.get_absolute_url }}">-></a></p>{% endfor %}
+{% endblock %}

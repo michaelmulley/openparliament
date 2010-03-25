@@ -110,8 +110,19 @@ INSTALLED_APPS = (
     'haystack',
     'south',
     'debug_toolbar',
+    'sorl.thumbnail',
     'parliament.core',
     'parliament.hansards',
     'parliament.elections',
     'parliament.financials',
+)
+
+THUMBNAIL_SUBDIR = '_thumbs'
+THUMBNAIL_PROCESSORS = (
+    # Default processors
+    'sorl.thumbnail.processors.colorspace',
+    'sorl.thumbnail.processors.autocrop',
+    'parliament.core.thumbnail.crop_first',
+    'sorl.thumbnail.processors.scale_and_crop',
+    'sorl.thumbnail.processors.filters',
 )

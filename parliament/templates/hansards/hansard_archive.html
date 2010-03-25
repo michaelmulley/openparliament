@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Latest</h2>
+<ul>{% for hansard in latest %}
+<li><a href="{{ hansard.get_absolute_url }}">{{ hansard }}</a></li>
+{% endfor %}</ul>
+
+<h2>Past</h2>
+<ul>{% for year in date_list %}
+<li><a href="{% url parliament.hansards.views.by_year year=year.year %}">{{ year.year }}</a></li>
+{% endfor %}</ul>
+{% endblock content %}

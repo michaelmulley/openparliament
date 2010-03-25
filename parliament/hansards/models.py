@@ -25,6 +25,9 @@ class Hansard(models.Model):
     
     objects = HansardManager()
     
+    class Meta:
+        ordering = ('-date',)
+    
     def __unicode__ (self):
         return u"Hansard #%s for %s" % (self.number, self.date)
         
