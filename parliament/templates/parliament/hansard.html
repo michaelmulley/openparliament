@@ -8,8 +8,70 @@
 	<p><a href="./local/">(cache)</a> <a href="{{ hansard.url }}">(original version)</a></p>
 	
 {% for statement in statements %}
-<a name="s{{ statement.sequence }}"></a>{% if statement.member.politician.headshot %}<img src="{% thumbnail statement.member.politician.headshot 67x90 crop_first="28,20,68,20" %}" style="float: left; padding: 2px; margin: 4px; border: 1px solid #666666;">{% endif %}<p><strong>{{ statement.who }}</strong> <small>(<a href="{{ statement.member.politician.get_absolute_url }}">{{ statement.member }}</a>)</small><br><small>{{ statement.heading }} / {{ statement.topic }} / {{ statement.time|date:"P" }}</small></p>
-{{ statement.text|markdown }}
+<div class="statement {% cycle rowa,rowb %}"><div class="statement_text"><a name="s{{ statement.sequence }}"></a>{% if statement.member.politician.headshot %}<img src="{% thumbnail statement.member.politician.headshot 67x90 crop_first="28,20,68,20" %}">{% endif %}<p class="speaking">{% if statement.member.politician %}<a href="{{ statement.member.politician.get_absolute_url }}">{% endif %}{{ statement.who }}{% if statement.member.politician %}</a>{% endif %}</p>
+{{ statement.text|markdown }}</div>
+<div class="context">{{ statement.time|date:"P" }}<br>{{ statement.heading }}<br>{{ statement.topic }}</div>
+
+</div>
+
 {% endfor %}
 
 {% endblock %}
+
+{% block headextra %}
+<style type="text/css">
+body {
+    font-family: Verdana, Arial, Helvetica, sans-serif;
+    font-size: 14px;
+}
+.statement.rowa {
+    background-color: #EEEEEE;
+}
+.statement {
+    padding-top: 7px;
+    clear: both;
+    border-bottom: 1px solid #CCCCCC;
+    position: relative;
+    min-height: 105px;
+}
+.statement:hover {
+    background-color: #DDDDDD;
+}
+.speaking {
+    margin-top: 0;
+    padding-top: 5px;
+    font-weight: bold;
+}
+.speaking a {
+    color: #419DC7;
+    text-decoration: none;
+}
+.speaking a:hover {
+    text-decoration: underline;
+}
+.statement_text {
+    width: 75%;
+}
+.statement_text p {
+    margin-left: 7px;
+}
+.context {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 20%;
+    margin-left: 15px;
+    font-size: 12px;
+    padding-top: 15px;
+    padding-right: 20px;
+    color: #555555;
+}
+.statement_text img {
+    float: left;
+    padding: 1px;
+    margin: 6px;
+    border: 1px solid #666666;
+}
+
+</style>
+{% endblock headextra %}

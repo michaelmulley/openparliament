@@ -7,3 +7,6 @@
 \.DS_Store
 models\.dot
 polpics.+jpg
+^local/
+settings_local.py$
+pip-log\.txt
