@@ -4,8 +4,6 @@ from settings_local import *
 
 TEMPLATE_DEBUG = DEBUG
 
-#INTERNAL_IPS = ('127.0.0.1',)
-
 ADMINS = (
     ('Michael Mulley', 'michael@michaelmulley.com'),
 )
