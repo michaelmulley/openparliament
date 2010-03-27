@@ -3,12 +3,71 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>{% block pagetitle %}Hi.{% endblock pagetitle %} | Weekend at Hansard's</title>
+	<title>{% block pagetitle %}Hi.{% endblock pagetitle %} | openparliament.ca</title>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<style type="text/css">
+#navbar {
+    background-color: #136319;
+    width: 100%;
+    position: relative;
+    height: 75px;
+    border-bottom: 3px solid #493922;
+}
+#navbar img {
+    position: absolute;
+    top: 13px;
+    left: 25px;
+}
+#navbar form {
+    position: absolute;
+    top: 23px;
+    right: 100px;
+}
+#navbar input {
+    width: 250px;
+    background-color: #CCCCCC;
+    border: 0;
+    font-size: 16px;
+    padding: 4px;
+}
+#navbar form p {
+    margin: 2px 0 0 0;
+    color: #DDDDDD;
+    font-size: 11px;
+    padding-left: 20px;
+    font-family: Georgia, Times, serif;
+    font-style: italic;
+}
+#content_wrap {
+    margin: 5px 25px;
+}
+body {
+    font-family: Verdana, Helvetica, Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+</style>
+<script type="text/javascript">
+$(function() {
+   $('#nav_searchbox').bind('focus', function() { 
+       if (this.value == 'Search') {
+           this.value = '';
+       }
+   }).bind('blur', function () {
+       if (this.value == '') {
+           this.value = 'Search';
+       }
+   }); 
+});
+</script>
 {% block headextra %}{% endblock %}
 </head>
 <body>
+<div id="navbar"><img src="{{ MEDIA_URL }}images/logotype_bar.png"><form action="/core/search/" method="GET"><input type="text" name="q" id="nav_searchbox" value="Search"><p>by phrase, name, or postal code</p></form></div>
+<div id="content_wrap">
 {% block content %}
 
 {% endblock content %}
+</div>
 </body>
 </html>

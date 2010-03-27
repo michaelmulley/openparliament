@@ -1,7 +1,6 @@
-<html><body>
+{% extends "base.html" %}
 
 {% block content %}
-    <h2>Search</h2>
 
     <form method="get" action=".">
         <table>
@@ -15,7 +14,6 @@
         </table>
         {% if query %}
         <!-- Begin faceting. -->
-        <h2>By Author</h2>
 
         <div>
             <dl>
@@ -33,17 +31,16 @@
         <!-- End faceting -->
         {% endif %}
         {% if page.object_list %}
-        
+        <h2>Results {{ page.start_index }}-{{ page.end_index }} of {{ page.paginator.count }} for &ldquo;{{ query }}&rdquo;</h2>
         
             {% for result in page.object_list %}
                 <p>
-                    {% if result.model_name == 'statement' %}<a href="{{ result.object.get_absolute_url }}">go</a> {% endif %}{{ result.highlighted.text.0|safe }}
+                    <a href="{{ result.object.get_absolute_url }}">go</a> {{ result.highlighted.text.0|safe }}
                 </p>
             {% endfor %}
+
         {% else %}
             <p>No results found.</p>
         {% endif %}
     </form>
 {% endblock %}
-
-</body></html>

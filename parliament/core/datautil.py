@@ -1,8 +1,8 @@
-import sys, re, urllib, urllib2
+import sys, re, urllib, urllib2, os
 from collections import defaultdict
 import urlparse
 
-from django.db import transaction
+from django.db import transaction, models
 from django.db.models import Count
 from django.core.files import File
 from BeautifulSoup import BeautifulSoup
@@ -13,7 +13,7 @@ from parliament.core.models import *
 from parliament.hansards.models import Hansard, HansardCache, Statement
 
 def load_pol_pics():
-    for pol in Politician.objects.exclude(parlpage='').filter(headshot__isnull=True):
+    for pol in Politician.objects.exclude(parlpage='').filter(models.Q(headshot__isnull=True) | models.Q(headshot='')):
         print "#%d: %s" % (pol.id, pol)
         print pol.parlpage
         soup = BeautifulSoup(urllib2.urlopen(pol.parlpage))
@@ -32,6 +32,17 @@ def load_pol_pics():
         #filename = urlparse.urlparse(imgurl).path.split('/')[-1]
         pol.headshot.save(str(pol.id) + ".jpg", File(open(content[0])), save=True)
         pol.save()
+
+def delete_invalid_pol_pics():
+    from PIL import Image
+    for p in Politician.objects.exclude(headshot__isnull=True).exclude(headshot='')
+        try:
+            Image.open(p.headshot)
+        except IOError:
+            os.unlink(p.headshot.path)
+            p.headshot = None
+            p.save()
+
 
 def parse_all_hansards(): 
     for hansard in Hansard.objects.all().annotate(scount=Count('statement')).exclude(scount__gt=0).order_by('?'):

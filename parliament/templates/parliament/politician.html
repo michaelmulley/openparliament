@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% load markup thumbnail %}
 {% block headextra %}
-<link rel="alternate" type="application/rss+xml" title="RSS" href="{% url politician_feed pol_id=pol.id %}">
+<link rel="alternate" type="application/rss+xml" title="{{ pol.name }} in the House of Commons" href="{% url politician_feed pol_id=pol.id %}">
 {% endblock headextra %}
 {% block pagetitle %}{{ pol }}{% endblock %}
 {% block content %}
-<h1>{{ pol }}</h1>
-{% if pol.headshot %}<img src="{{ pol.headshot.url }}" style="float: left; padding: 2px; margin: 4px; border: 1px solid #666666;">{% endif %}
+
+{% if pol.headshot %}<img src="{{ pol.headshot.url }}" style="float: left; padding: 2px; margin: 0 10px 4px 0; border: 1px solid #666666;">{% endif %}<h1>{{ pol }}</h1>
 {% for candidacy in candidacies %}<p>{{ candidacy }}</p>{% endfor %}
 <h2>Statements in the House</h2>
 {% for statement in statements %}<p>{{ statement.text|truncatewords:80|markdown }} <a href="{{ statement.get_absolute_url }}">-></a></p>{% endfor %}

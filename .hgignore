@@ -10,3 +10,4 @@ polpics.+jpg
 ^local/
 settings_local.py$
 pip-log\.txt
+^logs/
