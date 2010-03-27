@@ -22,12 +22,17 @@ def load_pol_pics():
             img = soup.find('img', id="ctl00_cphContent_imgParliamentarianPicture")
             if not img:
                 raise Exception("Didn't work for %s" % pol.parlpage)
-        imgurl = urlparse.urljoin(pol.parlpage, urllib.quote(img['src'].encode('utf8')))
+        imgurl = img['src']
+        if '?' not in imgurl: # no query string
+            imgurl = urllib.quote(imgurl.encode('utf8')) # but there might be accents!
+        imgurl = urlparse.urljoin(pol.parlpage, imgurl)
         try:
+            test = urllib2.urlopen(imgurl)
             content = urllib.urlretrieve(imgurl)
         except Exception, e:
             print "ERROR ON %s" % pol
             print e
+            print imgurl
             continue
         #filename = urlparse.urlparse(imgurl).path.split('/')[-1]
         pol.headshot.save(str(pol.id) + ".jpg", File(open(content[0])), save=True)
@@ -35,10 +40,11 @@ def load_pol_pics():
 
 def delete_invalid_pol_pics():
     from PIL import Image
-    for p in Politician.objects.exclude(headshot__isnull=True).exclude(headshot='')
+    for p in Politician.objects.exclude(headshot__isnull=True).exclude(headshot=''):
         try:
             Image.open(p.headshot)
         except IOError:
+            print "DELETING image for %s" % p
             os.unlink(p.headshot.path)
             p.headshot = None
             p.save()
@@ -280,3 +286,15 @@ def merge_pols():
     if yn == 'y':
         _merge_pols(good, bad)
         print "Done!"
+        
+def fix_mac():
+    """ Alexa Mcdonough -> Alexa McDonough """
+    for p in Politician.objects.filter(models.Q(name_family__startswith='Mc')|models.Q(name_family__startswith='Mac')):
+        nforig = p.name_family
+        def mac_replace(match):
+            return match.group(1) + match.group(2).upper()
+        p.name_family = re.sub(r'(Ma?c)([a-z])', mac_replace, p.name_family)
+        print p.name + " -> ",
+        p.name = p.name.replace(nforig, p.name_family)
+        print p.name
+        p.save()

@@ -2,6 +2,7 @@ import gzip, sys, os
 
 from django.db import models
 from django.conf import settings
+from django.core import urlresolvers
 
 from parliament.core.models import Session, ElectedMember
 from parliament.core import parsetools
@@ -90,7 +91,7 @@ class Statement(models.Model):
         super(Statement, self).save(*args, **kwargs)
         
     def get_absolute_url(self):
-        return self.hansard.get_absolute_url() + "#s%d" % self.sequence
+        return urlresolvers.reverse('parliament.hansards.views.hansard', args=[self.hansard_id]) + "#s%d" % self.sequence 
     
     def __unicode__ (self):
         return u"%s speaking about %s around %s on %s" % (self.who, self.topic, self.time, self.hansard.date)

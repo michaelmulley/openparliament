@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load thumbnail highlight %}
 
 {% block content %}
 
@@ -12,31 +13,16 @@
                 </td>
             </tr>
         </table>
-        {% if query %}
-        <!-- Begin faceting. -->
-
-        <div>
-            <dl>
-                {% if facets.fields.politician %}
-                    <dt>Politician</dt>
-                    {# Provide only the top 5 authors #}
-                    {% for politician in facets.fields.politician|slice:":5" %}
-                        <dd><a href="{{ request.get_full_path }}&amp;selected_facets=politician:{{ politician.0|urlencode }}">{{ politician.0 }}</a> ({{ politician.1 }})</dd>
-                    {% endfor %}
-                {% else %}
-                    <p>No politician facets.</p>
-                {% endif %}
-            </dl>
-        </div>
-        <!-- End faceting -->
-        {% endif %}
         {% if page.object_list %}
         <h2>Results {{ page.start_index }}-{{ page.end_index }} of {{ page.paginator.count }} for &ldquo;{{ query }}&rdquo;</h2>
         
             {% for result in page.object_list %}
-                <p>
-                    <a href="{{ result.object.get_absolute_url }}">go</a> {{ result.highlighted.text.0|safe }}
-                </p>
+            {% if result.model_name == 'politician' %}<p>{% if result.object.headshot %}<img src="{% thumbnail result.object.headshot 67x90 crop_first="28,20,68,20" %}">{% endif %}<a href="{{ result.object.get_absolute_url }}">{{ result.object.name }}</a></p>{% endif %}
+            {% if result.model_name == 'statement' %}{% with result.object as statement %}<div class="statement_result"><a href="{{ result.object.get_absolute_url }}">{{ statement.heading }} / {{ statement.topic }}</a> <span class="date">({{ statement.time|date:"F jS Y"}})</span>
+                <p><span class="who">{{ statement.who }}</span> {% highlight statement.text with query %}</p>
+                
+                </div>
+            {% endwith %}{% endif %}
             {% endfor %}
 
         {% else %}
@@ -44,3 +30,27 @@
         {% endif %}
     </form>
 {% endblock %}
+{% block headextra %}
+<style type="text/css">
+.statement_result .date {
+    color: #666666;
+}
+.statement_result {
+    margin: 10px 0;
+}
+.statement_result p {
+    margin: 0;
+}
+.statement_result .highlighted {
+    background-color: yellow;
+}
+.statement_result a {
+    font-weight: bold;
+}
+.statement_result .who {
+    color: #482500;
+    font-style: italic;
+    padding-right: 6px;
+}
+</style>
+{% endblock headextra %}

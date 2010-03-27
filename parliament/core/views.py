@@ -5,7 +5,7 @@ from django.contrib.syndication.views import Feed
 from django.shortcuts import get_object_or_404
 from django.contrib.markup.templatetags.markup import markdown
 
-from haystack.views import FacetedSearchView
+from haystack.views import FacetedSearchView, SearchView
 from haystack.forms import FacetedSearchForm, HighlightedSearchForm
 from haystack.query import SearchQuerySet
 
@@ -64,7 +64,8 @@ class PoliticianFeed(Feed):
     def item_pubdate(self, statement):
         return statement.time
 
-class ParliamentSearchForm(FacetedSearchForm, HighlightedSearchForm):
+class ParliamentSearchForm(HighlightedSearchForm): # FacetedSearchForm
     pass
     
-tmpsearch = FacetedSearchView(form_class=ParliamentSearchForm, searchqueryset=SearchQuerySet().facet('politician').facet('party').facet('province'))
+tmpsearch = SearchView(form_class=ParliamentSearchForm)
+#tmpsearch = FacetedSearchView(form_class=ParliamentSearchForm, searchqueryset=SearchQuerySet().facet('politician').facet('party').facet('province'))

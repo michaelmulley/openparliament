@@ -96,13 +96,15 @@ INSTALLED_APPS = (
     'django_extensions',
     'haystack',
     'south',
-    'debug_toolbar',
     'sorl.thumbnail',
     'parliament.core',
     'parliament.hansards',
     'parliament.elections',
     'parliament.financials',
 )
+
+if DEBUG:
+    INSTALLED_APPS += ('devserver', 'debug_toolbar')
 
 THUMBNAIL_SUBDIR = '_thumbs'
 THUMBNAIL_PROCESSORS = (
