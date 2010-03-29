@@ -18,6 +18,7 @@ class InternalXref(models.Model):
     # pol_names
     # pol_parlid
     # pol_parlinfoid
+    # bill_callbackid
     schema = models.CharField(max_length=15)
 
 class PartyManager(models.Manager):
@@ -169,11 +170,6 @@ class PoliticianManager(models.Manager):
             if parlinfolink:
                 match = re.search(r'Item=(.+?)&', parlinfolink['href'])
                 pol.saveParlinfoID(match.group(1))
-        #if session:
-        #    return ElectedMember.objects.get(session=session, member=polid)
-        #elif election:
-        #    return Candidacy.objects.get(election=election, candidate=polid)
-        #else:
         return self.get_query_set().get(pk=polid)
 
 class Politician(Person):
@@ -220,12 +216,14 @@ class Politician(Person):
             
     @models.permalink
     def get_absolute_url(self):
-        return ('parliament.core.views.politician', (self.id,))
+        return ('parliament.politicians.views.politician', (self.id,))
 
         
 class SessionManager(models.Manager):
+    
     def current(self):
         return self.get_query_set().order_by('-start')[0]
+        
 class Session(models.Model):
     
     name = models.CharField(max_length=100)

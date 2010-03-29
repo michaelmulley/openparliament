@@ -9,8 +9,8 @@
 	
 {% for statement in statements %}
 <div class="statement {% cycle rowa,rowb %}"><div class="statement_text"><a name="s{{ statement.sequence }}"></a>{% if statement.member.politician.headshot %}<img src="{% thumbnail statement.member.politician.headshot 67x90 crop_first="28,20,68,20" %}">{% endif %}<p class="speaking">{% if statement.member.politician %}<a href="{{ statement.member.politician.get_absolute_url }}">{% endif %}{{ statement.who }}{% if statement.member.politician %}</a>{% endif %}</p>
-{{ statement.text|markdown }}</div>
-<div class="context">{{ statement.time|date:"P" }}<br>{{ statement.heading }}<br>{{ statement.topic }}</div>
+{{ statement.text_html }}</div>
+<div class="context">{{ statement.time|date:"P" }}<br>{{ statement.heading }}<br>{{ statement.topic }}<br>DEBUG: {{ statement.id }}</div>
 
 </div>
 

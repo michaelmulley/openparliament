@@ -1,10 +1,14 @@
-import gzip, sys, os
+import gzip, sys, os, re
 
 from django.db import models
 from django.conf import settings
 from django.core import urlresolvers
+from django.contrib.markup.templatetags.markup import markdown
+from django.utils.html import strip_tags
+from django.utils.safestring import mark_safe
 
 from parliament.core.models import Session, ElectedMember
+from parliament.bills.models import Bill
 from parliament.core import parsetools
 
 class HansardManager (models.Manager):
@@ -67,6 +71,15 @@ class HansardCache(models.Model):
         infile.close()
         return html
         
+r_statement_affil = re.compile(r'<(bill|pol) id="(\d+)" name="(.+?)">(.+?)</\1>', re.UNICODE)
+def statement_affil_link(match):
+    if match.group(1) == 'bill':
+        # FIXME hardcode url for speed?
+        view = 'parliament.bills.views.bill'
+    else:
+        view = 'parliament.politicians.views.politician'
+    return '<a href="%s" title="%s">%s</a>' % (urlresolvers.reverse(view, args=(match.group(2),)), match.group(3), match.group(4))
+    
 class Statement(models.Model):
     hansard = models.ForeignKey(Hansard)
     time = models.DateTimeField(blank=True, null=True)
@@ -77,6 +90,8 @@ class Statement(models.Model):
     text = models.TextField()
     sequence = models.IntegerField()
     wordcount = models.IntegerField()
+    
+    bills = models.ManyToManyField(Bill, blank=True)
         
     class Meta:
         ordering = ('sequence',)
@@ -90,8 +105,22 @@ class Statement(models.Model):
             self.wordcount = parsetools.countWords(self.text)
         super(Statement, self).save(*args, **kwargs)
         
+    def save_relationships(self):
+        bill_ids = set()
+        for match in r_statement_affil.finditer(self.text):
+            if match.group(1) == 'bill':
+                bill_ids.add(match.group(2))
+        if bill_ids:
+            self.bills.add(*list(bill_ids))
+    
     def get_absolute_url(self):
         return urlresolvers.reverse('parliament.hansards.views.hansard', args=[self.hansard_id]) + "#s%d" % self.sequence 
     
     def __unicode__ (self):
         return u"%s speaking about %s around %s on %s" % (self.who, self.topic, self.time, self.hansard.date)
+        
+    def text_html(self):
+        return mark_safe(markdown(r_statement_affil.sub(statement_affil_link, self.text)))
+
+    def text_plain(self):
+        return mark_safe(strip_tags(self.text))

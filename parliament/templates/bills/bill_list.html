@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>All bills</h1>
+
+<ul>
+{% for bill in object_list %}
+<li><a href="{{ bill.get_absolute_url }}">{{ bill }}</a></li>
+{% endfor %}
+</ul>
+{% endblock content %}

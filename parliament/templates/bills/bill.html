@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Bill {{ bill.number }} - {{ bill.name }}</h2>
+
+{% for statement in statements %}
+<p>{{ statement.text_plain|truncatewords:80 }} <a href="{{ statement.get_absolute_url }}">-></a></p>
+{% endfor %}
+{% endblock content %}

@@ -57,12 +57,12 @@ def parse_all_hansards():
             hans.parseAndSave(hansard)
             print "SUCCESS for %s" % hansard
         except Exception, e:
-            cache = HansardCache.objects.get(hansard=hansard.id)
             print "******* FAILURE **********"
+            print "ERROR: %s" % e
+            cache = HansardCache.objects.get(hansard=hansard.id)
             print "HANSARD %d: %s" % (cache.hansard.id, cache.hansard)
             print "FILE: %s" % cache.filename
             print "URL: %s" % cache.hansard.url
-            print "ERROR: %s" % e
         
         
 def export_words(outfile, queryset=None):
@@ -298,3 +298,16 @@ def fix_mac():
         p.name = p.name.replace(nforig, p.name_family)
         print p.name
         p.save()
+        
+def check_for_feeds(urls):
+    for url in urls:
+        try:
+            response = urllib2.urlopen(url)
+        except Exception, e:
+            print "ERROR on %s" % url
+            print e
+            continue
+        soup = BeautifulSoup(response.read())
+        for feed in soup.findAll('link', type='application/rss+xml'):
+            print "FEED ON %s" % url
+            print feed

@@ -7,7 +7,8 @@ urlpatterns = patterns('',
 
     (r'^core/', include('parliament.core.urls')),
     (r'^hansards/', include('parliament.hansards.urls')),
-
+    (r'^politicians/', include('parliament.politicians.urls')),
+    (r'^bills/', include('parliament.bills.urls')),
     # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
     # to INSTALLED_APPS to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),

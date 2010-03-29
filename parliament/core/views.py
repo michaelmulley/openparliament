@@ -1,16 +1,17 @@
+import re
+
 from django.template import Context, loader, RequestContext
 from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.db.models import Count
-from django.contrib.syndication.views import Feed
 from django.shortcuts import get_object_or_404
-from django.contrib.markup.templatetags.markup import markdown
 
 from haystack.views import FacetedSearchView, SearchView
 from haystack.forms import FacetedSearchForm, HighlightedSearchForm
 from haystack.query import SearchQuerySet
 
-from parliament.core.models import Politician
+from parliament.core.models import Politician, Session, ElectedMember, Riding
 from parliament.hansards.models import Statement
+from parliament.core.utils import postcode_to_edid
 
 def dupes(request):
     dupelist = Politician.objects.values('name').annotate(namecount=Count('name')).filter(namecount__gt=1).order_by('-namecount')
@@ -20,52 +21,26 @@ def dupes(request):
         'dupelist': dupelist,
     })
     return HttpResponse(t.render(c))
-    
-def politician(request, pol_id):
-    try:
-        pol = Politician.objects.get(pk=pol_id)
-    except Politician.DoesNotExist:
-        raise Http404
-    
-    c = RequestContext(request, {
-        'pol': pol,
-        'candidacies': pol.candidacy_set.all().order_by('-election__date'),
-        'statements': Statement.objects.filter(member__politician=pol).order_by('-time')[:10]
-    })
-    t = loader.get_template("parliament/politician.html")
-    return HttpResponse(t.render(c))
-    
-class PoliticianFeed(Feed):
-    
-    def get_object(self, request, pol_id):
-        return get_object_or_404(Politician, pk=pol_id)
-    
-    def title(self, pol):
-        return pol.name
-        
-    def link(self, pol):
-        return "http://openparliament.ca" + pol.get_absolute_url()
-        
-    def description(self, pol):
-        return "Statements by %s in the House of Commons, from openparliament.ca." % pol.name
-        
-    def items(self, pol):
-        return Statement.objects.filter(member__politician=pol).order_by('-time')[:12]
-        
-    def item_title(self, statement):
-        return statement.topic
-        
-    def item_link(self, statement):
-        return statement.get_absolute_url()
-        
-    def item_description(self, statement):
-        return markdown(statement.text)
-        
-    def item_pubdate(self, statement):
-        return statement.time
 
 class ParliamentSearchForm(HighlightedSearchForm): # FacetedSearchForm
     pass
-    
-tmpsearch = SearchView(form_class=ParliamentSearchForm)
+
+haystackview = SearchView(form_class=ParliamentSearchForm)
+
+r_postcode = re.compile(r'^\s*([A-Z][0-9][A-Z])\s*([0-9][A-Z][0-9])\s*$')
+def search(request):
+    if 'q' in request.GET:
+        match = r_postcode.search(request.GET['q'].upper())
+        if match:
+            postcode = match.group(1) + " " + match.group(2)
+            edid = postcode_to_edid(postcode)
+            if edid:
+                try:
+                    member = ElectedMember.objects.get(session=Session.objects.current(), riding__edid=edid)
+                    return HttpResponseRedirect(member.politician.get_absolute_url())
+                except ElectedMember.DoesNotExist:
+                    pass
+                except ElectedMember.MultipleObjectsReturned:
+                    raise Exception("Too many MPs for postcode %s" % postcode)
+    return haystackview(request)
 #tmpsearch = FacetedSearchView(form_class=ParliamentSearchForm, searchqueryset=SearchQuerySet().facet('politician').facet('party').facet('province'))

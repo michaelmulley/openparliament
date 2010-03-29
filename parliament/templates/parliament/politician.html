@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load markup thumbnail %}
+{% load markup thumbnail highlight %}
 {% block headextra %}
 <link rel="alternate" type="application/rss+xml" title="{{ pol.name }} in the House of Commons" href="{% url politician_feed pol_id=pol.id %}">
 {% endblock headextra %}
@@ -8,6 +8,11 @@
 
 {% if pol.headshot %}<img src="{{ pol.headshot.url }}" style="float: left; padding: 2px; margin: 0 10px 4px 0; border: 1px solid #666666;">{% endif %}<h1>{{ pol }}</h1>
 {% for candidacy in candidacies %}<p>{{ candidacy }}</p>{% endfor %}
+<h2>Recent News</h2>
+<iframe frameborder="0" width="728" height="90" marginwidth="0" marginheight="0"
+       src="http://www.google.com/uds/modules/elements/newsshow/iframe.html?q={{ pol.name|urlencode }}%20MP&ned=ca&rsz=large&hl=en&format=728x90">
+</iframe>
+{% for newsitem in newsitems %}<p><a href="{{ newsitem.link }}">{{ newsitem.title }}</a><br>{% with newsitem.summary|striptags|safe as summary %} {# % highlight summary with pol.name % #} {{ summary }}{% endwith %}</p>{% endfor %}
 <h2>Statements in the House</h2>
-{% for statement in statements %}<p>{{ statement.text|truncatewords:80|markdown }} <a href="{{ statement.get_absolute_url }}">-></a></p>{% endfor %}
+{% for statement in statements %}<p>{{ statement.text_plain|truncatewords:80 }} <a href="{{ statement.get_absolute_url }}">-></a></p>{% endfor %}
 {% endblock %}
