@@ -106,7 +106,7 @@ class PoliticianManager(models.Manager):
                     # For each possibility, assemble a list of matching Members
                     members = ElectedMember.objects.filter(politician=p.target_id)
                     if riding: members = members.filter(riding=riding)
-                    if session: members = members.filter(session=session)
+                    if session: members = members.filter(sessions=session)
                     if party: members = members.filter(party=party)
                     if len(members) >= 1:
                         if result: # we found another match on a previous journey through the loop
@@ -130,7 +130,7 @@ class PoliticianManager(models.Manager):
             match = re.search(r'\s([A-Z][\w-]+)$', name.strip()) # very naive lastname matching
             if match:
                 lastname = match.group(1)
-                pols = self.get_query_set().filter(name_family=lastname, electedmember__session=session, electedmember__riding=riding).distinct()
+                pols = self.get_query_set().filter(name_family=lastname, electedmember__sessions=session, electedmember__riding=riding).distinct()
                 if len(pols) > 1:
                     raise Exception("DATA ERROR: There appear to be two politicians with the same last name elected to the same riding from the same session... %s %s %s" % (lastname, session, riding))
                 elif len(pols) == 1:
@@ -289,11 +289,16 @@ class Riding(models.Model):
         return "%s (%s)" % (self.name, self.province)
     
 class ElectedMember(models.Model):
-    session = models.ForeignKey(Session)
+    sessions = models.ManyToManyField(Session)
     politician = models.ForeignKey(Politician)
     riding = models.ForeignKey(Riding)
     party = models.ForeignKey(Party)
+    start_date = models.DateField()
+    end_date = models.DateField(blank=True, null=True)
     
     def __unicode__ (self):
-        return u"%s (%s) was the member from %s during the %s" % (self.politician, self.party, self.riding, self.session)
+        if self.end_date:
+            return u"%s (%s) was the member from %s from %s to %s" % (self.politician, self.party, self.riding, self.start_date, self.end_date)
+        else:
+            return u"%s (%s) is the member from %s (since %s)" % (self.politician, self.party, self.riding, self.start_date)
 

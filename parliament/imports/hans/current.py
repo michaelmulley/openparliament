@@ -144,7 +144,7 @@ class HansardParser2009(HansardParser):
                                     except Politician.DoesNotExist:
                                         print "WARNING: Couldn't find politician for ID %d" % parlwebid
                             if pol is not None:
-                                t['member'] = ElectedMember.objects.get(politician=pol, session=self.hansard.session)
+                                t['member'] = ElectedMember.objects.get(politician=pol, sessions=self.hansard.session)
                     c = c.next
                     if not parsetools.isString(c): raise Exception("Expecting string in b for member name")
                     t['member_title'] = c.strip()

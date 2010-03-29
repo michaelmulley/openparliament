@@ -164,6 +164,7 @@ def populate_members_by():
 
 def populate_members(election, session):
     """ Label all winners in an election Members for the subsequent session. """
+    raise Exception("Not yet implemented after ElectedMember refactor")
     for winner in Candidacy.objects.filter(election=election, elected=True):
         candidate = winner.candidate
         try:
@@ -172,6 +173,7 @@ def populate_members(election, session):
             ElectedMember(session=session, politician=candidate, party=winner.party, riding=winner.riding).save()
             
 def copy_members(from_session, to_session):
+    raise Exception("Not yet implemented after ElectedMember refactor")
     for member in ElectedMember.objects.filter(session=from_session):
         ElectedMember(session=to_session, politician=member.politician, party=member.party, riding=member.riding).save()
 
@@ -192,6 +194,7 @@ def _merge_pols(good, bad):
 #REFORM = (Party.objects.get(pk=25), Party.objects.get(pk=1), Party.objects.get(pk=28), Party.objects.get(pk=26))
 
 def merge_by_party(parties):
+    raise Exception("Not yet implemented after ElectedMember refactor")
     
     dupelist = Politician.objects.values('name').annotate(namecount=Count('name')).filter(namecount__gt=1).order_by('-namecount')
     for dupeset in dupelist:

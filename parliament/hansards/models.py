@@ -88,7 +88,7 @@ class Statement(models.Model):
     member = models.ForeignKey(ElectedMember, blank=True, null=True)
     who = models.CharField(max_length=300)
     text = models.TextField()
-    sequence = models.IntegerField()
+    sequence = models.IntegerField(db_index=True)
     wordcount = models.IntegerField()
     
     bills = models.ManyToManyField(Bill, blank=True)

@@ -15,8 +15,8 @@ class SessionOptions (admin.ModelAdmin):
     list_display = ('name', 'start', 'end')
     
 class ElectedMemberOptions(admin.ModelAdmin):
-    list_display=('politician', 'riding', 'session', 'party')
-    list_filter=('session',)
+    list_display=('politician', 'riding', 'party', 'start_date', 'end_date')
+    list_filter=('party',)
 
 admin.site.register(ElectedMember, ElectedMemberOptions)
 admin.site.register(Riding, RidingOptions)

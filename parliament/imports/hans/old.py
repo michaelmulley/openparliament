@@ -199,10 +199,10 @@ class HansardParser1994(HansardParser):
                                 # Last-ditch: try a match by name...
                                 try:
                                     pol = Politician.objects.getByName(name, session=session)
-                                    member = ElectedMember.objects.get(session=session, politician=pol)
+                                    member = ElectedMember.objects.get(sessions=session, politician=pol)
                                 except (Politician.DoesNotExist, Politician.MultipleObjectsReturned):
                                     # and, finally, just by last name
-                                    poss = ElectedMember.objects.filter(session=session, politician__name_family__iexact=name)
+                                    poss = ElectedMember.objects.filter(sessions=session, politician__name_family__iexact=name)
                                     if riding:
                                         poss = poss.filter(riding=riding)
                                     if gender:
@@ -243,7 +243,7 @@ class HansardParser1994(HansardParser):
                                         pass # we'll produce our own exception in a moment
                                 if pol is None:
                                     raise ParseException("Couldn't disambiguate politician: %s" % name)
-                            member = ElectedMember.objects.get(politician=pol, session=session)
+                            member = ElectedMember.objects.get(politician=pol, sessions=session)
                             if riding is not None: riding = member.riding
                             # Save in the list for backreferences
                             members.insert(0, {'name':name, 'member':member, 'riding':riding, 'gender':gender})

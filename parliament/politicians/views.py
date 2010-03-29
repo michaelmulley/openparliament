@@ -35,10 +35,11 @@ def politician(request, pol_id):
     c = RequestContext(request, {
         'pol': pol,
         'candidacies': pol.candidacy_set.all().order_by('-election__date'),
+        'electedmembers': pol.electedmember_set.all().order_by('-start_date'),
         'statements': Statement.objects.filter(member__politician=pol).order_by('-time')[:10],
         'newsitems': news_items_for_pol(pol),
     })
-    t = loader.get_template("parliament/politician.html")
+    t = loader.get_template("politicians/politician.html")
     return HttpResponse(t.render(c))
     
 class PoliticianFeed(Feed):
