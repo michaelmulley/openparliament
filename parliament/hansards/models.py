@@ -4,7 +4,7 @@ from django.db import models
 from django.conf import settings
 from django.core import urlresolvers
 from django.contrib.markup.templatetags.markup import markdown
-from django.utils.html import strip_tags
+from django.utils.html import strip_tags, escape
 from django.utils.safestring import mark_safe
 
 from parliament.core.models import Session, ElectedMember
@@ -123,4 +123,4 @@ class Statement(models.Model):
         return mark_safe(markdown(r_statement_affil.sub(statement_affil_link, self.text)))
 
     def text_plain(self):
-        return mark_safe(strip_tags(self.text))
+        return escape(strip_tags(self.text).replace('> ', ''))

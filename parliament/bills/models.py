@@ -38,9 +38,13 @@ class Bill(models.Model):
     
     name = models.CharField(max_length=500)
     number = models.CharField(max_length=10)
+    number_only = models.SmallIntegerField()
     session = models.ForeignKey(Session)
     
     objects = BillManager()
+    
+    class Meta:
+        ordering = ('number_only',)
     
     def __unicode__(self):
         return "%s - %s" % (self.number, self.name)
@@ -48,3 +52,8 @@ class Bill(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('parliament.bills.views.bill', [self.id])
+        
+    def save(self, *args, **kwargs):
+        if not self.number_only:
+            self.number_only = int(re.sub(r'\D', '', self.number))
+        super(Bill, self).save(*args, **kwargs)
