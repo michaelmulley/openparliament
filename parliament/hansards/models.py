@@ -86,7 +86,7 @@ class Statement(models.Model):
     heading = models.CharField(max_length=110, blank=True)
     topic = models.CharField(max_length=200, blank=True)
     member = models.ForeignKey(ElectedMember, blank=True, null=True)
-    #politician = models.ForeignKey(Politician, blank=True, null=True) # a shortcut -- should == member.politician
+    politician = models.ForeignKey(Politician, blank=True, null=True) # a shortcut -- should == member.politician
     who = models.CharField(max_length=300)
     text = models.TextField()
     sequence = models.IntegerField(db_index=True)

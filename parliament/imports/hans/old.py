@@ -201,7 +201,7 @@ class HansardParser1994(HansardParser):
                                 # Last-ditch: try a match by name...
                                 try:
                                     pol = Politician.objects.getByName(name, session=session)
-                                    member = ElectedMember.objects.get(sessions=session, politician=pol)
+                                    member = ElectedMember.objects.get_by_pol(politician=pol, date=self.date)
                                 except (Politician.DoesNotExist, Politician.MultipleObjectsReturned):
                                     # and, finally, just by last name
                                     poss = ElectedMember.objects.filter(sessions=session, politician__name_family__iexact=name)
@@ -245,7 +245,7 @@ class HansardParser1994(HansardParser):
                                         pass # we'll produce our own exception in a moment
                                 if pol is None:
                                     raise ParseException("Couldn't disambiguate politician: %s" % name)
-                            member = ElectedMember.objects.get(politician=pol, sessions=session)
+                            member = ElectedMember.objects.get_by_pol(politician=pol, date=self.date)
                             if riding is not None: riding = member.riding
                             # Save in the list for backreferences
                             members.insert(0, {'name':name, 'member':member, 'riding':riding, 'gender':gender})
@@ -259,9 +259,7 @@ class HansardParser1994(HansardParser):
                             
                         # Okay! We finally have our member!
                         t['member'] = member
-                        t['politician'] = pol
-                        if member.politician_id != pol.id:
-                            raise Exception("Member and pol inconsistent! %s %s" % (member, pol))
+                        t['politician'] = member.politician
                     c = c.next
                 elif c.string is None and len(c.contents) == 0:
                     # an empty bold tag!

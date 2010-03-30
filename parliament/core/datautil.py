@@ -1,6 +1,7 @@
 import sys, re, urllib, urllib2, os
 from collections import defaultdict
 import urlparse
+import itertools
 
 from django.db import transaction, models
 from django.db.models import Count
@@ -11,6 +12,7 @@ from parliament.imports import hans
 from parliament.core import parsetools
 from parliament.core.models import *
 from parliament.hansards.models import Hansard, HansardCache, Statement
+from parliament.elections.models import Election, Candidacy
 
 def load_pol_pics():
     for pol in Politician.objects.exclude(parlpage='').filter(models.Q(headshot__isnull=True) | models.Q(headshot='')):
@@ -59,6 +61,7 @@ def parse_all_hansards():
         except Exception, e:
             print "******* FAILURE **********"
             print "ERROR: %s" % e
+            print "EXCEPTION TYPE: %s" % e.__class__
             cache = HansardCache.objects.get(hansard=hansard.id)
             print "HANSARD %d: %s" % (cache.hansard.id, cache.hansard)
             print "FILE: %s" % cache.filename
@@ -186,9 +189,37 @@ def populate_parlid():
             pol.parlwebid = int(match.group(1))
             pol.save()
 
+def replace_links(old, new):
+    if old.__class__ != new.__class__:
+        raise Exception("Are old and new the same type?")
+    for relation in old._meta.get_all_related_objects():
+        if relation.model == old.__class__:
+            print "Relation to self!"
+            continue
+        print relation.field.name
+        relation.model._default_manager.filter(**{relation.field.name: old}).update(**{relation.field.name: new})
+    for relation in old._meta.get_all_related_many_to_many_objects():
+        if relation.model == old.__class__:
+            print "Relation to self!"
+            continue
+        print relation.field.name
+        for obj in relation.model._default_manager.filter(**{relation.field.name: old}):
+            getattr(obj, relation.field.name).remove(old)    
+            getattr(obj, relation.field.name).add(new)        
+
 def _merge_pols(good, bad):
-    ElectedMember.objects.filter(politician=bad).update(politician=good)
-    Candidacy.objects.filter(candidate=bad).update(candidate=good)
+    #ElectedMember.objects.filter(politician=bad).update(politician=good)
+    #Candidacy.objects.filter(candidate=bad).update(candidate=good)
+    #Statement.objects.filter(politician=bad).update(politician=good)
+    replace_links(old=bad, new=good)
+    seen = set()
+    for xref in InternalXref.objects.filter(schema__startswith='pol_', target_id=bad.id)
+        if (xref.int_value, xref.text_value) in seen:
+            xref.delete()
+        else:
+            xref.target_id = good.id
+            xref.save()
+            seen.add((xref.int_value, xref.text_value))
     bad.delete()
 
 #REFORM = (Party.objects.get(pk=25), Party.objects.get(pk=1), Party.objects.get(pk=28), Party.objects.get(pk=26))

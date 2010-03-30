@@ -31,12 +31,12 @@ def import_bills(session):
                 print e
                 continue
             bill.legisinfo_url = detailurl
-            if not bill.name:
-                match = re.search(r'<td>\s*(An Act.+?)<br', detailpage)
-                if not match:
-                    print "Couldn't parse bill name at %s" % detailurl
-                    continue
-                bill.name = match.group(1)[:500]
+            #if not bill.name:
+            match = re.search(r'<td>\s*(An Act.+?)<br', detailpage)
+            if not match:
+                print "Couldn't parse bill name at %s" % detailurl
+                continue
+            bill.name = match.group(1)[:500]
             membermatch = re.search(r'<font color="#005500"><b><a href=.http://www2\.parl\.gc\.ca/parlinfo/Files/Parliamentarian\.aspx\?Item=([A-Z0-9-]+?)&', detailpage)
             if membermatch:
                 try:

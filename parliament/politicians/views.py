@@ -6,6 +6,7 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpRespons
 from django.contrib.syndication.views import Feed
 from django.shortcuts import get_object_or_404
 from django.contrib.markup.templatetags.markup import markdown
+from django.utils.http import urlquote
 from BeautifulSoup import BeautifulSoup
 
 from parliament.core.models import Politician
@@ -13,7 +14,7 @@ from parliament.hansards.models import Statement
 
 GOOGLE_NEWS_URL = 'http://news.google.ca/news?pz=1&cf=all&ned=ca&hl=en&as_maxm=3&q=MP+%%22%s%%22+location%%3Acanada&as_qdr=a&as_drrb=q&as_mind=25&as_minm=2&cf=all&as_maxd=27&scoring=n&output=rss'
 def news_items_for_pol(pol):
-    feed = feedparser.parse(GOOGLE_NEWS_URL % urllib.quote(pol.name))
+    feed = feedparser.parse(GOOGLE_NEWS_URL % pol.name.encode('utf8'))
     items = []
     for i in feed['entries'][:6]:
         item = {'link': i.link,

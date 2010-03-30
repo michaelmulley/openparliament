@@ -18,7 +18,7 @@ class HansardParser2009(HansardParser):
         for x in self.soup.findAll('a', 'deleteMe'):
             x.findParent('div').extract()
             
-    def process_related_link(self, tag, string):
+    def process_related_link(self, tag, string, current_politician=None):
         #print "PROCESSING RELATED for %s" % string
         resid = re.search(r'ResourceID=(\d+)', tag['href'])
         restype = re.search(r'ResourceType=(Document|Affiliation)', tag['href'])
@@ -27,9 +27,9 @@ class HansardParser2009(HansardParser):
         resid, restype = int(resid.group(1)), restype.group(1)
         if restype == 'Document':
             try:
-                bill = Bill.objects.get_by_callback_id(resid, self.hansard.session)
+                bill = Bill.objects.get_by_callback_id(resid)
             except Exception, e:
-                print "Related bill search failed."
+                print "Related bill search failed for callback %s" % resid
                 print e
                 return string
             return u'<bill id="%d" name="%s">%s</bill>' % (bill.id, escape(bill.name), string)
@@ -37,15 +37,17 @@ class HansardParser2009(HansardParser):
             try:
                 pol = Politician.objects.getByParlID(resid)
             except Politician.DoesNotExist:
-                print "Related politician search failed."
+                print "Related politician search failed for callback %s" % resid
                 return string
+            if pol == current_politician:
+                return string # When someone mentions her riding, don't link back to her
             return u'<pol id="%d" name="%s">%s</pol>' % (pol.id, escape(pol.name), string)
     
     def get_text(self, cursor):
         text = u''
         for string in cursor.findAll(text=parsetools.r_hasText):
             if string.parent.name == 'a' and string.parent['class'] == 'WebOption':
-                text += self.process_related_link(string.parent, string)
+                text += self.process_related_link(string.parent, string, self.t['politician'])
             else:
                 text += unicode(string)
         return text
@@ -56,6 +58,7 @@ class HansardParser2009(HansardParser):
         
         # Initialize variables
         t = ParseTracker()
+        self.t = t
         member_refs = {}
         
         
@@ -147,7 +150,7 @@ class HansardParser2009(HansardParser):
                                     except Politician.DoesNotExist:
                                         print "WARNING: Couldn't find politician for ID %d" % parlwebid
                             if pol is not None:
-                                t['member'] = ElectedMember.objects.get(politician=pol, sessions=self.hansard.session)
+                                t['member'] = ElectedMember.objects.get_by_pol(politician=pol, date=self.date)
                                 t['politician'] = pol
                     c = c.next
                     if not parsetools.isString(c): raise Exception("Expecting string in b for member name")
@@ -159,7 +162,7 @@ class HansardParser2009(HansardParser):
                     # Sometimes we don't get a link for short statements -- see if we can identify by backreference
                     if t['member']:
                         member_refs[t['member_title']] = t['member']
-                    elif member_refs[t['member_title']]:
+                    elif t['member_title'] in member_refs:
                         t['member'] = member_refs[t['member_title']]
                         t['politician'] = t['member'].politician
                     

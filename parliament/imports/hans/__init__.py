@@ -40,7 +40,8 @@ def parseAndSave(arg):
         print "Delete them? (y/n) ",
         yn = sys.stdin.readline().strip()
         if yn == 'y':
-            Statement.objects.filter(hansard=cache.hansard).delete()
+            for statement in Statement.objects.filter(hansard=cache.hansard):
+                statement.delete()
         else:
             return False
     

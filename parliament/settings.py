@@ -15,7 +15,6 @@ MANAGERS = ADMINS
 HANSARD_CACHE_DIR = '/hansard-cache/'
 
 HAYSTACK_SEARCH_ENGINE = 'solr'
-HAYSTACK_SOLR_URL = 'http://127.0.0.1:8983/solr'
 HAYSTACK_SITECONF = 'parliament.search_sites'
 
 # Local time zone for this installation. Choices can be found here:

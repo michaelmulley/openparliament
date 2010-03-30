@@ -112,7 +112,7 @@ class PoliticianManager(models.Manager):
                     if len(members) >= 1:
                         if result: # we found another match on a previous journey through the loop
                             # can't disambiguate, raise exception
-                            raise Politician.MultipleObjectsReturned()
+                            raise Politician.MultipleObjectsReturned(name)
                         # We match! Save the result.
                         result = members[0].politician
                 if result:
@@ -122,7 +122,7 @@ class PoliticianManager(models.Manager):
             else:
                 # No extra criteria -- return what we got (or die if we can't disambiguate)
                 if len(poss) > 1:
-                    raise Politician.MultipleObjectsReturned()
+                    raise Politician.MultipleObjectsReturned(name)
                 else:
                     return self.get_query_set().get(pk=poss[0].target_id)
         if session and riding:
@@ -165,12 +165,12 @@ class PoliticianManager(models.Manager):
             polid = x.target_id
         except InternalXref.DoesNotExist:
             if not lookOnline:
-                return None
+                return None # FIXME inconsistent behaviour: when should we return None vs. exception?
             print "Unknown parlid %d... " % parlid,
             soup = BeautifulSoup(urllib2.urlopen(POL_LOOKUP_URL % parlid))
             if soup.find('table', id='MasterPage_BodyContent_PageContent_PageContent_pnlError'):
                 print "Error page for parlid %d" % parlid
-                return None
+                raise Politician.DoesNotExist("Invalid page for parlid %s" % parlid)
             polname = soup.find('span', id='MasterPage_MasterPage_BodyContent_PageContent_Content_TombstoneContent_TombstoneContent_ucHeaderMP_lblMPNameData').string
             polriding = soup.find('a', id='MasterPage_MasterPage_BodyContent_PageContent_Content_TombstoneContent_TombstoneContent_ucHeaderMP_hlConstituencyProfile').string
             parlinfolink = soup.find('a', id='MasterPage_MasterPage_BodyContent_PageContent_Content_TombstoneContent_TombstoneContent_ucHeaderMP_hlFederalExperience')
