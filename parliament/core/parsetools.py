@@ -87,3 +87,15 @@ def munge_postcode (code):
         if re.search(r'^[ABCEGHJKLMNPRSTVXYZ]\d[A-Z] \d[A-Z]\d$', code):
             return code
     return None
+    
+def none_to_empty(s):
+    if s is None:
+        return ''
+    else:
+        return s
+    
+def etree_extract_text(elem):
+    text = ''
+    for x in elem.getiterator():
+        text += none_to_empty(x.text) + none_to_empty(x.tail)
+    return text

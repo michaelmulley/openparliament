@@ -312,18 +312,19 @@ class Riding(models.Model):
         
 class ElectedMemberManager(models.Manager):
     
+    def on_date(self, date):
+        return self.get_query_set().filter(models.Q(start_date__lte=date)
+            & (models.Q(end_date__isnull=True) | models.Q(end_date__gte=date)))
+    
     def get_by_pol(self, politician, date=None, session=None):
         if not date and not session:
             raise Exception("Provide either a date or a session to get_by_pol.")
         if date:
-            return self.get_query_set().get(
-                models.Q(politician=politician)
-                & models.Q(start_date__lte=date)
-                & (models.Q(end_date__isnull=True) | models.Q(end_date__gte=date)))
+            return self.on_date(date).get(politician=politician)
         else:
             # In the case of floor crossers, there may be more than one ElectedMember
             # We haven't been given a date, so just return the first EM
-            qs = self.get_query_set().filter(politician=politician, sessions=session)
+            qs = self.get_query_set().filter(politician=politician, sessions=session).order_by('-start_date')
             if not len(qs):
                 raise ElectedMember.DoesNotExist("No elected member for %s, session %s" % (politician, session))
             return qs[0]

@@ -9,6 +9,7 @@ CALLBACK_URL = 'http://www2.parl.gc.ca/HousePublications/GetWebOptionsCallBack.a
 class BillManager(models.Manager):
     
     def get_by_callback_id(self, callback):
+        """Given a callback ID from a link on a Hansard page, return a Bill."""
         try:
             xref = InternalXref.objects.get(schema='bill_callbackid', int_value=callback)
             return self.get_query_set().get(pk=xref.target_id)
@@ -66,3 +67,40 @@ class Bill(models.Model):
         if not self.number_only:
             self.number_only = int(re.sub(r'\D', '', self.number))
         super(Bill, self).save(*args, **kwargs)
+        
+VOTE_RESULT_CHOICES = (
+    ('Y', 'Agreed to'),
+    ('N', 'Negatived'),
+    ('T', 'Tie'),
+)
+class VoteQuestion(models.Model):
+    
+    bill = models.ForeignKey(Bill, blank=True, null=True)
+    session = models.ForeignKey(Session)
+    number = models.PositiveIntegerField()
+    date = models.DateField()
+    description = models.TextField()
+    result = models.CharField(max_length=1, choices=VOTE_RESULT_CHOICES)
+    yea_total = models.SmallIntegerField()
+    nay_total = models.SmallIntegerField()
+    paired_total = models.SmallIntegerField()
+    
+    def __unicode__(self):
+        return u"Vote #%s on %s" % (self.number, self.date)
+
+    def label_absent_members(self):
+        for member in ElectedMember.objects.on_date(self.date).exclude(membervote__votequestion=self):
+            MemberVote(votequestion=self, member=member, politician_id=member.politician_id, vote='A').save()
+
+VOTE_CHOICES = (
+    ('Y', 'Yea'),
+    ('N', 'Nay'),
+    ('P', 'Paired'),
+    ('A', 'Did not vote'),
+)    
+class MemberVote(models.Model):
+    
+    votequestion = models.ForeignKey(VoteQuestion)
+    member = models.ForeignKey(ElectedMember)
+    politician = models.ForeignKey(Politician)
+    vote = models.CharField(max_length=1, choices=VOTE_CHOICES)
