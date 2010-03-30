@@ -1,1 +1,1 @@
-Bill {{ object.number }} - {{ object.name }}
+{{ object.number }} - {{ object.name }}

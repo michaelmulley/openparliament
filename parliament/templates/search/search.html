@@ -18,12 +18,12 @@
         
             {% for result in page.object_list %}
             {% if result.model_name == 'politician' %}<p>{% if result.object.headshot %}<img src="{% thumbnail result.object.headshot 67x90 crop_first="28,20,68,20" %}">{% endif %}<a href="{{ result.object.get_absolute_url }}">{{ result.object.name }}</a></p>{% endif %}
-            {% if result.model_name == 'statement' %}{% with result.object as statement %}<div class="statement_result"><a href="{{ result.object.get_absolute_url }}">{{ statement.heading }} / {{ statement.topic }}</a> <span class="date">({{ statement.time|date:"F jS Y"}})</span>
+            {% if result.model_name == 'statement' %}{% with result.object as statement %}<div class="result statement"><a href="{{ result.object.get_absolute_url }}">{{ statement.heading }} / {{ statement.topic }}</a> <span class="date">({{ statement.time|date:"F jS Y"}})</span>
                 <p><span class="who">{{ statement.who }}</span> {% highlight statement.text with query %}</p>
                 
                 </div>
             {% endwith %}{% endif %}
-            {% if result.model_name == 'bill' %}<p><a href="{{ result.object.get_absolute_url }}">Bill {{ result.object.number }}</a> {% highlight result.text with query %}</p>{% endif %}
+            {% if result.model_name == 'bill' %}<div class="result bill"><a href="{{ result.object.get_absolute_url }}">Bill {{ result.object.number }}</a> <span class="date">({{ result.object.session }})</span><p>{% highlight result.text with query %}</p></div>{% endif %}
             {% endfor %}
 
         {% else %}
@@ -33,24 +33,24 @@
 {% endblock %}
 {% block headextra %}
 <style type="text/css">
-.statement_result .date {
+.result .date {
     color: #666666;
 }
-.statement_result {
+.result {
     margin: 10px 0;
 }
-.statement_result p {
+.result p {
     margin: 0;
 }
-.statement_result a {
+.result a {
     font-weight: bold;
 }
-.statement_result .who {
+.result .who {
     color: #482500;
     font-style: italic;
     padding-right: 6px;
 }
-.highlighted {
+.result .highlighted {
     background-color: yellow;
 }
 </style>
