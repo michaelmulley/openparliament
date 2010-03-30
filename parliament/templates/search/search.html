@@ -23,6 +23,7 @@
                 
                 </div>
             {% endwith %}{% endif %}
+            {% if result.model_name == 'bill' %}<p><a href="{{ result.object.get_absolute_url }}">Bill {{ result.object.number }}</a> {% highlight result.text with query %}</p>{% endif %}
             {% endfor %}
 
         {% else %}
@@ -49,7 +50,7 @@
     font-style: italic;
     padding-right: 6px;
 }
-.statement_result .highlighted {
+.highlighted {
     background-color: yellow;
 }
 </style>
