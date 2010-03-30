@@ -1,3 +1,5 @@
+"""Import contribution data from Elections Canada."""
+
 import urllib, urllib2
 from xml.etree.ElementTree import ElementTree
 import re, datetime

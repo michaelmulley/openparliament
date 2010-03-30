@@ -1,3 +1,5 @@
+"""Parser for the Hansard format used from 1994 to 2006."""
+
 from parliament.imports.hans.common import *
 
 class HansardParser1994(HansardParser):
@@ -257,6 +259,9 @@ class HansardParser1994(HansardParser):
                             
                         # Okay! We finally have our member!
                         t['member'] = member
+                        t['politician'] = pol
+                        if member.politician_id != pol.id:
+                            raise Exception("Member and pol inconsistent! %s %s" % (member, pol))
                     c = c.next
                 elif c.string is None and len(c.contents) == 0:
                     # an empty bold tag!

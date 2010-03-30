@@ -1,3 +1,7 @@
+"""Various imports from the howdtheyvote.ca API.
+
+Imports now exist to get all this data from the official Parliament site instead."""
+
 from mulley.parliament.models import *
 import urllib, urllib2
 from xml.etree.ElementTree import ElementTree

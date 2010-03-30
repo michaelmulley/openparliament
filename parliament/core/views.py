@@ -36,7 +36,7 @@ def search(request):
             edid = postcode_to_edid(postcode)
             if edid:
                 try:
-                    member = ElectedMember.objects.get(session=Session.objects.current(), riding__edid=edid)
+                    member = ElectedMember.objects.get(end_date__isnull=True, riding__edid=edid)
                     return HttpResponseRedirect(member.politician.get_absolute_url())
                 except ElectedMember.DoesNotExist:
                     pass

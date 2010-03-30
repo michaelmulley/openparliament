@@ -7,7 +7,7 @@ from django.contrib.markup.templatetags.markup import markdown
 from django.utils.html import strip_tags, escape
 from django.utils.safestring import mark_safe
 
-from parliament.core.models import Session, ElectedMember
+from parliament.core.models import Session, ElectedMember, Politician
 from parliament.bills.models import Bill
 from parliament.core import parsetools
 
@@ -86,6 +86,7 @@ class Statement(models.Model):
     heading = models.CharField(max_length=110, blank=True)
     topic = models.CharField(max_length=200, blank=True)
     member = models.ForeignKey(ElectedMember, blank=True, null=True)
+    #politician = models.ForeignKey(Politician, blank=True, null=True) # a shortcut -- should == member.politician
     who = models.CharField(max_length=300)
     text = models.TextField()
     sequence = models.IntegerField(db_index=True)

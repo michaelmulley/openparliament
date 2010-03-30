@@ -3,12 +3,12 @@ import urllib, urllib2, re
 from django.db import models
 from BeautifulSoup import BeautifulSoup
 
-from parliament.core.models import Session, InternalXref
+from parliament.core.models import Session, InternalXref, ElectedMember, Politician
 
 CALLBACK_URL = 'http://www2.parl.gc.ca/HousePublications/GetWebOptionsCallBack.aspx?SourceSystem=PRISM&ResourceType=Document&ResourceID=%d&language=1&DisplayMode=2'
 class BillManager(models.Manager):
     
-    def get_by_callback_id(self, callback, session):
+    def get_by_callback_id(self, callback):
         try:
             xref = InternalXref.objects.get(schema='bill_callbackid', int_value=callback)
             return self.get_query_set().get(pk=xref.target_id)
@@ -21,6 +21,10 @@ class BillManager(models.Manager):
             raise Bill.DoesNotExist()
         votesurl = urllib.unquote(match.group(1))
         votespage = urllib2.urlopen(votesurl)
+        match = re.search(r'Parl=(\d+)&Ses=(\d+)', votesurl)
+        if not match:
+            raise Bill.DoesNotExist("Couldn't parse Bill Votes link")
+        session = Session.objects.get(parliamentnum=match.group(1), sessnum=match.group(2))
         votesoup = BeautifulSoup(votespage.read())
         votediv = votesoup.find('div', 'VotesBill')
         match = re.search(r'([A-Z]+-\d+)\s+(.+)', votediv.string.strip())
@@ -40,6 +44,11 @@ class Bill(models.Model):
     number = models.CharField(max_length=10)
     number_only = models.SmallIntegerField()
     session = models.ForeignKey(Session)
+    legisinfo_url = models.URLField(blank=True, null=True, verify_exists=False)
+    privatemember = models.NullBooleanField()
+    sponsor_member = models.ForeignKey(ElectedMember, blank=True, null=True)
+    sponsor_politician= models.ForeignKey(Politician, blank=True, null=True)
+    # FIXME model related bills (same bill, reintroduced)
     
     objects = BillManager()
     

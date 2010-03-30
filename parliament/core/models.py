@@ -19,6 +19,7 @@ class InternalXref(models.Model):
     # pol_parlid
     # pol_parlinfoid
     # bill_callbackid
+    # session_legisin -- LEGISinfo ID for a session
     schema = models.CharField(max_length=15)
 
 class PartyManager(models.Manager):
@@ -139,6 +140,24 @@ class PoliticianManager(models.Manager):
                     pol.addAlternateName(name) # save the name we were given as an alternate
                     return pol
         raise Politician.DoesNotExist("Could not find politician named %s" % name)
+        
+    def get_by_parlinfo_id(self, parlinfoid, session=None):
+        PARLINFO_LOOKUP_URL = 'http://www2.parl.gc.ca/parlinfo/Files/Parliamentarian.aspx?Item=%s&Language=E'
+        try:
+            x = InternalXref.objects.get(schema='pol_parlinfoid', text_value=parlinfoid.lower())
+            return self.get_query_set().get(pk=x.target_id)
+        except InternalXref.DoesNotExist:
+            print "Looking up parlinfo ID %s" % parlinfoid 
+            parlinfourl = PARLINFO_LOOKUP_URL % parlinfoid
+            parlinfopage = urllib2.urlopen(parlinfourl).read()
+            match = re.search(
+              r'href="http://webinfo\.parl\.gc\.ca/MembersOfParliament/ProfileMP\.aspx\?Key=(\d+)&amp;Language=E">MP profile',
+              parlinfopage)
+            if not match:
+                raise Politician.DoesNotExist
+            pol = self.getByParlID(match.group(1), session=session)
+            pol.saveParlinfoID(parlinfoid)
+            return pol
     
     def getByParlID(self, parlid, session=None, election=None, lookOnline=True):
         try:
@@ -206,7 +225,7 @@ class Politician(Person):
         InternalXref(schema='pol_parlid', int_value=parlid, target_id=self.id).save()
         
     def saveParlinfoID(self, parlinfoid):
-        InternalXref.objects.get_or_create(schema='pol_parlinfoid', text_value=parlinfoid, target_id=self.id)
+        InternalXref.objects.get_or_create(schema='pol_parlinfoid', text_value=parlinfoid.lower(), target_id=self.id)
         
     def addAlternateName(self, name):
         name = parsetools.normalizeName(name)
@@ -279,6 +298,9 @@ class Riding(models.Model):
     edid = models.IntegerField(blank=True, null=True)
     
     objects = RidingManager()
+    
+    class Meta:
+        ordering = ('province', 'name')
         
     def save(self):
         if not self.slug:
@@ -287,14 +309,34 @@ class Riding(models.Model):
 
     def __unicode__(self):
         return "%s (%s)" % (self.name, self.province)
+        
+class ElectedMemberManager(models.Manager):
+    
+    def get_by_pol(self, politician, date=None, session=None):
+        if not date and not session:
+            raise Exception("Provide either a date or a session to get_by_pol.")
+        if date:
+            return self.get_query_set().get(
+                models.Q(politician=politician)
+                & models.Q(start_date__lte=date)
+                & (models.Q(end_date__isnull=True) | models.Q(end_date__gte=date)))
+        else:
+            # In the case of floor crossers, there may be more than one ElectedMember
+            # We haven't been given a date, so just return the first EM
+            qs = self.get_query_set().filter(politician=politician, sessions=session)
+            if not len(qs):
+                raise ElectedMember.DoesNotExist("No elected member for %s, session %s" % (politician, session))
+            return qs[0]
     
 class ElectedMember(models.Model):
     sessions = models.ManyToManyField(Session)
     politician = models.ForeignKey(Politician)
     riding = models.ForeignKey(Riding)
     party = models.ForeignKey(Party)
-    start_date = models.DateField()
-    end_date = models.DateField(blank=True, null=True)
+    start_date = models.DateField(db_index=True)
+    end_date = models.DateField(blank=True, null=True, db_index=True)
+    
+    objects = ElectedMemberManager()
     
     def __unicode__ (self):
         if self.end_date:

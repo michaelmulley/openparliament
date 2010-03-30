@@ -166,8 +166,10 @@ class HansardParser(object):
     def saveStatement(self, t):
         if t.hasText():
             if t['member_title']:
-                statement = Statement(hansard=self.hansard, heading=t['heading'], topic=t['topic'], time=datetime.datetime.combine(self.date, t['timestamp']), member=t['member'], who=t['member_title'], text=t.getText(), sequence=self.statement_index)
-                # time is datetime.datetime.combine(self.date, t['timestamp'])
+                statement = Statement(hansard=self.hansard, heading=t['heading'], topic=t['topic'],
+                 time=datetime.datetime.combine(self.date, t['timestamp']), member=t['member'],
+                 politician=t['politician'], who=t['member_title'],
+                 text=t.getText(), sequence=self.statement_index)
                 self.statement_index += 1
                 self.statements.append(statement)
             else:

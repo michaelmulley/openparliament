@@ -1,3 +1,5 @@
+"""Parser for the Hansard format used from 2006 to the present."""
+
 from parliament.imports.hans.common import *
 
 from django.utils.html import escape
@@ -54,6 +56,7 @@ class HansardParser2009(HansardParser):
         
         # Initialize variables
         t = ParseTracker()
+        member_refs = {}
         
         
         # Get the date
@@ -145,12 +148,21 @@ class HansardParser2009(HansardParser):
                                         print "WARNING: Couldn't find politician for ID %d" % parlwebid
                             if pol is not None:
                                 t['member'] = ElectedMember.objects.get(politician=pol, sessions=self.hansard.session)
+                                t['politician'] = pol
                     c = c.next
                     if not parsetools.isString(c): raise Exception("Expecting string in b for member name")
                     t['member_title'] = c.strip()
                     #print c
                     if t['member_title'].endswith(':'): # Remove colon in e.g. Some hon. members:
                         t['member_title'] = t['member_title'][:-1]
+                    
+                    # Sometimes we don't get a link for short statements -- see if we can identify by backreference
+                    if t['member']:
+                        member_refs[t['member_title']] = t['member']
+                    elif member_refs[t['member_title']]:
+                        t['member'] = member_refs[t['member_title']]
+                        t['politician'] = t['member'].politician
+                    
                     c.findParent('b').extract() # We've got the title, now get the rest of the paragraph
                     c = origdiv
                     t.addText(self.get_text(c))
