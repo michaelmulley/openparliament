@@ -31,8 +31,27 @@ def news_items_for_pol(pol):
     
 def current_mps(request):
     return object_list(request,
-        queryset=ElectedMember.objects.current().order_by('riding__province', 'politician__name_family').select_related('politician', 'riding'),
-        template_name='politicians/electedmember_list.html')
+        queryset=ElectedMember.objects.current().order_by('riding__province', 'politician__name_family').select_related('politician', 'riding', 'party'),
+        template_name='politicians/electedmember_list.html',
+        extra_context={'title': 'Current Members of Parliament'})
+        
+def former_mps(request):
+    former_members = ElectedMember.objects.former()\
+        .order_by('riding__province', 'politician__name_family', '-start_date')\
+        .select_related('politician', 'riding', 'party')
+    seen = set()
+    object_list = []
+    for member in former_members:
+        if member.politician.id not in seen:
+            object_list.append(member)
+            seen.add(member.politician.id)
+    
+    c = RequestContext(request, {
+        'object_list': object_list,
+        'title': 'Former MPs (since 1994)',
+    })
+    t = loader.get_template("politicians/former_electedmember_list.html")
+    return HttpResponse(t.render(c))
 
 def politician(request, pol_id):
     try:

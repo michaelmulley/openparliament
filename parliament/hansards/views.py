@@ -21,11 +21,13 @@ def hansardcache (request, hansard_id):
 def index(request):
     return generic.date_based.archive_index(request, 
         queryset=Hansard.objects.all(), 
-        date_field='date')
+        date_field='date',
+        extra_context={'title': 'The Debates of the House of Commons'})
         
 def by_year(request, year):
     return generic.date_based.archive_year(request,
-        queryset=Hansard.objects.all(),
+        queryset=Hansard.objects.all().order_by('date'),
         date_field='date',
         year=year,
-        make_object_list=True)
+        make_object_list=True,
+        extra_context={'title': 'Debates from %s' % year})

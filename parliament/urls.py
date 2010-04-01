@@ -9,6 +9,7 @@ urlpatterns = patterns('',
     (r'^hansards/', include('parliament.hansards.urls')),
     (r'^politicians/', include('parliament.politicians.urls')),
     (r'^bills/', include('parliament.bills.urls')),
+    url(r'^about/$', 'django.views.generic.simple.direct_to_template', {'template': 'about/about.html'}, name='about'),
     (r'^$', 'django.views.generic.simple.direct_to_template', {'template': 'teaser.html'}),
 )
 

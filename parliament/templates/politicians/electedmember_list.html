@@ -1,15 +1,20 @@
-{% extends "base.html" %}
+{% extends "politicians/base.html" %}
 {% load ours %}
 
-{% block content %}
-<h1>All current MPs</h1>
+{% block headextra %}
+<style type="text/css">
 
+</style>
+{% endblock %}
+{% block contentclass %}context_3{% endblock %}
+{% block breadcrumbs %}{{ block.super }}Current MPs{% endblock %}
+{% block content %}
 {% regroup object_list by riding.province as province_list %}
 {% for province in province_list %}
-<h2>{{ province.grouper|expand_province }}</h2>
-<ul>{% for member in province.list %}
-<li><a href="{{ member.politician.get_absolute_url }}">{{ member.politician }}</a></li>
+<div class="context"><a name="{{ province.grouper }}"></a><h2>{{ province.grouper|expand_province }}</h2></div>
+<div class="focus"><ul class="tile">{% for member in province.list %}
+<li class="three oneline"><a href="{{ member.politician.get_absolute_url }}" title="{{ member.party.short_name }} for {{ member.riding.name }}">{{ member.politician }}</a></li>
 {% endfor %}
-</ul>
+</ul><div class="clear"></div></div>
 {% endfor %}
 {% endblock content %}

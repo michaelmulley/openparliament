@@ -3,7 +3,7 @@ from django.db import models
 from parliament.core.models import Politician, Riding, Party
 
 class Election (models.Model):
-    date = models.DateField()
+    date = models.DateField(db_index=True)
     byelection = models.BooleanField()
     
     class Meta:

@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>{% block pagetitle %}Hi.{% endblock pagetitle %} | openparliament.ca</title>
+	<title>{% block pagetitle %}{{ title }}{% endblock pagetitle %} | openparliament.ca</title>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <style type="text/css">
 #breadcrumbs{width:515px;color:#555555;position:absolute;left:10px;top:65px;font-size: 14px;font-weight: bold;}
@@ -51,7 +51,7 @@
     position: absolute;
     left: 6px;
 }
-#content_wrap {
+#content {
     width: 960px;
     margin-left: auto;
     margin-right: auto;
@@ -76,13 +76,18 @@ h1 {
     padding: 0;
     line-height: 40px;
 }
-h3 {
+h2 {
     font-size: 24px;
     font-weight: normal;
     font-weight: 300;
     margin: 0 0 10px 0;
     color: #522D07;
     line-height: 30px;
+}
+h3 {
+    margin 0 0 10px 0;
+    font-weight: bold;
+    color: #522D07;
 }
 a {
     color: #1A59C7;
@@ -96,8 +101,77 @@ a:hover {
     position: absolute;
     right: 10px;
     font-size: 15px;
-    top: 21px;
+    top: 20px;
     width: 215px;
+    font-family: Arial;
+    padding: 2px;
+    border: 2px inset #F0F0F0;
+}
+div.context {
+    clear: both;
+    float: left;
+    width: 220px;
+    margin-left: 10px;
+}
+.context_3 div.context {
+    width: 160px;
+}
+.context_3 div.focus {
+    margin-left: 190px;
+}
+.context_3 .focus h1,.context_3 .focus h2,.context_3 .focus h3,.context_3 .focus p {
+    width: 640px;
+}
+div.focus {
+    margin-left: 250px;
+    margin-bottom: 20px;
+}
+.clear {
+    clear: both;
+}
+#footer {
+    clear: both;
+    width: 100%;
+    height: 60px;
+    background-color: #F0F0F0;
+    margin-top: 20px;
+    padding-top: 10px;
+}
+#footer p {
+    margin-left: auto;
+    margin-right: auto;
+    width: 900px;
+    text-align: center;
+    font-size: 11px;
+    color: #888888;
+}
+ul.tile {
+    list-style-type: none;
+    margin: 0 0 10px 0;
+    padding: 0;
+}
+.tile li {
+    margin-right: 20px;
+    margin-bottom: 10px;
+    float: left;
+}
+.three {
+    width: 160px;
+}
+.six {
+    width: 340px;
+}
+.four {
+    width: 220px;
+}
+.twoline, .oneline {
+    overflow: hidden;
+}
+.twoline {
+    height: 40px;
+}
+.oneline {
+    height: 20px;
 }
 </style>
 <script type="text/javascript">
@@ -117,14 +191,16 @@ $(function() {
 </head>
 <body>
 <div id="navbarbg"></div><div id="navbar"><img src="{{ MEDIA_URL }}images/logotype_bar.png" alt="openparliament.ca">
-    <ul id="navlinks"><li {% block navlinks_mps %}{% endblock %}><a href="{% url parliament.politicians.views.current_mps %}">MPs</a></li><li {% block navlinks_bills %}{% endblock %}><a href="{% url parliament.bills.views.all_bills %}">Bills</a></li><li {% block navlinks_debates %}{% endblock %}><a href="{% url parliament.hansards.views.index %}">Debates</li><li {% block navlinks_about %}{% endblock %}>About</li></ul>
-    <div id="breadcrumbs">{% block breadcrumbs %}<a href="#">Home</a>{% endblock breadcrumbs %}</div>
+    <ul id="navlinks"><li {% block navlinks_mps %}{% endblock %}><a href="{% url parliament.politicians.views.current_mps %}">MPs</a></li><li {% block navlinks_bills %}{% endblock %}><a href="{% url parliament.bills.views.all_bills %}">Bills</a></li><li {% block navlinks_debates %}{% endblock %}><a href="{% url parliament.hansards.views.index %}">Debates</li><li {% block navlinks_about %}{% endblock %}><a href="{% url about %}">About</a></li></ul>
+    <div id="breadcrumbs">{% block breadcrumbs_all %}<a href="#">Home</a> {% block breadcrumbs %}{% endblock breadcrumbs %}{% endblock breadcrumbs_all %}</div>
     <form action="{% url parliament.core.views.search %}" method="GET"><div><input type="text" id="nav_searchbox" name="q" value="Search"></div></form>
     </div>
-<div id="content_wrap">
+<div id="content" class="{% block contentclass %}{% endblock %}">
+{% block pageheading_override %}<div class="focus"><h1>{% block pageheading %}{{ title }}{% endblock pageheading %}</h1></div>{% endblock pageheading_override %}
 {% block content %}
 
 {% endblock content %}
 </div>
+<div id="footer"><p>Copyleft 2010 openparliament.ca. Still very much under construction.<p></div>
 </body>
 </html>

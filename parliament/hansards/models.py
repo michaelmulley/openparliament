@@ -39,7 +39,15 @@ class Hansard(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('parliament.hansards.views.hansard', [self.id])
-
+        
+    def topics(self):
+        topics = []
+        last_topic = ''
+        for statement in self.statement_set.all().values_list('topic', 'sequence'):
+            if statement[0] != last_topic:
+                last_topic = statement[0]
+                topics.append((statement[0], statement[1]))
+        return topics
 
 class HansardCache(models.Model):
     hansard = models.ForeignKey(Hansard)

@@ -99,6 +99,9 @@ class PoliticianManager(models.Manager):
         
     def current(self):
         return self.get_query_set().filter(electedmember__end_date__isnull=True, electedmember__start_date__isnull=False).distinct()
+        
+    def elected_but_not_current(self):
+        return self.get_query_set().filter(electedmember__end_date__isnull=False).distinct()
     
     def filterByName(self, name):
         return [self.get_query_set().get(pk=x.target_id) for x in InternalXref.objects.filter(schema='pol_names', text_value=parsetools.normalizeName(name))]
@@ -261,10 +264,18 @@ class Politician(Person):
     @simple_function_cache        
     def latest_member(self):
         try:
-            return ElectedMember.objects.filter(politician=self).order_by('-start_date')[0]
+            return ElectedMember.objects.filter(politician=self).order_by('-start_date').select_related('party', 'riding')[0]
         except IndexError:
             return None
         
+    @property
+    @simple_function_cache
+    def latest_candidate(self):
+        try:
+            return self.candidacy_set.order_by('-election__date').select_related('election')[0]
+        except IndexError:
+            return None
+
 class SessionManager(models.Manager):
     
     def current(self):
@@ -360,6 +371,9 @@ class ElectedMemberManager(models.Manager):
     
     def current(self):
         return self.get_query_set().filter(end_date__isnull=True)
+        
+    def former(self):
+        return self.get_query_set().filter(end_date__isnull=False)
     
     def on_date(self, date):
         return self.get_query_set().filter(models.Q(start_date__lte=date)
