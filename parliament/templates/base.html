@@ -69,17 +69,20 @@ p {
     margin: 0 0 10px 0;
 }
 h1 {
-    font-size: 30px;
+    font-size: 32px;
     font-weight: bold;
     color: #222222;
     margin: 0 0 20px 0;
     padding: 0;
+    line-height: 40px;
 }
 h3 {
-    font-size: 22.5px;
+    font-size: 24px;
     font-weight: normal;
+    font-weight: 300;
     margin: 0 0 10px 0;
     color: #522D07;
+    line-height: 30px;
 }
 a {
     color: #1A59C7;
@@ -113,7 +116,7 @@ $(function() {
 {% block headextra %}{% endblock %}
 </head>
 <body>
-<div id="navbarbg"></div><div id="navbar"><img src="{{ MEDIA_URL }}images/logotype_bar_3.png">
+<div id="navbarbg"></div><div id="navbar"><img src="{{ MEDIA_URL }}images/logotype_bar.png" alt="openparliament.ca">
     <ul id="navlinks"><li {% block navlinks_mps %}{% endblock %}><a href="{% url parliament.politicians.views.current_mps %}">MPs</a></li><li {% block navlinks_bills %}{% endblock %}><a href="{% url parliament.bills.views.all_bills %}">Bills</a></li><li {% block navlinks_debates %}{% endblock %}><a href="{% url parliament.hansards.views.index %}">Debates</li><li {% block navlinks_about %}{% endblock %}>About</li></ul>
     <div id="breadcrumbs">{% block breadcrumbs %}<a href="#">Home</a>{% endblock breadcrumbs %}</div>
     <form action="{% url parliament.core.views.search %}" method="GET"><div><input type="text" id="nav_searchbox" name="q" value="Search"></div></form>
