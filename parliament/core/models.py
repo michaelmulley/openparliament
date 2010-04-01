@@ -101,7 +101,7 @@ class PoliticianManager(models.Manager):
         return self.get_query_set().filter(electedmember__end_date__isnull=True, electedmember__start_date__isnull=False).distinct()
         
     def elected_but_not_current(self):
-        return self.get_query_set().filter(electedmember__end_date__isnull=False).distinct()
+        return self.get_query_set().exclude(electedmember__end_date__isnull=True)
     
     def filterByName(self, name):
         return [self.get_query_set().get(pk=x.target_id) for x in InternalXref.objects.filter(schema='pol_names', text_value=parsetools.normalizeName(name))]

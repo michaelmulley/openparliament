@@ -36,19 +36,21 @@ def current_mps(request):
         extra_context={'title': 'Current Members of Parliament'})
         
 def former_mps(request):
-    former_members = ElectedMember.objects.former()\
+    former_members = ElectedMember.objects.all()\
         .order_by('riding__province', 'politician__name_family', '-start_date')\
         .select_related('politician', 'riding', 'party')
     seen = set()
     object_list = []
     for member in former_members:
         if member.politician.id not in seen:
-            object_list.append(member)
+            if member.end_date:
+                # Not a current MP
+                object_list.append(member)
             seen.add(member.politician.id)
     
     c = RequestContext(request, {
         'object_list': object_list,
-        'title': 'Former MPs (since 1994)',
+        'title': 'Former MPs (since 1994)'
     })
     t = loader.get_template("politicians/former_electedmember_list.html")
     return HttpResponse(t.render(c))
