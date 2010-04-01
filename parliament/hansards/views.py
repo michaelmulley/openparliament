@@ -6,8 +6,8 @@ from parliament.hansards.models import Hansard, HansardCache, Statement
 
 def hansard(request, hansard_id):
     hansard = Hansard.objects.get(pk=hansard_id)
-    statements = Statement.objects.filter(hansard=hansard).select_related('member__politician', 'member__riding', 'member__party')
-    t = loader.get_template("parliament/hansard.html")
+    statements = Statement.objects.filter(hansard=hansard).select_related('politician', 'member__riding', 'member__party')
+    t = loader.get_template("hansards/hansard_detail.html")
     c = RequestContext(request, {
         'hansard': hansard,
         'statements': statements,

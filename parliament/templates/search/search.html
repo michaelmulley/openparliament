@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load thumbnail highlight %}
+{% block breadcrumbs %}{{ block.super }} <a href="{% url parliament.core.views.search %}">Search</a> {{ query }}{% endblock %}
 
 {% block content %}
 

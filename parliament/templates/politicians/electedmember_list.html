@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load ours %}
+
+{% block content %}
+<h1>All current MPs</h1>
+
+{% regroup object_list by riding.province as province_list %}
+{% for province in province_list %}
+<h2>{{ province.grouper|expand_province }}</h2>
+<ul>{% for member in province.list %}
+<li><a href="{{ member.politician.get_absolute_url }}">{{ member.politician }}</a></li>
+{% endfor %}
+</ul>
+{% endfor %}
+{% endblock content %}

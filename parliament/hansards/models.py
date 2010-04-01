@@ -82,7 +82,7 @@ def statement_affil_link(match):
     
 class Statement(models.Model):
     hansard = models.ForeignKey(Hansard)
-    time = models.DateTimeField(blank=True, null=True)
+    time = models.DateTimeField(blank=True, null=True, db_index=True)
     heading = models.CharField(max_length=110, blank=True)
     topic = models.CharField(max_length=200, blank=True)
     member = models.ForeignKey(ElectedMember, blank=True, null=True)

@@ -7,14 +7,15 @@ from django.contrib.syndication.views import Feed
 from django.shortcuts import get_object_or_404
 from django.contrib.markup.templatetags.markup import markdown
 from django.utils.http import urlquote
+from django.views.generic.list_detail import object_list
 from BeautifulSoup import BeautifulSoup
 
-from parliament.core.models import Politician
+from parliament.core.models import Politician, ElectedMember
 from parliament.hansards.models import Statement
 
 GOOGLE_NEWS_URL = 'http://news.google.ca/news?pz=1&cf=all&ned=ca&hl=en&as_maxm=3&q=MP+%%22%s%%22+location%%3Acanada&as_qdr=a&as_drrb=q&as_mind=25&as_minm=2&cf=all&as_maxd=27&scoring=n&output=rss'
 def news_items_for_pol(pol):
-    feed = feedparser.parse(GOOGLE_NEWS_URL % pol.name.encode('utf8'))
+    feed = feedparser.parse(GOOGLE_NEWS_URL % urlquote(pol.name))
     items = []
     for i in feed['entries'][:6]:
         item = {'link': i.link,
@@ -22,10 +23,16 @@ def news_items_for_pol(pol):
         soup = BeautifulSoup(i.summary)
         try:
             item['summary'] = str(soup.findAll('font', size='-1')[1])
-        except:
+        except Exception, e:
+            print e
             continue
         items.append(item)
     return items
+    
+def current_mps(request):
+    return object_list(request,
+        queryset=ElectedMember.objects.current().order_by('riding__province', 'politician__name_family').select_related('politician', 'riding'),
+        template_name='politicians/electedmember_list.html')
 
 def politician(request, pol_id):
     try:
@@ -35,10 +42,11 @@ def politician(request, pol_id):
     
     c = RequestContext(request, {
         'pol': pol,
+        'member': pol.latest_member,
         'candidacies': pol.candidacy_set.all().order_by('-election__date'),
         'electedmembers': pol.electedmember_set.all().order_by('-start_date'),
-        'statements': Statement.objects.filter(member__politician=pol).order_by('-time')[:10],
-        'newsitems': news_items_for_pol(pol),
+        'statements': Statement.objects.filter(politician=pol).order_by('-time')[:10],
+        #'newsitems': news_items_for_pol(pol),
     })
     t = loader.get_template("politicians/politician.html")
     return HttpResponse(t.render(c))

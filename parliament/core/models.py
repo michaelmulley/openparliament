@@ -1,10 +1,15 @@
+# coding: utf-8
+import urllib, urllib2, re, os.path, gzip
+from decimal import Decimal
+
+
 from django.db import models, backend
 from django.contrib import databrowse
 from django.conf import settings
-import urllib, urllib2, re, os.path, gzip
 from BeautifulSoup import BeautifulSoup
+
 from parliament.core import parsetools
-from decimal import Decimal
+from parliament.core.utils import simple_function_cache
 
 POL_LOOKUP_URL = 'http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=%d&Language=E'
 
@@ -36,6 +41,8 @@ class PartyManager(models.Manager):
 class Party(models.Model):
     name = models.CharField(max_length=100)
     slug = models.CharField(max_length=10, blank=True)
+    short_name = models.CharField(max_length=100, blank=True)
+    colour = models.CharField(max_length=7, blank=True)
     
     objects = PartyManager()
     
@@ -49,6 +56,8 @@ class Party(models.Model):
         self._saveAlternate = True
 
     def save(self):
+        if not getattr(self, 'short_name', None):
+            self.short_name = self.name
         super(Party, self).save()
         if hasattr(self, '_saveAlternate') and self._saveAlternate:
             self.addAlternateName(self.name)
@@ -87,6 +96,9 @@ class PoliticianManager(models.Manager):
     
     def elected(self):
         return self.get_query_set().annotate(electedcount=models.Count('electedmember')).filter(electedcount__gte=1)
+        
+    def current(self):
+        return self.get_query_set().filter(electedmember__end_date__isnull=True, electedmember__start_date__isnull=False).distinct()
     
     def filterByName(self, name):
         return [self.get_query_set().get(pk=x.target_id) for x in InternalXref.objects.filter(schema='pol_names', text_value=parsetools.normalizeName(name))]
@@ -236,7 +248,22 @@ class Politician(Person):
     @models.permalink
     def get_absolute_url(self):
         return ('parliament.politicians.views.politician', (self.id,))
-
+        
+    @property
+    @simple_function_cache
+    def current_member(self):
+        try:
+            return ElectedMember.objects.get(politician=self, end_date__isnull=True)
+        except ElectedMember.DoesNotExist:
+            return False
+    
+    @property
+    @simple_function_cache        
+    def latest_member(self):
+        try:
+            return ElectedMember.objects.filter(politician=self).order_by('-start_date')[0]
+        except IndexError:
+            return None
         
 class SessionManager(models.Manager):
     
@@ -291,9 +318,25 @@ class RidingManager(models.Manager):
             slug = RidingManager.FIX_RIDING[slug]
         return self.get_query_set().get(slug=slug)
 
+PROVINCE_CHOICES = (
+    ('AB', 'Alberta'),
+    ('BC', 'B.C.'),
+    ('SK', 'Saskatchewan'),
+    ('MB', 'Manitoba'),
+    ('ON', 'Ontario'),
+    ('QC', 'Québec'),
+    ('NB', 'New Brunswick'),
+    ('NS', 'Nova Scotia'),
+    ('PE', 'P.E.I.'),
+    ('NL', 'Newfoundland & Labrador'),
+    ('YT', 'Yukon'),
+    ('NT', 'Northwest Territories'),
+    ('NU', 'Nunavut'),
+)
+PROVINCE_LOOKUP = dict(PROVINCE_CHOICES)
 class Riding(models.Model):
     name = models.CharField(max_length=60)
-    province = models.CharField(max_length=2)
+    province = models.CharField(max_length=2, choices=PROVINCE_CHOICES)
     slug = models.CharField(max_length=60, unique=True)
     edid = models.IntegerField(blank=True, null=True)
     
@@ -306,11 +349,17 @@ class Riding(models.Model):
         if not self.slug:
             self.slug = parsetools.slugify(self.name)
         super(Riding, self).save()
+        
+    def dashed_name(self):
+        return re.sub(r'--', u'—', self.name)
 
     def __unicode__(self):
-        return "%s (%s)" % (self.name, self.province)
+        return "%s (%s)" % (self.dashed_name(), self.get_province_display())
         
 class ElectedMemberManager(models.Manager):
+    
+    def current(self):
+        return self.get_query_set().filter(end_date__isnull=True)
     
     def on_date(self, date):
         return self.get_query_set().filter(models.Q(start_date__lte=date)
@@ -344,4 +393,8 @@ class ElectedMember(models.Model):
             return u"%s (%s) was the member from %s from %s to %s" % (self.politician, self.party, self.riding, self.start_date, self.end_date)
         else:
             return u"%s (%s) is the member from %s (since %s)" % (self.politician, self.party, self.riding, self.start_date)
+            
+    @property
+    def current(self):
+        return not bool(self.end_date)
 

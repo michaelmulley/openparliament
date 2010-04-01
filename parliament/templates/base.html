@@ -6,45 +6,80 @@
 	<title>{% block pagetitle %}Hi.{% endblock pagetitle %} | openparliament.ca</title>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <style type="text/css">
-#navbar {
-    background-color: #136319;
+#breadcrumbs{width:515px;color:#555555;position:absolute;left:10px;top:65px;font-size: 14px;font-weight: bold;}
+#breadcrumbs a{background:transparent url('/static/images/breadglyph.png') no-repeat right;padding-right:13px; font-weight: normal;}
+#navlinks {
+    font-weight: bold;
+    position: absolute;
+    font-size: 15px;
+    top: 24px;
+    left: 429px;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+#navlinks li {
+    padding: 0;
+    float: left;
+    margin-right: 10px;
+}
+#navlinks li a {
+    color: #CCCCCC;
+}
+#navlinks li.selected a {
+    color: #FFC757;
+}
+#navlinks li a:hover {
+    color: white;
+    text-decoration: underline;
+}
+#navbarbg {
     width: 100%;
+    position: absolute;
+    height: 40px;
+    background-color: #095609;
+    border-bottom: 16px solid #7d450b;
+}
+#navbar {
     position: relative;
-    height: 75px;
-    border-bottom: 3px solid #493922;
+    margin-left: auto;
+    margin-right: auto;
+    width: 960px;
+    height: 80px;
 }
 #navbar img {
     position: absolute;
-    top: 13px;
-    left: 25px;
-}
-#navbar form {
-    position: absolute;
-    top: 22px;
-    right: 100px;
-}
-#navbar input {
-    width: 250px;
-    background-color: #CCCCCC;
-    border: 0;
-    font-size: 16px;
-    padding: 4px;
-}
-#navbar form p {
-    margin: 2px 0 0 0;
-    color: #DDDDDD;
-    font-size: 11px;
-    padding-left: 20px;
-    font-family: Georgia, Times, serif;
-    font-style: italic;
+    left: 6px;
 }
 #content_wrap {
-    margin: 5px 25px;
+    width: 960px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 15px;
 }
+
 body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     margin: 0;
     padding: 0;
+    line-height: 1.33333333333;
+    font-size: 15px;
+}
+p {
+    margin: 0 0 10px 0;
+}
+h1 {
+    font-size: 30px;
+    font-weight: bold;
+    color: #222222;
+    margin: 0 0 20px 0;
+    padding: 0;
+}
+h3 {
+    font-size: 22.5px;
+    font-weight: normal;
+    margin: 0 0 10px 0;
+    color: #522D07;
 }
 a {
     color: #1A59C7;
@@ -54,7 +89,13 @@ a {
 a:hover {
     text-decoration: underline;
 }
-
+#nav_searchbox {
+    position: absolute;
+    right: 10px;
+    font-size: 15px;
+    top: 21px;
+    width: 215px;
+}
 </style>
 <script type="text/javascript">
 $(function() {
@@ -72,7 +113,11 @@ $(function() {
 {% block headextra %}{% endblock %}
 </head>
 <body>
-<div id="navbar"><img src="{{ MEDIA_URL }}images/logotype_bar.png"><form action="/core/search/" method="GET"><input type="text" name="q" id="nav_searchbox" value="Search"><p>by phrase, name, or postal code</p></form></div>
+<div id="navbarbg"></div><div id="navbar"><img src="{{ MEDIA_URL }}images/logotype_bar_3.png">
+    <ul id="navlinks"><li {% block navlinks_mps %}{% endblock %}><a href="{% url parliament.politicians.views.current_mps %}">MPs</a></li><li {% block navlinks_bills %}{% endblock %}><a href="{% url parliament.bills.views.all_bills %}">Bills</a></li><li {% block navlinks_debates %}{% endblock %}><a href="{% url parliament.hansards.views.index %}">Debates</li><li {% block navlinks_about %}{% endblock %}>About</li></ul>
+    <div id="breadcrumbs">{% block breadcrumbs %}<a href="#">Home</a>{% endblock breadcrumbs %}</div>
+    <form action="{% url parliament.core.views.search %}" method="GET"><div><input type="text" id="nav_searchbox" name="q" value="Search"></div></form>
+    </div>
 <div id="content_wrap">
 {% block content %}
 

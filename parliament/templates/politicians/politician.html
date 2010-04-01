@@ -1,12 +1,37 @@
-{% extends "base.html" %}
-{% load markup thumbnail highlight %}
+{% extends "politicians/base.html" %}
+{% load markup thumbnail highlight ours %}
 {% block headextra %}
 <link rel="alternate" type="application/rss+xml" title="{{ pol.name }} in the House of Commons" href="{% url politician_feed pol_id=pol.id %}">
+<style type="text/css">
+#left_sidebar {
+    width: 240px;
+    float: left;
+    height: 100%;
+    padding-top: 67px;
+}
+#left_sidebar img.headshot {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    position: relative;
+    border: 2px solid #666666;
+}
+#main {
+    margin-left: 250px;
+    min-width: 600px;
+}
+
+</style>
 {% endblock headextra %}
 {% block pagetitle %}{{ pol }}{% endblock %}
+{% block breadcrumbs %}{{ block.super }} <a href="{% url parliament.politicians.views.current_mps %}">MPs</a> {% if not member.current %}<a href="#">Former</a>{% endif %} <a href="#">{{ member.riding.province|expand_province }}</a> {{ pol.name}}{% endblock %}
 {% block content %}
-
-{% if pol.headshot %}<img src="{{ pol.headshot.url }}" style="float: left; padding: 2px; margin: 0 10px 4px 0; border: 1px solid #666666;">{% endif %}<h1>{{ pol }}</h1>
+<div id="left_sidebar">
+{% if pol.headshot %}<img class="headshot" src="{{ pol.headshot.url }}">{% endif %}
+</div>
+<div id ="main">
+<h1>{{ pol }}</h1>
+<h3>{% if not member.current %}Last in Parliament {{ member.end_date|date:"F Y"}}, as {% endif %}{% if member.party.colour %}<span style="font-weight: bold; color: {{ member.party.colour }}">{% endif %}{{ member.party.short_name }}{% if member.party.colour %}</span>{% endif %} MP for {{ member.riding }}</h3>
 {% for electedmember in electedmembers %}<p>{{ electedmember }}</p>{% endfor %}
 {% for candidacy in candidacies %}<p>{{ candidacy }}</p>{% endfor %}
 <h2>Recent News</h2>
@@ -16,4 +41,5 @@
 {% for newsitem in newsitems %}<p><a href="{{ newsitem.link }}">{{ newsitem.title }}</a><br>{% with newsitem.summary|striptags|safe as summary %} {# % highlight summary with pol.name % #} {{ summary }}{% endwith %}</p>{% endfor %}
 <h2>Statements in the House</h2>
 {% for statement in statements %}<p>{{ statement.text_plain|truncatewords:80 }} <a href="{{ statement.get_absolute_url }}">-></a></p>{% endfor %}
+</div>
 {% endblock %}

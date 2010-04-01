@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "hansards/base.html" %}
 {% load markup thumbnail %}
 {% block pagetitle %}Hansard for {{ hansard.date }} (#{{ hansard.number }}){% endblock %}
 
@@ -8,7 +8,7 @@
 	<p><a href="./local/">(cache)</a> <a href="{{ hansard.url }}">(original version)</a></p>
 	
 {% for statement in statements %}
-<div class="statement {% cycle rowa,rowb %}"><div class="statement_text"><a name="s{{ statement.sequence }}"></a>{% if statement.member.politician.headshot %}<img src="{% thumbnail statement.member.politician.headshot 67x90 crop_first="28,20,68,20" %}">{% endif %}<p class="speaking">{% if statement.member.politician %}<a href="{{ statement.member.politician.get_absolute_url }}">{% endif %}{{ statement.who }}{% if statement.member.politician %}</a>{% endif %}</p>
+<div class="statement {% cycle rowa,rowb %}"><div class="statement_text"><a name="s{{ statement.sequence }}"></a>{% if statement.politician.headshot %}<img src="{% thumbnail statement.politician.headshot 67x90 crop_first="28,20,68,20" %}">{% endif %}<p class="speaking">{% if statement.politician %}<a href="{{ statement.politician.get_absolute_url }}">{% endif %}{{ statement.who }}{% if statement.politician %}</a>{% endif %}</p>
 {{ statement.text_html }}</div>
 <div class="context">{{ statement.time|date:"P" }}<br>{{ statement.heading }}<br>{{ statement.topic }}<br>DEBUG: {{ statement.id }}</div>
 

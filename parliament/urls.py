@@ -9,16 +9,13 @@ urlpatterns = patterns('',
     (r'^hansards/', include('parliament.hansards.urls')),
     (r'^politicians/', include('parliament.politicians.urls')),
     (r'^bills/', include('parliament.bills.urls')),
-    # Uncomment the admin/doc line below and add 'django.contrib.admindocs' 
-    # to INSTALLED_APPS to enable admin documentation:
-    # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
-    (r'^admin/', include(admin.site.urls)),
     (r'^$', 'django.views.generic.simple.direct_to_template', {'template': 'teaser.html'}),
 )
 
 if settings.DEBUG:
     urlpatterns += patterns('',
         (r'^databrowse/(.*)', databrowse.site.root),
+        (r'^admin/', include(admin.site.urls)),
         (r'^static/(?P<path>.*)$', 'django.views.static.serve',
                 {'document_root': settings.MEDIA_ROOT}),
     )
