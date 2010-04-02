@@ -41,6 +41,7 @@ class Hansard(models.Model):
         return ('parliament.hansards.views.hansard', [self.id])
         
     def topics(self):
+        """Returns a tuple with (topic, statement sequence ID) for every topic mentioned."""
         topics = []
         last_topic = ''
         for statement in self.statement_set.all().values_list('topic', 'sequence'):

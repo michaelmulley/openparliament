@@ -66,11 +66,13 @@ class Bill(models.Model):
     def save(self, *args, **kwargs):
         if not self.number_only:
             self.number_only = int(re.sub(r'\D', '', self.number))
+        if getattr(self, 'privatemember', None) is None:
+            self.privatemember = bool(self.number_only >= 200)
         super(Bill, self).save(*args, **kwargs)
         
 VOTE_RESULT_CHOICES = (
-    ('Y', 'Agreed to'),
-    ('N', 'Negatived'),
+    ('Y', 'Passed'), # Agreed to
+    ('N', 'Failed'), # Negatives
     ('T', 'Tie'),
 )
 class VoteQuestion(models.Model):
@@ -78,7 +80,7 @@ class VoteQuestion(models.Model):
     bill = models.ForeignKey(Bill, blank=True, null=True)
     session = models.ForeignKey(Session)
     number = models.PositiveIntegerField()
-    date = models.DateField()
+    date = models.DateField(db_index=True)
     description = models.TextField()
     result = models.CharField(max_length=1, choices=VOTE_RESULT_CHOICES)
     yea_total = models.SmallIntegerField()
@@ -96,7 +98,7 @@ VOTE_CHOICES = (
     ('Y', 'Yea'),
     ('N', 'Nay'),
     ('P', 'Paired'),
-    ('A', 'Did not vote'),
+    ('A', "Didn't vote"),
 )    
 class MemberVote(models.Model):
     

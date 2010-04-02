@@ -1,0 +1,27 @@
+{% extends "bills/base.html" %}
+
+{% block contentclass %}context_3{% endblock %}
+{% block pagetitle %}Vote #{{ vote.number }} on {{ vote.date|date:"F jS, Y" }}{% endblock %}
+{% block pageheading %}Vote #{{ vote.number }} on {{ vote.date|date:"F jS, Y" }}{% endblock %}
+{% block breadcrumbs %}{{ block.super }}<a href="{% url parliament.bills.views.index %}">Bills</a>
+<a href="{% url parliament.bills.views.bills_for_session session_id=vote.session.id %}">{{ vote.session }}</a>
+<a href="{% url parliament.bills.views.votes_for_session session_id=vote.session.id %}">Votes</a> #{{ vote.number }}{% endblock %}
+
+{% block content %}
+{% if vote.bill %}<div class="context"><h2>Bill</h2></div>
+<div class="focus"><p><a href="{% url parliament.bills.views.bill bill_id=vote.bill.id %}">{{ vote.bill.number }}</a> {{ vote.bill.name }}</p></div>{% endif %}
+<div class="context"><h2>Vote topic</h2></div>
+<div class="focus"><p>{{ vote.description }}</p></div>
+<div class="context"><h2>Result</h2></div>
+<div class="focus"><ul class="tile">
+<li class="four{% if vote.result == 'Y' %} winner{% endif %}"><span class="tag voteresult_Y">Yea</span> {{ vote.yea_total }}</li>
+<li class="four{% if vote.result == 'N' %} winner{% endif %}"><span class="tag voteresult_N">Nay</span> {{ vote.nay_total }}</li>
+<li class="four"><span class="tag voteresultP">Paired</span> {{ vote.paired_total }}</li></ul><div class="clear"></div></div>
+{% regroup membervotes by member.party.short_name as parties %}
+{% for party in parties %}
+<div class="context"><h2>{{ party.grouper }}</h2></div>
+<div class="focus"><ul class="tile">
+{% for membervote in party.list %}<li class="four oneline"><span class="tag voteresult_{{ membervote.vote }}">{{ membervote.get_vote_display }}</span> <a href="{% url parliament.politicians.views.politician pol_id=membervote.member.politician_id %}">{{ membervote.member.politician.name }}</a></li>{% endfor %}
+</ul><div class="clear"></div></div>
+{% endfor %}
+{% endblock content %}

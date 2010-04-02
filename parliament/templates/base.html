@@ -2,8 +2,8 @@
    "http://www.w3.org/TR/html4/strict.dtd">
 <html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>{% block pagetitle %}{{ title }}{% endblock pagetitle %} | openparliament.ca</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>{% block pagetitle %}{{ title }}{% endblock pagetitle %} | openparliament.ca</title>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <style type="text/css">
 #breadcrumbs{width:515px;color:#555555;position:absolute;left:10px;top:65px;font-size: 14px;font-weight: bold;}
@@ -36,9 +36,10 @@
 #navbarbg {
     width: 100%;
     position: absolute;
-    height: 40px;
-    background-color: #095609;
-    border-bottom: 16px solid #7d450b;
+    height: 16px;
+    background-color: #7d450b;
+    border-top: 40px solid #095609;
+    border-bottom: 50px solid white;
 }
 #navbar {
     position: relative;
@@ -57,13 +58,17 @@
     margin-right: auto;
     padding-top: 15px;
 }
-
+#content_wrap {
+    clear: both;
+    background-color: white;
+}
 body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     margin: 0;
     padding: 0;
     line-height: 1.33333333333;
     font-size: 15px;
+    background-color: #F0F0F0;
 }
 p {
     margin: 0 0 10px 0;
@@ -113,18 +118,26 @@ div.context {
     width: 220px;
     margin-left: 10px;
 }
+.context h2 {
+    position: relative;
+    top: -2px;
+}
 .context_3 div.context {
     width: 160px;
 }
 .context_3 div.focus {
-    margin-left: 190px;
+    width: 770px;
 }
 .context_3 .focus h1,.context_3 .focus h2,.context_3 .focus h3,.context_3 .focus p {
     width: 640px;
 }
 div.focus {
-    margin-left: 250px;
+    float: right;
+    width: 710px;
     margin-bottom: 20px;
+}
+div.focus.pageheader {
+    margin-bottom: 0;
 }
 .clear {
     clear: both;
@@ -133,7 +146,6 @@ div.focus {
     clear: both;
     width: 100%;
     height: 60px;
-    background-color: #F0F0F0;
     margin-top: 20px;
     padding-top: 10px;
 }
@@ -173,8 +185,45 @@ ul.tile {
 .oneline {
     height: 20px;
 }
+#tooltip {
+    position: absolute;
+    z-index: 3000;
+    border: 1px solid #111;
+    background-color: #FCFEE4;
+    padding: 5px;
+    max-width: 350px;
+}
+#tooltip h3, #tooltip div {
+    margin: 0;
+    font-size: 12px;
+    color: #222222;
+    font-weight: normal;
+}
+
+.tag {
+    padding: 2px 3px;
+    background-color: #CCCCCC;
+}
+.voteresult_Y {
+    background-color: #A9FA98;
+}
+.voteresult_N {
+    background-color: #FF9093;
+}
+.winner {
+    font-weight: bold;
+}
 </style>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.tooltip.js"></script>
 <script type="text/javascript">
+jQuery.fn.overflowtip = function() {
+    return this.each(function() {
+        if (this.clientWidth < this.scrollWidth 
+          || this.clientHeight < this.scrollHeight) {
+            $(this).attr('title', $(this).text());       
+        }
+    });
+}
 $(function() {
    $('#nav_searchbox').bind('focus', function() { 
        if (this.value == 'Search') {
@@ -185,22 +234,26 @@ $(function() {
            this.value = 'Search';
        }
    }); 
+   
+   
+   $('.overflowtip').overflowtip().tooltip({delay: 200});
+   
 });
 </script>
 {% block headextra %}{% endblock %}
 </head>
 <body>
 <div id="navbarbg"></div><div id="navbar"><img src="{{ MEDIA_URL }}images/logotype_bar.png" alt="openparliament.ca">
-    <ul id="navlinks"><li {% block navlinks_mps %}{% endblock %}><a href="{% url parliament.politicians.views.current_mps %}">MPs</a></li><li {% block navlinks_bills %}{% endblock %}><a href="{% url parliament.bills.views.all_bills %}">Bills</a></li><li {% block navlinks_debates %}{% endblock %}><a href="{% url parliament.hansards.views.index %}">Debates</li><li {% block navlinks_about %}{% endblock %}><a href="{% url about %}">About</a></li></ul>
+    <ul id="navlinks"><li {% block navlinks_mps %}{% endblock %}><a href="{% url parliament.politicians.views.current_mps %}">MPs</a></li><li {% block navlinks_bills %}{% endblock %}><a href="{% url parliament.bills.views.index %}">Bills</a></li><li {% block navlinks_debates %}{% endblock %}><a href="{% url parliament.hansards.views.index %}">Debates</li><li {% block navlinks_about %}{% endblock %}><a href="{% url about %}">About</a></li></ul>
     <div id="breadcrumbs">{% block breadcrumbs_all %}<a href="#">Home</a> {% block breadcrumbs %}{% endblock breadcrumbs %}{% endblock breadcrumbs_all %}</div>
     <form action="{% url parliament.core.views.search %}" method="GET"><div><input type="text" id="nav_searchbox" name="q" value="Search"></div></form>
     </div>
-<div id="content" class="{% block contentclass %}{% endblock %}">
-{% block pageheading_override %}<div class="focus"><h1>{% block pageheading %}{{ title }}{% endblock pageheading %}</h1></div>{% endblock pageheading_override %}
+<div id="content_wrap"><div id="content" class="{% block contentclass %}{% endblock %}">
+{% block pageheading_override %}<div class="focus pageheader"><h1>{% block pageheading %}{{ title }}{% endblock pageheading %}</h1></div>{% endblock pageheading_override %}
 {% block content %}
 
 {% endblock content %}
-</div>
-<div id="footer"><p>Copyleft 2010 openparliament.ca. Still very much under construction.<p></div>
+</div><div class="clear"></div></div>
+<div id="footer"><p>Copyleft 2010 openparliament.ca. Still very much under construction.</p></div>
 </body>
 </html>

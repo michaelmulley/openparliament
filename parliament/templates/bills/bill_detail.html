@@ -1,0 +1,28 @@
+{% extends "bills/base.html" %}
+{% block contentclass %}context_3{% endblock %}
+{% block breadcrumbs %}{{ block.super }}<a href="{% url parliament.bills.views.index %}">Bills</a>
+<a href="{% url parliament.bills.views.bills_for_session session_id=bill.session.id %}">{{ bill.session }}</a> {{ title }}{% endblock %}
+{% block content %}
+
+<div class="focus">
+<h3>{{ bill.name }}</h3>
+{% if bill.session.end %}<p>This bill was introduced in the {{ bill.session }}, which ended in {{ bill.session.end|date:"F Y"}}.</p>{% endif %}
+</div>
+{% if bill.sponsor_politician %}
+<div class="context"><h2>Sponsor</h2></div>
+<div class="focus"><p><a href="{{ bill.sponsor_politician.get_absolute_url }}">{{ bill.sponsor_politician.name }}</a> {% if bill.sponsor_member %}({{ bill.sponsor_member.party.short_name }}){% endif %}</p>{% endif %}
+{% if bill.privatemember %}<p>Introduced as a <strong>private members' bill</strong>. (These don't often become law.)</p>{% endif %}</div>
+{% if bill.legisinfo_url %}
+<div class="context"><h2>Elsewhere</h2></div>
+<div class="focus"><p>All sorts of information on this bill is available at <a href="{{ bill.legisinfo_url }}">LEGISinfo</a>, provided by the Library of Parliament.</p></div>{% endif %}
+{% if votequestions %}
+<div class="context"><h2>Votes</h2></div>
+<div class="focus"><ul class="tile">
+{% for vote in votequestions %}<li class="six twoline overflowtip"><a href="{{ vote.get_absolute_url }}">{{ vote.date|date:"N j, Y" }}</a> <span class="tag voteresult_{{ vote.result }}">{{ vote.get_result_display }}</span> {{ vote.description }}</li>{% endfor %}
+{% endif %}
+<div class="clear"></div>
+{% for statement in statements %}
+<p>{{ statement.text_plain|truncatewords:80 }} <a href="{{ statement.get_absolute_url }}">-></a></p>
+{% endfor %}
+
+{% endblock content %}

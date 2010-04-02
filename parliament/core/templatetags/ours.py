@@ -1,4 +1,4 @@
-import datetime
+import datetime, re
 
 from django import template
 
@@ -31,3 +31,7 @@ def heshe(pol):
 @register.filter(name='month_num')
 def month_num(month):
     return datetime.date(2010, month, 1).strftime("%B")
+    
+@register.filter(name='strip_act')
+def strip_act(value):
+    return re.sub(r'An Act (to )?([a-z])', lambda m: m.group(2).upper(), value)

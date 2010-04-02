@@ -1,11 +1,9 @@
-{% extends "bills/base.html" %}
+{% extends "bills/index.html" %}
+{% block breadcrumbs %}<a href="{% url parliament.bills.views.index %}">Bills</a> {{ title }}{% endblock %}
 
 {% block content %}
-<h1>All bills</h1>
+<div class="focus"><p>This session began on {{ session.start|date:"F jS, Y" }}{% if session.end %} and ended on {{ session.end|date:"F jS, Y" }}{% endif %}.</p></div>
+{{ block.super }}
+{% endblock %}
 
-<ul>
-{% for bill in object_list %}
-<li><a href="{{ bill.get_absolute_url }}">{{ bill }}</a></li>
-{% endfor %}
-</ul>
-{% endblock content %}
+{% block sessions_list %}{% endblock %}
