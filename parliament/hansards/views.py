@@ -14,10 +14,8 @@ def hansard(request, hansard_id, statement_seq=None):
     highlight_statement = None
     try:
         if statement_seq and 'page' not in request.GET:
-            print "yes on stateseq"
             highlight_statement = int(statement_seq)
             page = int(highlight_statement/PER_PAGE) + 1
-            print page
         else:
             page = int(request.GET.get('page', '1'))
     except ValueError:
