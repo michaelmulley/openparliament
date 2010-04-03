@@ -93,6 +93,10 @@ class VoteQuestion(models.Model):
     def label_absent_members(self):
         for member in ElectedMember.objects.on_date(self.date).exclude(membervote__votequestion=self):
             MemberVote(votequestion=self, member=member, politician_id=member.politician_id, vote='A').save()
+            
+    @models.permalink
+    def get_absolute_url(self):
+        return ('parliament.bills.views.vote', [self.id])
 
 VOTE_CHOICES = (
     ('Y', 'Yea'),

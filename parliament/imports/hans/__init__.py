@@ -89,14 +89,14 @@ def loadHansard(hansard=None, url=None, session=None):
             print "Downloading Hansard from %s" % normurl
             req = urllib2.Request(normurl)
             page = urllib2.urlopen(req).read()
-            try:
-                number = _getHansardNumber(page)
-            except Exception, e:
-                print e
-                print "Couldn't get Hansard number for"
-                print url
-                print "Please enter: ",
-                number = sys.stdin.readline().strip()
+            #try:
+            number = _getHansardNumber(page)
+            #except Exception, e:
+            #    print e
+            #    print "Couldn't get Hansard number for"
+            #    print url
+            #    print "Please enter: ",
+            #    number = sys.stdin.readline().strip()
             try:
                 hansard = Hansard.objects.get(session=session, number=number)
             except Hansard.DoesNotExist:

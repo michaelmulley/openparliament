@@ -8,7 +8,7 @@ from django.db import transaction
 from parliament.core.models import *
 from parliament.hansards.models import Hansard, Statement, HansardCache
 from parliament.core import parsetools
-
+from parliament.core.parsetools import r_politicalpost, r_honorific
 
 
 # The publishing of the official publications of the House of Commons is governed by the law of parliamentary privilege, by which the House of Commons has the right to control the publication of its proceedings. It may be used without seeking the permission of the Speaker of the House of Commons provided that it is accurately reproduced and that it does not offend the dignity of the House of Commons or one of its Members. Reproduction of the material is permitted in whole or in part, and by any means. 
@@ -27,9 +27,8 @@ r_time_optionalparen = re.compile(r'\s*\(?\s*(\d\d)(\d\d)\s*\)?\s*$', re.UNICODE
 r_time_glyph = re.compile(r'arobas\.gif')
 r_arrow_img = re.compile(r'arrow\d+\.gif')
 r_housemet = re.compile(r'The\s+House\s+met\s+at\s+(\d[\d:\.]*)\s+([ap]\.m\.)', re.I | re.UNICODE)
-r_honorific = re.compile(r'^(Mr\.?|Mrs\.?|Ms\.?|Miss\.?|Hon\.?|Right Hon\.|The|A|An\.?|Some|M\.|One|Santa|Acting|L\'hon\.|Assistant|Mme)\s(.+)$', re.DOTALL | re.UNICODE)
-r_notamember = re.compile(r'^(The|A|An|Some|Acting|Santa|One|Assistant|An\.)$')
-r_politicalpost = re.compile(r'(Minister|Leader|Secretary|Solicitor|Attorney|Speaker|Deputy |Soliciter|Chair |Parliamentary|President |for )')
+r_notamember = re.compile(r'^(The|A|Some|Acting|Santa|One|Assistant|An\.?)$')
+
 r_letter = re.compile(r'\w')
 r_notspace = re.compile(r'\S', re.UNICODE)
 r_timeanchor = re.compile(r'^T\d\d\d\d$')
@@ -164,6 +163,9 @@ class HansardParser(object):
             return datetime.datetime.strptime("%s %s" % (number, ampm), "%I %p").time()
         
     def saveStatement(self, t):
+        # Question No. 139-- -> Question No. 139
+        if t['topic']:
+            t['topic'] = re.sub(r'\-+$', '', t['topic'])
         if t.hasText():
             if t['member_title']:
                 statement = Statement(hansard=self.hansard, heading=t['heading'], topic=t['topic'],

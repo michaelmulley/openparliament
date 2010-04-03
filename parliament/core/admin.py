@@ -21,12 +21,15 @@ class ElectedMemberOptions(admin.ModelAdmin):
     
 class InternalXrefOptions(admin.ModelAdmin):
     list_display = ('schema', 'text_value', 'int_value', 'target_id')
+    
+class PartyOptions(admin.ModelAdmin):
+    list_display = ('name', 'short_name', 'slug')
 
 admin.site.register(ElectedMember, ElectedMemberOptions)
 admin.site.register(Riding, RidingOptions)
 admin.site.register(Session, SessionOptions)
 admin.site.register(Politician, PoliticianOptions)
-admin.site.register(Party)
+admin.site.register(Party, PartyOptions)
 admin.site.register(InternalXref, InternalXrefOptions)
 
 databrowse.site.register(ElectedMember)

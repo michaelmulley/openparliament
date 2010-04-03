@@ -14,6 +14,10 @@ from parliament.core.models import *
 from parliament.hansards.models import Hansard, HansardCache, Statement
 from parliament.elections.models import Election, Candidacy
 
+def update_hansards():
+    hansards_from_calendar()
+    parse_all_hansards()
+
 def load_pol_pics():
     for pol in Politician.objects.exclude(parlpage='').filter(models.Q(headshot__isnull=True) | models.Q(headshot='')):
         print "#%d: %s" % (pol.id, pol)
@@ -53,7 +57,7 @@ def delete_invalid_pol_pics():
 
 
 def parse_all_hansards(): 
-    for hansard in Hansard.objects.all().annotate(scount=Count('statement')).exclude(scount__gt=0).order_by('?'):
+    for hansard in Hansard.objects.all().annotate(scount=Count('statement')).exclude(scount__gt=0).order_by('date'):
         try:
             print "Trying %d %s... " % (hansard.id, hansard)
             hans.parseAndSave(hansard)
@@ -213,7 +217,7 @@ def _merge_pols(good, bad):
     #Statement.objects.filter(politician=bad).update(politician=good)
     replace_links(old=bad, new=good)
     seen = set()
-    for xref in InternalXref.objects.filter(schema__startswith='pol_', target_id=bad.id)
+    for xref in InternalXref.objects.filter(schema__startswith='pol_', target_id=bad.id):
         if (xref.int_value, xref.text_value) in seen:
             xref.delete()
         else:

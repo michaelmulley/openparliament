@@ -361,11 +361,12 @@ class Riding(models.Model):
             self.slug = parsetools.slugify(self.name)
         super(Riding, self).save()
         
+    @property
     def dashed_name(self):
         return re.sub(r'--', u'—', self.name)
 
     def __unicode__(self):
-        return "%s (%s)" % (self.dashed_name(), self.get_province_display())
+        return "%s (%s)" % (self.dashed_name, self.get_province_display())
         
 class ElectedMemberManager(models.Manager):
     

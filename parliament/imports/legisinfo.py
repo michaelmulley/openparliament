@@ -6,7 +6,7 @@ from django.db import models
 from parliament.core.models import InternalXref, Politician, ElectedMember
 from parliament.bills.models import Bill
 
-LEGISINFO_LIST_URL = 'http://www2.parl.gc.ca/Sites/LOP/LEGISINFO/index.asp?Language=E&List=list&Type=0&Chamber=C&StartList=1&EndList=2000&Session=%d'
+LEGISINFO_LIST_URL = 'http://www2.parl.gc.ca/Sites/LOP/LEGISINFO/index.asp?Language=E&List=list&Type=0&Chamber=C&StartList=2&EndList=2000&Session=%d'
 LEGISINFO_DETAIL_URL = 'http://www2.parl.gc.ca/Sites/LOP/LEGISINFO/index.asp?Language=E&Session=%d&query=%d&List=toc'
 def import_bills(session):
     legis_sess = InternalXref.objects.get(target_id=session.id, schema='session_legisin').int_value

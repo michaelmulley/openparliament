@@ -10,6 +10,7 @@ from django.utils.safestring import mark_safe
 from parliament.core.models import Session, ElectedMember, Politician
 from parliament.bills.models import Bill
 from parliament.core import parsetools
+from parliament.core.utils import simple_function_cache
 
 class HansardManager (models.Manager):
     
@@ -123,8 +124,9 @@ class Statement(models.Model):
         if bill_ids:
             self.bills.add(*list(bill_ids))
     
+    @models.permalink
     def get_absolute_url(self):
-        return urlresolvers.reverse('parliament.hansards.views.hansard', args=[self.hansard_id]) + "#s%d" % self.sequence 
+        return ('parliament.hansards.views.hansard', [], {'hansard_id': self.hansard_id, 'statement_seq': self.sequence})
     
     def __unicode__ (self):
         return u"%s speaking about %s around %s on %s" % (self.who, self.topic, self.time, self.hansard.date)
@@ -134,3 +136,49 @@ class Statement(models.Model):
 
     def text_plain(self):
         return escape(strip_tags(self.text).replace('> ', ''))
+    
+    @property
+    @simple_function_cache    
+    def name_info(self):
+        info = {
+            'post': None,
+            'named': True
+        }
+        if not self.member:
+            info['display_name'] = parsetools.r_mister.sub('', self.who)
+        elif parsetools.r_notamember.search(self.who):
+            info['display_name'] = self.who
+            if self.member.politician.name in self.who:
+                info['display_name'] = re.sub(r'\(.+?\)', '', self.who)
+            info['named'] = False
+        elif not '(' in self.who or not parsetools.r_politicalpost.search(self.who):
+            info['display_name'] = self.member.politician.name
+        else:
+            info['post'] = post = re.search(r'\((.+)\)', self.who).group(1).split(',')[0]
+            info['display_name'] = self.member.politician.name
+        return info
+    
+    def normalized_who(self):
+        if not self.member:
+            return parsetools.r_mister.sub('', self.who)
+        riding = self.member.riding.dashed_name
+        party = self.member.party.short_name
+        #if self.member.party.colour:
+        #    party = '<span class="tag" style="background-color: %s">%s</span>' % (self.member.party.colour, party)
+        if parsetools.r_notamember.search(self.who):
+            polname = self.who
+            affil = ''
+            title = '%s (%s, %s)' % (self.who, riding, party)
+        elif not '(' in self.who or not parsetools.r_politicalpost.search(self.who):
+            polname = self.member.politician.name
+            affil = '(%s, %s)' % (riding, party)
+            title = ''
+        else:
+            # We have a political post
+            post = re.search(r'\((.+)\)', self.who).group(1).split(',')[0]
+            polname = self.member.politician.name
+            affil = '(%s, %s)' % (post, party)
+            title = 'MP for %s' % riding
+        return mark_safe('<a href="%s" title="%s">%s</a> <span class="pol_affil">%s</a>' %
+            (self.member.politician.get_absolute_url(), title, polname, affil))
+            

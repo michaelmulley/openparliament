@@ -12,7 +12,7 @@
 <div class="context"><h2>Sessions</h2></div>
 <div class="focus"><ul class="tile">
     {% for session in session_list %}{% if not forloop.first %}
-<li class="six oneline"><a href="{% url parliament.bills.views.bills_for_session session_id=session.id %}" title="{{ session }}">{{ session.start|date:"F Y" }}&ndash;{{session.end|date:"F Y"}}</a></li>{% endif %}{% endfor %}
+<li class="six oneline"><a href="{% url parliament.bills.views.bills_for_session session_id=session.id %}" class="tip" title="{{ session }}">{{ session.start|date:"F Y" }}&ndash;{{session.end|date:"F Y"}}</a></li>{% endif %}{% endfor %}
 </ul><div class="clear"></div></div>
 {% endblock %}{% endif %}
 {% if pm.grouper %}<div class="focus"><p>Private members' bills are introduced by MPs who are not cabinet ministers&mdash;opposition members, or sometimes government backbenchers. They rarely become law.</p></div>{% endif %}

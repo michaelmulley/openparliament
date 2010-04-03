@@ -5,23 +5,23 @@
 
 {% block content %}
 <div class="focus">
-<p>The floor of the House of Commons: it's where the Canadian state sets its course. At least in theory. When Parliament is in session, every word spoken by a member is faithfully transcribed, and published in a document called a <a href="http://en.wikipedia.org/wiki/Hansard">Hansard</a>. We have the Hansards since 1994. Browse through them below, or search via the box above.</p>
+<p>When Parliament is in session, every word spoken by a member is faithfully transcribed, and published in a document called a <a href="http://en.wikipedia.org/wiki/Hansard">Hansard</a>. We have the Hansards of the House of Commons dating back to 1994. Browse through them below, or search via the box above.</p>
 </div>
 {% with latest.0 as hansard %}{% with hansard.get_absolute_url as hurl %}
 <div class="context"><h2>{{ hansard.date|date:"F jS" }}</h2></div>
-<div class="focus"><ul class="tile">
-{% for topic in hansard.topics %}<li class="four oneline overflowtip"><a href="{{ hurl }}#s{{ topic.1 }}">{{ topic.0 }}</a></li>{% endfor %}
-</ul><div class="clear"></div></div>
+<div class="focus"><ul class="tile clearafter">
+{% for topic in hansard.topics %}<li class="four oneline overflowtip"><a href="{% url parliament.hansards.views.hansard hansard_id=hansard.id statement_seq=topic.1 %}">{{ topic.0 }}</a></li>{% endfor %}
+</ul></div>
 {% endwith %}{% endwith %}
 <div class="context"><h2>Recent</h2></div>
 <div class="focus">
-<ul class="tile">{% for hansard in latest %}
+<ul class="tile clearafter">{% for hansard in latest %}
 {% if not forloop.first %}<li class="three"><a href="{{ hansard.get_absolute_url }}">{{ hansard.date|date:"F jS" }}</a></li>{% endif %}
-{% endfor %}</ul><div class="clear"></div></div>
+{% endfor %}</ul></div>
 
 <div class="context"><h2>Past</h2></div>
 <div class="focus">
-<ul class="tile">{% for year in date_list %}
+<ul class="tile clearafter">{% for year in date_list %}
 <li class="three"><a href="{% url parliament.hansards.views.by_year year=year.year %}">{{ year.year }}</a></li>
-{% endfor %}</ul><div class="clear"></div></div>
+{% endfor %}</ul></div>
 {% endblock content %}

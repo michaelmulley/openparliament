@@ -3,6 +3,11 @@ import datetime
 
 from BeautifulSoup import NavigableString
 
+r_politicalpost = re.compile(r'(Minister|Leader|Secretary|Solicitor|Attorney|Speaker|Deputy |Soliciter|Chair |Parliamentary|President |for )')
+r_honorific = re.compile(r'^(Mr\.?|Mrs\.?|Ms\.?|Miss\.?|Hon\.?|Right Hon\.|The|A|An\.?|Some|M\.|One|Santa|Acting|L\'hon\.|Assistant|Mme)\s(.+)$', re.DOTALL | re.UNICODE)
+r_notamember = re.compile(r'^(The|A|Some|Acting|Santa|One|Assistant|An\.?)')
+r_mister = re.compile(r'^(Mr|Mrs|Ms|Miss|Hon|Right Hon|M|Mme)\.?\s+')
+
 def countWords(text):
     # very quick-n-dirty for now
     return text.count(' ') + int(text.count("\n") / 2) + 1

@@ -162,6 +162,8 @@ class HansardParser2009(HansardParser):
                     # Sometimes we don't get a link for short statements -- see if we can identify by backreference
                     if t['member']:
                         member_refs[t['member_title']] = t['member']
+                        # Also save a backref w/o position/riding
+                        member_refs[re.sub(r'\s*\(.+\)\s*', '', t['member_title'])] = t['member']
                     elif t['member_title'] in member_refs:
                         t['member'] = member_refs[t['member_title']]
                         t['politician'] = t['member'].politician

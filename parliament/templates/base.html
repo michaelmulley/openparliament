@@ -36,10 +36,12 @@
 #navbarbg {
     width: 100%;
     position: absolute;
+    left: 0;
+    top: 0;
     height: 16px;
     background-color: #7d450b;
     border-top: 40px solid #095609;
-    border-bottom: 50px solid white;
+    border-bottom: 24px solid white;
 }
 #navbar {
     position: relative;
@@ -56,11 +58,12 @@
     width: 960px;
     margin-left: auto;
     margin-right: auto;
-    padding-top: 15px;
+    padding-top: 15px; /* 15 */
 }
 #content_wrap {
     clear: both;
     background-color: white;
+    padding-bottom: 20px;
 }
 body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -98,6 +101,7 @@ a {
     color: #1A59C7;
     text-decoration: none;
     font-weight: bold;
+    outline: none;
 }
 a:hover {
     text-decoration: underline;
@@ -115,25 +119,32 @@ a:hover {
 div.context {
     clear: both;
     float: left;
-    width: 220px;
+    width: 160px;
     margin-left: 10px;
+    margin-bottom: 10px;
+}
+.context_4 div.context {
+    width: 220px;
+}
+.context_4 div.focus {
+    width: 710px;
+}
+.context_2 div.context {
+    width: 100px;
+}
+.context_2 div.focus {
+    width: 830px;
 }
 .context h2 {
     position: relative;
     top: -2px;
 }
-.context_3 div.context {
-    width: 160px;
-}
-.context_3 div.focus {
-    width: 770px;
-}
-.context_3 .focus h1,.context_3 .focus h2,.context_3 .focus h3,.context_3 .focus p {
-    width: 640px;
+.focus h1, .focus h2, .focus h3, .focus p {
+    max-width: 640px;
 }
 div.focus {
     float: right;
-    width: 710px;
+    width: 770px;
     margin-bottom: 20px;
 }
 div.focus.pageheader {
@@ -142,11 +153,18 @@ div.focus.pageheader {
 .clear {
     clear: both;
 }
+.clearafter:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+}
 #footer {
     clear: both;
     width: 100%;
     height: 60px;
-    margin-top: 20px;
     padding-top: 10px;
 }
 #footer p {
@@ -199,7 +217,6 @@ ul.tile {
     color: #222222;
     font-weight: normal;
 }
-
 .tag {
     padding: 2px 3px;
     background-color: #CCCCCC;
@@ -213,13 +230,142 @@ ul.tile {
 .winner {
     font-weight: bold;
 }
+.pagination {
+    text-align: center;
+    width: 640px;
+}
+.pagination .pagelink {
+    display: inline-block;
+    width: 22px;
+    height: 23px;
+    background: transparent url('{{ MEDIA_URL }}images/pagebuttons.png') no-repeat;
+}
+.pagination span {
+    margin: 0 14px;
+    font-weight: bold;
+    color: #333333;
+    position: relative;
+    bottom: 5px;
+}
+.pagination.loading span {
+    visibility: hidden;
+}
+.pagination.loading {
+    background: transparent url('{{ MEDIA_URL}}images/loading.gif') no-repeat center center;
+}
+.pagination .pagelink.prev {
+    background-position: 0 -69px;
+}
+.pagination .pagelink.prev:hover {
+    background-position: 0 -46px;
+}
+.pagination .pagelink.next {
+    background-position: 0 -23px;
+}
+.pagination .pagelink.next:hover {
+    background-position: 0 0;
+}
+
+/* STATEMENTS */
+.statement .pol_name {
+    font-weight: bold;
+}
+.statement .tag {
+    font-weight: bold;
+}
+.partytag_lib {
+    background-color: #f6a7a5;
+}
+.partytag_bq {
+    background-color: #a7ecf6;
+}
+.partytag_cpc {
+    background-color: #acd0f6;
+}
+.partytag_ndp {
+    background-color: #f6cfa5;
+}
+.statement .pol_affil {
+    /* font-size: 13px; */
+    padding-left: 3px;
+    color: #666666;
+}
+blockquote {
+    /* border-left: 3px solid #CCCCCC; */
+    margin: 0 1em 0 2em;
+    padding: 0 0 0 1em;
+}
+.focus blockquote p {
+    max-width: 590px;
+}
+.statement .morelink {
+    position: absolute;
+    width: 86px;
+    height: 22px;
+    background: white url('{{ MEDIA_URL }}images/seemore.png') no-repeat;
+    bottom: 22px;
+    left: 85px;
+    cursor: pointer;
+}
+.statement .morelink:hover {
+    background-position: 0 -22px;
+}
+.statement {
+    border-top: 1px solid #CCCCCC;
+    clear: both;
+    padding-top: 19px;
+    width: 870px;
+    position: relative;
+}
+.statement.first {
+    border: none;
+}
+.statement.highlighted {
+    background-color: #fff2b5;
+}
+.statement .focus {
+    margin-bottom: 10px;
+    min-height: 110px;
+    max-height: 380px;
+    overflow: hidden;
+    width: 680px;
+}
+.statement .fadeout {
+    width: 640px;
+    height: 45px;
+    bottom: 10px;
+    left: 190px;
+    position: absolute;
+    background: transparent url('{{ MEDIA_URL }}images/tgradient_45.png') repeat-x;
+}
+.statement .focus.displayall {
+    max-height: none;
+}
+.statement .focus.nophoto {
+    min-height: 60px;
+}
+.statement .context {
+    font-size: 11px;
+    color: #555555;
+    text-align: right;
+    padding-top: 2px;
+}
+.headshot_thumb {
+    display: block;
+    float: left;
+    margin: 4px 8px 4px 2px;
+    border: 2px solid #BBBBBB;
+}
+#paginated {
+    clear: both;
+}
 </style>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.tooltip.js"></script>
 <script type="text/javascript">
 jQuery.fn.overflowtip = function() {
     return this.each(function() {
         if (this.clientWidth < this.scrollWidth 
-          || this.clientHeight < this.scrollHeight) {
+          || (this.clientHeight + 5) < this.scrollHeight) {
             $(this).attr('title', $(this).text());       
         }
     });
@@ -237,6 +383,7 @@ $(function() {
    
    
    $('.overflowtip').overflowtip().tooltip({delay: 200});
+   $('.tip').tooltip({delay: 300, showURL: false});
    
 });
 </script>

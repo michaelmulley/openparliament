@@ -3,20 +3,38 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpRespons
 from django.contrib.syndication.views import Feed
 from django.shortcuts import get_object_or_404
 from django.views.generic.list_detail import object_list, object_detail
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
 
 from parliament.bills.models import Bill, VoteQuestion, MemberVote
 from parliament.core.models import Session
 
 def bill(request, bill_id):
-    
+    PER_PAGE = 10
     bill = get_object_or_404(Bill, pk=bill_id)
+    statements = bill.statement_set.all().order_by('-time')
+    paginator = Paginator(statements, PER_PAGE)
+
+    try:
+        pagenum = int(request.GET.get('page', '1'))
+    except ValueError:
+        pagenum = 1
+    try:
+        page = paginator.page(pagenum)
+    except (EmptyPage, InvalidPage):
+        page = paginator.page(paginator.num_pages)
+
     c = RequestContext(request, {
         'bill': bill,
-        'statements': bill.statement_set.all().order_by('-time')[:10],
+        'page': page,
         'votequestions': bill.votequestion_set.all().order_by('-date'),
         'title': 'Bill %s' % bill.number, 
+        'statements_full_date': True,
+        'statements_context_link': True,
     })
-    t = loader.get_template("bills/bill_detail.html")
+    if request.is_ajax():
+        t = loader.get_template("hansards/statement_page.inc")
+    else:
+        t = loader.get_template("bills/bill_detail.html")
     return HttpResponse(t.render(c))
     
 def index(request):
