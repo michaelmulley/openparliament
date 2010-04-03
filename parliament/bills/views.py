@@ -11,7 +11,7 @@ from parliament.core.models import Session
 def bill(request, bill_id):
     PER_PAGE = 10
     bill = get_object_or_404(Bill, pk=bill_id)
-    statements = bill.statement_set.all().order_by('-time')
+    statements = bill.statement_set.all().order_by('-time').select_related('member', 'member__politician', 'member__riding', 'member__party')
     paginator = Paginator(statements, PER_PAGE)
 
     try:
@@ -38,7 +38,8 @@ def bill(request, bill_id):
     return HttpResponse(t.render(c))
     
 def index(request):
-    sessions = Session.objects.all()
+    sessions = Session.objects.with_bills().distinct()
+    len(sessions) # evaluate it
     return object_list(request,
         queryset=Bill.objects.filter(session=sessions[0]),
         extra_context={'session_list': sessions, 'session': sessions[0], 'title': 'Bills & Votes'},

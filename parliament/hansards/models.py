@@ -88,7 +88,7 @@ def statement_affil_link(match):
         view = 'parliament.bills.views.bill'
     else:
         view = 'parliament.politicians.views.politician'
-    return '<a href="%s" title="%s">%s</a>' % (urlresolvers.reverse(view, args=(match.group(2),)), match.group(3), match.group(4))
+    return '<a href="%s" class="related_link" title="%s">%s</a>' % (urlresolvers.reverse(view, args=(match.group(2),)), match.group(3), match.group(4))
     
 class Statement(models.Model):
     hansard = models.ForeignKey(Hansard)

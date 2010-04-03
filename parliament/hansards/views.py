@@ -28,8 +28,8 @@ def hansard(request, hansard_id, statement_seq=None):
         statements = paginator.page(paginator.num_pages)
         
     if request.is_ajax():
-        import time
-        time.sleep(2)
+        #import time
+        #time.sleep(2)
         t = loader.get_template("hansards/statement_page.inc")
     else:
         t = loader.get_template("hansards/hansard_detail.html")

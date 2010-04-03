@@ -302,7 +302,7 @@ blockquote {
     position: absolute;
     width: 86px;
     height: 22px;
-    background: white url('{{ MEDIA_URL }}images/seemore.png') no-repeat;
+    background: transparent url('{{ MEDIA_URL }}images/seemore.png') no-repeat;
     bottom: 22px;
     left: 85px;
     cursor: pointer;
@@ -337,6 +337,9 @@ blockquote {
     left: 190px;
     position: absolute;
     background: transparent url('{{ MEDIA_URL }}images/tgradient_45.png') repeat-x;
+}
+.statement.highlighted .fadeout {
+    background-image: url('{{ MEDIA_URL }}images/tgradient_45_fff2b5.png');
 }
 .statement .focus.displayall {
     max-height: none;
@@ -383,7 +386,7 @@ $(function() {
    
    
    $('.overflowtip').overflowtip().tooltip({delay: 200});
-   $('.tip').tooltip({delay: 300, showURL: false});
+   $('.tip, .related_link').tooltip({delay: 200, showURL: false});
    
 });
 </script>

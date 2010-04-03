@@ -278,6 +278,9 @@ class Politician(Person):
 
 class SessionManager(models.Manager):
     
+    def with_bills(self):
+        return self.get_query_set().filter(bill__number_only__isnull=False)
+    
     def current(self):
         return self.get_query_set().order_by('-start')[0]
         
