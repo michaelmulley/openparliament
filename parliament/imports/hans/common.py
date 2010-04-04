@@ -28,6 +28,7 @@ r_time_glyph = re.compile(r'arobas\.gif')
 r_arrow_img = re.compile(r'arrow\d+\.gif')
 r_housemet = re.compile(r'The\s+House\s+met\s+at\s+(\d[\d:\.]*)\s+([ap]\.m\.)', re.I | re.UNICODE)
 r_notamember = re.compile(r'^(The|A|Some|Acting|Santa|One|Assistant|An\.?)$')
+r_houseresumed = re.compile(r'^The House (resumed|proceeded) ')
 
 r_letter = re.compile(r'\w')
 r_notspace = re.compile(r'\S', re.UNICODE)
@@ -107,6 +108,9 @@ class ParseTracker(object):
                 t = t[8:].strip()
             if t.startswith('She said: '):
                 t = t[9:].strip()
+            if r_houseresumed.search(t):
+                print "HOUSE RESUMED: %s" % t
+                return
             if len(t) > 0 and not t.isspace():
                 #if t[0].islower() and not t.startswith('moved'):
                 #    print "WARNING: Block of text begins with lowercase letter: %s" % t

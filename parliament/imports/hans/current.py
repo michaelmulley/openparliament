@@ -96,6 +96,7 @@ class HansardParser2009(HansardParser):
                 #        raise ParseException("Expecting string right after h3")
                 if top is not None:
                     c = top
+                    t['topic_set'] = True
                     t.setNext('topic', parsetools.titleIfNecessary(parsetools.tameWhitespace(c.string.strip())))
             
             elif c.name == 'h4':
@@ -180,7 +181,9 @@ class HansardParser2009(HansardParser):
                             print "Footer div reached -- done!"
                             break
                         raise Exception("I wasn't expecting another div in here")
-                    t.addText(self.get_text(c), blockquote=bool(c.find('small')))
+                    txt = self.get_text(c).strip()
+                    if not (t['topic_set'] and r_houseresumed.search(txt)):
+                        t.addText(txt, blockquote=bool(c.find('small')))
                 
             c = c.next
         return self.statements
