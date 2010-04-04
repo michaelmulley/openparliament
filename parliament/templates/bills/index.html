@@ -3,7 +3,7 @@
 {% block contentclass %}context_3{% endblock %}
 {% block breadcrumbs %}Bills{% endblock %}
 {% block content %}
-<div class="focus"><p>Most votes in the House are related to a particular bill, and clicking a bill below will show you the relevant votes. But some votes aren't tied to a bill. The <a href="{% url parliament.bills.views.votes_for_session session_id=session.id %}">vote list</a> for this session includes all votes.</p></div>
+{% if session.has_votes %}<div class="focus"><p>Most votes in the House are related to a particular bill, and clicking a bill below will show you the relevant votes. But some votes aren't tied to a bill. The <a href="{% url parliament.bills.views.votes_for_session session_id=session.id %}">vote list</a> for this session includes all votes.</p></div>{% endif %}
 {% regroup object_list by privatemember as pmem %}
 {% for pm in pmem %}
 

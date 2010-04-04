@@ -299,6 +299,9 @@ class Session(models.Model):
 
     def __unicode__(self):
         return self.name
+        
+    def has_votes(self):
+        return bool(self.votequestion_set.all().count())
     
 class RidingManager(models.Manager):
     
