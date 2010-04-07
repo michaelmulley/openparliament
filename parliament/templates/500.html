@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block pagetitle %}Server Error{% endblock %}
+{% block pageheading %}Oh dear!{% endblock %}
+{% block breadcrumbs %}{{ block.super }}Blinking lights, shooting flames{% endblock %}
+{% block content %}<div class="focus"><p>There was a software error on our server, and this page couldn't be generated. The error has been logged, which&mdash;fingers crossed!&mdash;means it should be fixed soon enough. In the meantime, try using the links and search box above to get back to less erroneous pages. (Sorry!)</p></div>{% endblock %}
