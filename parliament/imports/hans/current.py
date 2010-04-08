@@ -182,7 +182,10 @@ class HansardParser2009(HansardParser):
                             break
                         raise Exception("I wasn't expecting another div in here")
                     txt = self.get_text(c).strip()
-                    if not (t['topic_set'] and r_houseresumed.search(txt)):
+                    if r_proceedings.search(txt):
+                        self.saveStatement(t)
+                        self.saveProceedingsStatement(txt, t)
+                    else:
                         t.addText(txt, blockquote=bool(c.find('small')))
                 
             c = c.next

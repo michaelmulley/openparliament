@@ -47,6 +47,9 @@ r_extraWhitespace = re.compile(r'\s\s*', re.UNICODE)
 def tameWhitespace(s):
     return re.sub(r_extraWhitespace, u' ', s.replace(u"\n", u' '))
     
+def sane_quotes(s):
+    return s.replace('``', '"').replace("''", '"')
+    
 def slugify(s):
     s = re.sub(r'[^a-zA-Z]', '-', removeAccents(s.strip().lower()))
     return re.sub(r'--+', '-', s)

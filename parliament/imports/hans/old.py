@@ -47,8 +47,19 @@ class HansardParser1994(HansardParser):
             if parsetools.isString(c):
                 # It's a string
                 if re.search(r_letter, c):
-                    # And it contains words! Add it to the buffer
-                    t.addText(c, blockquote=bool(c.parent.name=='blockquote' or c.parent.name=='small' or c.parent.name=='ul' or c.parent.parent.name=='ul' or c.parent.parent.name=='blockquote'))
+                    # And it contains words!
+                    if r_proceedings.search(c):
+                        # It's a "The House resumed" statement
+                        self.saveStatement(t)
+                        self.saveProceedingsStatement(c, t)
+                    else:
+                        # Add it to the buffer
+                        t.addText(c, blockquote=bool(c.parent.name=='blockquote'
+                                            or c.parent.name=='small'
+                                            or c.parent.name=='ul'
+                                            or c.parent.parent.name=='ul'
+                                            or c.parent.parent.name=='blockquote'))
+            
             elif c.name == 'h2' and c.has_key('align') and c['align'].lower() == 'center':
                 # Heading
                 c = c.findNext(text=r_letter)

@@ -28,7 +28,7 @@ r_time_glyph = re.compile(r'arobas\.gif')
 r_arrow_img = re.compile(r'arrow\d+\.gif')
 r_housemet = re.compile(r'The\s+House\s+met\s+at\s+(\d[\d:\.]*)\s+([ap]\.m\.)', re.I | re.UNICODE)
 r_notamember = re.compile(r'^(The|A|Some|Acting|Santa|One|Assistant|An\.?)$')
-r_houseresumed = re.compile(r'^The House (resumed|proceeded) ')
+r_proceedings = re.compile(r'^\s*The House (resumed|proceeded) ')
 
 r_letter = re.compile(r'\w')
 r_notspace = re.compile(r'\S', re.UNICODE)
@@ -99,8 +99,7 @@ class ParseTracker(object):
     def addText(self, text, blockquote=False):
         if not self._ignoretext:
             t = parsetools.tameWhitespace(text.strip())
-            t = t.replace('``', '"')
-            t = t.replace("''", '"')
+            t = parsetools.sane_quotes(t)
             if t.startswith(':'):
                 # Strip initial colon
                 t = t[1:].strip()
@@ -108,7 +107,7 @@ class ParseTracker(object):
                 t = t[8:].strip()
             if t.startswith('She said: '):
                 t = t[9:].strip()
-            if r_houseresumed.search(t):
+            if r_proceedings.search(t):
                 print "HOUSE RESUMED: %s" % t
                 return
             if len(t) > 0 and not t.isspace():
@@ -165,11 +164,25 @@ class HansardParser(object):
         else:
             # "2 p.m."
             return datetime.datetime.strptime("%s %s" % (number, ampm), "%I %p").time()
+            
+    def saveProceedingsStatement(self, text, t):
+        text = parsetools.sane_quotes(parsetools.tameWhitespace(text.strip()))
+        if len(text):
+            statement = Statement(hansard=self.hansard,
+                time=datetime.datetime.combine(self.date, t['timestamp']),
+                text=text, sequence=self.statement_index,
+                who='Proceedings')
+            self.statement_index += 1
+            self.statements.append(statement)
         
     def saveStatement(self, t):
-        # Question No. 139-- -> Question No. 139
+        def mcUp(match):
+            return 'Mc' + match.group(1).upper()
         if t['topic']:
+            # Question No. 139-- -> Question No. 139
             t['topic'] = re.sub(r'\-+$', '', t['topic'])
+            t['topic'] = re.sub(r"'S", "'s", t['topic'])
+            t['topic'] = re.sub(r'Mc([a-z])', mcUp, t['topic'])
         if t.hasText():
             if t['member_title']:
                 statement = Statement(hansard=self.hansard, heading=t['heading'], topic=t['topic'],
