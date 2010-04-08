@@ -57,7 +57,7 @@ def delete_invalid_pol_pics():
 
 
 def parse_all_hansards(): 
-    for hansard in Hansard.objects.all().annotate(scount=Count('statement')).exclude(scount__gt=0).order_by('date'):
+    for hansard in Hansard.objects.all().annotate(scount=Count('statement')).exclude(scount__gt=0).order_by('date').iterator():
         try:
             print "Trying %d %s... " % (hansard.id, hansard)
             hans.parseAndSave(hansard)
@@ -75,9 +75,19 @@ def parse_all_hansards():
 def export_words(outfile, queryset=None):
     if queryset is None:
         queryset = Statement.objects.all()
-    for s in queryset.values_list(('text'), flat=True):
-        outfile.write(s)
+    for s in queryset.iterator():
+        outfile.write(s.text_plain().encode('utf8'))
         outfile.write("\n")
+        
+def export_tokenized_words(outfile, queryset):
+    r_punctuation = re.compile(r"[^\s\w0-9'-]", re.UNICODE)
+    r_whitespace = re.compile(r'\s+')
+    for s in queryset.iterator():
+        txt = s.text_plain()
+        txt = r_punctuation.sub('', txt.lower())
+        txt = r_whitespace.sub(' ', txt)
+        outfile.write(txt.encode('utf8').strip())
+        outfile.write(" / ")
 
 def corpus_for_pol(pol):
     
