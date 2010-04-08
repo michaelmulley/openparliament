@@ -1,1 +1,1 @@
-{{ object.number }} - {{ object.name }}
+{% autoescape off %}Bill {{ object.number }} {{ object.name }}{% endautoescape %}

@@ -18,13 +18,15 @@
         <h2>Results {{ page.start_index }}-{{ page.end_index }} of {{ page.paginator.count }} for &ldquo;{{ query }}&rdquo;</h2>
         
             {% for result in page.object_list %}
-            {% if result.model_name == 'politician' %}<p>{% if result.object.headshot %}<img src="{% thumbnail result.object.headshot 67x90 crop_first="28,20,68,20" %}">{% endif %}<a href="{{ result.object.get_absolute_url }}">{{ result.object.name }}</a></p>{% endif %}
-            {% if result.model_name == 'statement' %}{% with result.object as statement %}<div class="result statement"><a href="{{ result.object.get_absolute_url }}">{{ statement.heading }} / {{ statement.topic }}</a> <span class="date">({{ statement.time|date:"F jS Y"}})</span>
-                <p><span class="who">{{ statement.who }}</span> {% highlight statement.text with query %}</p>
-                
+            {% if result.model_name == 'politician' %}<div class="result statement">
+                <div class="focus"><p><a href="{{ result.object.get_absolute_url }}">{{ result.pol_name }}</a> {{ result.descr }}</p></div></div>{% endif %}
+            {% if result.model_name == 'statement' %}<div class="result statement">
+                <div class="context"><p>{{ result.date|date:"F jS, Y"}}</p><p>{% if result.politician_id %}<a href="{% url politicians.views.politician pol_id=result.politician_id %}">{{ result.politician }}</a>{% else %}{{ result.politician }}{% endif %}{% if result.party %}<br><span class="tag partytag_{{ result.party|slugify }}">{{ result.party }}</span>{% endif %}</p></div>
+                <div class="focus"><p><a href="{{ result.object.get_absolute_url }}">{{ result.topic }}</a> &nbsp;{% highlight result.descr with query %}</p></div>
+                <div class="clear"></div>
                 </div>
-            {% endwith %}{% endif %}
-            {% if result.model_name == 'bill' %}<div class="result bill"><a href="{{ result.object.get_absolute_url }}">Bill {{ result.object.number }}</a> <span class="date">({{ result.object.session }})</span><p>{% highlight result.text with query %}</p></div>{% endif %}
+            {% endif %}
+            {% if result.model_name == 'bill' %}<div class="result bill"><a href="{{ result.object.get_absolute_url }}">Bill {{ result.object.number }}</a> <span class="date">({{ result.object.session }})</span><p>{% highlight result.descr with query %}</p></div>{% endif %}
             {% endfor %}
 
         {% else %}
@@ -34,25 +36,18 @@
 {% endblock %}
 {% block headextra %}
 <style type="text/css">
-.result .date {
-    color: #666666;
-}
-.result {
-    margin: 10px 0;
-}
-.result p {
-    margin: 0;
-}
-.result a {
-    font-weight: bold;
-}
-.result .who {
-    color: #482500;
-    font-style: italic;
-    padding-right: 6px;
-}
 .result .highlighted {
     background-color: yellow;
+}
+.result.statement .context, .result.statement .focus {
+    min-height: 0;
+}
+.result.statement .focus {
+    margin-bottom: 5px;
+}
+.result.statement {
+    border: none;
+    padding-top: 5px;
 }
 </style>
 {% endblock headextra %}

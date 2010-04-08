@@ -18,7 +18,11 @@
 
 <schema name="default" version="1.1">
   <types>
-    <fieldtype name="string"  class="solr.StrField" sortMissingLast="true" omitNorms="true"/>
+    <fieldType name="string"  class="solr.StrField" sortMissingLast="true" omitNorms="true">
+		<analyzer>
+			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
+		</analyzer>
+	</fieldType>
     <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true" omitNorms="true"/>
 
     <!-- Numeric field types that manipulate the value into
@@ -83,13 +87,28 @@
 
     <field name="province" type="string" indexed="true" stored="true" multiValued="false" />
 
-    <field name="text" type="text" indexed="true" stored="true" multiValued="false" />
-
     <field name="politician" type="string" indexed="true" stored="true" multiValued="false" />
+
+    <field name="pol_name" type="string" indexed="false" stored="true" multiValued="false" />
+
+    <field name="descr" type="string" indexed="false" stored="true" multiValued="false" />
+
+    <field name="text" type="text" indexed="true" stored="false" multiValued="false" />
+
+    <field name="politician_id" type="slong" indexed="false" stored="true" multiValued="false" />
+
+    <field name="number" type="string" indexed="false" stored="true" multiValued="false" />
+
+    <field name="hansard_id" type="slong" indexed="false" stored="true" multiValued="false" />
+
+    <field name="topic" type="string" indexed="true" stored="true" multiValued="false" />
 
     <field name="date" type="date" indexed="true" stored="true" multiValued="false" />
 
     <field name="party" type="string" indexed="true" stored="true" multiValued="false" />
+
+	<field name="sequence" type="sint" indexed="false" stored="true" multiValued="false" />
+
 
   </fields>
 
