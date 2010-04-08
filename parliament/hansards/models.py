@@ -46,7 +46,7 @@ class Hansard(models.Model):
         topics = []
         last_topic = ''
         for statement in self.statement_set.all().values_list('topic', 'sequence'):
-            if statement[0] != last_topic:
+            if statement[0] and statement[0] != last_topic:
                 last_topic = statement[0]
                 topics.append((statement[0], statement[1]))
         return topics
@@ -135,7 +135,7 @@ class Statement(models.Model):
         return mark_safe(markdown(r_statement_affil.sub(statement_affil_link, self.text)))
 
     def text_plain(self):
-        return escape(strip_tags(self.text).replace('> ', ''))
+        return strip_tags(self.text).replace('> ', '')
     
     @property
     @simple_function_cache    

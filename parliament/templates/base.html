@@ -175,6 +175,14 @@ div.focus.pageheader {
     font-size: 11px;
     color: #888888;
 }
+#footer a {
+    color: #888888;
+    font-weight: normal;
+    text-decoration: underline;
+}
+#footer a:hover {
+    color: #1A59C7;
+}
 ul.tile {
     list-style-type: none;
     margin: 0 0 10px 0;
@@ -207,7 +215,7 @@ ul.tile {
     position: absolute;
     z-index: 3000;
     border: 1px solid #111;
-    background-color: #FCFEE4;
+    background-color: #f9f7cd;
     padding: 5px;
     max-width: 350px;
 }
@@ -279,7 +287,7 @@ ul.tile {
 .partytag_bq {
     background-color: #a7ecf6;
 }
-.partytag_cpc {
+.partytag_cpc, .partytag_conservative-party-of-canada {
     background-color: #acd0f6;
 }
 .partytag_ndp {
@@ -329,6 +337,12 @@ blockquote {
     max-height: 380px;
     overflow: hidden;
     width: 680px;
+}
+.statement .focus.truncated {
+    max-height: 360px;
+}
+.statement .focus.nospeaker {
+    min-height: 40px;
 }
 .statement .fadeout {
     width: 640px;
@@ -404,6 +418,6 @@ $(function() {
 
 {% endblock content %}
 </div><div class="clear"></div></div>
-<div id="footer"><p>Copyleft 2010 openparliament.ca. Still very much under construction.</p></div>
+<div id="footer"><p><a href="/about/">Not very copyright</a> 2010 openparliament.ca. Still very much under construction.</p></div>
 </body>
 </html>

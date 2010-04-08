@@ -5,14 +5,16 @@ import datetime
 from django.db import transaction
 
 from parliament.bills.models import Bill, VoteQuestion, MemberVote
-from parliament.core.models import ElectedMember, Politician, Riding
+from parliament.core.models import ElectedMember, Politician, Riding, Session
 from parliament.core import parsetools
 
 VOTELIST_URL = 'http://www2.parl.gc.ca/HouseChamberBusiness/Chambervotelist.aspx?Language=E&Mode=1&Parl=%(parliamentnum)s&Ses=%(sessnum)s&xml=True&SchemaVersion=1.0'
 VOTEDETAIL_URL = 'http://www2.parl.gc.ca/HouseChamberBusiness/Chambervotedetail.aspx?Language=E&Mode=1&Parl=%(parliamentnum)s&Ses=%(sessnum)s&FltrParl=%(parliamentnum)s&FltrSes=%(sessnum)s&vote=%(votenum)s&xml=True'
 
 @transaction.commit_on_success
-def import_votes(session):
+def import_votes(session=None):
+    if session is None:
+        session = Session.objects.current()
     votelisturl = VOTELIST_URL % {'parliamentnum' : session.parliamentnum, 'sessnum': session.sessnum}
     votelistpage = urllib2.urlopen(votelisturl)
     tree = etree.parse(votelistpage)

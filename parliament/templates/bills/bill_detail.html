@@ -12,7 +12,7 @@
 {% if bill.sponsor_politician %}
 <div class="context"><h2>Sponsor</h2></div>
 <div class="focus"><p><a href="{{ bill.sponsor_politician.get_absolute_url }}">{{ bill.sponsor_politician.name }}</a> {% if bill.sponsor_member %}&nbsp;<span class="tag partytag_{{ bill.sponsor_member.party.slug|lower }}">{{ bill.sponsor_member.party.short_name }}</span>{% endif %}</p>
-{% if bill.privatemember %}<p>Introduced as a <strong>private members' bill</strong>. (These don't often become law.)</p>{% endif %}</div>{% endif %}
+{% if bill.privatemember %}<p>Introduced as a <strong>private member's bill</strong>. (These don't often become law.)</p>{% endif %}</div>{% endif %}
 {% if bill.legisinfo_url %}
 <div class="context"><h2>Elsewhere</h2></div>
 <div class="focus"><p>All sorts of information on this bill is available at <a href="{{ bill.legisinfo_url }}">LEGISinfo</a>, provided by the Library of Parliament.</p></div>{% endif %}

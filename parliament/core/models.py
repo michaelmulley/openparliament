@@ -14,9 +14,9 @@ from parliament.core.utils import simple_function_cache
 POL_LOOKUP_URL = 'http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=%d&Language=E'
 
 class InternalXref(models.Model):
-    text_value = models.CharField(max_length=50, blank=True)
-    int_value = models.IntegerField(blank=True, null=True)
-    target_id = models.IntegerField()
+    text_value = models.CharField(max_length=50, blank=True, db_index=True)
+    int_value = models.IntegerField(blank=True, null=True, db_index=True)
+    target_id = models.IntegerField(db_index=True)
     
     # CURRENT SCHEMAS
     # party_names
@@ -25,7 +25,7 @@ class InternalXref(models.Model):
     # pol_parlinfoid
     # bill_callbackid
     # session_legisin -- LEGISinfo ID for a session
-    schema = models.CharField(max_length=15)
+    schema = models.CharField(max_length=15, db_index=True)
 
 class PartyManager(models.Manager):
     
@@ -42,7 +42,6 @@ class Party(models.Model):
     name = models.CharField(max_length=100)
     slug = models.CharField(max_length=10, blank=True)
     short_name = models.CharField(max_length=100, blank=True)
-    colour = models.CharField(max_length=7, blank=True)
     
     objects = PartyManager()
     
@@ -247,6 +246,9 @@ class Politician(Person):
         # check if exists
         if InternalXref.objects.filter(schema='pol_names', target_id=self.id, text_value=name).count() == 0:
             InternalXref(schema='pol_names', target_id=self.id, text_value=name).save()
+            
+    def alternate_names(self):
+        return InternalXref.objects.filter(schema='pol_names', target_id=self.id).values_list('text_value', flat=True)
             
     @models.permalink
     def get_absolute_url(self):

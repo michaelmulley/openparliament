@@ -7,6 +7,7 @@
 <div class="focus">
 <p>When Parliament is in session, every word spoken by a member is faithfully transcribed, and published in a document called a <a href="http://en.wikipedia.org/wiki/Hansard">Hansard</a>. We have the Hansards of the House of Commons dating back to 1994. Browse through them below, or search via the box above.</p>
 </div>
+{% if latest %}{# hack to evaluate latest #}{% endif %}
 {% with latest.0 as hansard %}{% with hansard.get_absolute_url as hurl %}
 <div class="context"><h2>{{ hansard.date|date:"F jS" }}</h2></div>
 <div class="focus"><ul class="tile clearafter">

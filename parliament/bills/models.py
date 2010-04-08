@@ -89,6 +89,9 @@ class VoteQuestion(models.Model):
     
     def __unicode__(self):
         return u"Vote #%s on %s" % (self.number, self.date)
+        
+    class Meta:
+        ordering=('-date', '-number')
 
     def label_absent_members(self):
         for member in ElectedMember.objects.on_date(self.date).exclude(membervote__votequestion=self):

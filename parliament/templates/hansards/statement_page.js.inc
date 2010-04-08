@@ -36,12 +36,13 @@ $(function() {
         $(this).parent().addClass('loading');
         $paginated.load(this.href, '', function() {
             addMoreLinks();
+            $('.related_link').tooltip({delay: 200, showURL: false});
             if ($(document).scrollTop() > $paginated.offset().top) { 
                 $('html,body').animate({scrollTop: $('#paginated').offset().top - 15});
             }
         });
     });
     
-    {% if highlight_statement %}$('html, body').animate({scrollTop: $('#s{{ highlight_statement }}').offset().top - 15});{% endif %}
+    {% if highlight_statement != None %}$('html, body').animate({scrollTop: $('#s{{ highlight_statement }}').offset().top - 15});{% endif %}
 });
 </script>
