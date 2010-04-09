@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.contrib.markup.templatetags.markup import markdown
 from django.utils.http import urlquote
 from django.views.generic.list_detail import object_list
+from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from BeautifulSoup import BeautifulSoup
 
 from parliament.core.models import Politician, ElectedMember
@@ -43,21 +44,39 @@ def former_mps(request):
     return HttpResponse(t.render(c))
 
 def politician(request, pol_id):
-    try:
-        pol = Politician.objects.get(pk=pol_id)
-    except Politician.DoesNotExist:
-        raise Http404
+    pol = get_object_or_404(Politician, pk=pol_id)
     
+    show_statements = bool('page' in request.GET or not pol.latest_member.current)
+    
+    if show_statements:
+        STATEMENTS_PER_PAGE = 10
+        statements = pol.statement_set.all().order_by('-time', '-sequence')
+        paginator = Paginator(statements, STATEMENTS_PER_PAGE)
+        try:
+            pagenum = int(request.GET.get('page', '1'))
+        except ValueError:
+            pagenum = 1
+        try:
+            statement_page = paginator.page(pagenum)
+        except (EmptyPage, InvalidPage):
+            statement_page = paginator.page(paginator.num_pages)
+    else:
+        statement_page = None
+        
     c = RequestContext(request, {
         'pol': pol,
         'member': pol.latest_member,
         'candidacies': pol.candidacy_set.all().order_by('-election__date'),
         'electedmembers': pol.electedmember_set.all().order_by('-start_date'),
-        'statements': Statement.objects.filter(politician=pol).order_by('-time')[:10],
+        'page': statement_page,
+        'statements_politician_view': True,
+        'show_statements': show_statements,
         'activities': activity.iter_recent(Activity.objects.filter(politician=pol)),
-        #'newsitems': news_items_for_pol(pol),
     })
-    t = loader.get_template("politicians/politician.html")
+    if request.is_ajax():
+        t = loader.get_template("hansards/statement_page_politician_view.inc")
+    else:
+        t = loader.get_template("politicians/politician.html")
     return HttpResponse(t.render(c))
     
 class PoliticianStatementFeed(Feed):

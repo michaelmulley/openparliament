@@ -33,11 +33,20 @@ $(function() {
     $('.pagelink').live('click', function(e) {
         e.preventDefault();
         var $paginated = $('#paginated');
-        $(this).parent().addClass('loading');
+        var $pagelink = $(this);
+        var showPaginated = $pagelink.hasClass('show_paginated_div');
+        if (showPaginated) {
+            $('#paginated_wrapper').show();
+            $(this).html('Loading...')
+        }
+        $paginated.find('.pagination').addClass('loading');
         $paginated.load(this.href, '', function() {
             addMoreLinks();
             $('.related_link').tooltip({delay: 200, showURL: false});
-            if ($(document).scrollTop() > $paginated.offset().top) { 
+            if (showPaginated) {
+                $pagelink.hide();
+            }
+            if (showPaginated || $(document).scrollTop() > $paginated.offset().top) { 
                 $('html,body').animate({scrollTop: $('#paginated').offset().top - 15});
             }
         });
