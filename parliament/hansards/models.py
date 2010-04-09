@@ -70,6 +70,18 @@ class Hansard(models.Model):
                     'url': topics[topic][2],
                     'text': topics[topic][1],
                 }, politician=pol, date=self.date, guid='statement_%s' % topics[topic][2], variety='statement')
+                
+    def serializable(self):
+        v = {
+            'date': self.date,
+            'url': self.get_absolute_url(),
+            'id': self.id,
+            'original_url': self.url,
+            'parliament': self.session.parliamentnum,
+            'session': self.session.sessnum
+        }
+        v['statements'] = [s.serializable() for s in self.statement_set.all().order_by('sequence').select_related('member__politician', 'member__party', 'member__riding')]
+        return v
 
 class HansardCache(models.Model):
     hansard = models.ForeignKey(Hansard)
@@ -156,6 +168,26 @@ class Statement(models.Model):
 
     def text_plain(self):
         return strip_tags(self.text).replace('> ', '')
+        
+    def serializable(self):
+        v = {
+            'url': self.get_absolute_url(),
+            'heading': self.heading,
+            'topic': self.topic,
+            'time': self.time,
+            'attribution': self.who,
+            'text': self.text_plain()
+        }
+        if self.member:
+            v['politician'] = {
+                'id': self.member.politician.id,
+                'member_id': self.member.id,
+                'name': self.member.politician.name,
+                'url': self.member.politician.get_absolute_url(),
+                'party': self.member.party.short_name,
+                'riding': unicode(self.member.riding),
+            }
+        return v
     
     @property
     @simple_function_cache    

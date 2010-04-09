@@ -2,12 +2,13 @@ from django.template import Context, loader, RequestContext
 from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.views import generic
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.shortcuts import get_object_or_404
 
 from parliament.hansards.models import Hansard, HansardCache, Statement
 
 def hansard(request, hansard_id, statement_seq=None):
     PER_PAGE = 15
-    hansard = Hansard.objects.get(pk=hansard_id)
+    hansard = get_object_or_404(Hansard, pk=hansard_id)
     statement_qs = Statement.objects.filter(hansard=hansard).select_related('member__politician', 'member__riding', 'member__party')
     paginator = Paginator(statement_qs, PER_PAGE)
 
