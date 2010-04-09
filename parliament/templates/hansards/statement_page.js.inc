@@ -1,3 +1,4 @@
+<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.bbq.js"></script>
 <script type="text/javascript">
 $(function() {
     /* $('.statement .context').each(function() {
@@ -29,28 +30,42 @@ $(function() {
         });
     }
     addMoreLinks();
-    
+
+    var $paginated = $('#paginated');
     $('.pagelink').live('click', function(e) {
         e.preventDefault();
-        var $paginated = $('#paginated');
         var $pagelink = $(this);
-        var showPaginated = $pagelink.hasClass('show_paginated_div');
+        $.bbq.pushState($.deparam.querystring(this.href));
+        showPaginated = $pagelink.hasClass('show_paginated_div');
         if (showPaginated) {
-            $('#paginated_wrapper').show();
             $(this).html('Loading...')
         }
         $paginated.find('.pagination').addClass('loading');
-        $paginated.load(this.href, '', function() {
-            addMoreLinks();
-            $('.related_link').tooltip({delay: 200, showURL: false});
-            if (showPaginated) {
-                $pagelink.hide();
-            }
-            if (showPaginated || $(document).scrollTop() > $paginated.offset().top) { 
-                $('html,body').animate({scrollTop: $('#paginated').offset().top - 15});
-            }
-        });
     });
+    
+    $(window).bind('hashchange', function(e) {
+        if (e.fragment) {
+            $paginated.find('.pagination').addClass('loading');
+            $paginated.load('?' + e.fragment, '', function() {
+                var scrollDown = Boolean($(document).scrollTop() > $paginated.offset().top);
+                if ($paginated.is(':hidden')) {
+                    $('.show_paginated_div').hide()
+                    $('#paginated_wrapper').show();
+                    scrollDown = true;
+                }
+                addMoreLinks();
+                $('.related_link').tooltip({delay: 200, showURL: false});
+                if (scrollDown) { 
+                    $('html,body').animate({scrollTop: $paginated.offset().top - 15});
+                }
+                showPaginated = false;
+            });
+        }
+    });
+    
+    if (location.hash) {
+        $(window).trigger('hashchange');
+    }
     
     {% if highlight_statement != None %}$('html, body').animate({scrollTop: $('#s{{ highlight_statement }}').offset().top - 15});{% endif %}
 });
