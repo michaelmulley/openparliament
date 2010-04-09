@@ -28,6 +28,12 @@ def votes():
 def bills():
     legisinfo.import_bills(Session.objects.current())
     return True
+    
+def billstatus(private_members_also=False):
+    legisinfo.update_statuses_for_session(Session.objects.current(), private_members_also=private_members_also)
+    
+def billstatus_full():
+    billstatus(True)
 
 @transaction.commit_on_success
 def prune_activities():
