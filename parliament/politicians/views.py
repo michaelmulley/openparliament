@@ -1,5 +1,6 @@
 import urllib
 import datetime
+import re
 
 from django.template import Context, loader, RequestContext
 from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
@@ -59,13 +60,13 @@ def politician(request, pol_id):
     t = loader.get_template("politicians/politician.html")
     return HttpResponse(t.render(c))
     
-class PoliticianFeed(Feed):
+class PoliticianStatementFeed(Feed):
     
     def get_object(self, request, pol_id):
         return get_object_or_404(Politician, pk=pol_id)
     
     def title(self, pol):
-        return pol.name
+        return "%s in the House of Commons" % pol.name
         
     def link(self, pol):
         return "http://openparliament.ca" + pol.get_absolute_url()
@@ -87,3 +88,38 @@ class PoliticianFeed(Feed):
         
     def item_pubdate(self, statement):
         return statement.time
+        
+r_title = re.compile(r'<span class="tag.+?>(.+?)</span>')
+r_link = re.compile(r'<a [^>]*?href="(.+?)"')
+r_excerpt = re.compile(r'<span class="excerpt">')
+class PoliticianActivityFeed(Feed):
+
+    def get_object(self, request, pol_id):
+        return get_object_or_404(Politician, pk=pol_id)
+
+    def title(self, pol):
+        return pol.name
+
+    def link(self, pol):
+        return "http://openparliament.ca" + pol.get_absolute_url()
+
+    def description(self, pol):
+        return "Recent news about %s, from openparliament.ca." % pol.name
+
+    def items(self, pol):
+        return activity.iter_recent(Activity.objects.filter(politician=pol))
+
+    def item_title(self, activity):
+        # FIXME wrap in try
+        return r_title.search(activity.payload).group(1)
+
+    def item_link(self, activity):
+        return r_link.search(activity.payload).group(1)
+    
+    def item_description(self, activity):
+        payload = r_excerpt.sub('<br><span style="display: block; border-left: 1px dotted #AAAAAA; margin-left: 2em; padding-left: 1em; font-style: italic; margin-top: 5px;">', activity.payload)
+        payload = r_title.sub('', payload)
+        return payload
+        
+    def item_pubdate(self, activity):
+        return datetime.datetime(activity.date.year, activity.date.month, activity.date.day)

@@ -1,7 +1,8 @@
 {% extends "politicians/base.html" %}
 {% load markup thumbnail highlight ours %}
 {% block headextra %}
-<link rel="alternate" type="application/rss+xml" title="{{ pol.name }} in the House of Commons" href="{% url politician_feed pol_id=pol.id %}">
+<link rel="alternate" type="application/rss+xml" title="{{ pol.name }}: Statements in the House of Commons" href="{% url politician_statement_feed pol_id=pol.id %}">
+<link rel="alternate" type="application/rss+xml" title="{{ pol.name }}: Recent Activity" href="{% url politician_activity_feed pol_id=pol.id %}">
 <style type="text/css">
 img.headshot {
     margin: 4px auto 10px auto;
