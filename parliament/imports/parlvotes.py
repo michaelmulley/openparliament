@@ -19,7 +19,9 @@ def import_votes(session=None):
     votelistpage = urllib2.urlopen(votelisturl)
     tree = etree.parse(votelistpage)
     root = tree.getroot()
-    for vote in root.findall('Vote'):
+    votelist = root.findall('Vote')
+    votelist.reverse() # We want to process earlier votes first, just for the order they show up in the activity feed
+    for vote in votelist:
         votenumber = int(vote.attrib['number'])
         if VoteQuestion.objects.filter(session=session, number=votenumber).count():
             continue

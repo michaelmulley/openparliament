@@ -8,7 +8,7 @@ def save_activity(obj, politician, date, guid=None, variety=None):
     if not getattr(settings, 'PARLIAMENT_SAVE_ACTIVITIES', True):
         return
     if not variety:
-        variety = obj.__class__.__name__
+        variety = obj.__class__.__name__.lower()
     if not guid:
         guid = variety + str(obj.id)
     if Activity.objects.filter(guid=guid).exists():
@@ -25,7 +25,7 @@ def save_activity(obj, politician, date, guid=None, variety=None):
 ACTIVITY_MAX = {
     'twitter': 5,
     'gnews': 5,
-    'vote': 4,
+    'membervote': 4,
     'statement': 8,
 } 
 def iter_recent(queryset):

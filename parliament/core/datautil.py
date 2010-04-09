@@ -71,11 +71,13 @@ def delete_invalid_pol_urls():
 
 
 def parse_all_hansards(): 
+    parsed = []
     for hansard in Hansard.objects.all().annotate(scount=Count('statement')).exclude(scount__gt=0).order_by('date').iterator():
         try:
             print "Trying %d %s... " % (hansard.id, hansard)
             hans.parseAndSave(hansard)
             print "SUCCESS for %s" % hansard
+            parsed.append(hansard)
         except Exception, e:
             print "******* FAILURE **********"
             print "ERROR: %s" % e
@@ -84,6 +86,7 @@ def parse_all_hansards():
             print "HANSARD %d: %s" % (cache.hansard.id, cache.hansard)
             print "FILE: %s" % cache.filename
             print "URL: %s" % cache.hansard.url
+    return parsed
         
         
 def export_words(outfile, queryset=None):

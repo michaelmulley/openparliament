@@ -23,7 +23,7 @@ def news_items_for_pol(pol):
         item['date'] = datetime.date(*i.updated_parsed[:3])
         h = hashlib.md5()
         h.update(i.id)
-        item['guid'] = h.hexdigest()
+        item['guid'] = 'gnews_%s_%s' % (pol.id, h.hexdigest())
         soup = BeautifulSoup(i.summary)
         try:
             item['summary'] = strip_tags(str(soup.findAll('font', size='-1')[1]))
