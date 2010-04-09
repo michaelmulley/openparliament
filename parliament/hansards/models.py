@@ -11,6 +11,7 @@ from parliament.core.models import Session, ElectedMember, Politician
 from parliament.bills.models import Bill
 from parliament.core import parsetools
 from parliament.core.utils import simple_function_cache
+from parliament.activity import utils as activity
 
 class HansardManager (models.Manager):
     
@@ -50,6 +51,25 @@ class Hansard(models.Model):
                 last_topic = statement[0]
                 topics.append((statement[0], statement[1]))
         return topics
+        
+    def save_activity(self):
+        for pol in Politician.objects.filter(statement__hansard=self).distinct():
+            topics = {}
+            for statement in self.statement_set.filter(member__politician=pol):
+                if statement.topic in topics:
+                    # If our statement is longer than the previous statement on this topic,
+                    # use its text for the excerpt.
+                    if len(statement.text_plain()) > len(topics[statement.topic][1]):
+                        topics[statement.topic][1] = statement.text_plain()
+                        topics[statement.topic][2] = statement.get_absolute_url()
+                else:
+                    topics[statement.topic] = [statement.sequence, statement.text_plain(), statement.get_absolute_url()]
+            for topic in topics:
+                activity.save_activity({
+                    'topic': topic,
+                    'url': topics[topic][2],
+                    'text': topics[topic][1],
+                }, politician=pol, date=self.date, guid='statement_%s' % topics[topic][2], variety='statement')
 
 class HansardCache(models.Model):
     hansard = models.ForeignKey(Hansard)

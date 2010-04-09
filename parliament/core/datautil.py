@@ -1,4 +1,6 @@
-import sys, re, urllib, urllib2, os
+"""This file is mostly a dumping ground for various largely one-off data import and massaging routines."""
+
+import sys, re, urllib, urllib2, os, csv
 from collections import defaultdict
 import urlparse
 import itertools
@@ -6,6 +8,7 @@ import itertools
 from django.db import transaction, models
 from django.db.models import Count
 from django.core.files import File
+from django.conf import settings
 from BeautifulSoup import BeautifulSoup
 
 from parliament.imports import hans
@@ -54,6 +57,17 @@ def delete_invalid_pol_pics():
             os.unlink(p.headshot.path)
             p.headshot = None
             p.save()
+            
+def delete_invalid_pol_urls():
+    for pol in Politician.objects.exclude(models.Q(site__isnull=True) | models.Q(site='')):
+        try:
+            urllib2.urlopen(pol.site)
+            print "Success for %s" % pol.site
+        except urllib2.URLError, e:
+            print "REMOVING %s " % pol.site
+            print e
+            pol.site = ''
+            pol.save() 
 
 
 def parse_all_hansards(): 
@@ -359,3 +373,18 @@ def check_for_feeds(urls):
         for feed in soup.findAll('link', type='application/rss+xml'):
             print "FEED ON %s" % url
             print feed
+            
+def twitter_from_csv(infile):
+    reader = csv.DictReader(infile)
+    session = Session.objects.current()
+    for line in reader:
+        name = line['Name'].decode('utf8')
+        surname = line['Surname'].decode('utf8')
+        pol = Politician.objects.getByName(' '.join([name, surname]), session=session)
+        PoliticianInfo.objects.get_or_create(politician=pol, schema='twitter', value=line['twitter'].strip())
+        
+def twitter_to_list():
+    from twitter import Twitter
+    twit = Twitter(settings.TWITTER_USERNAME, settings.TWITTER_PASSWORD)
+    for t in PoliticianInfo.objects.filter(schema='twitter'):
+        twit.openparlca.mps.members(id=t.value)

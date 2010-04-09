@@ -277,6 +277,17 @@ class Politician(Person):
             return self.candidacy_set.order_by('-election__date').select_related('election')[0]
         except IndexError:
             return None
+            
+class PoliticianInfo(models.Model):
+    politician = models.ForeignKey(Politician)
+    schema = models.CharField(max_length=40, db_index=True)
+    value = models.CharField(max_length=500)
+
+    def __unicode__(self):
+        return "%s: %s" % (self.politician, self.schema)
+
+    class Meta:
+        ordering = ('schema',)
 
 class SessionManager(models.Manager):
     

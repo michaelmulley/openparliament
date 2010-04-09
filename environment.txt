@@ -13,3 +13,4 @@ pysolr==2.0.9
 sorl-thumbnail==3.2.5
 wsgiref==0.1.2
 feedparser==4.1
+twitter==1.2.1

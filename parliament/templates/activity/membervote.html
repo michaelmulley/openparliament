@@ -1,0 +1,2 @@
+{% load ours %}
+<p class="activity_item"><span class="tag voteresult_{{ obj.vote }}">{% if obj.vote == 'A' %}Didn't vote{% else %}Voted {{ obj.get_vote_display }}{% endif %}</span> on <a href="{{ obj.votequestion.get_absolute_url }}">Vote #{{ obj.votequestion.number }}</a> {% if obj.votequestion.bill %}on <a href="{{ obj.votequestion.bill.get_absolute_url }}">Bill {{ obj.votequestion.bill.number }}</a> {{ obj.votequestion.bill.name|strip_act|truncatewords:15 }}{% else %}{{ obj.votequestion.description|truncatewords:18 }}{% endif %}</p>

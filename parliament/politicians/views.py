@@ -1,5 +1,5 @@
 import urllib
-import feedparser
+import datetime
 
 from django.template import Context, loader, RequestContext
 from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
@@ -12,22 +12,8 @@ from BeautifulSoup import BeautifulSoup
 
 from parliament.core.models import Politician, ElectedMember
 from parliament.hansards.models import Statement
-
-GOOGLE_NEWS_URL = 'http://news.google.ca/news?pz=1&cf=all&ned=ca&hl=en&as_maxm=3&q=MP+%%22%s%%22+location%%3Acanada&as_qdr=a&as_drrb=q&as_mind=25&as_minm=2&cf=all&as_maxd=27&scoring=n&output=rss'
-def news_items_for_pol(pol):
-    feed = feedparser.parse(GOOGLE_NEWS_URL % urlquote(pol.name))
-    items = []
-    for i in feed['entries'][:6]:
-        item = {'link': i.link,
-                'title': i.title}
-        soup = BeautifulSoup(i.summary)
-        try:
-            item['summary'] = str(soup.findAll('font', size='-1')[1])
-        except Exception, e:
-            print e
-            continue
-        items.append(item)
-    return items
+from parliament.activity.models import Activity
+from parliament.activity import utils as activity
     
 def current_mps(request):
     return object_list(request,
@@ -67,6 +53,7 @@ def politician(request, pol_id):
         'candidacies': pol.candidacy_set.all().order_by('-election__date'),
         'electedmembers': pol.electedmember_set.all().order_by('-start_date'),
         'statements': Statement.objects.filter(politician=pol).order_by('-time')[:10],
+        'activities': activity.iter_recent(Activity.objects.filter(politician=pol)),
         #'newsitems': news_items_for_pol(pol),
     })
     t = loader.get_template("politicians/politician.html")

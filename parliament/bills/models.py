@@ -4,6 +4,8 @@ from django.db import models
 from BeautifulSoup import BeautifulSoup
 
 from parliament.core.models import Session, InternalXref, ElectedMember, Politician
+from parliament.activity import utils as activity
+
 
 CALLBACK_URL = 'http://www2.parl.gc.ca/HousePublications/GetWebOptionsCallBack.aspx?SourceSystem=PRISM&ResourceType=Document&ResourceID=%d&language=1&DisplayMode=2'
 class BillManager(models.Manager):
@@ -113,3 +115,14 @@ class MemberVote(models.Model):
     member = models.ForeignKey(ElectedMember)
     politician = models.ForeignKey(Politician)
     vote = models.CharField(max_length=1, choices=VOTE_CHOICES)
+    
+    def __unicode__(self):
+        return u'%s voted %s on %s' % (self.politician, self.get_vote_display(), self.votequestion)
+    
+    def save(self, *args, **kwargs):
+        save_activity = False
+        if not self.pk:
+            save_activity = True
+        super(MemberVote, self).save(*args, **kwargs)
+        if save_activity:
+            activity.save_activity(self, politician=self.politician, date=self.votequestion.date)

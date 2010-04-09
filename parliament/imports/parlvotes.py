@@ -54,7 +54,7 @@ def import_votes(session=None):
         votedetailpage = urllib2.urlopen(votedetailurl)
         detailtree = etree.parse(votedetailpage)
         detailroot = detailtree.getroot()
-        votequestion.description = parsetools.etree_extract_text(detailroot.find('Context'))
+        votequestion.description = parsetools.etree_extract_text(detailroot.find('Context')).strip()
 
         
         # Okay, save the question, start processing members.

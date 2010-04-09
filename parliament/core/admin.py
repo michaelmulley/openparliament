@@ -25,6 +25,10 @@ class InternalXrefOptions(admin.ModelAdmin):
     
 class PartyOptions(admin.ModelAdmin):
     list_display = ('name', 'short_name', 'slug')
+    
+class PoliticianInfoOptions(admin.ModelAdmin):
+    list_display = ('politician', 'schema', 'value')
+    search_fields = ('politician__name', 'schema')
 
 admin.site.register(ElectedMember, ElectedMemberOptions)
 admin.site.register(Riding, RidingOptions)
@@ -32,9 +36,11 @@ admin.site.register(Session, SessionOptions)
 admin.site.register(Politician, PoliticianOptions)
 admin.site.register(Party, PartyOptions)
 admin.site.register(InternalXref, InternalXrefOptions)
+admin.site.register(PoliticianInfo, PoliticianInfoOptions)
 
 databrowse.site.register(ElectedMember)
 databrowse.site.register(Riding)
 databrowse.site.register(Session)
 databrowse.site.register(Politician)
+databrowse.site.register(PoliticianInfo)
 databrowse.site.register(Party)

@@ -99,6 +99,7 @@ INSTALLED_APPS = (
     'parliament.financials',
     'parliament.bills',
     'parliament.politicians',
+    'parliament.activity',
 )
 
 if DEBUG:
