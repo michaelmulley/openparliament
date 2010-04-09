@@ -43,8 +43,11 @@ def former_mps(request):
     t = loader.get_template("politicians/former_electedmember_list.html")
     return HttpResponse(t.render(c))
 
-def politician(request, pol_id):
-    pol = get_object_or_404(Politician, pk=pol_id)
+def politician(request, pol_id=None, pol_slug=None):
+    if pol_slug:
+        pol = get_object_or_404(Politician, slug=pol_slug)
+    else:
+        pol = get_object_or_404(Politician, pk=pol_id)
     
     show_statements = bool('page' in request.GET or not pol.latest_member.current)
     

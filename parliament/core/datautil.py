@@ -9,6 +9,7 @@ from django.db import transaction, models
 from django.db.models import Count
 from django.core.files import File
 from django.conf import settings
+from django.template.defaultfilters import slugify
 from BeautifulSoup import BeautifulSoup
 
 from parliament.imports import hans
@@ -391,3 +392,14 @@ def twitter_to_list():
     twit = Twitter(settings.TWITTER_USERNAME, settings.TWITTER_PASSWORD)
     for t in PoliticianInfo.objects.filter(schema='twitter'):
         twit.openparlca.mps.members(id=t.value)
+        
+def slugs_for_pols(qs=None):
+    if not qs:
+        qs = Politician.objects.current()
+    for pol in qs.filter(slug=''):
+        slug = slugify(pol.name)
+        if Politician.objects.filter(slug=slug).exists():
+            print "WARNING: %s already taken" % slug
+        else:
+            pol.slug = slug
+            pol.save()

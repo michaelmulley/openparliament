@@ -222,6 +222,7 @@ class Politician(Person):
     parlpage = models.URLField(blank=True, verify_exists=False)
     gender = models.CharField(max_length=1, blank=True, choices=GENDER_CHOICES)
     headshot = models.ImageField(upload_to='polpics', blank=True, null=True)
+    slug = models.CharField(max_length=30, blank=True, db_index=True)
     
     objects = PoliticianManager()
     
@@ -258,7 +259,9 @@ class Politician(Person):
             
     @models.permalink
     def get_absolute_url(self):
-        return ('parliament.politicians.views.politician', (self.id,))
+        if self.slug:
+            return ('parliament.politicians.views.politician', [], {'pol_slug': self.slug})
+        return ('parliament.politicians.views.politician', [], {'pol_id': self.id})
         
     @property
     @simple_function_cache
