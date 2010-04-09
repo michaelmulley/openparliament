@@ -19,7 +19,7 @@ def twitter():
 def googlenews():
     for pol in Politician.objects.current():
         gnews.save_politician_news(pol)
-        time.sleep(1)
+        #time.sleep(1)
         
 def votes():
     parlvotes.import_votes()

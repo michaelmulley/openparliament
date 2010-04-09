@@ -44,17 +44,21 @@ def import_votes(session=None):
             raise Exception("Couldn't process vote result %s in %s" % (decision, votelisturl))
         if vote.find('RelatedBill') is not None:
             try:
-                votequestion.bill = Bill.objects.get(session=session, number=vote.find('RelatedBill').attrib['number'])
+                votequestion.bill = Bill.objects.get(sessions=session, number=vote.find('RelatedBill').attrib['number'])
             except Bill.DoesNotExist:
                 print "ERROR: Could not find bill for vote %s" % votenumber
-                continue
         
         # Now get the detailed results
         votedetailurl = VOTEDETAIL_URL % {'parliamentnum' : session.parliamentnum,
                 'sessnum': session.sessnum,
                 'votenum': votenumber }
-        votedetailpage = urllib2.urlopen(votedetailurl)
-        detailtree = etree.parse(votedetailpage)
+        try:
+            votedetailpage = urllib2.urlopen(votedetailurl)
+            detailtree = etree.parse(votedetailpage)
+        except Exception, e:
+            print "ERROR on %s" % votedetailurl
+            print e
+            continue
         detailroot = detailtree.getroot()
         votequestion.description = parsetools.etree_extract_text(detailroot.find('Context')).strip()
 

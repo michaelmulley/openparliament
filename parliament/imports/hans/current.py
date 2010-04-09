@@ -2,10 +2,6 @@
 
 from parliament.imports.hans.common import *
 
-from django.utils.html import escape
-
-from parliament.bills.models import Bill
-
 class HansardParser2009(HansardParser):
     
     def __init__(self, hansard, html):
@@ -31,6 +27,7 @@ class HansardParser2009(HansardParser):
             except Exception, e:
                 print "Related bill search failed for callback %s" % resid
                 print e
+                InternalXref.objects.get_or_create(schema='bill_callbackid', int_value=resid, target_id=-1)
                 return string
             return u'<bill id="%d" name="%s">%s</bill>' % (bill.id, escape(bill.name), string)
         elif restype == 'Affiliation':
@@ -38,6 +35,7 @@ class HansardParser2009(HansardParser):
                 pol = Politician.objects.getByParlID(resid)
             except Politician.DoesNotExist:
                 print "Related politician search failed for callback %s" % resid
+                InternalXref.objects.get_or_create(schema='pol_parlid', int_value=resid, target_id=-1)
                 return string
             if pol == current_politician:
                 return string # When someone mentions her riding, don't link back to her
@@ -71,6 +69,7 @@ class HansardParser2009(HansardParser):
         c = c.findNext(text=r_housemet)
         match = re.search(r_housemet, c.string)
         t['timestamp'] = self.houseTime(match.group(1), match.group(2))
+        t.setNext('timestamp', t['timestamp'])
         
         # Move the pointer to the start
         c = c.next

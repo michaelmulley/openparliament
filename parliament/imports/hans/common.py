@@ -4,9 +4,11 @@ import re, urllib, urllib2, datetime, sys, codecs
 from BeautifulSoup import BeautifulSoup, Comment, NavigableString
 from django.db.models import Q
 from django.db import transaction
+from django.utils.html import escape
 
 from parliament.core.models import *
 from parliament.hansards.models import Hansard, Statement, HansardCache
+from parliament.bills.models import Bill
 from parliament.core import parsetools
 from parliament.core.parsetools import r_politicalpost, r_honorific
 
@@ -28,7 +30,7 @@ r_time_glyph = re.compile(r'arobas\.gif')
 r_arrow_img = re.compile(r'arrow\d+\.gif')
 r_housemet = re.compile(r'The\s+House\s+met\s+at\s+(\d[\d:\.]*)\s+([ap]\.m\.)', re.I | re.UNICODE)
 r_notamember = re.compile(r'^(The|A|Some|Acting|Santa|One|Assistant|An\.?)$')
-r_proceedings = re.compile(r'^\s*The House (resumed|proceeded) ')
+r_proceedings = re.compile(r'^\s*The\s+House\s+(resumed|proceeded)', re.UNICODE)
 
 r_letter = re.compile(r'\w')
 r_notspace = re.compile(r'\S', re.UNICODE)
@@ -107,9 +109,6 @@ class ParseTracker(object):
                 t = t[8:].strip()
             if t.startswith('She said: '):
                 t = t[9:].strip()
-            if r_proceedings.search(t):
-                print "HOUSE RESUMED: %s" % t
-                return
             if len(t) > 0 and not t.isspace():
                 #if t[0].islower() and not t.startswith('moved'):
                 #    print "WARNING: Block of text begins with lowercase letter: %s" % t

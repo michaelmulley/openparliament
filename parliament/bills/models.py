@@ -5,6 +5,7 @@ from BeautifulSoup import BeautifulSoup
 
 from parliament.core.models import Session, InternalXref, ElectedMember, Politician
 from parliament.activity import utils as activity
+from parliament.core.utils import memoize
 
 
 CALLBACK_URL = 'http://www2.parl.gc.ca/HousePublications/GetWebOptionsCallBack.aspx?SourceSystem=PRISM&ResourceType=Document&ResourceID=%d&language=1&DisplayMode=2'
@@ -14,6 +15,8 @@ class BillManager(models.Manager):
         """Given a callback ID from a link on a Hansard page, return a Bill."""
         try:
             xref = InternalXref.objects.get(schema='bill_callbackid', int_value=callback)
+            if xref.target_id < 0:
+                raise Bill.DoesNotExist("Stored as invalid callback")
             return self.get_query_set().get(pk=xref.target_id)
         except InternalXref.DoesNotExist:
             pass
@@ -33,10 +36,11 @@ class BillManager(models.Manager):
         match = re.search(r'([A-Z]+-\d+)\s+(.+)', votediv.string.strip())
         billnum, billname = match.group(1), match.group(2)
         try:
-            bill = self.get_query_set().get(number=billnum, session=session)
+            bill = self.get_query_set().get(number=billnum, sessions=session)
         except Bill.DoesNotExist:
-            bill = Bill(name=billname, number=billnum, session=session)
+            bill = Bill(name=billname, number=billnum)
             bill.save()
+            bill.sessions.add(session)
         InternalXref(schema='bill_callbackid', int_value=callback, target_id=bill.id).save()
         return bill
         
@@ -46,12 +50,13 @@ class Bill(models.Model):
     name = models.CharField(max_length=500)
     number = models.CharField(max_length=10)
     number_only = models.SmallIntegerField()
-    session = models.ForeignKey(Session)
+    sessions = models.ManyToManyField(Session)
     legisinfo_url = models.URLField(blank=True, null=True, verify_exists=False)
     privatemember = models.NullBooleanField()
     sponsor_member = models.ForeignKey(ElectedMember, blank=True, null=True)
     sponsor_politician= models.ForeignKey(Politician, blank=True, null=True)
-    # FIXME model related bills (same bill, reintroduced)
+    law = models.NullBooleanField()
+    status = models.CharField(max_length=200, blank=True)
     
     objects = BillManager()
     
@@ -71,6 +76,12 @@ class Bill(models.Model):
         if getattr(self, 'privatemember', None) is None:
             self.privatemember = bool(self.number_only >= 200)
         super(Bill, self).save(*args, **kwargs)
+        
+    @property
+    @memoize
+    def session(self):
+        """Returns the most recent session this bill belongs to."""
+        return self.sessions.all().order_by('-start')[0]
         
 VOTE_RESULT_CHOICES = (
     ('Y', 'Passed'), # Agreed to

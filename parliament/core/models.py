@@ -25,6 +25,7 @@ class InternalXref(models.Model):
     # pol_parlinfoid
     # bill_callbackid
     # session_legisin -- LEGISinfo ID for a session
+    # edid_postcode -- the EDID -- which points to a riding, but is NOT the primary  key -- for a postcode
     schema = models.CharField(max_length=15, db_index=True)
 
 class PartyManager(models.Manager):
@@ -139,15 +140,18 @@ class PoliticianManager(models.Manager):
                     raise Politician.MultipleObjectsReturned(name)
                 else:
                     return self.get_query_set().get(pk=poss[0].target_id)
-        if session and riding:
+        if session:
             # We couldn't find the pol, but we have the session and riding, so let's give this one more shot
             # We'll try matching only on last name
             match = re.search(r'\s([A-Z][\w-]+)$', name.strip()) # very naive lastname matching
             if match:
                 lastname = match.group(1)
-                pols = self.get_query_set().filter(name_family=lastname, electedmember__sessions=session, electedmember__riding=riding).distinct()
+                pols = self.get_query_set().filter(name_family=lastname, electedmember__sessions=session).distinct()
+                if riding:
+                    pols = pols.filter(electedmember__riding=riding)
                 if len(pols) > 1:
-                    raise Exception("DATA ERROR: There appear to be two politicians with the same last name elected to the same riding from the same session... %s %s %s" % (lastname, session, riding))
+                    if riding:
+                        raise Exception("DATA ERROR: There appear to be two politicians with the same last name elected to the same riding from the same session... %s %s %s" % (lastname, session, riding))
                 elif len(pols) == 1:
                     # yes!
                     pol = pols[0]
@@ -177,6 +181,8 @@ class PoliticianManager(models.Manager):
         try:
             x = InternalXref.objects.get(schema='pol_parlid', int_value=parlid)
             polid = x.target_id
+            if polid < 0:
+                raise Politician.DoesNotExist("Stored as invalid parlID")
         except InternalXref.DoesNotExist:
             if not lookOnline:
                 return None # FIXME inconsistent behaviour: when should we return None vs. exception?
@@ -340,6 +346,7 @@ class RidingManager(models.Manager):
         'the-battleford-meadow-lake': 'the-battlefords-meadow-lake',
         'esquimalt-de-fuca': 'esquimalt-juan-de-fuca',
         'sint-hubert': 'saint-hubert',
+        #'edmonton-mill-woods-beaumont': 'edmonton-beaumont',
     }
     
     def getByName(self, name):
@@ -367,8 +374,8 @@ PROVINCE_LOOKUP = dict(PROVINCE_CHOICES)
 class Riding(models.Model):
     name = models.CharField(max_length=60)
     province = models.CharField(max_length=2, choices=PROVINCE_CHOICES)
-    slug = models.CharField(max_length=60, unique=True)
-    edid = models.IntegerField(blank=True, null=True)
+    slug = models.CharField(max_length=60, unique=True, db_index=True)
+    edid = models.IntegerField(blank=True, null=True, db_index=True)
     
     objects = RidingManager()
     
@@ -382,8 +389,8 @@ class Riding(models.Model):
         
     @property
     def dashed_name(self):
-        return re.sub(r'--', u'—', self.name)
-
+        return self.name.replace('--', u'—')
+        
     def __unicode__(self):
         return "%s (%s)" % (self.dashed_name, self.get_province_display())
         

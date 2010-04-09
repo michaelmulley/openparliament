@@ -2,6 +2,7 @@
 
 from parliament.imports.hans.common import *
 
+r_bill = re.compile(r'[bB]ill C-(\d+)')
 class HansardParser1994(HansardParser):
     
     def __init__(self, hansard, html):
@@ -10,6 +11,20 @@ class HansardParser1994(HansardParser):
             html = re.sub(regex[0], regex[1], html)
 
         super(HansardParser1994, self).__init__(hansard, html)
+        
+    def replace_bill_link(self, billmatch):
+        billnumber = int(billmatch.group(1))
+        try:
+            bill = Bill.objects.get(sessions=self.hansard.session, number_only=billnumber)
+        except Bill.DoesNotExist:
+            #print "NO BILL FOUND for %s" % billmatch.group(0)
+            return billmatch.group(0)
+        result = u'<bill id="%d" name="%s">%s</bill>' % (bill.id, escape(bill.name), "Bill C-%s" % billnumber)
+        #print "REPLACING %s with %s" % (billmatch.group(0), result)
+        return result
+    
+    def label_bill_links(self, txt):
+        return r_bill.sub(self.replace_bill_link, txt)
     
     def parse(self):
         
@@ -54,7 +69,8 @@ class HansardParser1994(HansardParser):
                         self.saveProceedingsStatement(c, t)
                     else:
                         # Add it to the buffer
-                        t.addText(c, blockquote=bool(c.parent.name=='blockquote'
+                        txt = self.label_bill_links(c)
+                        t.addText(txt, blockquote=bool(c.parent.name=='blockquote'
                                             or c.parent.name=='small'
                                             or c.parent.name=='ul'
                                             or c.parent.parent.name=='ul'

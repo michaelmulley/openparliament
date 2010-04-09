@@ -41,13 +41,13 @@ def index(request):
     sessions = Session.objects.with_bills().distinct()
     len(sessions) # evaluate it
     return object_list(request,
-        queryset=Bill.objects.filter(session=sessions[0]),
+        queryset=Bill.objects.filter(sessions=sessions[0]),
         extra_context={'session_list': sessions, 'session': sessions[0], 'title': 'Bills & Votes'},
         template_name='bills/index.html')
         
 def bills_for_session(request, session_id):
     session = get_object_or_404(Session, pk=session_id)
-    bills = Bill.objects.filter(session=session)
+    bills = Bill.objects.filter(sessions=session)
     return object_list(request,
         queryset=bills,
         extra_context={'session': session, 'title': 'Bills for the %s' % session})

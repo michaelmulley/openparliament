@@ -9,7 +9,7 @@ from haystack.views import FacetedSearchView, SearchView
 from haystack.forms import FacetedSearchForm, HighlightedSearchForm
 from haystack.query import SearchQuerySet
 
-from parliament.core.models import Politician, Session, ElectedMember, Riding
+from parliament.core.models import Politician, Session, ElectedMember, Riding, InternalXref
 from parliament.hansards.models import Statement
 from parliament.core.utils import postcode_to_edid
 
@@ -33,7 +33,13 @@ def search(request):
         match = r_postcode.search(request.GET['q'].upper())
         if match:
             postcode = match.group(1) + " " + match.group(2)
-            edid = postcode_to_edid(postcode)
+            try:
+                x = InternalXref.objects.get(schema='edid_postcode', text_value=postcode)
+                edid = x.target_id
+            except InternalXref.DoesNotExist:
+                edid = postcode_to_edid(postcode)
+                if edid:
+                    InternalXref(schema='edid_postcode', text_value=postcode, target_id=edid).save()
             if edid:
                 try:
                     member = ElectedMember.objects.get(end_date__isnull=True, riding__edid=edid)

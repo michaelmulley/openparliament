@@ -72,13 +72,14 @@ ul.tile{list-style-type:none;margin:0 0 10px 0;padding:0;}
 .tag{padding:2px 3px;background-color:#CCCCCC;}
 .voteresult_Y{background-color:#A9FA98;}
 .voteresult_N{background-color:#FF9093;}
-.partytag_lib{background-color:#f6a7a5;}
-.partytag_bq{background-color:#a7ecf6;}
-.partytag_cpc,.partytag_conservative-party-of-canada{background-color:#acd0f6;}
+.partytag_liberal{background-color:#f6a7a5;}
+.partytag_bloc{background-color:#a7ecf6;}
+.partytag_cpc,.partytag_alliance{background-color:#acd0f6;}
 .partytag_ndp{background-color:#f6cfa5;}
 .activity_news{background-color:#F1F28D;}
 .activity_statement{background-color:#ddb8a2;}
 .activity_twitter{background-color:#D9A5DF;}
+.bill_law{background-color:#A9FA98;}
 
 /* STATEMENTS */
 .statement .pol_name{font-weight:bold;}
