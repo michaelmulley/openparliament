@@ -11,11 +11,11 @@ ADMINS = (
 MANAGERS = ADMINS
 
 
-
-HANSARD_CACHE_DIR = '/hansard-cache/'
-
 HAYSTACK_SEARCH_ENGINE = 'solr'
 HAYSTACK_SITECONF = 'parliament.search_sites'
+
+CACHE_MIDDLEWARE_SECONDS = 60 * 60 * 3
+CACHE_MIDDLEWARE_KEY_PREFIX = 'parl'
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -62,12 +62,14 @@ TEMPLATE_LOADERS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
 )
 
 ROOT_URLCONF = 'parliament.urls'
