@@ -3,7 +3,7 @@
 {% block headextra %}
 <link rel="alternate" type="application/rss+xml" title="{{ pol.name }}: Statements in the House of Commons" href="{% url politician_statement_feed pol_id=pol.id %}">
 <link rel="alternate" type="application/rss+xml" title="{{ pol.name }}: Recent Activity" href="{% url politician_activity_feed pol_id=pol.id %}">
-{% include "hansards/statement_page.js.inc" %}
+{% include "pagination.js.inc" %}
 {% endblock headextra %}
 {% block contentclass %}context_4 politician{% endblock %}
 {% block pagetitle %}{{ pol }}{% if member.current %}, {{ member.party.short_name }} MP{% endif %}{% endblock %}

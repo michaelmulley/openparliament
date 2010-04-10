@@ -1,44 +1,27 @@
 {% extends "base.html" %}
-{% load thumbnail highlight %}
+{% load thumbnail %}
 {% block breadcrumbs %}{{ block.super }} <a href="{% url parliament.core.views.search %}">Search</a> {{ query }}{% endblock %}
-
+{% block pagetitle %}Search: {{ query }}{% endblock %}
+{% block pageheading_override %}{% endblock %}
 {% block content %}
-
+<div class="focus">
     <form method="get" action=".">
-        <table>
-            {{ form.as_table }}
-            <tr>
-                <td>&nbsp;</td>
-                <td>
-                    <input type="submit" value="Search">
-                </td>
-            </tr>
-        </table>
-        {% if page.object_list %}
-        <h2>Results {{ page.start_index }}-{{ page.end_index }} of {{ page.paginator.count }} for &ldquo;{{ query }}&rdquo;</h2>
-        
-            {% for result in page.object_list %}
-            {% if result.model_name == 'politician' %}<div class="result statement"><div class="context"><p><strong>Politician</strong></p></div>
-                <div class="focus"><p><a href="{{ result.url }}">{{ result.pol_name }}</a> {{ result.text }}</p></div></div>{% endif %}
-            {% if result.model_name == 'statement' %}<div class="result statement">
-                <div class="context"><p>{{ result.date|date:"F jS, Y"}}</p><p>{% if result.politician_id %}<a href="{% url politicians.views.politician pol_id=result.politician_id %}">{{ result.politician }}</a>{% else %}{{ result.politician }}{% endif %}{% if result.party %}<br><span class="tag partytag_{{ result.party|slugify }}">{{ result.party }}</span>{% endif %}</p></div>
-                <div class="focus"><p><a href="{{ result.url }}">{{ result.topic }}</a> &nbsp;{{ result.highlighted.text.0 }}</p></div>
-                <div class="clear"></div>
-                </div>
-            {% endif %}
-            {% if result.model_name == 'bill' %}<div class="result bill"><div class="context"><p><strong>Legislation</strong></p></div>
-                <div class="focus"><a href="{{ result.object.get_absolute_url }}">Bill {{ result.object.number }}</a> <span class="date">({{ result.object.session }})</span><p>{% highlight result.text with query %}</p></div></div>{% endif %}
-            {% endfor %}
-
+        <input type="text" id="page_searchbox" name="q" value="{{ query }}"><input type="submit" id="searchbutton" value="Search">
+    </form></div>
+        {% if not results.hits %}
+       <div class="focus">
+        <h3>No results found.</h3></div>
         {% else %}
-            <p>No results found.</p>
+        <div id="paginated">
+{% include "search/search_results.inc" %}
+        </div>
         {% endif %}
-    </form>
 {% endblock %}
 {% block headextra %}
 <style type="text/css">
-.result .highlighted {
+.result .highlighted, .result em {
     background-color: yellow;
+    font-style: normal;
 }
 .result.statement .context, .result.statement .focus {
     min-height: 0;
@@ -50,5 +33,21 @@
     border: none;
     padding-top: 5px;
 }
+#page_searchbox {
+    width: 400px;
+    font-size: 15px;
+    padding: 4px;
+}
+#searchbutton {
+    background-color: #CCCCCC;
+    border: 1px solid #AAAAAA;
+    color: #7d450b;
+    font-size: 15px;
+    font-weight: bold;
+    margin-left: 12px;
+    padding: 5px;
+    width: 80px;
+}
 </style>
+{% include "pagination.js.inc" %}
 {% endblock headextra %}

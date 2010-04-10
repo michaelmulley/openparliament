@@ -1,1 +1,1 @@
-{% autoescape off %}{% with object.latest_member as member %}{% if member.end_date %}was {% endif %}{{ member.party.short_name }} MP for {{ member.riding }}{% if member.end_date %} until {{ member.end_date|date:"Y" }}{% endif %}{% endwith %}{% endautoescape %}
+{% with object.latest_member as member %}{% if member.end_date %}was {% endif %}<span class="tag partytag_{{ member.party.slug|lower }}">{{ member.party.short_name }}</span> MP for {{ member.riding }}{% if member.end_date %} until {{ member.end_date|date:"Y" }}{% endif %}{% endwith %}

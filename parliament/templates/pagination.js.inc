@@ -1,13 +1,6 @@
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.bbq.js"></script>
 <script type="text/javascript">
 $(function() {
-    /* $('.statement .context').each(function() {
-        // We want all of our divs to have heights that are multiples of 10.
-        // This only breaks with smaller font sizes, which is what we have in .statement .context
-        if (this.clientHeight % 10 != 0) {
-            $(this).css('padding-bottom', (10 - (this.clientHeight % 10)) +'px');
-        }
-    }); */
     function revealStatement() {
         $(this).hide()
             .parent().children('.fadeout').hide()
@@ -29,8 +22,9 @@ $(function() {
            }
         });
     }
-    addMoreLinks();
-
+    if ($('.statement_browser').length) {
+        addMoreLinks();
+    }
     var $paginated = $('#paginated');
     $('.pagelink').live('click', function(e) {
         e.preventDefault();
@@ -53,7 +47,9 @@ $(function() {
                     $('#paginated_wrapper').show();
                     scrollDown = true;
                 }
-                addMoreLinks();
+                if ($('.statement_browser').length) {
+                    addMoreLinks();
+                }
                 $('.related_link').tooltip({delay: 200, showURL: false});
                 if (scrollDown) { 
                     $('html,body').animate({scrollTop: $paginated.offset().top - 15});

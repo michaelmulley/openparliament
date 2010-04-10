@@ -2,7 +2,7 @@
 {% block contentclass %}context_3{% endblock %}
 {% block breadcrumbs %}{{ block.super }}<a href="{% url parliament.bills.views.index %}">Bills</a>
 <a href="{% url parliament.bills.views.bills_for_session session_id=bill.session.id %}">{{ bill.session }}</a> {{ title }}{% endblock %}
-{% block headextra %}{% include "hansards/statement_page.js.inc" %}{% endblock %}
+{% block headextra %}{% include "pagination.js.inc" %}{% endblock %}
 {% block content %}
 
 <div class="focus">

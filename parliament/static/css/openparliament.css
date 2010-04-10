@@ -10,7 +10,6 @@ a:hover{text-decoration:underline;}
 /* LAYOUT */ 
 #content{width:960px;margin-left:auto;margin-right:auto;padding-top:15px;}
 #content_wrap{clear:both;background-color:white;padding-bottom:20px;}
-#nav_searchbox{position:absolute;right:10px;font-size:15px;top:20px;width:215px;font-family:Arial;padding:2px;border:2px inset #F0F0F0;}
 div.context{clear:both;float:left;width:160px;margin-left:10px;margin-bottom:10px;}
 .context_4 div.context{width:220px;}
 .context_4 div.focus{width:710px;}
@@ -40,6 +39,9 @@ div.focus.pageheader{margin-bottom:0;}
 #navbarbg{width:100%;position:absolute;left:0;top:0;height:16px;background-color:#7d450b;border-top:40px solid #095609;border-bottom:24px solid white;}
 #navbar{position:relative;margin-left:auto;margin-right:auto;width:960px;height:80px;}
 #navbar img{position:absolute;left:6px;}
+#nav_searchbox{position:absolute;right:10px;font-size:15px;top:20px;width:215px;font-family:Arial;padding:2px 4px;border:2px inset #F0F0F0;color: #555555;}
+#nav_searchbox.active {color: black;}
+#nav_searchbutton{position:absolute;background-image:url('../images/searchbutton.png');width:19px;height:19px;cursor:pointer;right:15px;top:24px;}
 #footer{clear:both;width:100%;height:60px;padding-top:10px;}
 #footer p{margin-left:auto;margin-right:auto;width:900px;text-align:center;font-size:11px;color:#888888;}
 #footer a{color:#888888;font-weight:normal;text-decoration:underline;}

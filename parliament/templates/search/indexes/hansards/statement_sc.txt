@@ -1,2 +1,1 @@
-{% autoescape off %}{{ object.who }} {{ object.member.politician.name }} {{ object.member.politician.party.short_name }}
-{{ object.topic }}{% endautoescape %}
+{% autoescape off %}{{ object.name_info.display_name }} {% if object.name_info.post %}{{ object.name_info.post }} {% endif %}{{ object.member.politician.party.short_name }} {{ object.topic }}{% endautoescape %}

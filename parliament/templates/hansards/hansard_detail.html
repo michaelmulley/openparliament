@@ -3,7 +3,7 @@
 {% block pagetitle %}Debates of {{ hansard.date|date:"N jS, Y" }}{% endblock %}
 {% block pageheading %}Debates of {{ hansard.date|date:"N jS, Y" }}{% endblock %}
 {% block breadcrumbs %}<a href="{% url parliament.hansards.views.index %}">Debates</a> <a href="{% url parliament.hansards.views.by_year year=hansard.date.year %}">{{ hansard.date.year }}</a> {{ hansard.date|date:"F jS, Y" }}{% endblock %}
-{% block headextra %}{% include "hansards/statement_page.js.inc" %}{% endblock %}
+{% block headextra %}{% include "pagination.js.inc" %}{% endblock %}
 {% block content %}
 <div class="focus"><p>House of Commons Hansard #{{ hansard.number }} of the {{ hansard.session }}. (The <a href="{{ hansard.url }}">original version</a> is on Parliament's site.)</p></div>
 

@@ -209,28 +209,4 @@ class Statement(models.Model):
             info['post'] = post = re.search(r'\((.+)\)', self.who).group(1).split(',')[0]
             info['display_name'] = self.member.politician.name
         return info
-    
-    def normalized_who(self):
-        if not self.member:
-            return parsetools.r_mister.sub('', self.who)
-        riding = self.member.riding.dashed_name
-        party = self.member.party.short_name
-        #if self.member.party.colour:
-        #    party = '<span class="tag" style="background-color: %s">%s</span>' % (self.member.party.colour, party)
-        if parsetools.r_notamember.search(self.who):
-            polname = self.who
-            affil = ''
-            title = '%s (%s, %s)' % (self.who, riding, party)
-        elif not '(' in self.who or not parsetools.r_politicalpost.search(self.who):
-            polname = self.member.politician.name
-            affil = '(%s, %s)' % (riding, party)
-            title = ''
-        else:
-            # We have a political post
-            post = re.search(r'\((.+)\)', self.who).group(1).split(',')[0]
-            polname = self.member.politician.name
-            affil = '(%s, %s)' % (post, party)
-            title = 'MP for %s' % riding
-        return mark_safe('<a href="%s" title="%s">%s</a> <span class="pol_affil">%s</a>' %
-            (self.member.politician.get_absolute_url(), title, polname, affil))
             
