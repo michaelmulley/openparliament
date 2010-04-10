@@ -1,6 +1,8 @@
 from django import http
 from django.shortcuts import render_to_response
 from django.conf import settings
+from django.template import Context, loader, RequestContext
+
 
 import datetime, re
 
@@ -54,4 +56,4 @@ def memcached_status(request):
             stats=stats,
             hit_rate=100 * stats.get_hits / stats.cmd_get,
             time=datetime.datetime.now(), # server time
-        ))
+        ), context_instance=RequestContext(request))
