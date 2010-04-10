@@ -115,6 +115,8 @@ div.statement div.focus{margin-bottom:10px;min-height:110px;max-height:380px;ove
 
 /* POLITICIAN PAGE */
 .politician img.headshot{margin:4px auto 10px auto;display:block;border:2px solid #666666;}
+div.headshot {position: relative;}
+div.headshot span{display: block;position: absolute;font-size: 10px;color: #888888;right:37px;top:235px;}
 #activity .tag{font-weight:bold;}
 #activity h3{border-bottom:1px dotted #AAAAAA;}
 #activity h3 span{position:relative;top:3px;}

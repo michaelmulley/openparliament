@@ -12,7 +12,7 @@
 {% block content %}
 <div class="focus"><h1>{{ pol }}</h1></div>
     <div class="context">
-    {% if pol.headshot %}<img class="headshot" src="{% thumbnail pol.headshot 142x230 autocrop %}" alt="">{% endif %}
+    {% if pol.headshot %}<div class="headshot"><img class="headshot" src="{% thumbnail pol.headshot 142x230 autocrop %}" alt=""><span>House of Commons photo</span></div>{% endif %}
     </div><div class="focus">
 {% if member %}<h2>{% if not member.current %}Last in Parliament {{ member.end_date|date:"F Y"}}, as {% endif %}<span class="trag prartytag_{{ member.party.slug|lower }}">{{ member.party.short_name }}</span> MP for {{ member.riding }}</h2>{% endif %}
 
