@@ -32,7 +32,7 @@ div.focus.pageheader{margin-bottom:0;}
 /* SITE NAVIGATION */
 #breadcrumbs{width:515px;color:#555555;position:absolute;left:10px;top:65px;font-size:14px;font-weight:bold;}
 #breadcrumbs a{background:transparent url('/static/images/breadglyph.png') no-repeat right;padding-right:13px;font-weight:normal;}
-#navlinks{font-weight:bold;position:absolute;font-size:15px;top:24px;left:429px;list-style-type:none;margin:0;padding:0;}
+#navlinks{font-weight:bold;position:absolute;font-size:15px;top:24px;left:429px;list-style-type:none;margin:0;padding:0;letter-spacing: 0.1px;}
 #navlinks li{padding:0;float:left;margin-right:10px;}
 #navlinks li a{color:#CCCCCC;}
 #navlinks li.selected a{color:#FFC757;}
@@ -109,7 +109,9 @@ div.statement div.focus{margin-bottom:10px;min-height:110px;max-height:380px;ove
 .statement .focus.displayall{max-height:none;}
 .statement .focus.nophoto{min-height:60px;}
 .statement .context{font-size:11px;color:#555555;text-align:right;padding-top:2px;}
-.headshot_thumb{display:block;float:left;margin:4px 8px 4px 2px;border:2px solid #BBBBBB;}
+.headshot_thumb{display:block;float:left;margin:4px 8px 4px 2px;border:2px solid #BBBBBB; width: 67px;}
+.statement .focus p {max-width: none;}
+.statement .focus div {max-width: 640px;}
 
 /* POLITICIAN PAGE */
 .politician img.headshot{margin:4px auto 10px auto;display:block;border:2px solid #666666;}
