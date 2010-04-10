@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load thumbnail %}
-{% block breadcrumbs %}{{ block.super }} <a href="{% url parliament.core.views.search %}">Search</a> {{ query }}{% endblock %}
+{% block breadcrumbs %}{{ block.super }} <a href="{% url parliament.search.views.search %}">Search</a> {{ query }}{% endblock %}
 {% block pagetitle %}Search: {{ query }}{% endblock %}
 {% block pageheading_override %}{% endblock %}
 {% block content %}
