@@ -294,6 +294,10 @@ class PoliticianInfo(models.Model):
 
     def __unicode__(self):
         return "%s: %s" % (self.politician, self.schema)
+        
+    @property
+    def int_value(self):
+        return int(self.value)
 
     class Meta:
         ordering = ('schema',)

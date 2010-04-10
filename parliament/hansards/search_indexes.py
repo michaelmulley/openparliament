@@ -4,16 +4,15 @@ from haystack import indexes
 from parliament.hansards.models import Statement
 
 class StatementIndex(indexes.SearchIndex):
-    text = indexes.CharField(document=True, use_template=True, stored=False)
-    descr = indexes.CharField(model_attr='text_plain', indexed=False)
-    hansard_id = indexes.IntegerField(model_attr='hansard_id', indexed=False)
+    text = indexes.CharField(document=True, model_attr='text_plain')
+    sc = indexes.CharField(stored=False, use_template=True)
     date = indexes.DateTimeField(model_attr='time')
     politician = indexes.CharField(use_template=True)
     politician_id = indexes.IntegerField(model_attr='member__politician_id', null=True)
-    sequence = indexes.IntegerField(model_attr='sequence')
     party = indexes.CharField(model_attr='member__party__short_name', null=True)
     province = indexes.CharField(model_attr='member__riding__province', null=True)
     topic = indexes.CharField(model_attr='topic')
+    url = indexes.CharField(model_attr='get_absolute_url', indexed=False)
     
     def get_queryset(self):
         return Statement.objects.all().select_related('member__politician', 'member__party', 'member__riding')

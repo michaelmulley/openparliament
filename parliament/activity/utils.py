@@ -23,9 +23,9 @@ def save_activity(obj, politician, date, guid=None, variety=None):
     return True
 
 ACTIVITY_MAX = {
-    'twitter': 5,
-    'gnews': 5,
-    'membervote': 4,
+    'twitter': 6,
+    'gnews': 6,
+    'membervote': 5,
     'statement': 8,
 } 
 def iter_recent(queryset):
@@ -38,7 +38,7 @@ def iter_recent(queryset):
 def prune(queryset):
     activity_counts = ACTIVITY_MAX.copy()
     for activity in queryset:
-        if activity_counts[activity.variety]:
+        if activity_counts[activity.variety] >= 0:
             activity_counts[activity.variety] -= 1
         else:
             activity.delete()

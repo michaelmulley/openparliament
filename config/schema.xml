@@ -19,9 +19,6 @@
 <schema name="default" version="1.1">
   <types>
     <fieldType name="string"  class="solr.StrField" sortMissingLast="true" omitNorms="true">
-		<analyzer>
-			<tokenizer class="solr.WhitespaceTokenizerFactory"/>
-		</analyzer>
 	</fieldType>
     <fieldType name="boolean" class="solr.BoolField" sortMissingLast="true" omitNorms="true"/>
 
@@ -89,17 +86,13 @@
 
     <field name="politician" type="string" indexed="true" stored="true" multiValued="false" />
 
-    <field name="pol_name" type="string" indexed="false" stored="true" multiValued="false" />
+    <field name="url" type="string" indexed="false" stored="true" multiValued="false" />
 
-    <field name="descr" type="string" indexed="false" stored="true" multiValued="false" />
+    <field name="text" type="text" indexed="true" stored="true" multiValued="false" />
 
-    <field name="text" type="text" indexed="true" stored="false" multiValued="false" />
-
-    <field name="politician_id" type="slong" indexed="false" stored="true" multiValued="false" />
+    <field name="politician_id" type="slong" indexed="true" stored="true" multiValued="false" />
 
     <field name="number" type="string" indexed="false" stored="true" multiValued="false" />
-
-    <field name="hansard_id" type="slong" indexed="false" stored="true" multiValued="false" />
 
     <field name="topic" type="string" indexed="true" stored="true" multiValued="false" />
 
@@ -107,7 +100,12 @@
 
     <field name="party" type="string" indexed="true" stored="true" multiValued="false" />
 
-	<field name="sequence" type="sint" indexed="false" stored="true" multiValued="false" />
+    <field name="sc" type="text" indexed="true" stored="false" multiValued="false" />
+
+    <field name="sci" type="text" indexed="true" stored="false" multiValued="false" />
+
+    <field name="pol_name" type="string" indexed="false" stored="true" multiValued="false" />
+
 
 
   </fields>

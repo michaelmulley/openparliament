@@ -1,1 +1,1 @@
-{% autoescape off %}{{ object.name }} {% for nam in object.alternate_names %}{{ nam }} {% endfor %} {{ object.latest_member.party.name }}{{ object.latest_member.party.short_name }} {{ object.latest_member.riding }}{% endautoescape %}
+{% autoescape off %}{% with object.latest_member as member %}{% if member.end_date %}was {% endif %}{{ member.party.short_name }} MP for {{ member.riding }}{% if member.end_date %} until {{ member.end_date|date:"Y" }}{% endif %}{% endwith %}{% endautoescape %}
