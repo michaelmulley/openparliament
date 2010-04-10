@@ -3,7 +3,7 @@ from haystack import indexes
 
 from parliament.core.models import Politician
 
-class PolIndex(indexes.SearchIndex):
+class PolIndex(indexes.RealTimeSearchIndex):
     text = indexes.CharField(document=True, use_template=True)
     sci = indexes.CharField(use_template=True, stored=False)
     pol_name = indexes.CharField(model_attr='name', indexed=False)

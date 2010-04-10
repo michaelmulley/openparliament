@@ -3,6 +3,8 @@ from django.conf import settings
 from django.contrib import admin, databrowse
 admin.autodiscover()
 
+from parliament.core.sitemap import sitemaps
+
 urlpatterns = patterns('',
     (r'^search/', include('parliament.search.urls')),
     (r'^hansards/', include('parliament.hansards.urls')),
@@ -10,7 +12,9 @@ urlpatterns = patterns('',
     (r'^bills/', include('parliament.bills.urls')),
     #url(r'^about/$', 'django.views.generic.simple.direct_to_template', {'template': 'about/about.html'}, name='about'),
     (r'^api/', include('parliament.api.urls')),
-    (r'^$', 'django.views.generic.simple.direct_to_template', {'template': 'teaser.html'}),
+    (r'^$', 'parliament.core.views.home'),
+    #(r'^$', 'django.views.generic.simple.direct_to_template', {'template': 'teaser.html'}),
+    (r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
 )
 
 if settings.DEBUG:
@@ -24,4 +28,5 @@ if settings.DEBUG:
 if getattr(settings, 'ADMIN_URL', False):
     urlpatterns += patterns('',
         (settings.ADMIN_URL, include(admin.site.urls)),
+        (r'^memcached-status/$', 'parliament.core.maint.memcached_status'),
     )

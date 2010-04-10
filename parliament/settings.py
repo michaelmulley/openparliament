@@ -93,6 +93,7 @@ INSTALLED_APPS = (
     'django.contrib.markup',
     'django.contrib.databrowse',
     'django.contrib.flatpages',
+    'django.contrib.sitemaps',
     'django_extensions',
     'haystack',
     'south',

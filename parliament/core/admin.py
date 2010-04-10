@@ -29,6 +29,9 @@ class PartyOptions(admin.ModelAdmin):
 class PoliticianInfoOptions(admin.ModelAdmin):
     list_display = ('politician', 'schema', 'value')
     search_fields = ('politician__name', 'schema')
+    
+class SiteNewsOptions(admin.ModelAdmin):
+    list_display = ('title', 'date', 'active')
 
 admin.site.register(ElectedMember, ElectedMemberOptions)
 admin.site.register(Riding, RidingOptions)
@@ -37,6 +40,7 @@ admin.site.register(Politician, PoliticianOptions)
 admin.site.register(Party, PartyOptions)
 admin.site.register(InternalXref, InternalXrefOptions)
 admin.site.register(PoliticianInfo, PoliticianInfoOptions)
+admin.site.register(SiteNews, SiteNewsOptions)
 
 databrowse.site.register(ElectedMember)
 databrowse.site.register(Riding)

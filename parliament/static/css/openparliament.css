@@ -6,6 +6,7 @@ h2{font-size:24px;font-weight:normal;font-weight:300;margin:0 0 10px 0;color:#52
 h3{margin:0 0 10px 0;font-weight:bold;color:#522D07;}
 a{color:#1A59C7;text-decoration:none;font-weight:bold;outline:none;}
 a:hover{text-decoration:underline;}
+img {border: 0;}
 
 /* LAYOUT */ 
 #content{width:960px;margin-left:auto;margin-right:auto;padding-top:15px;}
@@ -43,7 +44,7 @@ div.focus.pageheader{margin-bottom:0;}
 #nav_searchbox.active {color: black;}
 #nav_searchbutton{position:absolute;background-image:url('../images/searchbutton.png');width:19px;height:19px;cursor:pointer;right:15px;top:24px;}
 #footer{clear:both;width:100%;height:60px;padding-top:10px;}
-#footer p{margin-left:auto;margin-right:auto;width:900px;text-align:center;font-size:11px;color:#888888;}
+#footer p{margin-left:auto;margin-right:auto;width:520px;text-align:center;font-size:11px;color:#888888;}
 #footer a{color:#888888;font-weight:normal;text-decoration:underline;}
 #footer a:hover{color:#1A59C7;}
 
@@ -56,6 +57,7 @@ ul.tile{list-style-type:none;margin:0 0 10px 0;padding:0;}
 #tooltip{position:absolute;z-index:3000;border:1px solid #111;background-color:#f9f7cd;padding:5px;max-width:350px;}
 #tooltip h3,#tooltip div{margin:0;font-size:12px;color:#222222;font-weight:normal;}
 .winner{font-weight:bold;}
+.code{font-family: "Courier New", Courier, monospaced; padding: 0 2px;white-space: pre;}
 
 /* PAGINATION */
 .pagination{text-align:center;width:640px;}
@@ -86,7 +88,7 @@ ul.tile{list-style-type:none;margin:0 0 10px 0;padding:0;}
 /* STATEMENTS */
 .statement .pol_name{font-weight:bold;}
 .statement .tag{font-weight:bold;}
-.statement .pol_affil{/* font-size:13px;*/
+.statement .pol_affil{
 padding-left:3px;color:#666666;}
 blockquote{/* border-left:3px solid #CCCCCC;*/
 margin:0 1em 0 2em;padding:0 0 0 1em;}
@@ -115,3 +117,17 @@ div.statement div.focus{margin-bottom:10px;min-height:110px;max-height:380px;ove
 #activity h3{border-bottom:1px dotted #AAAAAA;}
 #activity h3 span{position:relative;top:3px;}
 #activity .excerpt{display:block;border-left:1px dotted #AAAAAA;margin-left:2em;padding-left:1em;font-style:italic;margin-top:5px;}
+
+/* SEARCH */
+.result .highlighted,.result em{background-color:yellow;font-style:normal;}
+.result.statement .context,.result.statement .focus{min-height:0;}
+.result.statement .focus{margin-bottom:5px;}
+.result.statement{border:none;padding-top:5px;}
+#page_searchbox{width:400px;font-size:15px;padding:4px;}
+#searchbutton{background-color:#CCCCCC;border:1px solid #AAAAAA;color:#7d450b;font-size:15px;font-weight:bold;margin-left:12px;padding:5px;width:80px;}
+
+/* HOME */
+#home_searchbox{width:400px;font-size:15px;padding:4px;color: #555555;}
+#home_searchbox.active{color: black;}
+.heading_context{padding-left: 3px; color: #666666; font-weight: normal; font-weight: 300;}
+

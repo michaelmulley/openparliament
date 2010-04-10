@@ -1,5 +1,6 @@
 # coding: utf-8
 import urllib, urllib2, re, os.path, gzip
+import datetime
 from decimal import Decimal
 
 
@@ -445,4 +446,13 @@ class ElectedMember(models.Model):
     @property
     def current(self):
         return not bool(self.end_date)
+        
+class SiteNews(models.Model):
+    date = models.DateTimeField(default=datetime.datetime.now)
+    title = models.CharField(max_length=200)
+    text = models.TextField()
+    active = models.BooleanField(default=True)
+    
+    class Meta:
+        ordering = ('-date',)
 

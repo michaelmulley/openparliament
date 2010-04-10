@@ -13,10 +13,16 @@ def autohighlight(results):
                 doc[datefield] = datetime.datetime.strptime( doc[datefield], "%Y-%m-%dT%H:%M:%SZ" )
         if doc['id'] in results.highlighting:
             for (field, val) in results.highlighting[doc['id']].items():
-                doc[field] = mark_safe(r_hl.sub(r'<\1em>', escape(val[0])))
+                if 'politician' not in doc['id']:
+                    # GIANT HACK: in the current search schema, politician results are pre-escaped
+                    val = escape(val[0])
+                else:
+                    val = val[0]
+                doc[field] = mark_safe(r_hl.sub(r'<\1em>', val))
     return results
     
 class SearchPaginator(object):
+    """A dumb imitation of the Django Paginator."""
     
     def __init__(self, results, pagenum, perpage, params, allowable_fields=None):
         self.object_list = results.docs

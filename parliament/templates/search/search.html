@@ -9,8 +9,8 @@
         <input type="text" id="page_searchbox" name="q" value="{{ query }}"><input type="submit" id="searchbutton" value="Search">
     </form></div>
         {% if not results.hits %}
-       <div class="focus">
-        <h3>No results found.</h3></div>
+       {% if query %}<div class="focus">
+        <h3>No results found.</h3></div>{% endif %}
         {% else %}
         <div id="paginated">
 {% include "search/search_results.inc" %}
@@ -18,36 +18,5 @@
         {% endif %}
 {% endblock %}
 {% block headextra %}
-<style type="text/css">
-.result .highlighted, .result em {
-    background-color: yellow;
-    font-style: normal;
-}
-.result.statement .context, .result.statement .focus {
-    min-height: 0;
-}
-.result.statement .focus {
-    margin-bottom: 5px;
-}
-.result.statement {
-    border: none;
-    padding-top: 5px;
-}
-#page_searchbox {
-    width: 400px;
-    font-size: 15px;
-    padding: 4px;
-}
-#searchbutton {
-    background-color: #CCCCCC;
-    border: 1px solid #AAAAAA;
-    color: #7d450b;
-    font-size: 15px;
-    font-weight: bold;
-    margin-left: 12px;
-    padding: 5px;
-    width: 80px;
-}
-</style>
 {% include "pagination.js.inc" %}
 {% endblock headextra %}

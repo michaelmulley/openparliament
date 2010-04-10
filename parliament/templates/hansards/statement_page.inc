@@ -1,5 +1,5 @@
 {% load markup thumbnail %}
-{% if page.has_previous or page.has_next %}<div class="focus statement_browser">{% include "pagination.inc" %}</div>{% endif %}
+{% if page.has_previous or page.has_next %}<div class="focus">{% include "pagination.inc" %}</div>{% endif %}
 {% for statement in page.object_list %}{% with statement.name_info as name_info %}
 <div class="statement{% if forloop.first %} first{% endif %}{% if highlight_statement == statement.sequence %} highlighted{% endif %}" id="s{{ statement.sequence }}">
 <div class="context clearafter">{% if statement.topic %}<p><strong>{{ statement.topic }}</strong><br>{{ statement.heading }}</p>{% endif %}<p>{% if statements_full_date %}{{ statement.time|date:"F jS, Y / P" }}{% else %}{{ statement.time|date:"P"|capfirst }}{% endif %}{% if statements_context_link %}<br><a href="{{ statement.get_absolute_url }}">See context</a>{% endif %}</p>{% if statement.member %}{% if name_info.post %}<p>{{ statement.member.riding.dashed_name }}<br>{{ statement.member.riding.get_province_display }}</p>{% endif %}<p><span class="tag partytag_{{ statement.member.party.slug|lower }}">{{ statement.member.party.short_name }}</span></p>{% endif %}</div>
@@ -9,4 +9,4 @@
 <div class="clear"></div>
 </div>
 {% endwith %}{% endfor %}
-<div class="focus">{% include "pagination.inc" %}</div>
+<div class="focus statement_browser">{% include "pagination.inc" %}</div>

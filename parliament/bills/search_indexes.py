@@ -3,7 +3,7 @@ from haystack import indexes
 
 from parliament.bills.models import Bill
 
-class BillIndex(indexes.SearchIndex):
+class BillIndex(indexes.RealTimeSearchIndex):
     text = indexes.CharField(document=True, model_attr='name')
     sci = indexes.CharField(stored=False, use_template=True)
     number = indexes.CharField(model_attr='number', indexed=False)

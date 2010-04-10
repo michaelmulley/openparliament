@@ -3,7 +3,7 @@ from haystack import indexes
 
 from parliament.hansards.models import Statement
 
-class StatementIndex(indexes.SearchIndex):
+class StatementIndex(indexes.RealTimeSearchIndex):
     text = indexes.CharField(document=True, model_attr='text_plain')
     sc = indexes.CharField(stored=False, use_template=True)
     date = indexes.DateTimeField(model_attr='time')

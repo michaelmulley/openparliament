@@ -1,5 +1,5 @@
 {% load markup thumbnail %}
-{% if page.has_previous or page.has_next %}<div class="focus statement_browser">{% include "pagination.inc" %}</div>{% endif %}
+{% if page.has_previous or page.has_next %}<div class="focus">{% include "pagination.inc" %}</div>{% endif %}
 {% for statement in page.object_list %}
 <div class="statement nocontext{% if forloop.first %} first{% endif %}{% if highlight_statement == statement.sequence %} highlighted{% endif %}" id="s{{ statement.sequence }}">
 
@@ -8,4 +8,4 @@
 <div class="clear"></div>
 </div>
 {% endfor %}
-<div class="focus">{% include "pagination.inc" %}</div>
+<div class="focus statement_browser">{% include "pagination.inc" %}</div>

@@ -9,15 +9,25 @@
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 <script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.tooltip.js"></script>
 <script type="text/javascript">
-jQuery.fn.overflowtip = function() {
-    return this.each(function() {
-        if (this.clientWidth < this.scrollWidth 
-          || (this.clientHeight + 5) < this.scrollHeight) {
-            $(this).attr('title', $(this).text());       
-        }
-    });
+function rot13 (t){
+        return t.replace(/[a-z0-9]/ig, function(chr) {
+            var cc = chr.charCodeAt(0);
+            if (cc >= 65 && cc <= 90) cc = 65 + ((cc - 52) % 26);
+            else if (cc >= 97 && cc <= 122) cc = 97 + ((cc - 84) % 26);
+            else if (cc >= 48 && cc <= 57) cc = 48 + ((cc - 43) % 10);
+            return String.fromCharCode(cc);
+        });
 }
 $(function() {
+    jQuery.fn.overflowtip = function() {
+        return this.each(function() {
+            if (this.clientWidth < this.scrollWidth 
+              || (this.clientHeight + 5) < this.scrollHeight) {
+                $(this).attr('title', $(this).text());       
+            }
+        });
+    }
+    
    $('#nav_searchbox').bind('focus', function() {
        $(this).addClass('active'); 
        if (this.value == 'Search') {
@@ -38,15 +48,29 @@ $(function() {
    
    $('.overflowtip').overflowtip().tooltip({delay: 200});
    $('.tip, .related_link').tooltip({delay: 200, showURL: false});
+   $('a.maillink').attr('href', rot13('znvygb:zvpunry@zvpunryzhyyrl.pbz'));
    
 });
 </script>
 {% block headextra %}{% endblock %}
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10168543-3']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
 </head>
 <body>
-<div id="navbarbg"></div><div id="navbar"><img src="{{ MEDIA_URL }}images/logotype_bar.png" alt="openparliament.ca">
+<div id="navbarbg"></div><div id="navbar"><a href="/"><img src="{{ MEDIA_URL }}images/logotype_bar.png" alt="openparliament.ca"></a>
     <ul id="navlinks"><li {% block navlinks_mps %}{% endblock %}><a href="{% url parliament.politicians.views.current_mps %}">MPs</a></li><li {% block navlinks_bills %}{% endblock %}><a href="{% url parliament.bills.views.index %}">Bills</a></li><li {% block navlinks_debates %}{% endblock %}><a href="{% url parliament.hansards.views.index %}">Debates</li><li {% block navlinks_about %}{% endblock %}><a href="/about/">About</a></li></ul>
-    <div id="breadcrumbs">{% block breadcrumbs_all %}<a href="#">Home</a> {% block breadcrumbs %}{% endblock breadcrumbs %}{% endblock breadcrumbs_all %}</div>
+    <div id="breadcrumbs">{% block breadcrumbs_all %}<a href="/">Home</a> {% block breadcrumbs %}{% endblock breadcrumbs %}{% endblock breadcrumbs_all %}</div>
     <form action="{% url search %}" method="GET" id="nav_searchform"><div><input type="text" id="nav_searchbox" name="q" value="Search"><a id="nav_searchbutton"></a></div></form>
     </div>
 <div id="content_wrap"><div id="content" class="{% block contentclass %}{% endblock %}">
@@ -55,6 +79,6 @@ $(function() {
 
 {% endblock content %}
 </div><div class="clear"></div></div>
-<div id="footer"><p><a href="/about/">Not very copyright</a> 2010 openparliament.ca. Still very much under construction.</p></div>
+<div id="footer"><p><a href="/about/">Not really copyright</a> 2010 openparliament.ca. Still very much under construction. Questions, suggestions, complaints, epic poetry? <a class="maillink">E-mail</a>.</p></div>
 </body>
 </html>

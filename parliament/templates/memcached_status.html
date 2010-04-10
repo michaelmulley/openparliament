@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block pagetitle %}Memcached status{% endblock %}
+{% block pageheading %}Memcached status{% endblock %}
+{% block content %}
+
+<div class="focus">
+<ul>
+<li>memory usage:
+    {{ stats.bytes|filesizeformat }}
+<li>keys in cache:
+    {{ stats.curr_items }} of {{ stats.total_items }}
+<li>cache hits:
+    {{ stats.get_hits }} of {{ stats.cmd_get }}:
+    <b>{{ hit_rate }}%</b>
+<li>cache traffic:
+    {{ stats.bytes_read|filesizeformat }} in,
+    {{ stats.bytes_written|filesizeformat }} out
+<li>uptime: {{ stats.uptime }}
+</ul>
+</div>
+{% endblock %}
