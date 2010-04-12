@@ -62,7 +62,7 @@ ul.tile{list-style-type:none;margin:0 0 10px 0;padding:0;}
 .winner{font-weight:bold;}
 .code{font-family:"Courier New",Courier,monospaced;padding:0 2px;white-space:pre;}
 .feed{margin-left:3px;padding:0 0 0 19px;background:url("../images/feed-icon-14x14.png") no-repeat 0 50%;}
-ul.bulleted{list-style:none outside url('../images/bullet.png');margin:2px 0 2px 2px;padding:0;}
+ul.bulleted{list-style:none outside url('../images/bullet.png');margin:0 0 20px 0;padding:0;}
 .bulleted li{padding:0 0 4px 0;}
 form.signup table td,th{padding:5px 20px 5px 0;}
 form.signup input[type="text"]{font-size:15px;width:300px;}

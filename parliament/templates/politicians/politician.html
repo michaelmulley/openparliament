@@ -18,7 +18,15 @@
         {% if member.current %}
         <h3>Track {{ pol.name_given }}</h3>
         <ul class="bulleted"><li><a href="/alerts/signup/?politician={{ pol.id }}">Get e-mail</a> whenever {{ pol|heshe|lower }} speaks in the House</li>
-        <li>Subscribe to feeds of <a href="{% url politician_activity_feed pol_id=pol.id %}" class="feed">recent activity</a> (what you see to the right) or <a href="{% url politician_statement_feed pol_id=pol.id %}" class="feed">statements in the House</a></li></ul> {% endif %}       
+        <li>Subscribe to feeds of <a href="{% url politician_activity_feed pol_id=pol.id %}" class="feed">recent activity</a> (what you see to the right) or <a href="{% url politician_statement_feed pol_id=pol.id %}" class="feed">statements in the House</a></li></ul> {% endif %}   
+
+{% if pol.parlpage %}
+<h3>Elsewhere</h3>
+<ul class="bulleted">
+{% if pol.site %}<li><a href="{{ pol.site }}">{{ pol|hisher }} site</a></li>{% endif %}
+<li>On the <a href="{{ pol.parlpage }}">Parliament</a> site</li>
+{% if pol.info.twitter %}<li><a href="http://twitter.com/{{ pol.info.twitter }}">Twitter</a></li>{% endif %}
+</ul>{% endif %}
         </div>
     </div><div class="focus">
 {% if member %}<h2>{% if not member.current %}Last in Parliament {{ member.end_date|date:"F Y"}}, as {% endif %}<span class="trag prartytag_{{ member.party.slug|lower }}">{{ member.party.short_name }}</span> MP for {{ member.riding }}</h2>{% endif %}

@@ -10,7 +10,7 @@ from django.conf import settings
 from BeautifulSoup import BeautifulSoup
 
 from parliament.core import parsetools
-from parliament.core.utils import simple_function_cache
+from parliament.core.utils import simple_function_cache, memoize
 
 POL_LOOKUP_URL = 'http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=%d&Language=E'
 
@@ -287,6 +287,10 @@ class Politician(Person):
             return self.candidacy_set.order_by('-election__date').select_related('election')[0]
         except IndexError:
             return None
+            
+    @simple_function_cache
+    def info(self):
+        return dict([(i.schema, i.value) for i in self.politicianinfo_set.all()])
             
 class PoliticianInfo(models.Model):
     politician = models.ForeignKey(Politician)

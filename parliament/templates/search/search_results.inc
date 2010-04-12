@@ -1,5 +1,5 @@
 <div class="focus">
-<h2>Results {{ page.start_index }}-{{ page.end_index }} of {{ page.paginator.count }} for &ldquo;{{ query }}&rdquo;</h2>
+<h2>{% if page.paginator.count == 1%}The lone result{% else %}Results {{ page.start_index }}-{{ page.end_index }} of {{ page.paginator.count }}{% endif %} for &ldquo;{{ query }}&rdquo;</h2>
 </div>
 <div class="focus">{% include "pagination.inc" %}</div>
     {% for result in page.object_list %}
