@@ -136,7 +136,11 @@ class PoliticianActivityFeed(Feed):
         return r_title.search(activity.payload).group(1)
 
     def item_link(self, activity):
-        return r_link.search(activity.payload).group(1)
+        match = r_link.search(activity.payload)
+        if match:
+            return match.group(1)
+        else:
+            return ''
     
     def item_description(self, activity):
         payload = r_excerpt.sub('<br><span style="display: block; border-left: 1px dotted #AAAAAA; margin-left: 2em; padding-left: 1em; font-style: italic; margin-top: 5px;">', activity.payload)
