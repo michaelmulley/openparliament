@@ -9,18 +9,18 @@
 </div>
 {% if latest %}{# hack to evaluate latest #}{% endif %}
 {% with latest.0 as hansard %}{% with hansard.get_absolute_url as hurl %}
-<div class="context"><h2>{{ hansard.date|date:"F jS" }}</h2></div>
+<div class="clear"></div><div class="context"><h2>{{ hansard.date|date:"F jS" }}</h2></div>
 <div class="focus"><ul class="tile clearafter">
 {% for topic in hansard.topics %}<li class="four oneline overflowtip"><a href="{% url parliament.hansards.views.hansard hansard_id=hansard.id statement_seq=topic.1 %}">{{ topic.0 }}</a></li>{% endfor %}
 </ul></div>
 {% endwith %}{% endwith %}
-<div class="context"><h2>Recent</h2></div>
+<div class="clear"></div><div class="context"><h2>Recent</h2></div>
 <div class="focus">
 <ul class="tile clearafter">{% for hansard in latest %}
 {% if not forloop.first %}<li class="three"><a href="{{ hansard.get_absolute_url }}">{{ hansard.date|date:"F jS" }}</a></li>{% endif %}
 {% endfor %}</ul></div>
 
-<div class="context"><h2>Past</h2></div>
+<div class="clear"></div><div class="context"><h2>Past</h2></div>
 <div class="focus">
 <ul class="tile clearafter">{% for year in date_list %}
 <li class="three"><a href="{% url parliament.hansards.views.by_year year=year.year %}">{{ year.year }}</a></li>

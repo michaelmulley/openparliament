@@ -7,7 +7,7 @@
 {% block formerlink %}<div class="focus"><p>Looking for an ex-Member? See our list of <a href="{% url parliament.politicians.views.former_mps %}">former MPs</a> (since 1994).</p></div>{% endblock %}
 {% regroup object_list by riding.province as province_list %}
 {% for province in province_list %}
-<div class="context"><a name="{{ province.grouper }}"></a><h2>{{ province.grouper|expand_province }}</h2></div>
+<div class="clear"></div><div class="context"><a name="{{ province.grouper }}"></a><h2>{{ province.grouper|expand_province }}</h2></div>
 <div class="focus"><ul class="tile">{% for member in province.list %}
 <li class="three oneline"><a href="{{ member.politician.get_absolute_url }}" class="tip" title="{{ member.party.short_name }} for {{ member.riding.dashed_name }}">{{ member.politician }}</a></li>
 {% endfor %}

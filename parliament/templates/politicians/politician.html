@@ -13,7 +13,7 @@
 
 {% block content %}
 <div class="focus"><h1>{{ pol }}</h1></div>
-    <div class="context">
+    <div class="clear"></div><div class="context">
     {% if pol.headshot %}<div class="headshot"><img class="headshot" src="{% thumbnail pol.headshot 142x230 autocrop %}" alt=""><span>House of Commons photo</span>{% endif %}
         {% if member.current %}
         <h3>Track {{ pol.name_given }}</h3>

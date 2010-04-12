@@ -7,7 +7,7 @@
 <div class="focus"><p>This session began on {{ session.start|date:"F jS, Y" }}{% if session.end %} and ended on {{ session.end|date:"F jS, Y" }}{% endif %}.</p></div>
 {% regroup object_list by date.month as months %}
 {% for month in months %}
-<div class="context"><h2>{{ month.grouper|month_num }}</h2></div>
+<div class="clear"></div><div class="context"><h2>{{ month.grouper|month_num }}</h2></div>
 <div class="focus"><ul class="tile">{% for vote in month.list %}<li class="six twoline overflowtip"><a href="{% url parliament.bills.views.vote vote_id=vote.id %}">#{{ vote.number }}</a> <span class="tag voteresult_{{ vote.result }}">{{ vote.get_result_display }}</span> {{ vote.description }}</li>{% endfor %}</ul><div class="clear"></div></div>{% endfor %}
 
 {% endblock %}

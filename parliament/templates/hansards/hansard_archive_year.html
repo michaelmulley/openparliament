@@ -9,7 +9,7 @@
 
 {% regroup object_list by date.month as month_list %}
 {% for month in month_list %}
-<div class="context"><h2>{{ month.grouper|month_num }}</h2></div>
+<div class="clear"></div><div class="context"><h2>{{ month.grouper|month_num }}</h2></div>
 <div class="focus">
 <ul class="tile">{% for hansard in month.list %}
 <li class="three"><a href="{{ hansard.get_absolute_url }}">{{ hansard.date|date:"F jS" }}</a></li>

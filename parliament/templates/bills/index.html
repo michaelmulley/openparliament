@@ -9,14 +9,14 @@
 
 {% if forloop.counter == 2 %}{% block sessions_list %}
 <div class="focus"><p>Bills are separated according to the parliamentary session during which they were introduced. The bills above have been introduced in the current session. (Or reintroduced&mdash;a bill which has not been withdrawn is automatically reintroduced in subsequent sessions.)</p></div>
-<div class="context"><h2>Sessions</h2></div>
+<div class="clear"></div><div class="context"><h2>Sessions</h2></div>
 <div class="focus"><ul class="tile">
     {% for session in session_list %}{% if not forloop.first %}
 <li class="six oneline"><a href="{% url parliament.bills.views.bills_for_session session_id=session.id %}" class="tip" title="{{ session }}">{{ session.start|date:"F Y" }}&ndash;{{session.end|date:"F Y"}}</a></li>{% endif %}{% endfor %}
 </ul><div class="clear"></div></div>
 {% endblock %}{% endif %}
 {% if pm.grouper %}<div class="focus"><p>Private members' bills are introduced by MPs who are not cabinet ministers&mdash;opposition members, or sometimes government backbenchers. They rarely become law.</p></div>{% endif %}
-<div class="context"><h2>{% if pm.grouper %}Private members' bills{% else %}Government bills{% endif %}</h2></div><div class="focus">
+<div class="clear"></div><div class="context"><h2>{% if pm.grouper %}Private members' bills{% else %}Government bills{% endif %}</h2></div><div class="focus">
     <ul class="tile">
     {% for bill in pm.list %}<li class="twoline six overflowtip"><a href="{{ bill.get_absolute_url }}">{{ bill.number }}</a> {% if bill.law %}<span class="tag bill_law">Law</span> {% endif %}{{ bill.name|strip_act }}</li>{% endfor %}
     </ul><div class="clear"></div>
