@@ -43,9 +43,9 @@ class SearchPaginator(object):
             self.end_index = self.hits
         
         if allowable_fields:
-            good_params = dict([(k, v) for (k, v) in params.items() if k in allowable_fields])
+            good_params = dict([(k.encode('utf8'), v.encode('utf8')) for (k, v) in params.items() if k in allowable_fields])
         else:
-            good_params = dict([(k, v) for (k, v) in params.items() if k != 'page'])
+            good_params = dict([(k.encode('utf8'), v.encode('utf8')) for (k, v) in params.items() if k != 'page'])
         self.querystring = mark_safe(urllib.urlencode(good_params))
             
     
