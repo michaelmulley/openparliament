@@ -49,7 +49,7 @@ def signup(request):
                 'activate_url': activate_url,
             })
             t = loader.get_template("alerts/activate.txt")
-            send_mail(subject=u'Confirmation required: E-mail alerts about {{ pol.name }}',
+            send_mail(subject=u'Confirmation required: E-mail alerts about %s' % pol.name,
                 message=t.render(activation_context),
                 from_email='alerts@openparliament.ca',
                 recipient_list=[alert.email])
