@@ -13,7 +13,7 @@ from parliament.core import parsetools
 
 def search(request):
     PER_PAGE = getattr(settings, 'SEARCH_RESULTS_PER_PAGE', 10)
-    if 'q' in request.GET:
+    if 'q' in request.GET and request.GET['q']:
         if not 'page' in request.GET:
             resp = try_postcode_first(request)
             if resp: return resp
