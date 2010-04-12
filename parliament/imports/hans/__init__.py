@@ -1,4 +1,13 @@
 # coding: utf8
+"""Parse the Hansards of the House of Commons.
+
+This module is organized like so:
+__init__.py - utility functions, simple parse interface
+common.py - infrastructure used in the parsers, i.e. regexes
+current.py - parser for the Hansard format used from 2006 to the present
+old.py - (fairly crufty) parser for the format used from 1994 to 2006
+
+"""
 import re, urllib, urllib2, datetime, sys, codecs
 import pdb
 

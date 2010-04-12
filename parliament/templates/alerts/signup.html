@@ -1,0 +1,30 @@
+{% extends "politicians/base.html" %}
+{% load ours %}
+
+{% block content %}
+
+{% if activating %}
+<div class="focus">
+    {% if key_error %}<p>There was a problem with your activation link. Try copying and pasting it from your e-mail program to the address bar above.</p>{% else %}<h3>You're signed up.</h3><p>We've confirmed your e-mail, and we'll send you a message when {{ pol.name }} speaks in the House.</p><p>Thanks!</p>{% endif %}
+</div>
+{% else %}{# else activating #}
+{% if success %}
+<div class="focus"><p>We've got your e-mail. <strong>But there's one more step.</strong></p>
+<p>Any second now, you should receive a confirmation e-mail from us. It'll contain a link you need to click on in order to activate your alert.</p>
+<p>If you don't receive this confirmation within a few minutes, check your Junk or Spam e-mail folder. (If it's there, you should add <span class="code">alerts@openparliament.ca</span> to your address book to prevent our future e-mails from being junked.) If you still can't find it, try signing up again.</p>
+<p>Thanks!</p></div>
+{% else %}
+<div class="context"><h2>What you'll get</h2></div>
+<div class="focus">
+    <p>A message whenever {{ pol.name }} speaks during the debates of the House, telling you exactly what {{ pol|heshe|lower }} said. No more than one e-mail per day. The e-mail gets sent as soon as we process a given day's debates, which is usually the day after but depends on when Parliament posts the transcript.</p></div>
+<div class="context"><h2>Sign up</h2></div>
+<div class="focus"><form class="signup" action="." method="POST">
+    <table>{{ form }}
+        <tr><td></td><td><input type="submit" value="Sign up"></td></tr></table></form>
+</div>
+{% endif %}
+{% endif %}{# endif activating #}
+
+{% endblock content %}
+
+{% block breadcrumbs %}{{ block.super }} <a href="{% url parliament.politicians.views.current_mps %}">MPs</a> {% if not pol.latest_member.current %}<a href="{% url parliament.politicians.views.former_mps %}">Former</a> <a  href="{% url parliament.politicians.views.former_mps %}#{{ pol.latest_member.riding.province }}">{% else %}<a href="{% url parliament.politicians.views.current_mps %}#{{ pol.latest_member.riding.province }}">{% endif %}{{ pol.latest_member.riding.province|expand_province }}</a> <a href="{{ pol.get_absolute_url }}">{{ pol.name}}</a> Alerts{% endblock %}

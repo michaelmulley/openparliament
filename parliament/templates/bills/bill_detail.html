@@ -1,4 +1,5 @@
 {% extends "bills/base.html" %}
+{% load ours %}
 {% block contentclass %}context_3{% endblock %}
 {% block breadcrumbs %}{{ block.super }}<a href="{% url parliament.bills.views.index %}">Bills</a>
 <a href="{% url parliament.bills.views.bills_for_session session_id=bill.session.id %}">{{ bill.session }}</a> {{ title }}{% endblock %}
@@ -8,6 +9,8 @@
 <div class="focus">
 <h3>{{ bill.name }}</h3>
 {% if bill.session.end %}<p>This bill was last introduced in the {{ bill.session }}, which ended in {{ bill.session.end|date:"F Y"}}.</p>{% endif %}
+{% with bill.sessions.all as sessions %}{% if sessions|length > 1 %}<p>This bill was previously introduced in {{ sessions|list_filter:bill.session|list_prefix:"the "|english_list:"; " }}.</p>{% endif %}{% endwith %}
+{% if bill.number_only == 1 %}<p>This bill, the first introduced in any session, is a <a href="http://en.wikipedia.org/wiki/Bills_C-1_and_S-1">formal tradition</a> rather than proposed legislation. (It has nothing to do with oaths of office. The Senate equivalent is called <em>An Act relating to Railways</em> and&mdash;you guessed it!&mdash;in no way relates to railways.)</p>{% endif %}
 </div>
 {% if bill.sponsor_politician %}
 <div class="context"><h2>Sponsor</h2></div>

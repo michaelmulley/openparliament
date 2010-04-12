@@ -1,5 +1,12 @@
-"""Parser for the Hansard format used from 1994 to 2006."""
+"""Parse the Hansards of the House of Commons.
 
+This module is organized like so:
+__init__.py - utility functions, simple parse interface
+common.py - infrastructure used in the parsers, i.e. regexes
+current.py - parser for the Hansard format used from 2006 to the present
+old.py - (fairly crufty) parser for the format used from 1994 to 2006
+
+"""
 from parliament.imports.hans.common import *
 
 r_bill = re.compile(r'[bB]ill C-(\d+)')

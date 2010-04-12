@@ -14,7 +14,6 @@ MANAGERS = ADMINS
 HAYSTACK_SEARCH_ENGINE = 'solr'
 HAYSTACK_SITECONF = 'parliament.search_sites'
 
-CACHE_MIDDLEWARE_SECONDS = 60 * 60 * 3
 CACHE_MIDDLEWARE_KEY_PREFIX = 'parl'
 
 # Local time zone for this installation. Choices can be found here:
@@ -65,7 +64,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
@@ -105,6 +104,7 @@ INSTALLED_APPS = (
     'parliament.bills',
     'parliament.politicians',
     'parliament.activity',
+    'parliament.alerts',
 )
 
 if DEBUG:

@@ -30,6 +30,12 @@ class PoliticianInfoOptions(admin.ModelAdmin):
     list_display = ('politician', 'schema', 'value')
     search_fields = ('politician__name', 'schema')
     
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "politician":
+            kwargs["queryset"] = Poltician.objects.elected()
+            return db_field.formfield(**kwargs)
+        return super(MyModelAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+    
 class SiteNewsOptions(admin.ModelAdmin):
     list_display = ('title', 'date', 'active')
 

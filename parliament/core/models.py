@@ -294,7 +294,7 @@ class PoliticianInfo(models.Model):
     value = models.CharField(max_length=500)
 
     def __unicode__(self):
-        return "%s: %s" % (self.politician, self.schema)
+        return u"%s: %s" % (self.politician, self.schema)
         
     @property
     def int_value(self):

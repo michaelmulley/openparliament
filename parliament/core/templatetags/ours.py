@@ -1,4 +1,4 @@
-import datetime, re
+import datetime, re, types
 
 from django import template
 
@@ -17,7 +17,7 @@ def heshe(pol):
     elif pol.gender =='M':
         return 'He'
     else:
-        return 'They'
+        return 'He/she'
         
 @register.filter(name='hisher')
 def heshe(pol):
@@ -64,3 +64,24 @@ def time_since(value):
         return 'Three months ago'
     else:
         return 'More than three months ago'
+        
+@register.filter(name='english_list')
+def english_list(value, arg=', '):
+    if not type(value) == types.ListType:
+        raise Exception("Tag english_list takes a list as argument")
+    if len(value) == 1:
+        return "%s" % value[0]
+    elif len(value) == 0:
+        return ''
+    elif len(value) == 2:
+        return "%s and %s" % (value[0], value[1])
+    else:
+        return "%s%s and %s" % (arg.join(value[0:-1]), arg, value[-1])
+        
+@register.filter(name='list_prefix')
+def list_prefix(value, arg):
+    return ["%s%s" % (arg, i) for i in value]
+    
+@register.filter(name='list_filter')
+def list_filter(value, arg):
+    return filter(lambda x: x != arg, value)

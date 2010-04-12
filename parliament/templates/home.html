@@ -11,7 +11,7 @@
     <div class="focus">
     <p>Info on what your representatives are doing in Ottawa can be hard to find and use. <strong>We're trying to make it easy.</strong></p>
     <p>Browse <a href="{% url parliament.politicians.views.current_mps %}">MPs</a>, or find someone quickly by entering
-        a name or postal code above. See what your representatives are <a href="{% url parliament.hansards.views.index %}">saying</a>, and what <a href="{% url parliament.bills.views.index %}">laws</a> they're proposing. And read more about <a href="/about/">what we're up to</a>.</p></div>
+        a name or postal code above. See what your representatives are <a href="{% url parliament.hansards.views.index %}">saying</a>, and what <a href="{% url parliament.bills.views.index %}">laws</a> they're proposing. Poke around.</p></div>
         <div class="context"><h2>What they're talking about</h2></div>
         <div class="focus"><p>The House of Commons last sat on <strong>{{ latest_hansard.date|date:"F jS"}}</strong>. These are the topics that were discussed.</p><div class="spacer"></div><ul class="tile clearafter">
         {% for topic in latest_hansard.topics %}<li class="four oneline overflowtip"><a href="{% url parliament.hansards.views.hansard hansard_id=latest_hansard.id statement_seq=topic.1 %}">{{ topic.0 }}</a></li>{% endfor %}

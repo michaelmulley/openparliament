@@ -1,0 +1,15 @@
+Hi,
+
+Someone -- hopefully you! -- signed up to receive e-mail alerts about
+{{ pol.name }} at openparliament.ca.
+
+To confirm that you'd like to receive these alerts, just click on the following
+link, or paste it into your Web browser:
+
+http://openparliament.ca{{ activate_url }}
+
+If you don't actually want to receive alerts, you can safely ignore this
+message.
+
+Thanks,
+openparliament.ca

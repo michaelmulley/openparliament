@@ -26,6 +26,7 @@ DATABASES = {
 HANSARD_CACHE_DIR = '/hansard-cache/'
 
 CACHE_BACKEND = 'dummy://'
+CACHE_MIDDLEWARE_SECONDS = 60 * 60 * 3
 
 # Make this unique, and don't share it with anybody.
 SECRET_KEY = '!jx@8jb$ak2gz$164*1sb8q700r-^f_d3mugke#x3384g_(u7t'
