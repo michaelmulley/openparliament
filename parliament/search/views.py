@@ -9,6 +9,7 @@ from parliament.core.models import Politician, Session, ElectedMember, Riding, I
 from parliament.hansards.models import Statement
 from parliament.core.utils import postcode_to_edid
 from parliament.search.utils import autohighlight, SearchPaginator
+from parliament.core import parsetools
 
 def search(request):
     PER_PAGE = getattr(settings, 'SEARCH_RESULTS_PER_PAGE', 10)
@@ -17,7 +18,7 @@ def search(request):
             resp = try_postcode_first(request)
             if resp: return resp
             
-        query = request.GET['q'].strip()
+        query = parsetools.removeAccents(request.GET['q'].strip())
         solr = pysolr.Solr(settings.HAYSTACK_SOLR_URL)
         
         if 'page' in request.GET:
