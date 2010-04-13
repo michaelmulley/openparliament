@@ -91,9 +91,9 @@ ul.errorlist li{padding:4px 10px;color:white;font-weight:bold;}
 .voteresult_N{background-color:#FF9093;}
 .partytag_liberal{background-color:#f6a7a5;}
 .partytag_bloc{background-color:#a7ecf6;}
-.partytag_cpc,.partytag_alliance, .partytag_conservative{background-color:#acd0f6;}
-.partytag_progressive-conservative{background-color: #75acff;}
-.partytag_reform {background-color: #38cc7a;}
+.partytag_cpc,.partytag_alliance, .partytag_canadian-alliance, .partytag_conservative, .partytag_progressive-conservative, .partytag_pc {background-color:#acd0f6;}
+/* .partytag_progressive-conservative{background-color: #75acff;} */
+.partytag_reform {background-color: #A9FA98;}
 .partytag_ndp{background-color:#f6cfa5;}
 .activity_news{background-color:#F1F28D;}
 .activity_statement{background-color:#ddb8a2;}
