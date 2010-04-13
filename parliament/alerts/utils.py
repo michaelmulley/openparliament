@@ -7,7 +7,7 @@ from parliament.alerts.models import PoliticianAlert
 from parliament.core.templatetags.ours import english_list
 
 def alerts_for_hansard(hansard):
-    alerts = PoliticianAlert.objects.all()
+    alerts = PoliticianAlert.public.all()
     alert_set = set([alert.politician_id for alert in alerts])
     
     statements = defaultdict(list)
