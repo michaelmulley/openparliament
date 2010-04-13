@@ -17,6 +17,8 @@ def search(request):
         if not 'page' in request.GET:
             resp = try_postcode_first(request)
             if resp: return resp
+            resp = try_politician_first(request)
+            if resp: return resp
             
         query = parsetools.removeAccents(request.GET['q'].strip())
         solr = pysolr.Solr(settings.HAYSTACK_SOLR_URL)
@@ -69,3 +71,11 @@ def try_postcode_first(request):
             except ElectedMember.MultipleObjectsReturned:
                 raise Exception("Too many MPs for postcode %s" % postcode)
     return False
+    
+def try_politician_first(request):
+    try:
+        pol = Politician.objects.getByName(request.GET['q'].strip(), session=Session.objects.current(), saveAlternate=False, strictMatch=True)
+        if pol:
+            return HttpResponseRedirect(pol.get_absolute_url())
+    except:
+        return None

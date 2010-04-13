@@ -107,10 +107,16 @@ class PoliticianManager(models.Manager):
     def filterByName(self, name):
         return [self.get_query_set().get(pk=x.target_id) for x in InternalXref.objects.filter(schema='pol_names', text_value=parsetools.normalizeName(name))]
     
-    def getByName(self, name, session=None, riding=None, election=None, party=None):
+    def getByName(self, name, session=None, riding=None, election=None, party=None, saveAlternate=True, strictMatch=False):
         """ Return a Politician by name. Uses a bunch of methods to try and deal with variations in names.
         If given any of a session, riding, election, or party, returns only politicians who match.
-        If given both session and riding, tries to match the name more laxly. """
+        If given session and optinally riding, tries to match the name more laxly.
+        
+        saveAlternate: If we have Thomas Mulcair and we match, via session/riding, to Tom Mulcair, save Tom
+            in the alternate names table
+        strictMatch: Even if given a session, don't try last-name-only matching.
+        
+        """
         
         # Alternate names for a pol are in the InternalXref table. Assemble a list of possibilities
         poss = InternalXref.objects.filter(schema='pol_names', text_value=parsetools.normalizeName(name))
@@ -141,7 +147,7 @@ class PoliticianManager(models.Manager):
                     raise Politician.MultipleObjectsReturned(name)
                 else:
                     return self.get_query_set().get(pk=poss[0].target_id)
-        if session:
+        if session and not strictMatch:
             # We couldn't find the pol, but we have the session and riding, so let's give this one more shot
             # We'll try matching only on last name
             match = re.search(r'\s([A-Z][\w-]+)$', name.strip()) # very naive lastname matching
@@ -156,7 +162,8 @@ class PoliticianManager(models.Manager):
                 elif len(pols) == 1:
                     # yes!
                     pol = pols[0]
-                    pol.addAlternateName(name) # save the name we were given as an alternate
+                    if saveAlternate:
+                        pol.addAlternateName(name) # save the name we were given as an alternate
                     return pol
         raise Politician.DoesNotExist("Could not find politician named %s" % name)
         
