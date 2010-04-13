@@ -7,16 +7,16 @@
 {% block content %}
 <div class="focus">
     <form action="/search/" method="GET"><div><input type="text" id="home_searchbox" name="q"><input type="submit" value="Search" id="searchbutton"></div></form></div>
-    <div class="context"><h2>What's this about?</h2></div>
+    <div class="clear"></div><div class="context"><h2>What's this about?</h2></div>
     <div class="focus">
     <p>Info on what your representatives are doing in Ottawa can be hard to find and use. <strong>We're trying to make it easy.</strong></p>
     <p>Browse <a href="{% url parliament.politicians.views.current_mps %}">MPs</a>, or find someone quickly by entering
         a name or postal code above. See what your representatives are <a href="{% url parliament.hansards.views.index %}">saying</a>, and what <a href="{% url parliament.bills.views.index %}">laws</a> they're proposing. Poke around.</p></div>
-        <div class="context"><h2>What they're talking about</h2></div>
+        <div class="clear"></div><div class="context"><h2>What they're talking about</h2></div>
         <div class="focus"><p>The House of Commons last sat on <strong>{{ latest_hansard.date|date:"F jS"}}</strong>. These are the topics that were discussed.</p><div class="spacer"></div><ul class="tile clearafter">
         {% for topic in latest_hansard.topics %}<li class="four oneline overflowtip"><a href="{% url parliament.hansards.views.hansard hansard_id=latest_hansard.id statement_seq=topic.1 %}">{{ topic.0 }}</a></li>{% endfor %}
         </ul><div class="clear"></div></div>
-<div class="context"><h2>What's new around here</h2></div>
+<div class="clear"></div><div class="context"><h2>What's new around here</h2></div>
 <div class="focus">{% for item in sitenews %}
 <h3>{{ item.title }} <span class="heading_context">{{ item.date|date:"F jS"}}</span></h3>
 {{ item.text|markdown }}{% endfor %}</div>
@@ -40,4 +40,5 @@ $(function() {
    });
 });
 </script>
+<meta name="description" content="Info on what your representatives are doing in Ottawa can be hard to find and use. We're trying to make it easy.">
 {% endblock %}
