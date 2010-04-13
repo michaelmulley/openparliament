@@ -36,14 +36,10 @@ def alerts_for_hansard(hansard):
             }
             subj = subj[:200]
             try:
-                if 'michaelmulley' in alert.email:
-                    send_mail(subject=subj,
-                        message=msg,
-                        from_email='alerts@openparliament.ca',
-                        recipient_list=[alert.email])
-                else:
-                    print alert.email
-                    print msg
+                send_mail(subject=subj,
+                    message=msg,
+                    from_email='alerts@openparliament.ca',
+                    recipient_list=[alert.email])
             except Exception, e:
                 # FIXME logging
                 print "Error sending alert %s" % alert.id

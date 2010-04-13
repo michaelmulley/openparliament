@@ -9,6 +9,7 @@ from parliament.core.models import Politician, Session
 from parliament.core import datautil
 from parliament.hansards.models import Hansard
 from parliament.activity import utils as activityutils
+from parliament.alerts import utils as alertutils
 from parliament.activity.models import Activity
 
 @transaction.commit_on_success
@@ -46,5 +47,8 @@ def hansards():
     datautil.hansards_from_calendar()
     for hansard in Hansard.objects.all().annotate(scount=models.Count('statement')).exclude(scount__gt=0).order_by('date').iterator():
         hans.parseAndSave(hansard)
+        # now reload the Hansard to get the date
+        hansard = Hansard.objects.get(pk=hansard.id)
         hansard.save_activity()
+        alertutils.alerts_for_hansard(hansard)
     return True
