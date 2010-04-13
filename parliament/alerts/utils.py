@@ -19,8 +19,8 @@ def alerts_for_hansard(hansard):
             topics[pol_id].append(statement.topic)
             
     for alert in alerts:
+        pol_id = alert.politician_id
         if statements[pol_id]:
-            pol_id = alert.politician_id
             pol = alert.politician
             c = Context({
                 'alert': alert,
