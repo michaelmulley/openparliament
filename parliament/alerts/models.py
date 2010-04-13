@@ -1,6 +1,9 @@
 import datetime
+import hashlib
+import base64
 
 from django.db import models
+from django.conf import settings
 
 from parliament.core.models import Politician
 
@@ -18,3 +21,14 @@ class PoliticianAlert(models.Model):
     
     objects = models.Manager()
     public = ActiveManager()
+    
+    def get_key(self):
+        h = hashlib.sha1()
+        h.update(str(self.id))
+        h.update(self.email)
+        h.update(settings.SECRET_KEY)
+        return base64.urlsafe_b64encode(h.digest())
+        
+    @models.permalink
+    def get_unsubscribe_url(self):
+        return ('parliament.alerts.views.unsubscribe', [], {'alert_id': self.id, 'key': self.get_key()})

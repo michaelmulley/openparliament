@@ -36,11 +36,7 @@ def signup(request):
             except PoliticianAlert.DoesNotExist:
                 alert = form.save()
             
-            h = hashlib.sha1()
-            h.update(str(alert.id))
-            h.update(alert.email)
-            h.update(settings.SECRET_KEY)
-            key = base64.urlsafe_b64encode(h.digest())
+            key = alert.get_key()
             activate_url = urlresolvers.reverse('parliament.alerts.views.activate',
                 kwargs={'alert_id': alert.id, 'key': key}) 
             activation_context = RequestContext(request, {
@@ -71,11 +67,7 @@ def activate(request, alert_id, key):
     
     alert = get_object_or_404(PoliticianAlert, pk=alert_id)
     
-    h = hashlib.sha1()
-    h.update(str(alert.id))
-    h.update(alert.email)
-    h.update(settings.SECRET_KEY)
-    correct_key = base64.urlsafe_b64encode(h.digest())
+    correct_key = alert.get_key()
     if correct_key != key:
         key_error = True
     else:
@@ -89,7 +81,26 @@ def activate(request, alert_id, key):
         'activating': True,
         'key_error': key_error
     })
-    t = loader.get_template("alerts/signup.html")
+    t = loader.get_template("alerts/activate.html")
+    return HttpResponse(t.render(c))
+    
+def unsubscribe(request, alert_id, key):
+    alert = get_object_or_404(PoliticianAlert, pk=alert_id)
+    
+    correct_key = alert.get_key()
+    if correct_key != key:
+        key_error = True
+    else:
+        key_error = False
+        alert.active = False
+        alert.save()
+        
+    c = RequestContext(request, {
+        'pol': alert.politician,
+        'title': 'E-mail alerts for %s' % alert.politician.name,
+        'key_error': key_error,
+    })
+    t = loader.get_template("alerts/unsubscribe.html")
     return HttpResponse(t.render(c))
     
     

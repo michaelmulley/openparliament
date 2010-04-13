@@ -25,7 +25,7 @@
 <ul class="bulleted">
 {% if pol.site %}<li><a href="{{ pol.site }}">{{ pol|hisher }} site</a></li>{% endif %}
 <li>On the <a href="{{ pol.parlpage }}">Parliament</a> site</li>
-{% if pol.info.twitter %}<li><a href="http://twitter.com/{{ pol.info.twitter }}">Twitter</a></li>{% endif %}
+{% if pol.info.twitter %}<li><a href="http://twitter.com/{{ pol.info.twitter }}">Twitter</a> (and Twitter messages <a href="http://twitter.com/search?q=%40{{ pol.info.twitter }}">to {{ pol|himher|lower }}</a>)</li>{% endif %}
 </ul>{% endif %}
         </div>
     </div><div class="focus">

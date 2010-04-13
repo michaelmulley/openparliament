@@ -3,11 +3,6 @@
 
 {% block content %}
 
-{% if activating %}
-<div class="focus">
-    {% if key_error %}<p>There was a problem with your activation link. Try copying and pasting it from your e-mail program to the address bar above.</p>{% else %}<h3>You're signed up.</h3><p>We've confirmed your e-mail, and we'll send you a message when {{ pol.name }} speaks in the House.</p><p>Thanks!</p>{% endif %}
-</div>
-{% else %}{# else activating #}
 {% if success %}
 <div class="focus"><p>We've got your e-mail. <strong>But there's one more step.</strong></p>
 <p>Any second now, you should receive a confirmation e-mail from us. It'll contain a link you need to click on in order to activate your alert.</p>
@@ -23,7 +18,6 @@
         <tr><td></td><td><input type="submit" value="Sign up"></td></tr></table></form>
 </div>
 {% endif %}
-{% endif %}{# endif activating #}
 
 {% endblock content %}
 

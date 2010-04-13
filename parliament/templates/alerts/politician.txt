@@ -1,0 +1,28 @@
+{% autoescape off %}*****
+Hi! This alert feature is brand new. Even newer than the rest of the site.
+So it's still plain text. I'll be switching to a prettier e-mail format, um,
+as soon as I build that feature. A few days, probably. Thanks for being
+one of the first people to try these alerts!
+*****
+
+Here's what {{ alert.politician.name }} had to say in the House of Commons.
+
+{% for statement in statements %}
+{{ statement.time|date:"F jS, P" }}
+{{ statement.topic }}
+http://openparliament.ca{{ statement.get_absolute_url }}
+----------------------------------------------------------
+
+{{ statement.text_plain|wordwrap:79 }}
+
+{% endfor %}
+
+************
+You're receiving this e-mail because you signed up at openparliament.ca to
+receive alerts about {{ alert.politician.name }}. If you no longer want to
+receive these alerts, just click the link below or paste it into your browser
+http://openparliament.ca{{ alert.get_unsubscribe_url }}
+
+love,
+openparliament.ca
+{% endautoescape %}
