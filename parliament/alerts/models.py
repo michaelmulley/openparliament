@@ -6,11 +6,7 @@ from django.db import models
 from django.conf import settings
 
 from parliament.core.models import Politician
-
-class ActiveManager(models.Manager):
-    
-    def get_query_set(self):
-        return super(ActiveManager, self).get_query_set().filter(active=True)
+from parliament.core.utils import ActiveManager
 
 class PoliticianAlert(models.Model):
     

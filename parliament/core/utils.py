@@ -2,6 +2,8 @@ import urllib, urllib2
 import re
 import httplib2
 
+from django.db import models
+
 def postcode_to_edid(postcode):
     # First try Elections Canada
     try:
@@ -57,3 +59,8 @@ class memoize:
         if not self.memo.has_key(args):
             self.memo[args] = self.fn(*args)
         return self.memo[args]
+        
+class ActiveManager(models.Manager):
+
+    def get_query_set(self):
+        return super(ActiveManager, self).get_query_set().filter(active=True)

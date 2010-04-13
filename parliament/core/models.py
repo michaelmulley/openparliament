@@ -10,7 +10,7 @@ from django.conf import settings
 from BeautifulSoup import BeautifulSoup
 
 from parliament.core import parsetools
-from parliament.core.utils import simple_function_cache, memoize
+from parliament.core.utils import simple_function_cache, memoize, ActiveManager
 
 POL_LOOKUP_URL = 'http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=%d&Language=E'
 
@@ -456,6 +456,9 @@ class SiteNews(models.Model):
     title = models.CharField(max_length=200)
     text = models.TextField()
     active = models.BooleanField(default=True)
+    
+    objects = models.Manager()
+    public = ActiveManager()
     
     class Meta:
         ordering = ('-date',)

@@ -4,6 +4,7 @@ from django.contrib import admin, databrowse
 admin.autodiscover()
 
 from parliament.core.sitemap import sitemaps
+from parliament.core.views import SiteNewsFeed
 
 urlpatterns = patterns('',
     (r'^search/', include('parliament.search.urls')),
@@ -15,6 +16,7 @@ urlpatterns = patterns('',
     (r'^api/', include('parliament.api.urls')),
     (r'^$', 'parliament.core.views.home'),
     (r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
+    url(r'^sitenews/rss/$', SiteNewsFeed(), name='sitenews_feed'),
 )
 
 if settings.DEBUG:
