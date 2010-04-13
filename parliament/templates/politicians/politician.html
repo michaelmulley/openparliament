@@ -6,9 +6,10 @@
 <link rel="alternate" type="application/rss+xml" title="{{ pol.name }}: Recent Activity" href="{% url politician_activity_feed pol_id=pol.id %}">
 {% endif %}
 {% include "pagination.js.inc" %}
+<meta name="description" content="Search through {{ pol.name }}'s recent activity, votes, and speeches in the House.">
 {% endblock headextra %}
 {% block contentclass %}context_4 politician{% endblock %}
-{% block pagetitle %}{{ pol }}{% if member.current %}, {{ member.party.short_name }} MP{% endif %}{% endblock %}
+{% block pagetitle %}{{ pol }}{% if member.current %}, {{ member.party.short_name }} MP for {{ member.party.riding.name }}{% endif %}{% endblock %}
 {% block breadcrumbs %}{{ block.super }} <a href="{% url parliament.politicians.views.current_mps %}">MPs</a> {% if not member.current %}<a href="{% url parliament.politicians.views.former_mps %}">Former</a> <a  href="{% url parliament.politicians.views.former_mps %}#{{ member.riding.province }}">{% else %}<a href="{% url parliament.politicians.views.current_mps %}#{{ member.riding.province }}">{% endif %}{{ member.riding.province|expand_province }}</a> {{ pol.name}}{% endblock %}
 
 {% block content %}
@@ -57,3 +58,4 @@
 
 </div>
 {% endblock %}
+{% block footerextra %}News articles via Google News.{% endblock %}

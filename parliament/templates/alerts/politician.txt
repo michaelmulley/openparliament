@@ -19,8 +19,9 @@ http://openparliament.ca{{ statement.get_absolute_url }}
 
 ************
 You're receiving this e-mail because you signed up at openparliament.ca to
-receive alerts about {{ alert.politician.name }}. If you no longer want to
-receive these alerts, just click the link below or paste it into your browser
+receive alerts about {{ alert.politician.name }}.
+
+If you no longer want to receive these messages, just follow the link below
 http://openparliament.ca{{ alert.get_unsubscribe_url }}
 
 love,

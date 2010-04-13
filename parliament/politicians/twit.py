@@ -1,5 +1,6 @@
 import email
 import datetime
+import re
 
 from django.conf import settings
 import twitter
@@ -21,6 +22,9 @@ def save_tweets():
             )
         ) # fuck you, time formats
         guid = 'twit_%s' % status['id']
+        # Twitter apparently escapes < > but not & " 
+        # so I'm clunkily unescaping lt and gt then reescaping in the template
+        text = status['text'].replace('&lt;', '<').replace('&gt;', '>')
         activity.save_activity({'text': status['text']}, politician=pol,
             date=date, guid=guid, variety='twitter')
         

@@ -1,8 +1,16 @@
 import urllib, urllib2
 import re
+import httplib2
+
+def postcode_to_edid(postcode):
+    # First try Elections Canada
+    try:
+        return postcode_to_edid_ec(postcode)
+    except:
+        return postcode_to_edid_htv(postcode)
 
 HTV_API_KEY = 'JJLSGQVBFW'
-def postcode_to_edid(postcode):
+def postcode_to_edid_htv(postcode):
     url = 'http://howdtheyvote.ca/api.php?' + urllib.urlencode({
         'call': 'findriding',
         'key': HTV_API_KEY,
@@ -17,6 +25,15 @@ def postcode_to_edid(postcode):
     if match:
         return int(match.group(1))
     return None
+    
+EC_POSTCODE_URL = 'http://elections.ca/scripts/pss/FindED.aspx?L=e&PC=%s'
+r_ec_edid = re.compile(r'&ED=(\d{5})&')
+def postcode_to_edid_ec(postcode):
+    h = httplib2.Http(timeout=1)
+    h.follow_redirects = False
+    (response, content) = h.request(EC_POSTCODE_URL % postcode.replace(' ', ''))
+    match = r_ec_edid.search(response['location'])
+    return int(match.group(1))
     
 def simple_function_cache(target):
     
