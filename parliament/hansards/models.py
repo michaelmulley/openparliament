@@ -1,4 +1,5 @@
 import gzip, sys, os, re
+import datetime
 
 from django.db import models
 from django.conf import settings
@@ -155,6 +156,10 @@ class Statement(models.Model):
                 bill_ids.add(match.group(2))
         if bill_ids:
             self.bills.add(*list(bill_ids))
+            
+    @property
+    def date(self):
+        return datetime.date(self.time.year, self.time.month, self.time.day)
     
     @models.permalink
     def get_absolute_url(self):

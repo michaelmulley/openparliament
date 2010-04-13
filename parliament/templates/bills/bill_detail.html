@@ -3,7 +3,9 @@
 {% block contentclass %}context_3{% endblock %}
 {% block breadcrumbs %}{{ block.super }}<a href="{% url parliament.bills.views.index %}">Bills</a>
 <a href="{% url parliament.bills.views.bills_for_session session_id=bill.session.id %}">{{ bill.session }}</a> {{ title }}{% endblock %}
-{% block headextra %}{% include "pagination.js.inc" %}{% endblock %}
+{% block headextra %}{% include "pagination.js.inc" %}
+{% if not bill.session.end %}<link rel="alternate" type="application/rss+xml" title="Speeches about Bill {{ bill.number }}" href="{% url bill_feed bill_id=bill.id %}">{% endif %}
+{% endblock %}
 {% block content %}
 
 <div class="focus">
