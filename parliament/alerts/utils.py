@@ -16,7 +16,8 @@ def alerts_for_hansard(hansard):
         pol_id = statement.politician_id
         if pol_id in alert_set:
             statements[pol_id].append(statement)
-            topics[pol_id].append(statement.topic)
+            if statement.topic not in topics[pol_id]:
+                topics[pol_id].append(statement.topic)
             
     for alert in alerts:
         pol_id = alert.politician_id
