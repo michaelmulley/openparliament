@@ -58,12 +58,12 @@ def parseAndSave(arg):
     
     statements = parser.parse()
     for statement in statements:
-        try:
-            statement.save()
-            statement.save_relationships()
-        except Exception, e:
-            print e
-            raise Exception("Error %s saving statement: %s, %s" % (e, statement.who, statement.text))
+        #try:
+        statement.save()
+        statement.save_relationships()
+        #except Exception, e:
+        #    print "Error saving statement: %s %s" % (statement.sequence, statement.who)
+        #    raise e 
     return True
 
 def _getHansardNumber(page):

@@ -29,6 +29,8 @@ def signup(request):
     pol = get_object_or_404(Politician, pk=request.REQUEST['politician'])
     success = False
     if request.method == 'POST':
+        if 'email' in request.POST:
+            request.POST['email'] = request.POST['email'].strip() # hack
         form = PoliticianAlertForm(request.POST)
         if form.is_valid():
             try:

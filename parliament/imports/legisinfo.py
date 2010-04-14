@@ -2,6 +2,7 @@ import urllib, urllib2, re
 
 from BeautifulSoup import BeautifulSoup
 from django.db import models, transaction
+from django.core.mail import mail_admins
 import feedparser
 
 from parliament.core.models import InternalXref, Politician, ElectedMember, Session
@@ -30,7 +31,7 @@ def import_bills(session):
         except Bill.DoesNotExist:
             bill = None
         
-        if not bill.legisinfo_url:
+        if not getattr(bill, 'legisinfo_url', None):
             # Not yet in the database. Go parse.
             detailurl = LEGISINFO_DETAIL_URL % (legis_sess, legisinfoid)
             try:
@@ -53,14 +54,19 @@ def import_bills(session):
                 billname = match.group(1)[:500]
             
             # Is this a reintroduced bill?
+            merging = False
             try:
-                bill = Bill.objects.get(sessions=previous_session, number=billnumber_full, name__iexact=billname)
-                merging = True
-                print "MERGING BILL"
+                mergebill = Bill.objects.get(sessions=previous_session, number=billnumber_full, name__iexact=billname)
+                if not bill:
+                    bill = mergebill
+                    merging = True
+                    print "MERGING BILL"
+                else:
+                    mail_admins('Bills may need to be merged', "%s: ids %s %s" % (billnumber_full, mergebill.id, bill.id))
             except Bill.DoesNotExist:
                 # Nope. New bill.
-                bill = Bill(number=billnumber_full, name=billname)
-                merging = False
+                if not bill:
+                    bill = Bill(number=billnumber_full, name=billname)
                 
             bill.legisinfo_url = detailurl
             
@@ -76,15 +82,13 @@ def import_bills(session):
                         bill.sponsor_politician = Politician.objects.getByName(membername.strip(), session=session)
                         bill.sponsor_politician.saveParlinfoID(membermatch.group(1))
                     except (Politician.DoesNotExist, Politician.MultipleObjectsReturned):
-                        #import pudb
-                        #pudb.set_trace()
                         print "WARNING: Could not identify politician for bill C-%s" % billnumber
                 if bill.sponsor_politician:
                     try:
                         bill.sponsor_member = ElectedMember.objects.get_by_pol(politician=bill.sponsor_politician,
                             session=session)
                     except:
-                        print "WARNING: Could find member for politician %s" % bill.sponsor_politician
+                        print "WARNING: Couldn't find member for politician %s" % bill.sponsor_politician
             if billnumber >= 200:
                 bill.privatemember = True
             else:

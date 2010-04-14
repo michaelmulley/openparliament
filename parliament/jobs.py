@@ -1,6 +1,7 @@
 import time
 
 from django.db import transaction, models
+from django.conf import settings
 
 from parliament.politicians import twit
 from parliament.politicians import googlenews as gnews
@@ -43,12 +44,32 @@ def prune_activities():
     return True
     
 @transaction.commit_on_success
-def hansards():
+def hansards_load():
     datautil.hansards_from_calendar()
+    return True
+        
+@transaction.commit_manually
+def hansards_parse():
     for hansard in Hansard.objects.all().annotate(scount=models.Count('statement')).exclude(scount__gt=0).order_by('date').iterator():
-        hans.parseAndSave(hansard)
+        try:
+            hans.parseAndSave(hansard)
+        except Exception, e:
+            transaction.rollback()
+            raise e
+        else:
+            transaction.commit()
         # now reload the Hansard to get the date
         hansard = Hansard.objects.get(pk=hansard.id)
-        hansard.save_activity()
-        alertutils.alerts_for_hansard(hansard)
-    return True
+        try:
+            hansard.save_activity()
+        except Exception, e:
+            transaction.rollback()
+            raise e
+        else:
+            transaction.commit()
+        if getattr(settings, 'PARLIAMENT_SEND_EMAIL', True):
+            alertutils.alerts_for_hansard(hansard)
+            
+def hansards():
+    hansards_load()
+    hansards_parse()
