@@ -140,7 +140,11 @@ class PoliticianActivityFeed(Feed):
         if match:
             return match.group(1)
         else:
+            # FIXME include links in activity model?
             return ''
+            
+    def item_guid(self, activity):
+        return activity.guid
     
     def item_description(self, activity):
         payload = r_excerpt.sub('<br><span style="display: block; border-left: 1px dotted #AAAAAA; margin-left: 2em; padding-left: 1em; font-style: italic; margin-top: 5px;">', activity.payload)
