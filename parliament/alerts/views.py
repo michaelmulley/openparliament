@@ -29,9 +29,13 @@ def signup(request):
     pol = get_object_or_404(Politician, pk=request.REQUEST['politician'])
     success = False
     if request.method == 'POST':
-        if 'email' in request.POST:
-            request.POST['email'] = request.POST['email'].strip() # hack
-        form = PoliticianAlertForm(request.POST)
+        # This is a hack to remove spaces from e-mails before sending them off to the validator
+        # If anyone knows a cleaner way of doing this without writing a custom field, please let me know
+        postdict = request.POST.copy()
+        if 'email' in postdict:
+            postdict['email'] = postdict['email'].strip()
+            
+        form = PoliticianAlertForm(postdict)
         if form.is_valid():
             try:
                 alert = PoliticianAlert.objects.get(email=form.cleaned_data['email'], politician=form.cleaned_data['politician'])
