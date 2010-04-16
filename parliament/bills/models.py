@@ -39,7 +39,7 @@ class BillManager(models.Manager):
             bill = self.get_query_set().get(number=billnum, sessions=session)
         except Bill.DoesNotExist:
             bill = Bill(name=billname, number=billnum)
-            bill.session = session # FIXME HACK (for search indexing, which is called on save())
+            bill._cache_session = session # FIXME HACK (for search indexing, which is called on save())
             bill.save()
             bill.sessions.add(session)
         InternalXref(schema='bill_callbackid', int_value=callback, target_id=bill.id).save()

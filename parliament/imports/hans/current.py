@@ -34,7 +34,8 @@ class HansardParser2009(HansardParser):
             except Exception, e:
                 print "Related bill search failed for callback %s" % resid
                 print e
-                InternalXref.objects.get_or_create(schema='bill_callbackid', int_value=resid, target_id=-1)
+                if getattr(settings, 'PARLIAMENT_LABEL_FAILED_CALLBACK', False):
+                    InternalXref.objects.get_or_create(schema='bill_callbackid', int_value=resid, target_id=-1)
                 return string
             return u'<bill id="%d" name="%s">%s</bill>' % (bill.id, escape(bill.name), string)
         elif restype == 'Affiliation':
@@ -42,7 +43,8 @@ class HansardParser2009(HansardParser):
                 pol = Politician.objects.getByParlID(resid)
             except Politician.DoesNotExist:
                 print "Related politician search failed for callback %s" % resid
-                InternalXref.objects.get_or_create(schema='pol_parlid', int_value=resid, target_id=-1)
+                if getattr(settings, 'PARLIAMENT_LABEL_FAILED_CALLBACK', False):
+                    InternalXref.objects.get_or_create(schema='pol_parlid', int_value=resid, target_id=-1)
                 return string
             if pol == current_politician:
                 return string # When someone mentions her riding, don't link back to her

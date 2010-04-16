@@ -14,6 +14,7 @@ from BeautifulSoup import BeautifulSoup, Comment, NavigableString
 from django.db.models import Q
 from django.db import transaction
 from django.utils.html import escape
+from django.conf import settings
 
 from parliament.core.models import *
 from parliament.hansards.models import Hansard, Statement, HansardCache
