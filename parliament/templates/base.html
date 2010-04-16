@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>{% block pagetitle %}{{ title }}{% endblock pagetitle %} | openparliament.ca</title>
+    <title>{% block pagetitle %}{% if pagetitle %}{{ pagetitle }}{% else %}{{ title }}{% endif %}{% endblock pagetitle %} | openparliament.ca</title>
 <link rel="icon" type="image/vnd.microsoft.icon" href="{{ MEDIA_URL }}images/favicon.ico">
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/openparliament.css">    
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
@@ -52,6 +52,10 @@ $(function() {
     $('.overflowtip').overflowtip().tooltip({delay: 200});
     $('.tip, .related_link').tooltip({delay: 200, showURL: false});
     $('a.maillink').attr('href', rot13('znvygb:zvpunry@zvpunryzhyyrl.pbz'));
+    
+    $('a[href$="#hl"]').each(function () {
+        this.href = this.href.substring(0, this.href.length - 3);
+    });
    
 });
 </script>

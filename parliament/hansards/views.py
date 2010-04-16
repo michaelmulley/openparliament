@@ -27,10 +27,14 @@ def hansard(request, hansard_id, statement_seq=None):
         statements = paginator.page(page)
     except (EmptyPage, InvalidPage):
         statements = paginator.page(paginator.num_pages)
+    
+    if highlight_statement:
+        try:
+            highlight_statement = filter(lambda s: s.sequence == highlight_statement, statements.object_list)[0]
+        except IndexError:
+            raise Http404
         
     if request.is_ajax():
-        #import time
-        #time.sleep(2)
         t = loader.get_template("hansards/statement_page.inc")
     else:
         t = loader.get_template("hansards/hansard_detail.html")

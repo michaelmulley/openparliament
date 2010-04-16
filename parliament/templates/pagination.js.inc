@@ -63,6 +63,6 @@ $(function() {
         $(window).trigger('hashchange');
     }
     
-    {% if highlight_statement != None %}$('html, body').animate({scrollTop: $('#s{{ highlight_statement }}').offset().top - 15});{% endif %}
+    {% if highlight_statement %}$('html, body').animate({scrollTop: $('#hl').offset().top - 15});{% endif %}
 });
 </script>
