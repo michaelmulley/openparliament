@@ -8,5 +8,7 @@ class BillIndex(indexes.RealTimeSearchIndex):
     sci = indexes.CharField(stored=False, use_template=True)
     number = indexes.CharField(model_attr='number', indexed=False)
     url = indexes.CharField(model_attr='get_absolute_url', indexed=False)
+    date = indexes.DateField(model_attr='session__start')
+    session = indexes.CharField(model_attr='session', indexed=False)
     
 site.register(Bill, BillIndex)

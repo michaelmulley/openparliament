@@ -11,7 +11,7 @@
         <div class="clear"></div>
         </div>
     {% endif %}
-    {% if result.django_ct == 'bills.bill' %}<div class="result bill"><div class="context"><p><strong>Legislation</strong></p></div>
-        <div class="focus"><a href="{{ result.object.get_absolute_url }}">Bill {{ result.object.number }}</a> <span class="date">({{ result.object.session }})</span><p>{{ result.text }}</p></div></div>{% endif %}
+    {% if result.django_ct == 'bills.bill' %}<div class="result statement"><div class="context"><p><strong>Legislation</strong></p></div>
+        <div class="focus"><p><a href="{{ result.url }}">Bill {{ result.number }}</a> <span class="pol_affil">({{ result.session}})</span></p><p>{{ result.text }}</p></div></div>{% endif %}
     {% endfor %}
     <div class="focus">{% include "pagination.inc" %}</div>

@@ -94,6 +94,8 @@
 
     <field name="number" type="string" indexed="false" stored="true" multiValued="false" />
 
+	<field name="session" type="string" indexed="false" stored="true" multiValued="false" />
+
     <field name="topic" type="string" indexed="true" stored="true" multiValued="false" />
 
     <field name="date" type="date" indexed="true" stored="true" multiValued="false" />
