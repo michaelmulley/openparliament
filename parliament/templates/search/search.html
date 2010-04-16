@@ -8,7 +8,7 @@
     <form method="get" action="."><div>
         <input type="text" id="page_searchbox" name="q" value="{{ query }}"><input type="submit" id="searchbutton" value="Search">
     </div></form>
-    <p class="search_options">{% if 'date' in sort %}<a href="?q={{ query|urlencode }}">Sort by relevance</a>{% else %}Sorted by relevance{% endif %} | {% if 'date' in sort %}Sorted{% else %}Sort{% endif %} by date: {% if 'desc' in sort %}newest first{% else %}<a href="?q={{ query|urlencode }}&amp;sort=date+desc">newest first</a>{% endif %} / {% if 'asc' in sort %}oldest first{% else %}<a href="?q={{ query|urlencode }}&amp;sort=date+asc">oldest first</a>{% endif %}</p>
+    {% if results.hits > 5 %}<p class="search_options">{% if 'date' in sort %}<a href="?q={{ query|urlencode }}">Sort by relevance</a>{% else %}Sorted by relevance{% endif %} | {% if 'date' in sort %}Sorted{% else %}Sort{% endif %} by date: {% if 'desc' in sort %}newest first{% else %}<a href="?q={{ query|urlencode }}&amp;sort=date+desc">newest first</a>{% endif %} / {% if 'asc' in sort %}oldest first{% else %}<a href="?q={{ query|urlencode }}&amp;sort=date+asc">oldest first</a>{% endif %}</p>{% endif %}
     </div>
         {% if not results.hits %}
        {% if query %}<div class="focus">

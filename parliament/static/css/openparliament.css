@@ -69,6 +69,7 @@ form.signup input[type="text"]{font-size:15px;width:300px;}
 form.signup input[type="submit"]{font-size:15px;}
 ul.errorlist{list-style-type:none;background-color:#901019;margin:0 0 10px 0;padding:0;}
 ul.errorlist li{padding:4px 10px;color:white;font-weight:bold;}
+.tipunderline{border-bottom: 1px dashed #333333;}
 
 
 
