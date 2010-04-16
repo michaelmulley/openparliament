@@ -108,14 +108,14 @@ class SearchFeed(Feed):
         return "http://openparliament.ca/search/?" + urllib.urlencode({'q': query, 'sort': 'date desc'})
 
     def description(self, query):
-        return "From openparliament.ca, search result for '%s'" % query
+        return "From openparliament.ca, search results for '%s'" % query
 
     def items(self, query):
         return filter(lambda item: item['django_ct'] == 'hansards.statement', 
             autohighlight(solr.search(query, sort='date desc')).docs)
 
     def item_title(self, item):
-        return item['topic']
+        return "%s / %s" % (item['topic'], item['politician'])
 
     def item_link(self, item):
         return item['url']
