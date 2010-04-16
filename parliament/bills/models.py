@@ -5,7 +5,7 @@ from BeautifulSoup import BeautifulSoup
 
 from parliament.core.models import Session, InternalXref, ElectedMember, Politician
 from parliament.activity import utils as activity
-from parliament.core.utils import memoize
+from parliament.core.utils import memoize, simple_function_cache
 
 
 CALLBACK_URL = 'http://www2.parl.gc.ca/HousePublications/GetWebOptionsCallBack.aspx?SourceSystem=PRISM&ResourceType=Document&ResourceID=%d&language=1&DisplayMode=2'
