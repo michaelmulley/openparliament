@@ -79,7 +79,7 @@ class Bill(models.Model):
         super(Bill, self).save(*args, **kwargs)
         
     @property
-    @aimpoe_function_cache
+    @simple_function_cache
     def session(self):
         """Returns the most recent session this bill belongs to."""
         try:
