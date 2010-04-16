@@ -1,8 +1,10 @@
 import re
+import urllib
 
 from django.template import Context, loader, RequestContext
 from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.conf import settings
+from django.contrib.syndication.views import Feed
 import pysolr
 
 from parliament.core.models import Politician, Session, ElectedMember, Riding, InternalXref
@@ -15,6 +17,7 @@ PER_PAGE = getattr(settings, 'SEARCH_RESULTS_PER_PAGE', 10)
 ALLOWABLE_OPTIONS = {
     'sort': ['score desc', 'date asc', 'date desc'],
 }
+solr = pysolr.Solr(settings.HAYSTACK_SOLR_URL)
 def search(request):
     if 'q' in request.GET and request.GET['q']:
         if not 'page' in request.GET:
@@ -23,9 +26,7 @@ def search(request):
             resp = try_politician_first(request)
             if resp: return resp
             
-        query = parsetools.removeAccents(request.GET['q'].strip())
-        solr = pysolr.Solr(settings.HAYSTACK_SOLR_URL)
-        
+        query = parsetools.removeAccents(request.GET['q'].strip())        
         if 'page' in request.GET:
             try:
                 pagenum = int(request.GET['page'])
@@ -92,3 +93,35 @@ def try_politician_first(request):
             return HttpResponseRedirect(pol.get_absolute_url())
     except:
         return None
+        
+class SearchFeed(Feed):
+
+    def get_object(self, request):
+        if 'q' not in request.GET:
+            raise Http404
+        return request.GET['q']
+
+    def title(self, query):
+        return '"%s" | openparliament.ca' % query
+
+    def link(self, query):
+        return "http://openparliament.ca/search/?" + urllib.urlencode({'q': query, 'sort': 'date desc'})
+
+    def description(self, query):
+        return "From openparliament.ca, search result for '%s'" % query
+
+    def items(self, query):
+        return filter(lambda item: item['django_ct'] == 'hansards.statement', 
+            autohighlight(solr.search(query, sort='date desc')).docs)
+
+    def item_title(self, item):
+        return item['topic']
+
+    def item_link(self, item):
+        return item['url']
+
+    def item_description(self, item):
+        return item['text']
+
+    def item_pubdate(self, item):
+        return item['date']

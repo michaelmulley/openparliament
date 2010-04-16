@@ -21,4 +21,5 @@
 {% endblock %}
 {% block headextra %}
 {% include "pagination.js.inc" %}
+{% if results.hits %}<link rel="alternate" type="application/rss+xml" title="Watch new results for &quot;{{ query }}&quot;" href="{% url search_feed %}?q={{ query|urlencode }}">{% endif %}
 {% endblock headextra %}
