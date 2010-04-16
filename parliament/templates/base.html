@@ -28,27 +28,30 @@ $(function() {
         });
     }
     
-   $('#nav_searchbox').bind('focus', function() {
+    $('body').addClass('js');
+
+    var searchbox_default = 'Search';
+    $('#nav_searchbox').val(searchbox_default).bind('focus', function() {
        $(this).addClass('active'); 
-       if (this.value == 'Search') {
+       if (this.value == searchbox_default) {
            this.value = '';
        }
-   }).bind('blur', function () {
+    }).bind('blur', function () {
        $(this).removeClass('active');
        if (this.value == '') {
-           this.value = 'Search';
+           this.value = searchbox_default;
        }
-   });
-   
-   $('#nav_searchbutton').click(function(e) {
+    });
+
+    $('#nav_searchbutton').click(function(e) {
        e.preventDefault();
        $('#nav_searchform').submit();
-   });
-   
-   
-   $('.overflowtip').overflowtip().tooltip({delay: 200});
-   $('.tip, .related_link').tooltip({delay: 200, showURL: false});
-   $('a.maillink').attr('href', rot13('znvygb:zvpunry@zvpunryzhyyrl.pbz'));
+    });
+
+
+    $('.overflowtip').overflowtip().tooltip({delay: 200});
+    $('.tip, .related_link').tooltip({delay: 200, showURL: false});
+    $('a.maillink').attr('href', rot13('znvygb:zvpunry@zvpunryzhyyrl.pbz'));
    
 });
 </script>
@@ -71,7 +74,7 @@ $(function() {
 <div id="navbarbg"></div><div id="navbar"><a href="/"><img src="{{ MEDIA_URL }}images/logotype_bar.png" alt="openparliament.ca"></a>
     <ul id="navlinks"><li {% block navlinks_mps %}{% endblock %}><a href="{% url parliament.politicians.views.current_mps %}">MPs</a></li><li {% block navlinks_bills %}{% endblock %}><a href="{% url parliament.bills.views.index %}">Bills</a></li><li {% block navlinks_debates %}{% endblock %}><a href="{% url parliament.hansards.views.index %}">Debates</a></li><li {% block navlinks_about %}{% endblock %}><a href="/about/">About</a></li></ul>
     <div id="breadcrumbs">{% block breadcrumbs_all %}<a href="/">Home</a> {% block breadcrumbs %}{% endblock breadcrumbs %}{% endblock breadcrumbs_all %}</div>
-    <form action="{% url search %}" method="GET" id="nav_searchform"><div><input type="text" id="nav_searchbox" name="q" value="Search"><a id="nav_searchbutton"></a></div></form>
+    <form action="{% url search %}" method="GET" id="nav_searchform"><div><input type="text" id="nav_searchbox" name="q"><a id="nav_searchbutton"></a></div></form>
     </div>
 <div id="content_wrap"><div id="content" class="{% block contentclass %}{% endblock %}">
 {% block pageheading_override %}<div class="focus pageheader"><h1>{% block pageheading %}{{ title }}{% endblock pageheading %}</h1></div>{% endblock pageheading_override %}

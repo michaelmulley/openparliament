@@ -14,7 +14,7 @@
         a name or postal code above. See what your representatives are <a href="{% url parliament.hansards.views.index %}">saying</a>, and what <a href="{% url parliament.bills.views.index %}">laws</a> they're proposing. Poke around.</p></div>
         <div class="clear"></div><div class="context"><h2>What they're talking about</h2></div>
         <div class="focus"><p>The latest House transcript is from <strong>{{ latest_hansard.date|date:"F jS"}}</strong>. These are the topics that were discussed.</p><div class="spacer"></div><ul class="tile clearafter">
-        {% for topic in latest_hansard.topics %}<li class="four oneline overflowtip"><a href="{% url parliament.hansards.views.hansard hansard_id=latest_hansard.id statement_seq=topic.1 %}">{{ topic.0 }}</a></li>{% endfor %}
+        {% for topic in latest_hansard.topics %}<li class="four oneline overflowtip"><a href="{% url parliament.hansards.views.hansard hansard_id=latest_hansard.id statement_seq=topic.1 %}#hl">{{ topic.0 }}</a></li>{% endfor %}
         </ul><div class="clear"></div></div>
 <div class="clear"></div><div class="context"><h2>What's new around here</h2></div>
 <div class="focus">{% for item in sitenews %}

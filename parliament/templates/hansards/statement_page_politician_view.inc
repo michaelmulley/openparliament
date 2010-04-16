@@ -3,7 +3,7 @@
 {% for statement in page.object_list %}
 <div class="statement nocontext{% if forloop.first %} first{% endif %}{% if highlight_statement == statement.sequence %} highlighted{% endif %}" id="s{{ statement.sequence }}">
 
-<div class="focus nophoto"><div><p class="speaking"><a href="{{ statement.get_absolute_url }}">{{ statement.topic }}</a> <span class="pol_affil">{{ statement.time|date:"F jS, Y" }}</span></p>
+<div class="focus nophoto"><div><p class="speaking"><a href="{{ statement.get_absolute_url }}#hl">{{ statement.topic }}</a> <span class="pol_affil">{{ statement.time|date:"F jS, Y" }}</span></p>
 {{ statement.text_html }}</div></div>
 <div class="clear"></div>
 </div>
