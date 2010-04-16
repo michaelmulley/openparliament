@@ -32,7 +32,7 @@ class PoliticianInfoOptions(admin.ModelAdmin):
     
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "politician":
-            kwargs["queryset"] = Poltician.objects.elected()
+            kwargs["queryset"] = Politician.objects.elected()
             return db_field.formfield(**kwargs)
         return super(MyModelAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
     
