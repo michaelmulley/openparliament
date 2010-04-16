@@ -14,6 +14,6 @@ sorl-thumbnail==3.2.5
 wsgiref==0.1.2
 feedparser==4.1
 twitter==1.2.1
-httplib2=0.6.0
-django-piston=0.2.2
+httplib2==0.6.0
+django-piston==0.2.2
 

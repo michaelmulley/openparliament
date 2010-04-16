@@ -11,8 +11,11 @@ from parliament.core.utils import postcode_to_edid
 from parliament.search.utils import autohighlight, SearchPaginator
 from parliament.core import parsetools
 
+PER_PAGE = getattr(settings, 'SEARCH_RESULTS_PER_PAGE', 10)
+ALLOWABLE_OPTIONS = {
+    'sort': ['score desc', 'date asc', 'date desc'],
+}
 def search(request):
-    PER_PAGE = getattr(settings, 'SEARCH_RESULTS_PER_PAGE', 10)
     if 'q' in request.GET and request.GET['q']:
         if not 'page' in request.GET:
             resp = try_postcode_first(request)
@@ -31,13 +34,23 @@ def search(request):
         else:
             pagenum = 1
         startfrom = (pagenum - 1) * PER_PAGE
-        results = autohighlight(solr.search(query, start=startfrom))
+        
+        searchparams = {
+            'start' : startfrom
+        }
         ctx = {
             'query': query,
-            'results': results,
-            'pagenum': pagenum,
-            'page': SearchPaginator(results, pagenum, PER_PAGE, request.GET, ['q']),
+            'pagenum': pagenum
         }
+        
+        for opt in ALLOWABLE_OPTIONS:
+            if opt in request.GET and request.GET[opt] in ALLOWABLE_OPTIONS[opt]:
+                searchparams[opt] = request.GET[opt] 
+                ctx[opt] = request.GET[opt]
+        
+        results = autohighlight(solr.search(query, **searchparams))
+        ctx['results'] = results
+        ctx['page'] = SearchPaginator(results, pagenum, PER_PAGE, request.GET)
     else:
         ctx = {
             'query' : '',

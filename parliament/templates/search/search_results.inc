@@ -7,7 +7,7 @@
         <div class="focus"><p><a href="{{ result.url }}">{{ result.pol_name }}</a> {{ result.text }}</p></div></div>{% endif %}
     {% if result.django_ct == 'hansards.statement' %}<div class="result statement">
         <div class="context"><p>{{ result.date|date:"F jS, Y"}}</p><p>{% if result.politician_id %}<a href="{% url politicians.views.politician pol_id=result.politician_id %}">{{ result.politician }}</a>{% else %}{{ result.politician }}{% endif %}{% if result.party %}<br><span class="tag partytag_{{ result.party|slugify }}">{{ result.party }}</span>{% endif %}</p></div>
-        <div class="focus"><p><a href="{{ result.url }}">{{ result.topic }}</a> &nbsp;{{ result.text }}</p></div>
+        <div class="focus"><p><a href="{{ result.url }}">{% if result.topic %}{{ result.topic }}{% else %}(no topic){% endif %}</a> &nbsp;{{ result.text }}</p></div>
         <div class="clear"></div>
         </div>
     {% endif %}

@@ -141,9 +141,11 @@ div.headshot span{display: block;position: absolute;font-size: 10px;color: #8888
 .result .highlighted,.result em{background-color:yellow;font-style:normal;}
 .result.statement .context,.result.statement .focus{min-height:0;}
 .result.statement .focus{margin-bottom:5px;}
+.result.statement .focus p {max-width: 640px;}
 .result.statement{border:none;padding-top:5px;}
 #page_searchbox{width:400px;font-size:15px;padding:4px;}
 #searchbutton{background-color:#CCCCCC;border:1px solid #AAAAAA;color:#7d450b;font-size:15px;font-weight:bold;margin-left:12px;padding:5px;width:80px;}
+.search_options{font-weight: bold; margin-top: 5px;}
 
 /* HOME */
 #home_searchbox{width:400px;font-size:15px;padding:4px;color: #555555;}
