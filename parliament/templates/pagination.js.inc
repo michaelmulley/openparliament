@@ -44,7 +44,7 @@ $(function() {
                 var scrollDown = Boolean($(document).scrollTop() > $paginated.offset().top);
                 if ($paginated.is(':hidden')) {
                     $('.show_paginated_div').hide()
-                    $('#paginated_wrapper').show();
+                    $('#paginated_wrapped').show();
                     scrollDown = true;
                 }
                 if ($('.statement_browser').length) {

@@ -39,9 +39,8 @@ class BillManager(models.Manager):
             bill = self.get_query_set().get(number=billnum, sessions=session)
         except Bill.DoesNotExist:
             bill = Bill(name=billname, number=billnum)
-            bill._cache_session = session # FIXME HACK (for search indexing, which is called on save())
+            bill.session = session
             bill.save()
-            bill.sessions.add(session)
         InternalXref(schema='bill_callbackid', int_value=callback, target_id=bill.id).save()
         return bill
         
@@ -77,15 +76,21 @@ class Bill(models.Model):
         if getattr(self, 'privatemember', None) is None:
             self.privatemember = bool(self.number_only >= 200)
         super(Bill, self).save(*args, **kwargs)
+        if getattr(self, '_save_session', None):
+            self.sessions.add(self._save_session)
         
-    @property
     @simple_function_cache
-    def session(self):
+    def get_session(self):
         """Returns the most recent session this bill belongs to."""
         try:
             return self.sessions.all().order_by('-start')[0]
-        except IndexError:
-            return None
+        except (IndexError, ValueError):
+            return getattr(self, '_save_session', None)
+            
+    def set_session(self, session):
+        self._save_session = session
+        
+    session = property(get_session, set_session)
         
 VOTE_RESULT_CHOICES = (
     ('Y', 'Passed'), # Agreed to

@@ -67,7 +67,11 @@ def import_bills(session):
                 # Nope. New bill.
                 if not bill:
                     bill = Bill(number=billnumber_full, name=billname)
-                
+                    bill.session = session
+            
+            if bill.session != session:
+                bill.sessions.add(session)
+            
             bill.legisinfo_url = detailurl
             
             membermatch = re.search(r'<font color="#005500"><b><a href=.http://www2\.parl\.gc\.ca/parlinfo/Files/Parliamentarian\.aspx\?Item=([A-Z0-9-]+?)&.+?>(.+?)<', detailpage)
@@ -94,7 +98,6 @@ def import_bills(session):
             else:
                 bill.privatemember = False
             bill.save()
-            bill.sessions.add(session)
     return True
 
 LEGISINFO_STATUS_URL = 'http://www2.parl.gc.ca/Sites/LOP/LEGISINFO/RSSFeeds.asp?parlNumber=%(parliamentnum)s&session=%(sessnum)s&chamber=C&billNumber=%(billnum)s&billLetter=&language=E'

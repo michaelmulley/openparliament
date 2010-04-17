@@ -15,7 +15,7 @@
 {% block content %}
 <div class="focus"><h1>{{ pol }}</h1></div>
     <div class="clear"></div><div class="context">
-    {% if pol.headshot %}<div class="headshot"><img class="headshot" src="{% thumbnail pol.headshot 142x230 autocrop %}" alt=""><span>House of Commons photo</span>{% endif %}
+    {% if pol.headshot %}<div class="headshot"><img class="headshot" src="{% thumbnail pol.headshot 142x230 autocrop %}" alt=""><span>House of Commons photo</span></div>{% endif %}
         {% if member.current %}
         <h3>Track {{ pol.name_given }}</h3>
         <ul class="bulleted"><li><a href="/alerts/signup/?politician={{ pol.id }}">Get e-mail</a> whenever {{ pol|heshe|lower }} speaks in the House</li>
@@ -29,7 +29,7 @@
 {% if pol.info.twitter %}<li><a href="http://twitter.com/{{ pol.info.twitter }}">Twitter</a> (and Twitter messages <a href="http://twitter.com/search?q=%40{{ pol.info.twitter }}">to {{ pol|himher|lower }}</a>)</li>{% endif %}
 </ul>{% endif %}
         </div>
-    </div><div class="focus">
+<div class="focus">
 {% if member %}<h2>{% if not member.current %}Last in Parliament {{ member.end_date|date:"F Y"}}, as {% endif %}<span class="trag prartytag_{{ member.party.slug|lower }}">{{ member.party.short_name }}</span> MP for {{ member.riding }}</h2>{% endif %}
 
 {% with pol.latest_candidate as candidate %}{% if candidate %}
@@ -46,7 +46,7 @@
 {% endfor %}
 </div>
 
-<div id="paginated_wrapper" style="display: none">
+<div id="paginated_wrapped" style="display: none">
     <h2>Statements in the House</h2><div class="spacer"></div>
     <div id="paginated"></div></div>
 {% else %}{# else show_statements #}
@@ -55,7 +55,7 @@
     {% include "hansards/statement_page_politician_view.inc" %}
 </div></div>
 {% endif %}
-
+<div class="clear"></div>
 </div>
 {% endblock %}
 {% block footerextra %}News articles via Google News.{% endblock %}
