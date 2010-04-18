@@ -48,6 +48,8 @@ def politician(request, pol_id=None, pol_slug=None):
         pol = get_object_or_404(Politician, slug=pol_slug)
     else:
         pol = get_object_or_404(Politician, pk=pol_id)
+        if pol.slug:
+            return HttpResponsePermanentRedirect(pol.get_absolute_url())
     
     show_statements = bool('page' in request.GET or not pol.latest_member.current)
     
