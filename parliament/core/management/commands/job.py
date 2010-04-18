@@ -14,6 +14,10 @@ class Command(BaseCommand):
     def handle(self, jobname, **kwargs):
         try:
             getattr(jobs, jobname)()
-        except:
-            mail_admins("Exception in job %s" % jobname, "\n".join(traceback.format_exception(*(sys.exc_info()))))
-            raise
+        except Exception, e:
+            try:
+                mail_admins("Exception in job %s" % jobname, "\n".join(traceback.format_exception(*(sys.exc_info()))))
+            except:
+                pass
+            finally:
+                raise e

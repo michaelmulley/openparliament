@@ -17,7 +17,7 @@
         {% for topic in latest_hansard.topics %}<li class="four oneline overflowtip"><a href="{% url parliament.hansards.views.hansard hansard_id=latest_hansard.id statement_seq=topic.1 %}#hl">{{ topic.0 }}</a></li>{% endfor %}
         </ul><div class="clear"></div></div>
 <div class="clear"></div><div class="context"><h2>What's new around here</h2></div>
-<div class="focus">{% for item in sitenews %}
+<div class="focus"><p>Learn about site updates on our <a href="{% url sitenews_feed %}" class="feed">site news feed</a>, or follow <a href="http://twitter.com/openparlca">@openparlca</a> on Twitter.</p>{% for item in sitenews %}
 <h3>{{ item.title }} <span class="heading_context">{{ item.date|date:"F jS"}}</span></h3>
 {{ item.text|markdown }}{% endfor %}</div>
 {% endblock %}
