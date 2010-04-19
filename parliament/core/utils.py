@@ -3,6 +3,7 @@ import re
 import httplib2
 
 from django.db import models
+from django.conf import settings
 
 def postcode_to_edid(postcode):
     # First try Elections Canada
@@ -11,11 +12,10 @@ def postcode_to_edid(postcode):
     except:
         return postcode_to_edid_htv(postcode)
 
-HTV_API_KEY = 'JJLSGQVBFW'
 def postcode_to_edid_htv(postcode):
     url = 'http://howdtheyvote.ca/api.php?' + urllib.urlencode({
         'call': 'findriding',
-        'key': HTV_API_KEY,
+        'key': settings.PARLIAMENT_HTV_API_KEY,
         'house_id': 1,
         'postal_code': postcode
     })

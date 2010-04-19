@@ -16,6 +16,8 @@ HAYSTACK_SITECONF = 'parliament.search_sites'
 
 CACHE_MIDDLEWARE_KEY_PREFIX = 'parl'
 
+DJANGO_STATIC = True
+
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
@@ -43,15 +45,22 @@ USE_L10N = True
 # Example: "/home/media/media.lawrence.com/"
 MEDIA_ROOT = PROJ_ROOT + '/static/'
 
+
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 MEDIA_URL = '/static/'
 
+DJANGO_STATIC_SAVE_PREFIX = MEDIA_ROOT + 'cacheable/'
+DJANGO_STATIC_NAME_PREFIX = 'cacheable/'
+DJANGO_STATIC_MEDIA_URL = MEDIA_URL
+
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
 # Examples: "http://foo.com/media/", "/media/".
 ADMIN_MEDIA_PREFIX = '/static/admin/'
+
+APPEND_SLASH = False
 
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (

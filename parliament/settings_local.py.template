@@ -6,21 +6,13 @@ PROJ_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'parliament',                      # Or path to database file if using sqlite3.
-        'USER': 'root',                      # Not used with sqlite3.
+        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': '',                      # Or path to database file if using sqlite3.
+        'USER': '',                      # Not used with sqlite3.
         'PASSWORD': '',                  # Not used with sqlite3.
         'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     },
-    'postgres': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'parliament',                      # Or path to database file if using sqlite3.
-        'USER': 'postgres',                      # Not used with sqlite3.
-        'PASSWORD': 'postgres',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-    }
 }
 
 HANSARD_CACHE_DIR = '/hansard-cache/'
@@ -28,6 +20,14 @@ HANSARD_CACHE_DIR = '/hansard-cache/'
 CACHE_BACKEND = 'dummy://'
 CACHE_MIDDLEWARE_SECONDS = 60 * 60 * 3
 
+HAYSTACK_SOLR_URL = 'http://127.0.0.1:8983/solr'
+
+TWITTER_USERNAME = ''
+TWITTER_PASSWORD = ''
+TWITTER_LIST_NAME = 'mps'
+
+PARLIAMENT_HTV_API_KEY = '' # Key for the How'd They Vote API, howdtheyvote.ca
+
 # Make this unique, and don't share it with anybody.
-SECRET_KEY = '!jx@8jb$ak2gz$164*1sb8q700r-^f_d3mugke#x3384g_(u7t'
+SECRET_KEY = 'verysecretindeed'
 
