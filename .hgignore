@@ -11,3 +11,4 @@ polpics.+jpg
 settings_local.py$
 pip-log\.txt
 ^logs/
+cacheable/
