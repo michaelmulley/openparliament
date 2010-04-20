@@ -120,6 +120,28 @@ class HansardParser2009(HansardParser):
                 else:
                     raise ParseException("Couldn't match time %s" % c.attrs['name'])
                 
+            elif c.name == 'b' and c.string:
+                # Something to do with written answers
+                match = r_honorific.search(c.string)
+                if match:
+                    # It's a politician asking or answering a question
+                    # We don't get a proper link here, so this has to be a name match
+                    polname = re.sub(r'\(.+\)', '', match.group(2)).strip()
+                    self.saveStatement(t)
+                    t['member_title'] = c.string.strip()
+                    t['written_question'] = True
+                    try:
+                        pol = Politician.objects.getByName(polname, session=self.hansard.session)
+                        t['politician'] = pol
+                        t['member'] = ElectedMember.objects.get_by_pol(politician=pol, date=self.date)
+                    except Politician.DoesNotExist:
+                        print "WARNING: No name match for %s" % polname
+                    except Politician.MultipleObjectsReturned:
+                        print "WARNING: Multiple pols for %s" % polname
+                else:
+                    if not c.string.startswith('Question'):
+                        print "WARNING: Unexplained boldness: %s" % c.string
+                
             # div -- the biggie
             elif c.name == 'div':
                 origdiv = c
@@ -195,6 +217,14 @@ class HansardParser2009(HansardParser):
                         self.saveProceedingsStatement(txt, t)
                     else:
                         t.addText(txt, blockquote=bool(c.find('small')))
+            else:
+                #print c.name
+                if c.name == 'b':
+                    print "B: ",
+                    print c
+                #if c.name == 'p':
+                #    print "P: ",
+                #    print c
                 
             c = c.next
         return self.statements

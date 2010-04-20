@@ -55,7 +55,7 @@ def politician(request, pol_id=None, pol_slug=None):
     
     if show_statements:
         STATEMENTS_PER_PAGE = 10
-        statements = pol.statement_set.all().order_by('-time', '-sequence')
+        statements = pol.statement_set.filter(speaker=False).order_by('-time', '-sequence')
         paginator = Paginator(statements, STATEMENTS_PER_PAGE)
         try:
             pagenum = int(request.GET.get('page', '1'))

@@ -20,7 +20,7 @@ from parliament.core.models import *
 from parliament.hansards.models import Hansard, Statement, HansardCache
 from parliament.bills.models import Bill
 from parliament.core import parsetools
-from parliament.core.parsetools import r_politicalpost, r_honorific
+from parliament.core.parsetools import r_politicalpost, r_honorific, r_notamember
 
 ENABLE_READLINE = False
 ENABLE_PRINT = False
@@ -35,7 +35,6 @@ r_time_optionalparen = re.compile(r'\s*\(?\s*(\d\d)(\d\d)\s*\)?\s*$', re.UNICODE
 r_time_glyph = re.compile(r'arobas\.gif')
 r_arrow_img = re.compile(r'arrow\d+\.gif')
 r_housemet = re.compile(r'The\s+House\s+met\s+at\s+(\d[\d:\.]*)\s+([ap]\.m\.)', re.I | re.UNICODE)
-r_notamember = re.compile(r'^(The|A|Some|Acting|Santa|One|Assistant|An\.?)$')
 r_proceedings = re.compile(r'^\s*The\s+House\s+(resumed|proceeded)', re.UNICODE)
 
 r_letter = re.compile(r'\w')
@@ -189,15 +188,17 @@ class HansardParser(object):
             t['topic'] = re.sub(r"'S", "'s", t['topic'])
             t['topic'] = re.sub(r'Mc([a-z])', mcUp, t['topic'])
         if t.hasText():
-            if t['member_title']:
-                statement = Statement(hansard=self.hansard, heading=t['heading'], topic=t['topic'],
-                 time=datetime.datetime.combine(self.date, t['timestamp']), member=t['member'],
-                 politician=t['politician'], who=t['member_title'],
-                 text=t.getText(), sequence=self.statement_index)
-                self.statement_index += 1
-                self.statements.append(statement)
-            else:
+            if not t['member_title']:
+                t['member_title'] = 'Proceedings'
                 print "WARNING: No title for %s" % t.getText()
+            statement = Statement(hansard=self.hansard, heading=t['heading'], topic=t['topic'],
+             time=datetime.datetime.combine(self.date, t['timestamp']), member=t['member'],
+             politician=t['politician'], who=t['member_title'],
+             text=t.getText(), sequence=self.statement_index, written_question=bool(t['written_question']))
+            if r_notamember.search(t['member_title']) and 'Speaker' in t['member_title']:
+                statement.speaker = True
+            self.statement_index += 1
+            self.statements.append(statement)
             
             if ENABLE_PRINT:
                 print u"HEADING: %s" % t['heading']

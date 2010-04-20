@@ -56,7 +56,7 @@ class Hansard(models.Model):
     def save_activity(self):
         for pol in Politician.objects.filter(statement__hansard=self).distinct():
             topics = {}
-            for statement in self.statement_set.filter(member__politician=pol):
+            for statement in self.statement_set.filter(member__politician=pol, speaker=False):
                 if statement.topic in topics:
                     # If our statement is longer than the previous statement on this topic,
                     # use its text for the excerpt.
@@ -134,8 +134,11 @@ class Statement(models.Model):
     text = models.TextField()
     sequence = models.IntegerField(db_index=True)
     wordcount = models.IntegerField()
+    speaker = models.BooleanField(default=False, db_index=True)
+    written_question = models.BooleanField(default=False)
     
     bills = models.ManyToManyField(Bill, blank=True)
+    mentioned_politicians = models.ManyToManyField(Politician, blank=True, related_name='statements_with_mentions')
         
     class Meta:
         ordering = ('sequence',)
@@ -151,11 +154,16 @@ class Statement(models.Model):
         
     def save_relationships(self):
         bill_ids = set()
+        pol_ids = set()
         for match in r_statement_affil.finditer(self.text):
             if match.group(1) == 'bill':
-                bill_ids.add(match.group(2))
+                bill_ids.add(int(match.group(2)))
+            elif match.group(1) == 'pol':
+                pol_ids.add((match.group(2)))
         if bill_ids:
             self.bills.add(*list(bill_ids))
+        if pol_ids:
+            self.mentioned_politicians.add(*list(pol_ids))
             
     @property
     def date(self):
@@ -166,7 +174,7 @@ class Statement(models.Model):
         return ('parliament.hansards.views.hansard', [], {'hansard_id': self.hansard_id, 'statement_seq': self.sequence})
     
     def __unicode__ (self):
-        return u"%s speaking about %s around %s on %s" % (self.who, self.topic, self.time, self.hansard.date)
+        return u"%s speaking about %s around %s" % (self.who, self.topic, self.time)
         
     def text_html(self):
         return mark_safe(markdown(r_statement_affil.sub(statement_affil_link, self.text)))

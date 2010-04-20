@@ -58,7 +58,8 @@ class HansardParser1994(HansardParser):
         # And the time
         c = c.findNext(text=r_housemet)
         match = re.search(r_housemet, c.string)
-        t.setNext('timestamp', self.houseTime(match.group(1), match.group(2)))
+        t['timestamp'] = self.houseTime(match.group(1), match.group(2))
+        t.setNext('timestamp', t['timestamp'])
         
         # Move the pointer to the start
         c = c.next
