@@ -79,7 +79,7 @@ def try_postcode_first(request):
         except InternalXref.DoesNotExist:
             edid = postcode_to_edid(postcode)
             if edid:
-                InternalXref(schema='edid_postcode', text_value=postcode, target_id=edid).save()
+                InternalXref.objects.get_or_create(schema='edid_postcode', text_value=postcode, target_id=edid)
         if edid:
             try:
                 member = ElectedMember.objects.get(end_date__isnull=True, riding__edid=edid)
