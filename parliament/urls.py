@@ -33,4 +33,9 @@ if getattr(settings, 'ADMIN_URL', False):
         (r'^memcached-status/$', 'parliament.core.maint.memcached_status'),
     )
     
+if getattr(settings, 'PARLIAMENT_SITE_CLOSED', False):
+    urlpatterns = patterns('',
+        (r'.*', 'parliament.core.views.closed')
+    ) + urlpatterns
+    
 handler500 = 'parliament.core.errors.server_error'

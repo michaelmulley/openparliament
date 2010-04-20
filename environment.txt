@@ -16,4 +16,5 @@ feedparser==4.1
 twitter==1.2.1
 httplib2==0.6.0
 django-piston==0.2.2
+slimmer==0.1.30
 

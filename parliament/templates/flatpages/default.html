@@ -5,6 +5,6 @@
 {% block pageheading %}{{ flatpage.title }}{% endblock %}
 
 {% block content %}
-{{ flatpage.content }}
+{{ flatpage.content|safe }}
 
 {% endblock %}

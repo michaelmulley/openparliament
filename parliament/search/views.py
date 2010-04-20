@@ -12,6 +12,7 @@ from parliament.hansards.models import Statement
 from parliament.core.utils import postcode_to_edid
 from parliament.search.utils import autohighlight, SearchPaginator
 from parliament.core import parsetools
+from parliament.core.views import closed
 
 PER_PAGE = getattr(settings, 'SEARCH_RESULTS_PER_PAGE', 10)
 ALLOWABLE_OPTIONS = {
@@ -25,6 +26,9 @@ def search(request):
             if resp: return resp
             resp = try_politician_first(request)
             if resp: return resp
+            
+        if getattr(settings, 'PARLIAMENT_SEARCH_CLOSED', False):
+            return closed(request, message=settings.PARLIAMENT_SEARCH_CLOSED)
             
         query = parsetools.removeAccents(request.GET['q'].strip())        
         if 'page' in request.GET:

@@ -2,6 +2,7 @@ from django.template import Context, loader, RequestContext
 from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.contrib.markup.templatetags.markup import markdown
 from django.contrib.syndication.views import Feed
+from django.views.decorators.cache import never_cache
 
 from parliament.hansards.models import Hansard
 from parliament.core.models import SiteNews
@@ -14,6 +15,20 @@ def home(request):
         'sitenews': SiteNews.objects.filter(active=True)[:6],
     })
     return HttpResponse(t.render(c))
+    
+@never_cache
+def closed(request, message=None):
+    if not message:
+        message = "We're currently down for planned maintenance. We'll be back soon."
+    t = loader.get_template("flatpages/default.html")
+    c = RequestContext(request, {
+        'flatpage': {
+            'title': 'closedparliament.ca',
+            'content': """<div class="focus"><p>%s</p></div>""" % message},
+    })
+    resp = HttpResponse(t.render(c))
+    resp.status_code = 503
+    return resp
     
 class SiteNewsFeed(Feed):
     

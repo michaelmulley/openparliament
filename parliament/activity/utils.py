@@ -1,8 +1,9 @@
-from parliament.activity.models import Activity
+import datetime
 
 from django.conf import settings
 from django.template import Context, loader, RequestContext
 
+from parliament.activity.models import Activity
 
 def save_activity(obj, politician, date, guid=None, variety=None):
     if not getattr(settings, 'PARLIAMENT_SAVE_ACTIVITIES', True):
@@ -36,10 +37,11 @@ def iter_recent(queryset):
             yield activity
             
 def prune(queryset):
+    today = datetime.date.today()
     activity_counts = ACTIVITY_MAX.copy()
     for activity in queryset:
         if activity_counts[activity.variety] >= 0:
             activity_counts[activity.variety] -= 1
-        else:
+        elif (today - activity.date).days >= 4: # only start pruning if it's a few days old
             activity.delete()
         
