@@ -42,6 +42,7 @@ def hansard(request, hansard_id, statement_seq=None):
         'hansard': hansard,
         'page': statements,
         'highlight_statement': highlight_statement,
+        'pagination_url': hansard.get_absolute_url(),
     })
     return HttpResponse(t.render(c))
     
