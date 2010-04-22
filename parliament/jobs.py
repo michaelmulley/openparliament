@@ -8,6 +8,7 @@ from parliament.politicians import googlenews as gnews
 from parliament.imports import parlvotes, legisinfo, hans
 from parliament.core.models import Politician, Session
 from parliament.core import datautil
+from django.core.mail import mail_admins
 from parliament.hansards.models import Hansard
 from parliament.activity import utils as activityutils
 from parliament.alerts import utils as alertutils
@@ -55,7 +56,8 @@ def hansards_parse():
             hans.parseAndSave(hansard)
         except Exception, e:
             transaction.rollback()
-            raise e
+            mail_admins("Hansard parse failure on #%s" % hansard.id, unicode(e))
+            continue
         else:
             transaction.commit()
         # now reload the Hansard to get the date
