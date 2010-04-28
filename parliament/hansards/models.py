@@ -150,6 +150,11 @@ class Statement(models.Model):
             self.topic = ''
         if not self.wordcount:
             self.wordcount = parsetools.countWords(self.text)
+        if self.speaker and self.wordcount >= 100:
+            # Slightly weird logic: don't label statements longer than 100 words with speaker flag,
+            # even if they are by the speaker. This is because the 'speaker' flag essentially means
+            # 'routine, don't report me,' and occasionally the speaker makes longer, non-routine statements.
+            self.speaker = False
         super(Statement, self).save(*args, **kwargs)
         
     def save_relationships(self):
