@@ -23,7 +23,7 @@ class PoliticianAlert(models.Model):
         h.update(str(self.id))
         h.update(self.email)
         h.update(settings.SECRET_KEY)
-        return base64.urlsafe_b64encode(h.digest())
+        return base64.urlsafe_b64encode(h.digest()).replace('=', '')
         
     @models.permalink
     def get_unsubscribe_url(self):

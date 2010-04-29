@@ -1,4 +1,3 @@
-import hashlib
 import base64
 import urllib
 
@@ -74,7 +73,7 @@ def activate(request, alert_id, key):
     alert = get_object_or_404(PoliticianAlert, pk=alert_id)
     
     correct_key = alert.get_key()
-    if correct_key != key:
+    if correct_key != key.replace('=', ''):
         key_error = True
     else:
         key_error = False
