@@ -8,7 +8,7 @@ from django.core import urlresolvers
 class HansardHandler(BaseHandler):
     allowed_methods = ('GET',)   
 
-    @throttle(2, 10*60)
+    @throttle(3, 60)
     def read(self, request, hansard_id):
         try:
             hansard = Hansard.objects.get(pk=hansard_id)

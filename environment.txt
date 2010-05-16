@@ -1,7 +1,6 @@
-BeautifulSoup==3.0.8
+BeautifulSoup==3.0.8.1
 Django==1.2-beta-1
 Markdown==2.0.3
-MySQL-python>=1.2.2
 PIL>=1.1.6
 South==0.7
 django-devserver==0.0.2
@@ -17,4 +16,4 @@ twitter==1.2.1
 httplib2==0.6.0
 django-piston==0.2.2
 slimmer==0.1.30
-
+boto==1.9b
