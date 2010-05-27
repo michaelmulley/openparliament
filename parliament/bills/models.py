@@ -1,4 +1,5 @@
 import urllib, urllib2, re
+import datetime
 
 from django.db import models
 from BeautifulSoup import BeautifulSoup
@@ -57,6 +58,7 @@ class Bill(models.Model):
     sponsor_politician= models.ForeignKey(Politician, blank=True, null=True)
     law = models.NullBooleanField()
     status = models.CharField(max_length=200, blank=True)
+    added = models.DateField(default=datetime.date.today, db_index=True)
     
     objects = BillManager()
     
