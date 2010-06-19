@@ -4,7 +4,7 @@ from parliament.bills.models import *
 
 class BillOptions(admin.ModelAdmin):
     raw_id_fields = ('sponsor_member','sponsor_politician')
-    list_display = ('number', 'name', 'session', 'privatemember', 'sponsor_politician')
+    list_display = ('number', 'name', 'session', 'privatemember', 'sponsor_politician', 'added')
     
 class VoteQuestionOptions(admin.ModelAdmin):
     list_display = ('number', 'date', 'bill', 'description', 'result')
