@@ -28,7 +28,7 @@ class BillManager(models.Manager):
             raise Bill.DoesNotExist()
         votesurl = urllib.unquote(match.group(1))
         votespage = urllib2.urlopen(votesurl)
-        match = re.search(r'Parl=(\d+)&Ses=(\d+)&Bill=C(\d+)', votesurl)
+        match = re.search(r'Parl=(\d+)&Ses=(\d+)&Bill=C(\d+[A-Z]?)', votesurl)
         if not match:
             raise Bill.DoesNotExist("Couldn't parse Bill Votes link")
         session = Session.objects.get(parliamentnum=match.group(1), sessnum=match.group(2))

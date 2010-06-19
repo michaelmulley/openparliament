@@ -21,11 +21,10 @@ def import_bills(session):
     listurl = LEGISINFO_LIST_URL % legis_sess
     listpage = urllib2.urlopen(listurl).read()
     
-    r_listlink = re.compile(r'<a href="index\.asp\?Language=E&Session=\d+&query=(\d+)&List=toc">\s*C-(\d+)\s*</a>', re.UNICODE)
+    r_listlink = re.compile(r'<a href="index\.asp\?Language=E&Session=\d+&query=(\d+)&List=toc">\s*(C-\d+[A-Z]?)\s*</a>', re.UNICODE)
     for match in r_listlink.finditer(listpage):
         legisinfoid = int(match.group(1))
-        billnumber = int(match.group(2))
-        billnumber_full = "C-%s" % billnumber
+        billnumber_full = match.group(2)
         try:
             bill = Bill.objects.get(sessions=session, number=billnumber_full)
         except Bill.DoesNotExist:
@@ -86,17 +85,13 @@ def import_bills(session):
                         bill.sponsor_politician = Politician.objects.getByName(membername.strip(), session=session)
                         bill.sponsor_politician.saveParlinfoID(membermatch.group(1))
                     except (Politician.DoesNotExist, Politician.MultipleObjectsReturned):
-                        print "WARNING: Could not identify politician for bill C-%s" % billnumber
+                        print "WARNING: Could not identify politician for bill %s" % billnumber_full
                 if bill.sponsor_politician:
                     try:
                         bill.sponsor_member = ElectedMember.objects.get_by_pol(politician=bill.sponsor_politician,
                             session=session)
                     except:
                         print "WARNING: Couldn't find member for politician %s" % bill.sponsor_politician
-            if billnumber >= 200:
-                bill.privatemember = True
-            else:
-                bill.privatemember = False
             bill.save()
     return True
 
@@ -106,7 +101,7 @@ def get_bill_feed(bill):
     return feedparser.parse(LEGISINFO_STATUS_URL % {
         'parliamentnum': bill.session.parliamentnum,
         'sessnum': bill.session.sessnum,
-        'billnum': bill.number_only
+        'billnum': bill.number.replace('C-', '')
     })
 
 def update_bill_status(bill):
