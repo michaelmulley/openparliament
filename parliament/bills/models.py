@@ -28,17 +28,19 @@ class BillManager(models.Manager):
             raise Bill.DoesNotExist()
         votesurl = urllib.unquote(match.group(1))
         votespage = urllib2.urlopen(votesurl)
-        match = re.search(r'Parl=(\d+)&Ses=(\d+)', votesurl)
+        match = re.search(r'Parl=(\d+)&Ses=(\d+)&Bill=C(\d+)', votesurl)
         if not match:
             raise Bill.DoesNotExist("Couldn't parse Bill Votes link")
         session = Session.objects.get(parliamentnum=match.group(1), sessnum=match.group(2))
-        votesoup = BeautifulSoup(votespage.read())
-        votediv = votesoup.find('div', 'VotesBill')
-        match = re.search(r'([A-Z]+-\d+)\s+(.+)', votediv.string.strip())
-        billnum, billname = match.group(1), match.group(2)
+        billnum = 'C-%s' % match.group(3)
+        #match = re.search(r'([A-Z]+-\d+)\s+(.+)', votediv.string.strip())
+        #billnum, billname = match.group(1), match.group(2)
         try:
             bill = self.get_query_set().get(number=billnum, sessions=session)
         except Bill.DoesNotExist:
+            votesoup = BeautifulSoup(votespage.read())
+            votediv = votesoup.find('div', 'VotesBill')
+            billname = votediv.string.strip()
             bill = Bill(name=billname, number=billnum)
             bill.session = session
             bill.save()

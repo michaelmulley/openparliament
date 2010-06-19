@@ -36,7 +36,7 @@ def _getParser(hansard, html):
         return current.HansardParser2009(hansard, html)
 
 @transaction.commit_on_success
-def parseAndSave(arg):
+def parseAndSave(arg, auto_reparse=None):
     if isinstance(arg, Hansard):
         cache = loadHansard(arg)
     elif isinstance(arg, HansardCache):
@@ -45,14 +45,14 @@ def parseAndSave(arg):
         raise Exception("Invalid argument to parseAndSave")
         
     if Statement.objects.filter(hansard=cache.hansard).count() > 0:
-        print "There are already Statements for %s." % cache.hansard
-        print "Delete them? (y/n) ",
-        yn = sys.stdin.readline().strip()
-        if yn == 'y':
-            for statement in Statement.objects.filter(hansard=cache.hansard):
-                statement.delete()
-        else:
-            return False
+        if not auto_reparse:
+            print "There are already Statements for %s." % cache.hansard
+            print "Delete them? (y/n) ",
+            yn = sys.stdin.readline().strip()
+            if yn != 'y':
+                return False
+        for statement in Statement.objects.filter(hansard=cache.hansard):
+            statement.delete()
     
     parser = _getParser(cache.hansard, cache.getHTML())
     

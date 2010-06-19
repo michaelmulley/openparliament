@@ -33,7 +33,7 @@ class HansardParser2009(HansardParser):
                 bill = Bill.objects.get_by_callback_id(resid)
             except Exception, e:
                 print "Related bill search failed for callback %s" % resid
-                print e
+                print repr(e)
                 if getattr(settings, 'PARLIAMENT_LABEL_FAILED_CALLBACK', False):
                     InternalXref.objects.get_or_create(schema='bill_callbackid', int_value=resid, target_id=-1)
                 return string
