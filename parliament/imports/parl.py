@@ -165,4 +165,5 @@ def importElection(url, election, session=None, soup=None): # FIXME session none
             candidacy.elected = elected
             candidacy.save()
             #print "%s (%s), a %s, got %d votes (elected: %s)" % (candidatename, partyabbr, occupation, votecount, elected)
+    election.calculate_vote_percentages()
     

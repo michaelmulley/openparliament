@@ -33,7 +33,7 @@
 {% if member %}<h2>{% if not member.current %}Last in Parliament {{ member.end_date|date:"F Y"}}, as {% endif %}<span class="trag prartytag_{{ member.party.slug|lower }}">{{ member.party.short_name }}</span> MP for {{ member.riding }}</h2>{% endif %}
 
 {% with pol.latest_candidate as candidate %}{% if candidate %}
-<p><strong>{% if candidate.elected %}Won{% else %}Lost{% endif %}</strong> {{ pol|hisher|lower }} last election, {% if candidate.election.byelection %}a byelection {% endif %}in {{ candidate.election.date|date:"Y" }}, with {{ candidate.votetotal }} votes.</p>
+<p><strong>{% if candidate.elected %}Won{% else %}Lost{% endif %}</strong> {{ pol|hisher|lower }} last election, {% if candidate.election.byelection %}a byelection {% endif %}in {{ candidate.election.date|date:"Y" }}, with {{ candidate.votepercent }}% of the vote.</p>
 {% endif %}{% endwith %}
 
 {% if not show_statements %}
