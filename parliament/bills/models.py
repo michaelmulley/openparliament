@@ -82,6 +82,15 @@ class Bill(models.Model):
         super(Bill, self).save(*args, **kwargs)
         if getattr(self, '_save_session', None):
             self.sessions.add(self._save_session)
+
+    def save_sponsor_activity(self):
+        if self.sponsor_politician:
+            activity.save_activity(
+                obj=self,
+                politician=self.sponsor_politician,
+                date=self.added - datetime.timedelta(days=1), # we generally pick it up the day after it appears
+                variety='billsponsor',
+            )
         
     @simple_function_cache
     def get_session(self):

@@ -1,4 +1,5 @@
 import urllib, urllib2, re
+import datetime
 
 from BeautifulSoup import BeautifulSoup
 from django.db import models, transaction
@@ -7,6 +8,7 @@ import feedparser
 
 from parliament.core.models import InternalXref, Politician, ElectedMember, Session
 from parliament.bills.models import Bill
+from parliament.activity import utils as activity
 
 LEGISINFO_LIST_URL = 'http://www2.parl.gc.ca/Sites/LOP/LEGISINFO/index.asp?Language=E&List=list&Type=0&Chamber=C&StartList=2&EndList=2000&Session=%d'
 LEGISINFO_DETAIL_URL = 'http://www2.parl.gc.ca/Sites/LOP/LEGISINFO/index.asp?Language=E&Session=%d&query=%d&List=toc'
@@ -93,6 +95,7 @@ def import_bills(session):
                     except:
                         print "WARNING: Couldn't find member for politician %s" % bill.sponsor_politician
             bill.save()
+            bill.save_sponsor_activity()
     return True
 
 LEGISINFO_STATUS_URL = 'http://www2.parl.gc.ca/Sites/LOP/LEGISINFO/RSSFeeds.asp?parlNumber=%(parliamentnum)s&session=%(sessnum)s&chamber=C&billNumber=%(billnum)s&billLetter=&language=E'

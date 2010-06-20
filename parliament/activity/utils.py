@@ -28,6 +28,7 @@ ACTIVITY_MAX = {
     'gnews': 6,
     'membervote': 5,
     'statement': 8,
+    'billsponsor': 7,
 } 
 def iter_recent(queryset):
     activity_counts = ACTIVITY_MAX.copy()
