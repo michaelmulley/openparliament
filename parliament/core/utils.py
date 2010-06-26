@@ -1,14 +1,17 @@
 import urllib, urllib2
 import re
 import httplib2
+import json
 
 from django.db import models
 from django.conf import settings
+from django.core.mail import mail_admins
 
 def postcode_to_edid(postcode):
     # First try Elections Canada
     try:
-        return postcode_to_edid_ec(postcode)
+        #return postcode_to_edid_ec(postcode)
+        return postcode_to_edid_webserv(postcode)
     except:
         return postcode_to_edid_htv(postcode)
 
@@ -36,6 +39,22 @@ def postcode_to_edid_ec(postcode):
     (response, content) = h.request(EC_POSTCODE_URL % postcode.replace(' ', ''))
     match = r_ec_edid.search(response['location'])
     return int(match.group(1))
+    
+def postcode_to_edid_webserv(postcode):
+    try:
+        response = urllib2.urlopen('http://postal-code-to-edid-webservice.heroku.com/postal_codes/' + postcode)
+    except urllib2.HTTPError as e:
+        if e.code == 404:
+            return None
+        raise e
+    codelist = json.load(response)
+    if not isinstance(codelist, list):
+        mail_admins("Invalid response from postcode service", repr(codelist))
+        raise Exception()
+    if len(codelist) > 1:
+        mail_admins("Multiple results for postcode", postcode + repr(codelist))
+        return None
+    return int(codelist[0])
     
 def simple_function_cache(target):
     
