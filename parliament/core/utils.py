@@ -9,6 +9,7 @@ from django.core.mail import mail_admins
 
 def postcode_to_edid(postcode):
     # First try Elections Canada
+    postcode = postcode.replace(' ', '')
     try:
         #return postcode_to_edid_ec(postcode)
         return postcode_to_edid_webserv(postcode)
