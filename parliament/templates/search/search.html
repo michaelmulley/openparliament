@@ -22,3 +22,4 @@
 {% block headextra %}<script type="text/javascript" src="{% staticfile "js/pagination.js" %}"></script>
 {% if results.hits %}<link rel="alternate" type="application/rss+xml" title="Watch new results for &quot;{{ query }}&quot;" href="{% url search_feed %}?q={{ query|urlencode }}">{% endif %}
 {% endblock headextra %}
+{% block bodyclass %}search{% endblock %}
