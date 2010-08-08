@@ -324,6 +324,7 @@ class SessionManager(models.Manager):
         
 class Session(models.Model):
     
+    id = models.CharField(max_length=4, primary_key=True)
     name = models.CharField(max_length=100)
     start = models.DateField()
     end = models.DateField(blank=True, null=True)
