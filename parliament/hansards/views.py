@@ -76,13 +76,19 @@ def statement_permalink(request, hansard_id, statement_seq):
         statement = Statement.objects.get(hansard=hansard_id, sequence=statement_seq)
     except Statement.DoesNotExist:
         raise Http404
-        
-    title = statement.politician.name
+    
+    if statement.politician:
+        who = statement.politician.name
+    else:
+        who = statement.who
+    title = who
+    
     if statement.topic:
         title += u' on %s' % statement.topic
     t = loader.get_template("hansards/statement_permalink.html")
     c = RequestContext(request, {
         'title': title,
+        'who': who,
         'page': {'object_list': [statement]},
         'statement': statement,
         'hansard': statement.hansard,
