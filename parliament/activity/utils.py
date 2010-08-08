@@ -44,5 +44,6 @@ def prune(queryset):
         if activity_counts[activity.variety] >= 0:
             activity_counts[activity.variety] -= 1
         elif (today - activity.date).days >= 4: # only start pruning if it's a few days old
-            activity.delete()
+            activity.active = False
+            activity.save()
         

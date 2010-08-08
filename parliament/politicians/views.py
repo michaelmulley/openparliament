@@ -76,7 +76,7 @@ def politician(request, pol_id=None, pol_slug=None):
         'page': statement_page,
         'statements_politician_view': True,
         'show_statements': show_statements,
-        'activities': activity.iter_recent(Activity.objects.filter(politician=pol)),
+        'activities': activity.iter_recent(Activity.public.filter(politician=pol)),
     })
     if request.is_ajax():
         t = loader.get_template("hansards/statement_page_politician_view.inc")

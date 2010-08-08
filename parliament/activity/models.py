@@ -1,6 +1,7 @@
 from django.db import models
 
 from parliament.core.models import Politician
+from parliament.core.utils import ActiveManager
 
 class Activity(models.Model):
     
@@ -9,6 +10,10 @@ class Activity(models.Model):
     politician = models.ForeignKey(Politician)
     payload = models.TextField()
     guid = models.CharField(max_length=50, db_index=True, unique=True)
+    active = models.BooleanField(default=True, db_index=True)
+    
+    objects = models.Manager()
+    public = ActiveManager()
     
     class Meta:
         ordering = ('-date','-id')

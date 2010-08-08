@@ -41,7 +41,7 @@ def billstatus_full():
 @transaction.commit_on_success
 def prune_activities():
     for pol in Politician.objects.current():
-        activityutils.prune(Activity.objects.filter(politician=pol))
+        activityutils.prune(Activity.public.filter(politician=pol))
     return True
     
 @transaction.commit_on_success
