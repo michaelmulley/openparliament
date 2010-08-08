@@ -1,9 +1,4 @@
-{% autoescape off %}*****
-Hi! This alert feature is brand new. Even newer than the rest of the site.
-So it's still plain text. I'll be switching to a prettier e-mail format, um,
-as soon as I build that feature. A few days, probably. Thanks for being
-one of the first people to try these alerts!
-*****
+{% autoescape off %}
 
 Here's what {{ alert.politician.name }} had to say in the House of Commons.
 
@@ -13,7 +8,7 @@ Here's what {{ alert.politician.name }} had to say in the House of Commons.
 http://openparliament.ca{{ statement.get_absolute_url }}
 ----------------------------------------------------------
 
-{{ statement.text_plain|wordwrap:79 }}
+{{ statement.text_plain|wordwrap:78 }}
 
 {% endfor %}
 

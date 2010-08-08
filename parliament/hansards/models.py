@@ -174,6 +174,7 @@ class Statement(models.Model):
     def date(self):
         return datetime.date(self.time.year, self.time.month, self.time.day)
     
+    @simple_function_cache
     @models.permalink
     def get_absolute_url(self):
         return ('parliament.hansards.views.hansard', [], {'hansard_id': self.hansard_id, 'statement_seq': self.sequence})

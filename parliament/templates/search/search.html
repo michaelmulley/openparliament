@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load thumbnail %}
+{% load thumbnail django_static %}
 {% block breadcrumbs %}{{ block.super }} <a href="{% url parliament.search.views.search %}">Search</a> {{ query }}{% endblock %}
 {% block pagetitle %}Search: {{ query }}{% endblock %}
 {% block pageheading_override %}{% endblock %}
@@ -19,7 +19,6 @@
         </div>
         {% endif %}
 {% endblock %}
-{% block headextra %}
-{% include "pagination.js.inc" %}
+{% block headextra %}<script type="text/javascript" src="{% staticfile "js/pagination.js" %}"></script>
 {% if results.hits %}<link rel="alternate" type="application/rss+xml" title="Watch new results for &quot;{{ query }}&quot;" href="{% url search_feed %}?q={{ query|urlencode }}">{% endif %}
 {% endblock headextra %}

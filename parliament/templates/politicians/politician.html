@@ -1,11 +1,11 @@
 {% extends "politicians/base.html" %}
-{% load markup thumbnail highlight ours %}
+{% load markup thumbnail highlight ours django_static %}
 {% block headextra %}
 {% if member.current %}
 <link rel="alternate" type="application/rss+xml" title="{{ pol.name }}: Statements in the House of Commons" href="{% url politician_statement_feed pol_id=pol.id %}">
 <link rel="alternate" type="application/rss+xml" title="{{ pol.name }}: Recent Activity" href="{% url politician_activity_feed pol_id=pol.id %}">
 {% endif %}
-{% include "pagination.js.inc" %}
+<script type="text/javascript" src="{% staticfile "js/pagination.js" %}"></script>
 <meta name="description" content="Search through {{ pol.name }}'s recent activity, votes, and speeches in the House.">
 {% endblock headextra %}
 {% block contentclass %}context_4 politician{% endblock %}

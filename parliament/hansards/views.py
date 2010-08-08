@@ -1,7 +1,11 @@
+import json
+import urllib, urllib2
+
 from django.template import Context, loader, RequestContext
 from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.views import generic
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.conf import settings
 from django.shortcuts import get_object_or_404
 
 from parliament.hansards.models import Hansard, HansardCache, Statement
@@ -43,6 +47,47 @@ def hansard(request, hansard_id, statement_seq=None):
         'page': statements,
         'highlight_statement': highlight_statement,
         'pagination_url': hansard.get_absolute_url(),
+    })
+    return HttpResponse(t.render(c))
+    
+def statement_twitter(request, hansard_id, statement_seq):
+    """Redirects to a Twitter page, prepopulated with sharing info for a particular statement."""
+    try:
+        statement = Statement.objects.get(hansard=hansard_id, sequence=statement_seq)
+    except Statement.DoesNotExist:
+        raise Http404
+    
+    longurl = settings.SITE_URL + statement.get_absolute_url()
+    
+    shorten_resp_raw = urllib2.urlopen(settings.BITLY_API_URL + urllib.urlencode({'longurl': longurl}))
+    shorten_resp = json.load(shorten_resp_raw)
+    
+    shorturl = shorten_resp['data']['url']
+    
+    description = u'%s on %s' % (statement.politician.name, statement.topic)
+    if (len(description) + len(shorturl)) > 139:
+        description = description[:136-len(shorturl)] + '...'
+    message = "%s %s" % (description, shorturl)
+    return HttpResponseRedirect('http://twitter.com/home?' + urllib.urlencode({'status': message}))
+    
+def statement_permalink(request, hansard_id, statement_seq):
+    """A page displaying only a single statement. Used as a non-JS permalink."""
+    try:
+        statement = Statement.objects.get(hansard=hansard_id, sequence=statement_seq)
+    except Statement.DoesNotExist:
+        raise Http404
+        
+    title = statement.politician.name
+    if statement.topic:
+        title += u' on %s' % statement.topic
+    t = loader.get_template("hansards/statement_permalink.html")
+    c = RequestContext(request, {
+        'title': title,
+        'page': {'object_list': [statement]},
+        'statement': statement,
+        'hansard': statement.hansard,
+        'statements_full_date': True,
+        'statements_context_link': True
     })
     return HttpResponse(t.render(c))
     

@@ -155,3 +155,11 @@ div.headshot span{display: block;position: relative;font-size: 10px;color: #8888
 #home_searchbox.active{color: black;}
 .heading_context{padding-left: 3px; color: #666666; font-weight: normal; font-weight: 300;}
 
+/* STATEMENT SHARING TOOLS */
+#statement-tools{position:absolute;z-index:5;}
+#statement-tools img{padding:3px 3px;opacity:0.7;cursor:pointer;width: 16px; height: 16px;}
+#statement-tools img:hover{opacity:1.0;}
+p.share_link{font-weight:bold;}
+p.share_link input{width:300px;padding-left:5px;}
+
+

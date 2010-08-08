@@ -16,6 +16,9 @@ DATABASES = {
 }
 
 HANSARD_CACHE_DIR = '/hansard-cache/'
+SITE_URL='http://openparliament.ca'
+
+BITLY_API_URL = 'http://api.bit.ly/v3/shorten?login=bitlyapidemo&apiKey=R_0da49e0a9118ff35f52f629d2d71bf07&'
 
 CACHE_BACKEND = 'dummy://'
 CACHE_MIDDLEWARE_SECONDS = 60 * 60 * 3

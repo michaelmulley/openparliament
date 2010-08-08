@@ -1,5 +1,3 @@
-<script type="text/javascript" src="{{ MEDIA_URL }}js/jquery.bbq.js"></script>
-<script type="text/javascript">
 $(function() {
     function revealStatement() {
         $(this).hide()
@@ -63,6 +61,39 @@ $(function() {
         $(window).trigger('hashchange');
     }
     
-    {% if highlight_statement %}$('html, body').animate({scrollTop: $('#hl').offset().top - 15});{% endif %}
+    var $statementTools = $('<div id="statement-tools" style="display: none"><img id="share_link" src="/static/images/link.png" class="tip" title="Share a link to this statement"><img id="share_twitter" src="/static/images/twitter.png" class="tip" alt="Twitter" title="Share on Twitter"><img id="share_facebook" src="/static/images/facebook.png" class="tip" title="Share on Facebook"></div>');
+    $statementTools.find('.tip').tooltip({delay: 100, showURL: false});
+    $paginated.after($statementTools);
+    var $currentStatement;
+    function currentStatementURL() {
+        return 'http://openparliament.ca' + $currentStatement.attr('data-url');
+    }
+    $('.statement').live('mouseenter', function() {
+        $currentStatement = $(this);
+        var offset = $currentStatement.offset();
+        $statementTools.css({'top': offset.top, 'left': offset.left + ($currentStatement.width() - 66)}).show();
+    });
+    $('#share_link').click(function() {
+        if (!$currentStatement.find('.share_link').length) {
+            var linkbox = $('<input type="text">').val(currentStatementURL()).click(function() {
+                if (this.createTextRange) {
+                    // This is for IE and Opera.
+                    range = this.createTextRange();
+                    range.moveEnd('character', this.value.length);
+                    range.select();
+                } else if (this.setSelectionRange) {
+                    // This is for Mozilla and WebKit.
+                    this.setSelectionRange(0, this.value.length);
+                }});
+            $currentStatement.find('.focus').prepend($('<p class="share_link">Copy this link: </p>').append(linkbox));
+        }
+    });
+    $('#share_facebook').click(function() {
+        window.open('http://facebook.com/sharer.php?'
+            + $.param({'u': currentStatementURL(),
+            't': $currentStatement.find('.pol_name').html() + ' on ' + $currentStatement.find('.statement_topic').html()}));
+    });
+    $('#share_twitter').click(function() {
+        window.open(currentStatementURL() + 'twitter/');
+    });
 });
-</script>

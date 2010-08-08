@@ -6,8 +6,9 @@
 *.json
 .DS_Store
 models.dot
-polpics/*.jpg
+polpics/
 local/
 settings_local.py
 pip-log.txt
 logs/
+cacheable/
