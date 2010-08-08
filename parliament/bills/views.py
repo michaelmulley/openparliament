@@ -68,9 +68,13 @@ def vote(request, vote_id):
     membervotes = MemberVote.objects.filter(votequestion=vote)\
         .order_by('member__party', 'member__politician__name_family')\
         .select_related('member', 'member__party', 'member__politician')
+    partyvotes = vote.partyvote_set.select_related('party').all()
+    
     c = RequestContext(request, {
         'vote': vote,
         'membervotes': membervotes,
+        'parties_y': [pv.party for pv in partyvotes if pv.vote == 'Y'],
+        'parties_n': [pv.party for pv in partyvotes if pv.vote == 'N']
     })
     t = loader.get_template("bills/votequestion_detail.html")
     return HttpResponse(t.render(c))

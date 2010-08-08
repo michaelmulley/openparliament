@@ -1,10 +1,11 @@
 import urllib, urllib2, re
 import datetime
+from collections import defaultdict
 
 from django.db import models
 from BeautifulSoup import BeautifulSoup
 
-from parliament.core.models import Session, InternalXref, ElectedMember, Politician
+from parliament.core.models import Session, InternalXref, ElectedMember, Politician, Party
 from parliament.activity import utils as activity
 from parliament.core.utils import memoize, simple_function_cache
 
@@ -132,30 +133,58 @@ class VoteQuestion(models.Model):
         for member in ElectedMember.objects.on_date(self.date).exclude(membervote__votequestion=self):
             MemberVote(votequestion=self, member=member, politician_id=member.politician_id, vote='A').save()
             
+    def label_party_votes(self):
+        membervotes = self.membervote_set.select_related('member', 'member__party').all()
+        parties = defaultdict(lambda: defaultdict(int))
+        
+        for mv in membervotes:
+            if mv.member.party.name != 'Independent':
+                parties[mv.member.party][mv.vote] += 1
+        
+        partyvotes = {}
+        for party in parties:
+            votes = sorted(parties[party].items(), key=lambda i: i[1])
+            partyvotes[party] = votes[-1][0]
+            PartyVote(party=party, votequestion=self, vote=partyvotes[party]).save()
+        
+        for mv in membervotes:
+            if mv.member.party.name != 'Independent' \
+              and mv.vote != partyvotes[mv.member.party] \
+              and mv.vote in ('Y', 'N') \
+              and partyvotes[mv.member.party] in ('Y', 'N'):
+                mv.dissent = True
+                mv.save()
+            
     @models.permalink
     def get_absolute_url(self):
         return ('parliament.bills.views.vote', [self.id])
 
-VOTE_CHOICES = (
+VOTE_CHOICES = [
     ('Y', 'Yea'),
     ('N', 'Nay'),
     ('P', 'Paired'),
     ('A', "Didn't vote"),
-)    
+]
 class MemberVote(models.Model):
     
     votequestion = models.ForeignKey(VoteQuestion)
     member = models.ForeignKey(ElectedMember)
     politician = models.ForeignKey(Politician)
     vote = models.CharField(max_length=1, choices=VOTE_CHOICES)
+    dissent = models.BooleanField(default=False, db_index=True)
     
     def __unicode__(self):
         return u'%s voted %s on %s' % (self.politician, self.get_vote_display(), self.votequestion)
+            
+    def save_activity(self):
+        activity.save_activity(self, politician=self.politician, date=self.votequestion.date)
+
+VOTE_CHOICES_PARTY = VOTE_CHOICES + [('F', "Free vote")]            
+class PartyVote(models.Model):
     
-    def save(self, *args, **kwargs):
-        save_activity = False
-        if not self.pk:
-            save_activity = True
-        super(MemberVote, self).save(*args, **kwargs)
-        if save_activity:
-            activity.save_activity(self, politician=self.politician, date=self.votequestion.date)
+    votequestion = models.ForeignKey(VoteQuestion)
+    party = models.ForeignKey(Party)
+    vote = models.CharField(max_length=1, choices=VOTE_CHOICES)
+    
+    def __unicode__(self):
+        return u'%s voted %s on %s' % (self.party, self.get_vote_display(), self.votequestion)

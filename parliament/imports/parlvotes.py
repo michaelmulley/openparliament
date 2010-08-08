@@ -81,4 +81,7 @@ def import_votes(session=None):
                 raise Exception("Couldn't parse RecordedVote for %s in vote %s" % (name, votenumber))
             MemberVote(member=member, politician=pol, votequestion=votequestion, vote=ballot).save()
         votequestion.label_absent_members()
+        votequestion.label_party_votes()
+        for mv in votequestion.membervote_set.all():
+            mv.save_activity()
     return True
