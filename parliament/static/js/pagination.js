@@ -65,7 +65,9 @@ $(function() {
     
     if (!$('body').hasClass('search')) {
         var $statementTools = $('<div id="statement-tools" style="display: none"><img id="share_link" src="/static/images/link.png" class="tip" title="Share a link to this statement"><img id="share_twitter" src="/static/images/twitter.png" class="tip" alt="Twitter" title="Share on Twitter"><img id="share_facebook" src="/static/images/facebook.png" class="tip" title="Share on Facebook"></div>');
-        $statementTools.find('.tip').tooltip({delay: 100, showURL: false});
+        $statementTools.bind('mouseenter', function () {$statementTools.show();})
+            .bind('mouseleave', function () {$statementTools.hide();})
+            .find('.tip').tooltip({delay: 100, showURL: false});
         $paginated.after($statementTools);
         var $currentStatement;
         function currentStatementURL() {
@@ -75,7 +77,7 @@ $(function() {
             $currentStatement = $(this);
             var offset = $currentStatement.offset();
             $statementTools.css({'top': offset.top, 'left': offset.left + ($currentStatement.width() - 66)}).show();
-        });
+        }).live('mouseleave', function() {$statementTools.hide();});
         $('#share_link').click(function() {
             if (!$currentStatement.find('.share_link').length) {
                 var linkbox = $('<input type="text">').val(currentStatementURL()).click(function() {
