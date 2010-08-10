@@ -8,6 +8,7 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 
+from parliament.core.utils import get_twitter_share_url
 from parliament.hansards.models import Hansard, HansardCache, Statement
 
 def hansard(request, hansard_id, statement_seq=None):
@@ -56,19 +57,16 @@ def statement_twitter(request, hansard_id, statement_seq):
         statement = Statement.objects.get(hansard=hansard_id, sequence=statement_seq)
     except Statement.DoesNotExist:
         raise Http404
+        
+    if statement.politician:
+        description = statement.politician.name
+    else:
+        description = statement.who
+    description += ' on ' + statement.topic
     
-    longurl = settings.SITE_URL + statement.get_absolute_url()
-    
-    shorten_resp_raw = urllib2.urlopen(settings.BITLY_API_URL + urllib.urlencode({'longurl': longurl}))
-    shorten_resp = json.load(shorten_resp_raw)
-    
-    shorturl = shorten_resp['data']['url']
-    
-    description = u'%s on %s' % (statement.politician.name, statement.topic)
-    if (len(description) + len(shorturl)) > 139:
-        description = description[:136-len(shorturl)] + '...'
-    message = "%s %s" % (description, shorturl)
-    return HttpResponseRedirect('http://twitter.com/home?' + urllib.urlencode({'status': message}))
+    return HttpResponseRedirect(
+        get_twitter_share_url(statement.get_absolute_url(), description)
+    )
     
 def statement_permalink(request, hansard_id, statement_seq):
     """A page displaying only a single statement. Used as a non-JS permalink."""

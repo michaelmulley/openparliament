@@ -20,7 +20,7 @@ $(function() {
            }
         });
     }
-    if ($('.statement_browser').length) {
+    if ($('.statement_browser').length && !$('.disable_more_links').length) {
         addMoreLinks();
     }
     var $paginated = $('#paginated');

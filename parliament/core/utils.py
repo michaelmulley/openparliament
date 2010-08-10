@@ -67,6 +67,32 @@ def simple_function_cache(target):
         return getattr(self, cacheattr)
     return wrapped
     
+def get_twitter_share_url(url, description, add_plug=True):
+    """Returns a URL for a Twitter post page, prepopulated with a sharing message.
+    
+    url -- URL to the shared page -- should start with / and not include the domain
+    description -- suggested content for sharing message
+    add_plug -- if True, will add a mention of openparliament.ca, if there's room """
+    
+    PLUG = ' (from openparliament.ca)'
+    
+    longurl = settings.SITE_URL + url
+    
+    try:
+        shorten_resp_raw = urllib2.urlopen(settings.BITLY_API_URL + urllib.urlencode({'longurl': longurl}))
+        shorten_resp = json.load(shorten_resp_raw)
+        shorturl = shorten_resp['data']['url']
+    except Exception, e:
+        # FIXME logging
+        shorturl = longurl
+    
+    if (len(description) + len(shorturl)) > 139:
+        description = description[:136-len(shorturl)] + '...'
+    elif add_plug and (len(description) + len(shorturl) + len(PLUG)) < 140:
+        description += PLUG
+    message = "%s %s" % (description, shorturl)
+    return 'http://twitter.com/home?' + urllib.urlencode({'status': message})
+    
 class memoize:
     """memoize(fn) - an instance which acts like fn but memoizes its arguments
        Will only work on functions with non-mutable arguments
