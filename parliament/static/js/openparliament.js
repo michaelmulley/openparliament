@@ -70,6 +70,13 @@ $(function() {
            this.value = searchbox_default;
        }
     });
+    $('#nav_searchform').bind('submit', function(e) {
+        var v = $('#nav_searchbox').val();
+        if (v == searchbox_default || v == "") {
+            e.preventDefault();
+            alert("To search, enter a postal code, name, or phrase into the text box.");
+        }
+    });
 
     $('#nav_searchbutton').click(function(e) {
        e.preventDefault();
