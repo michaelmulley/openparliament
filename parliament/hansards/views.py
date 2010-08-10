@@ -13,6 +13,8 @@ from parliament.hansards.models import Hansard, HansardCache, Statement
 
 def hansard(request, hansard_id, statement_seq=None):
     PER_PAGE = 15
+    if 'singlepage' in request.GET:
+        PER_PAGE = 1000
     hansard = get_object_or_404(Hansard, pk=hansard_id)
     statement_qs = Statement.objects.filter(hansard=hansard).select_related('member__politician', 'member__riding', 'member__party')
     paginator = Paginator(statement_qs, PER_PAGE)

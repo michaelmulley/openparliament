@@ -47,8 +47,8 @@ div.focus.pageheader{margin-bottom:0;}
 #nav_searchbox.active {color: black;}
 #nav_searchbutton{position:absolute;background-image:url('../images/searchbutton.png');width:19px;height:19px;cursor:pointer;right:15px;top:24px;}
 #footer{clear:both;width:100%;height:60px;padding-top:10px;}
-#footer p{margin-left:auto;margin-right:auto;width:520px;text-align:center;font-size:11px;color:#888888;}
-#footer a{color:#888888;font-weight:normal;text-decoration:underline;}
+#footer p{margin-left:auto;margin-right:auto;width:520px;text-align:center;font-size:11px;color:#777777;}
+#footer a{color:#777777;font-weight:normal;text-decoration:underline;}
 #footer a:hover{color:#1A59C7;}
 
 /* COMMON ELEMENTS */
