@@ -2,7 +2,7 @@
 {% load django_static %}
 {% block breadcrumbs %}<a href="{% url parliament.hansards.views.index %}">Debates</a> <a href="{% url parliament.hansards.views.by_year year=hansard.date.year %}">{{ hansard.date.year }}</a> <a href="{% url parliament.hansards.views.hansard hansard_id=hansard.id statement_seq=statement.sequence %}">{{ hansard.date|date:"F jS, Y" }}</a> Statement by {{ who }}{% endblock %}
 {% block content %}
-<div class="focus"><p>In the House of Commons on {{ hansard.date|date:"F jS, Y" }}. See this statement in <a href="{{ statement.get_absolute_url }}">context</a>.</p></div><div class="clear"></div>
+<div class="focus"><p>In the House of Commons on {{ hansard.date|date:"F jS, Y" }}. <a href="{{ statement.get_absolute_url }}">See this statement in context</a>.</p></div><div class="clear"></div>
 <div id="paginated">
 {% include "hansards/statement_page.inc" %}
 </div>
