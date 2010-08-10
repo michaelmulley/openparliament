@@ -43,16 +43,36 @@ class Hansard(models.Model):
     def get_absolute_url(self):
         return ('parliament.hansards.views.hansard', [self.id])
         
-    def topics(self):
-        """Returns a tuple with (topic, statement sequence ID) for every topic mentioned."""
+    def _topics(self, l):
         topics = []
         last_topic = ''
-        for statement in self.statement_set.all().values_list('topic', 'sequence'):
+        for statement in l:
             if statement[0] and statement[0] != last_topic:
                 last_topic = statement[0]
                 topics.append((statement[0], statement[1]))
         return topics
         
+    def topics(self):
+        """Returns a tuple with (topic, statement sequence ID) for every topic mentioned."""
+        return self._topics(self.statement_set.all().values_list('topic', 'sequence'))
+        
+    def headings(self):
+        """Returns a tuple with (heading, statement sequence ID) for every heading mentioned."""
+        return self._topics(self.statement_set.all().values_list('heading', 'sequence'))
+    
+    def topics_with_qp(self):
+        """Returns the same as topics(), but with a link to Question Period at the start of the list."""
+        statements = self.statement_set.all().values_list('topic', 'sequence', 'heading')
+        topics = self._topics(statements)
+        qp_seq = None
+        for s in statements:
+            if s[2] == 'Oral Questions':
+                qp_seq = s[1]
+                break
+        if qp_seq is not None:
+            topics.insert(0, ('Question Period', qp_seq))
+        return topics
+    
     def save_activity(self):
         for pol in Politician.objects.filter(statement__hansard=self).distinct():
             topics = {}
