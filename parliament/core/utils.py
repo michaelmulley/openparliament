@@ -5,7 +5,9 @@ import json
 
 from django.db import models
 from django.conf import settings
+from django.core import urlresolvers
 from django.core.mail import mail_admins
+from django.http import HttpResponsePermanentRedirect
 
 def postcode_to_edid(postcode):
     # First try Elections Canada
@@ -65,6 +67,15 @@ def simple_function_cache(target):
         if not hasattr(self, cacheattr):
             setattr(self, cacheattr, target(self))
         return getattr(self, cacheattr)
+    return wrapped
+    
+def redir_view(view):
+    """Function factory to redirect requests to the given view."""
+    
+    def wrapped(request, *args, **kwargs):
+        return HttpResponsePermanentRedirect(
+            urlresolvers.reverse(view, args=args, kwargs=kwargs)
+        )
     return wrapped
     
 def get_twitter_share_url(url, description, add_plug=True):
