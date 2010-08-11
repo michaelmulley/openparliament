@@ -19,4 +19,4 @@
 
 </div>
 {% endblock %}
-{% block footer %}<p>View the day's debates on a <a href="?singlepage=1">single page</a>.</p>{{ block.super }}{% endblock footer %}
+{% block footer %}<p>View the day's debates on a <a href="{{ hansard.get_absolute_url }}?singlepage=1">single page</a>.</p>{{ block.super }}{% endblock footer %}
