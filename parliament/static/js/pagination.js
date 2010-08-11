@@ -36,7 +36,7 @@ $(function() {
     });
     
     $(window).bind('hashchange', function(e) {
-        if (e.fragment && e.fragment != 'hl') {
+        if (e.fragment && e.fragment != 'hl' && e.fragment.substr(0, 1) != 's') {
             $paginated.find('.pagination').addClass('loading');
             $paginated.load('?' + e.fragment, '', function() {
                 var scrollDown = Boolean($(document).scrollTop() > $paginated.offset().top);

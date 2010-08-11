@@ -1,5 +1,5 @@
 {% load markup thumbnail %}
-{% if highlight_statement %}
+{% if highlight_statement or highlight_statement == 0 %}
 <script type="text/javascript">
 $(function() {
    $('html, body').animate({scrollTop: $('#hl').offset().top - 15}); 

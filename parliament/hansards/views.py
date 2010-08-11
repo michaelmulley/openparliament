@@ -21,7 +21,7 @@ def hansard(request, hansard_id, statement_seq=None):
 
     highlight_statement = None
     try:
-        if statement_seq and 'page' not in request.GET:
+        if statement_seq is not None and 'page' not in request.GET:
             highlight_statement = int(statement_seq)
             page = int(highlight_statement/PER_PAGE) + 1
         else:
@@ -35,7 +35,7 @@ def hansard(request, hansard_id, statement_seq=None):
     except (EmptyPage, InvalidPage):
         statements = paginator.page(paginator.num_pages)
     
-    if highlight_statement:
+    if highlight_statement is not None:
         try:
             highlight_statement = filter(lambda s: s.sequence == highlight_statement, statements.object_list)[0]
         except IndexError:
@@ -50,6 +50,7 @@ def hansard(request, hansard_id, statement_seq=None):
         'page': statements,
         'highlight_statement': highlight_statement,
         'pagination_url': hansard.get_absolute_url(),
+        'singlepage': 'singlepage' in request.GET,
     })
     return HttpResponse(t.render(c))
     
@@ -93,7 +94,7 @@ def statement_permalink(request, hansard_id, statement_seq):
         'statement': statement,
         'hansard': statement.hansard,
         'statements_full_date': True,
-        'statements_context_link': True
+        #'statements_context_link': True
     })
     return HttpResponse(t.render(c))
     

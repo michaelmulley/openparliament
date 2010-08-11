@@ -4,13 +4,13 @@
 {% block pageheading %}Debates of {{ hansard.date|date:"N jS, Y" }}{% endblock %}
 {% block breadcrumbs %}<a href="{% url parliament.hansards.views.index %}">Debates</a> <a href="{% url parliament.hansards.views.by_year year=hansard.date.year %}">{{ hansard.date.year }}</a> {{ hansard.date|date:"F jS, Y" }}{% endblock %}
 {% block headextra %}<script type="text/javascript" src="{% staticfile "js/pagination.js" %}"></script>
-{% if highlight_statement %}<link rel="canonical" href="{{ highlight_statement.get_absolute_url }}only/">{% endif %}{% endblock %}
+{% if highlight_statement or highlight_statement == 0%}<link rel="canonical" href="{{ highlight_statement.get_absolute_url }}only/">{% endif %}{% endblock %}
 {% block content %}
 <div class="focus"><p>House of Commons Hansard #{{ hansard.number }} of the {{ hansard.session }}. (The <a href="{{ hansard.url }}">original version</a> is on Parliament's site.)</p></div>
 
 <div class="clear"></div><div class="context"><h2>Topics</h2></div>
 <div class="focus"><ul class="tile clearafter">
-{% for topic in hansard.topics_with_qp %}<li class="four oneline overflowtip"><a href="{% url parliament.hansards.views.hansard hansard_id=hansard.id statement_seq=topic.1 %}#hl">{{ topic.0 }}</a></li>{% endfor %}
+{% for topic in hansard.topics_with_qp %}<li class="four oneline overflowtip"><a href="{% if singlepage %}#s{{ topic.1 }}{% else %}{% url parliament.hansards.views.hansard hansard_id=hansard.id statement_seq=topic.1 %}#hl{% endif %}">{{ topic.0 }}</a></li>{% endfor %}
 </ul></div>
 
 <div id="paginated">
@@ -19,4 +19,4 @@
 
 </div>
 {% endblock %}
-{% block footer %}<p>View the day's debates on a <a href="{{ hansard.get_absolute_url }}?singlepage=1">single page</a>.</p>{{ block.super }}{% endblock footer %}
+{% block footer %}<p>View the day's debates on a <a href="{{ pagination_url }}?singlepage=1">single page</a>.</p>{{ block.super }}{% endblock footer %}

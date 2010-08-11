@@ -6,6 +6,7 @@
 <div id="paginated" class="disable_more_links">
 {% include "hansards/statement_page.inc" %}
 </div>
-<p><a href="{{ statement.get_absolute_url }}">See context</a> to find out what was said next.</p>
+<div class="focus">
+<p><a href="{{ statement.get_absolute_url }}">See context</a> to find out what was said next.</p></div>
 {% endblock content %}
 {% block headextra %}<script type="text/javascript" src="{% staticfile "js/pagination.js" %}"></script>{% endblock %}
