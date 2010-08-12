@@ -11,7 +11,7 @@ from parliament.activity import utils as activity
 def save_tweets():
     twitter_to_pol = dict([(i.value.lower(), i.politician) for i in PoliticianInfo.objects.filter(schema='twitter').select_related('politician')])
     
-    twit = twitter.Twitter(settings.TWITTER_USERNAME, settings.TWITTER_PASSWORD)
+    twit = twitter.Twitter()
     statuses = twit.openparlca.lists.mps.statuses(per_page=200)
     statuses.reverse()
     for status in statuses:
