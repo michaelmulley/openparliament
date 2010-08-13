@@ -73,6 +73,29 @@ $(function() {
         function currentStatementURL() {
             return 'http://openparliament.ca' + $currentStatement.attr('data-url');
         }
+        function currentStatementDescription() {
+            var descr = $currentStatement.find('.pol_name').html();
+            if (!descr) {
+                descr = $('.pol_name').html();
+            }
+            var topic = $currentStatement.find('.statement_topic').html();
+            if (topic) {
+                descr += ' on ' + topic;
+            }
+            return descr;
+        }
+        function openShareWindow(url) {
+            var width = 550;
+            var height = 450;
+            var left = Math.round((screen.width / 2) - (width / 2));
+            var top = 0;
+            if (screen.height > height) {
+                top = Math.round((screen.height / 2) - (height / 2));
+            }
+            window.open(url, "openparliament_share", "width=" + width +
+               ",height=" + height + ",left=" + left, ",top=" + top +
+               "personalbar=no,toolbar=no,scrollbars=yes,location=yes,resizable=yes");
+        }
         $('.statement').live('mouseenter', function() {
             $currentStatement = $(this);
             var offset = $currentStatement.offset();
@@ -94,12 +117,18 @@ $(function() {
             }
         });
         $('#share_facebook').click(function() {
-            window.open('http://facebook.com/sharer.php?'
+            openShareWindow('http://facebook.com/sharer.php?'
                 + $.param({'u': currentStatementURL(),
-                't': $currentStatement.find('.pol_name').html() + ' on ' + $currentStatement.find('.statement_topic').html()}));
+                't': currentStatementDescription()}));
         });
         $('#share_twitter').click(function() {
-            window.open(currentStatementURL() + 'twitter/');
+            openShareWindow('http://twitter.com/share?'
+                + $.param({'url': currentStatementURL(),
+                'via': 'openparlca',
+                'related': 'openparlca:openparliament.ca',
+                'text': currentStatementDescription()
+                }));
+            // window.open(currentStatementURL() + 'twitter/');
         });
     }
 });

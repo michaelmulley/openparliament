@@ -13,7 +13,7 @@
 {% block breadcrumbs %}{{ block.super }} <a href="{% url parliament.politicians.views.current_mps %}">MPs</a> {% if not member.current %}<a href="{% url parliament.politicians.views.former_mps %}">Former</a> <a  href="{% url parliament.politicians.views.former_mps %}#{{ member.riding.province }}">{% else %}<a href="{% url parliament.politicians.views.current_mps %}#{{ member.riding.province }}">{% endif %}{{ member.riding.province|expand_province }}</a> {{ pol.name}}{% endblock %}
 
 {% block content %}
-<div class="focus"><h1>{{ pol }}</h1></div>
+<div class="focus"><h1 class="pol_name">{{ pol }}</h1></div>
     <div class="clear"></div><div class="context">
     {% if pol.headshot %}<div class="headshot"><img class="headshot" src="{% thumbnail pol.headshot 142x230 autocrop %}" alt=""><span>House of Commons photo</span></div>{% endif %}
         {% if member.current %}
