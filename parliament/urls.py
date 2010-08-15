@@ -38,4 +38,7 @@ if getattr(settings, 'PARLIAMENT_SITE_CLOSED', False):
         (r'.*', 'parliament.core.views.closed')
     ) + urlpatterns
     
+if getattr(settings, 'EXTRA_URLS', False):
+    urlpatterns += patterns('', *settings.EXTRA_URLS)
+    
 handler500 = 'parliament.core.errors.server_error'

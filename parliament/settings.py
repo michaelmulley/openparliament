@@ -1,8 +1,7 @@
 # Django settings for parliament project.
-from settings_local import *
+import os
 
-
-TEMPLATE_DEBUG = DEBUG
+DEBUG = False
 
 ADMINS = (
     ('Michael Mulley', 'michael@michaelmulley.com'),
@@ -10,6 +9,7 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+PROJ_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 HAYSTACK_SEARCH_ENGINE = 'solr'
 HAYSTACK_SITECONF = 'parliament.search_sites'
@@ -90,7 +90,7 @@ TEMPLATE_DIRS = (
     PROJ_ROOT + "/templates",
 )
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -114,10 +114,7 @@ INSTALLED_APPS = (
     'parliament.politicians',
     'parliament.activity',
     'parliament.alerts',
-)
-
-if DEBUG:
-    INSTALLED_APPS += ('devserver', 'debug_toolbar')
+]
 
 THUMBNAIL_SUBDIR = '_thumbs'
 THUMBNAIL_PROCESSORS = (
@@ -128,3 +125,9 @@ THUMBNAIL_PROCESSORS = (
     'sorl.thumbnail.processors.scale_and_crop',
     'sorl.thumbnail.processors.filters',
 )
+
+from settings_local import *
+
+if 'EXTRA_APPS' in globals():
+    INSTALLED_APPS += globals()['EXTRA_APPS']
+
