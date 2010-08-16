@@ -46,6 +46,18 @@ function rot13 (t){
             return String.fromCharCode(cc);
         });
 }
+function openparlShareWindow(url) {
+    var width = 550;
+    var height = 450;
+    var left = Math.round((screen.width / 2) - (width / 2));
+    var top = 0;
+    if (screen.height > height) {
+        top = Math.round((screen.height / 2) - (height / 2));
+    }
+    window.open(url, "openparliament_share", "width=" + width +
+       ",height=" + height + ",left=" + left, ",top=" + top +
+       "personalbar=no,toolbar=no,scrollbars=yes,location=yes,resizable=yes");
+}
 $(function() {
     jQuery.fn.overflowtip = function() {
         return this.each(function() {
