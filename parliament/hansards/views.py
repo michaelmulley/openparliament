@@ -1,3 +1,4 @@
+import datetime
 import json
 import urllib, urllib2
 
@@ -11,11 +12,24 @@ from django.shortcuts import get_object_or_404
 from parliament.core.utils import get_twitter_share_url
 from parliament.hansards.models import Hansard, HansardCache, Statement
 
-def hansard(request, hansard_id, statement_seq=None):
+def _get_hansard(hansard_id, hansard_date):
+    if hansard_id:
+        return get_object_or_404(Hansard, pk=hansard_id)
+    elif hansard_date:
+        try:
+            return Hansard.objects.get(date=datetime.date(*[int(x) for x in hansard_date.split('-')]))
+        except Exception:
+            raise Http404
+    else:
+        raise Exception("hansard() requires an ID or date")
+
+def hansard(request, hansard_id=None, hansard_date=None, statement_seq=None):
     PER_PAGE = 15
     if 'singlepage' in request.GET:
         PER_PAGE = 1000
-    hansard = get_object_or_404(Hansard, pk=hansard_id)
+        
+    hansard = _get_hansard(hansard_id, hansard_date)
+    
     statement_qs = Statement.objects.filter(hansard=hansard).select_related('member__politician', 'member__riding', 'member__party')
     paginator = Paginator(statement_qs, PER_PAGE)
 
@@ -71,12 +85,11 @@ def statement_twitter(request, hansard_id, statement_seq):
         get_twitter_share_url(statement.get_absolute_url(), description)
     )
     
-def statement_permalink(request, hansard_id, statement_seq):
+def statement_permalink(request, statement_seq, hansard_id=None, hansard_date=None):
     """A page displaying only a single statement. Used as a non-JS permalink."""
-    try:
-        statement = Statement.objects.get(hansard=hansard_id, sequence=statement_seq)
-    except Statement.DoesNotExist:
-        raise Http404
+    
+    hansard = _get_hansard(hansard_id, hansard_date)
+    statement = get_object_or_404(Statement, hansard=hansard, sequence=statement_seq)
     
     if statement.politician:
         who = statement.politician.name
@@ -92,7 +105,7 @@ def statement_permalink(request, hansard_id, statement_seq):
         'who': who,
         'page': {'object_list': [statement]},
         'statement': statement,
-        'hansard': statement.hansard,
+        'hansard': hansard,
         'statements_full_date': True,
         #'statements_context_link': True
     })

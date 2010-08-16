@@ -38,10 +38,15 @@ class Hansard(models.Model):
     
     def __unicode__ (self):
         return u"Hansard #%s for %s" % (self.number, self.date)
+    
+    @property
+    def url_date(self):
+        return '%s-%s-%s' % (self.date.year, self.date.month, self.date.day)
         
     @models.permalink
     def get_absolute_url(self):
-        return ('parliament.hansards.views.hansard', [self.id])
+        return ('parliament.hansards.views.hansard', [], {'hansard_id': self.id})
+        #return ('hansard_bydate', [], {'hansard_date': self.url_date})
         
     def _topics(self, l):
         topics = []
@@ -198,6 +203,10 @@ class Statement(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('parliament.hansards.views.hansard', [], {'hansard_id': self.hansard_id, 'statement_seq': self.sequence})
+        #return ('hansard_statement_bydate', [], {
+        #    'statement_seq': self.sequence,
+        #    'hansard_date': '%s-%s-%s' % (self.time.year, self.time.month, self.time.day),
+        #})
     
     def __unicode__ (self):
         return u"%s speaking about %s around %s" % (self.who, self.topic, self.time)
