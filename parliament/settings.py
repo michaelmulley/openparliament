@@ -106,6 +106,7 @@ INSTALLED_APPS = [
     'haystack',
     'south',
     'sorl.thumbnail',
+    'django_static',
     'parliament.core',
     'parliament.hansards',
     'parliament.elections',
@@ -125,6 +126,8 @@ THUMBNAIL_PROCESSORS = (
     'sorl.thumbnail.processors.scale_and_crop',
     'sorl.thumbnail.processors.filters',
 )
+
+SOUTH_TESTS_MIGRATE = False
 
 from settings_local import *
 
