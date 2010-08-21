@@ -59,7 +59,7 @@ def importElection(url, election, session=None, soup=None): # FIXME session none
             href = a['href']
             ridingname = a.string
             try:
-                riding = Riding.objects.getByName(ridingname)
+                riding = Riding.objects.get_by_name(ridingname)
             except Riding.DoesNotExist:
                 print "WARNING: Could not find riding %s" % ridingname
                 riding = Riding(name=ridingname.strip().title(), province=province)
@@ -81,10 +81,10 @@ def importElection(url, election, session=None, soup=None): # FIXME session none
             partylink = link['href']
             partyabbr = link.string
             try:
-                party = Party.objects.getByName(partyabbr)
+                party = Party.objects.get_by_name(partyabbr)
             except Party.DoesNotExist:
                 party = _addParty(partylink)
-                party.addAlternateName(partyabbr)
+                party.add_alternate_name(partyabbr)
                 print "WARNING: Could not find party %s" % partyabbr
                 
             # Cell 6: elected

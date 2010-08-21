@@ -206,7 +206,7 @@ class HansardParser1994(HansardParser):
                                 riding = None
                             else:
                                 try:
-                                    riding = Riding.objects.getByName(paren)
+                                    riding = Riding.objects.get_by_name(paren)
                                 except Riding.DoesNotExist:
                                     raise ParseException("WARNING: Could not find riding %s" % paren)
                                     riding = None
@@ -235,7 +235,7 @@ class HansardParser1994(HansardParser):
                             if member is None:
                                 # Last-ditch: try a match by name...
                                 try:
-                                    pol = Politician.objects.getByName(name, session=session)
+                                    pol = Politician.objects.get_by_name(name, session=session)
                                     member = ElectedMember.objects.get_by_pol(politician=pol, date=self.date)
                                 except (Politician.DoesNotExist, Politician.MultipleObjectsReturned):
                                     # and, finally, just by last name
@@ -253,15 +253,15 @@ class HansardParser1994(HansardParser):
                             # Try to do a straight match
                             try:
                                 if riding is not None:
-                                    pol = Politician.objects.getByName(name, riding=riding, session=session)
+                                    pol = Politician.objects.get_by_name(name, riding=riding, session=session)
                                 else:
-                                    pol = Politician.objects.getByName(name, session=session)
+                                    pol = Politician.objects.get_by_name(name, session=session)
                             except Politician.DoesNotExist:
                                 pol = None
                                 if riding is not None:
                                     # In case we're dealing with a renamed riding, try matching without the riding
                                     try:
-                                        pol = Politician.objects.getByName(name, session=session)
+                                        pol = Politician.objects.get_by_name(name, session=session)
                                     except Politician.DoesNotExist:
                                         # We'll raise the exception later
                                         pass
@@ -274,8 +274,8 @@ class HansardParser1994(HansardParser):
                                 if partyname:
                                     # See if we can go by party
                                     try:
-                                        party = Party.objects.getByName(partyname)
-                                        pol = Politician.objects.getByName(name, session=session, party=party)
+                                        party = Party.objects.get_by_name(partyname)
+                                        pol = Politician.objects.get_by_name(name, session=session, party=party)
                                     except Party.DoesNotExist:
                                         pass # we'll produce our own exception in a moment
                                 if pol is None:

@@ -84,8 +84,8 @@ def import_bills(session):
                     membername = re.sub(r'\(.+?\)', '', membername) # parens
                     membername = re.sub(r'.+ Hon\.', '', membername) # honorific
                     try:
-                        bill.sponsor_politician = Politician.objects.getByName(membername.strip(), session=session)
-                        bill.sponsor_politician.saveParlinfoID(membermatch.group(1))
+                        bill.sponsor_politician = Politician.objects.get_by_name(membername.strip(), session=session)
+                        bill.sponsor_politician.save_parlinfo_id(membermatch.group(1))
                     except (Politician.DoesNotExist, Politician.MultipleObjectsReturned):
                         print "WARNING: Could not identify politician for bill %s" % billnumber_full
                 if bill.sponsor_politician:

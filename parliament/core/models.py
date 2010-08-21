@@ -10,7 +10,7 @@ from django.conf import settings
 from BeautifulSoup import BeautifulSoup
 
 from parliament.core import parsetools
-from parliament.core.utils import simple_function_cache, memoize, ActiveManager
+from parliament.core.utils import memoize_property, memoize, ActiveManager
 
 POL_LOOKUP_URL = 'http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=%d&Language=E'
 
@@ -21,13 +21,13 @@ class InternalXref(models.Model):
     
     # CURRENT SCHEMAS
     # party_names
-    # pol_names
-    # pol_parlid
-    # pol_parlinfoid
     # bill_callbackid
     # session_legisin -- LEGISinfo ID for a session
     # edid_postcode -- the EDID -- which points to a riding, but is NOT the primary  key -- for a postcode
     schema = models.CharField(max_length=15, db_index=True)
+    
+    def __unicode__(self):
+        return u"%s: %s %s for %s" % (self.schema, self.text_value, self.int_value, self.target_id)
 
 class PartyManager(models.Manager):
     
@@ -39,7 +39,6 @@ class PartyManager(models.Manager):
             raise Exception("More than one party matched %s" % name.strip().lower())
         else:
             return self.get_query_set().get(pk=x[0].target_id)
-    getByName = get_by_name
             
 class Party(models.Model):
     name = models.CharField(max_length=100)
@@ -61,8 +60,8 @@ class Party(models.Model):
         if not getattr(self, 'short_name', None):
             self.short_name = self.name
         super(Party, self).save()
-        if hasattr(self, '_saveAlternate') and self._saveAlternate:
-            self.addAlternateName(self.name)
+        if getattr(self, '_saveAlternate', False):
+            self.add_alternate_name(self.name)
 
     def delete(self):
         InternalXref.objects.filter(schema='party_names', target_id=self.id).delete()
@@ -77,7 +76,6 @@ class Party(models.Model):
         else:
             if x[0].target_id != self.id:
                 raise Exception("Name %s already points to a different party" % name.strip().lower())
-    addAlternateName = add_alternate_name
                 
     def __unicode__(self):
         return self.name
@@ -107,7 +105,8 @@ class PoliticianManager(models.Manager):
         return self.get_query_set().exclude(electedmember__end_date__isnull=True)
     
     def filter_by_name(self, name):
-        return [self.get_query_set().get(pk=x.target_id) for x in InternalXref.objects.filter(schema='pol_names', text_value=parsetools.normalizeName(name))]
+        return [i.politician for i in 
+            PoliticianInfo.sr_objects.filter(schema='alternate_name', value=parsetools.normalizeName(name))]
     filterByName = filter_by_name
     
     def get_by_name(self, name, session=None, riding=None, election=None, party=None, saveAlternate=True, strictMatch=False):
@@ -122,7 +121,7 @@ class PoliticianManager(models.Manager):
         """
         
         # Alternate names for a pol are in the InternalXref table. Assemble a list of possibilities
-        poss = InternalXref.objects.filter(schema='pol_names', text_value=parsetools.normalizeName(name))
+        poss = PoliticianInfo.sr_objects.filter(schema='alternate_name', value=parsetools.normalizeName(name))
         if len(poss) >= 1:
             # We have one or more results
             if session or riding or party:
@@ -130,7 +129,7 @@ class PoliticianManager(models.Manager):
                 result = None
                 for p in poss:
                     # For each possibility, assemble a list of matching Members
-                    members = ElectedMember.objects.filter(politician=p.target_id)
+                    members = ElectedMember.objects.filter(politician=p.politician)
                     if riding: members = members.filter(riding=riding)
                     if session: members = members.filter(sessions=session)
                     if party: members = members.filter(party=party)
@@ -143,13 +142,13 @@ class PoliticianManager(models.Manager):
                 if result:
                     return result
             elif election:
-                raise Exception("Election not implemented yet in Politician getByName")
+                raise Exception("Election not implemented yet in Politician get_by_name")
             else:
                 # No extra criteria -- return what we got (or die if we can't disambiguate)
                 if len(poss) > 1:
                     raise Politician.MultipleObjectsReturned(name)
                 else:
-                    return self.get_query_set().get(pk=poss[0].target_id)
+                    return poss[0].politician
         if session and not strictMatch:
             # We couldn't find the pol, but we have the session and riding, so let's give this one more shot
             # We'll try matching only on last name
@@ -166,17 +165,16 @@ class PoliticianManager(models.Manager):
                     # yes!
                     pol = pols[0]
                     if saveAlternate:
-                        pol.addAlternateName(name) # save the name we were given as an alternate
+                        pol.add_alternate_name(name) # save the name we were given as an alternate
                     return pol
         raise Politician.DoesNotExist("Could not find politician named %s" % name)
-    getByName = get_by_name
         
     def get_by_parlinfo_id(self, parlinfoid, session=None):
         PARLINFO_LOOKUP_URL = 'http://www2.parl.gc.ca/parlinfo/Files/Parliamentarian.aspx?Item=%s&Language=E'
         try:
-            x = InternalXref.objects.get(schema='pol_parlinfoid', text_value=parlinfoid.lower())
-            return self.get_query_set().get(pk=x.target_id)
-        except InternalXref.DoesNotExist:
+            info = PoliticianInfo.sr_objects.get(schema='parlinfo_id', value=parlinfoid.lower())
+            return info.politician
+        except PoliticianInfo.DoesNotExist:
             print "Looking up parlinfo ID %s" % parlinfoid 
             parlinfourl = PARLINFO_LOOKUP_URL % parlinfoid
             parlinfopage = urllib2.urlopen(parlinfourl).read()
@@ -185,17 +183,18 @@ class PoliticianManager(models.Manager):
               parlinfopage)
             if not match:
                 raise Politician.DoesNotExist
-            pol = self.getByParlID(match.group(1), session=session)
-            pol.saveParlinfoID(parlinfoid)
+            pol = self.get_by_parl_id(match.group(1), session=session)
+            pol.save_parlinfo_id(parlinfoid)
             return pol
     
     def get_by_parl_id(self, parlid, session=None, election=None, lookOnline=True):
         try:
-            x = InternalXref.objects.get(schema='pol_parlid', int_value=parlid)
-            polid = x.target_id
-            if polid < 0:
-                raise Politician.DoesNotExist("Stored as invalid parlID")
-        except InternalXref.DoesNotExist:
+            info = PoliticianInfo.sr_objects.get(schema='parl_id', value=unicode(parlid))
+            return info.politician
+            # FIXME label-as-invalid functionality
+            #if polid < 0:
+            #    raise Politician.DoesNotExist("Stored as invalid parlID")
+        except PoliticianInfo.DoesNotExist:
             if not lookOnline:
                 return None # FIXME inconsistent behaviour: when should we return None vs. exception?
             print "Unknown parlid %d... " % parlid,
@@ -208,20 +207,20 @@ class PoliticianManager(models.Manager):
             parlinfolink = soup.find('a', id='MasterPage_MasterPage_BodyContent_PageContent_Content_TombstoneContent_TombstoneContent_ucHeaderMP_hlFederalExperience')
                         
             try:
-                riding = Riding.objects.getByName(polriding)
+                riding = Riding.objects.get_by_name(polriding)
             except Riding.DoesNotExist:
                 raise Politician.DoesNotExist("Couldn't find riding %s" % polriding)
             if session:
-                pol = self.getByName(name=polname, session=session, riding=riding)
+                pol = self.get_by_name(name=polname, session=session, riding=riding)
             else:
-                pol = self.getByName(name=polname, riding=riding)
+                pol = self.get_by_name(name=polname, riding=riding)
             print "found %s." % pol
-            pol.saveParlID(parlid)
+            pol.save_parl_id(parlid)
             polid = pol.id
             if parlinfolink:
                 match = re.search(r'Item=(.+?)&', parlinfolink['href'])
-                pol.saveParlinfoID(match.group(1))
-        return self.get_query_set().get(pk=polid)
+                pol.save_parlinfo_id(match.group(1))
+            return self.get_query_set().get(pk=polid)
     getByParlID = get_by_parl_id
 
 class Politician(Person):
@@ -246,30 +245,28 @@ class Politician(Person):
         
     def save(self):
         super(Politician, self).save()
-        if hasattr(self, '_saveAlternate') and self._saveAlternate:
-            self.addAlternateName(self.name)
+        if getattr(self, '_saveAlternate', False):
+            self.add_alternate_name(self.name)
     
     def delete(self):
         InternalXref.objects.filter(schema__startswith='pol_', target_id=self.id).delete()
         super(Politician, self).delete()
 
-    def saveParlID(self, parlid):
-        if InternalXref.objects.filter(schema='pol_parlid', int_value=parlid).count() > 0:
+    def save_parl_id(self, parlid):
+        if PoliticianInfo.objects.filter(schema='parl_id', value=unicode(parlid)).exists():
             raise Exception("ParlID %d already in use" % parlid)
-        InternalXref(schema='pol_parlid', int_value=parlid, target_id=self.id).save()
+        PoliticianInfo(schema='parl_id', value=unicode(parlid), politician=self).save()
         
-    def saveParlinfoID(self, parlinfoid):
-        InternalXref.objects.get_or_create(schema='pol_parlinfoid', text_value=parlinfoid.lower(), target_id=self.id)
+    def save_parlinfo_id(self, parlinfoid):
+        PoliticianInfo.objects.get_or_create(schema='parlinfo_id',
+            value=parlinfoid.lower(), politician=self)
         
     def add_alternate_name(self, name):
-        name = parsetools.normalizeName(name)
-        # check if exists
-        if InternalXref.objects.filter(schema='pol_names', target_id=self.id, text_value=name).count() == 0:
-            InternalXref(schema='pol_names', target_id=self.id, text_value=name).save()
-    addAlternateName = add_alternate_name
+        PoliticianInfo.objects.get_or_create(schema='alternate_name',
+            value=parsetools.normalizeName(name), politician=self)
             
     def alternate_names(self):
-        return InternalXref.objects.filter(schema='pol_names', target_id=self.id).values_list('text_value', flat=True)
+        return self.politicianinfo_set.filter(schema='alternate_name').values_list('value', flat=True)
             
     @models.permalink
     def get_absolute_url(self):
@@ -278,7 +275,7 @@ class Politician(Person):
         return ('parliament.politicians.views.politician', [], {'pol_id': self.id})
         
     @property
-    @simple_function_cache
+    @memoize_property
     def current_member(self):
         try:
             return ElectedMember.objects.get(politician=self, end_date__isnull=True)
@@ -286,7 +283,7 @@ class Politician(Person):
             return False
     
     @property
-    @simple_function_cache        
+    @memoize_property        
     def latest_member(self):
         try:
             return ElectedMember.objects.filter(politician=self).order_by('-start_date').select_related('party', 'riding')[0]
@@ -294,21 +291,38 @@ class Politician(Person):
             return None
         
     @property
-    @simple_function_cache
+    @memoize_property
     def latest_candidate(self):
         try:
             return self.candidacy_set.order_by('-election__date').select_related('election')[0]
         except IndexError:
             return None
             
-    @simple_function_cache
+    @memoize_property
     def info(self):
         return dict([(i.schema, i.value) for i in self.politicianinfo_set.all()])
+        
+class PoliticianInfoManager(models.Manager):
+    """Custom manager ensures we always pull in the politician FK."""
+    
+    def get_query_set(self):
+        return super(PoliticianInfoManager, self).get_query_set()\
+            .select_related('politician')
+            
+POLITICIAN_INFO_SCHEMAS = (
+    'alternate_name',
+    'twitter',
+    'parl_id',
+    'parlinfo_id',
+)
             
 class PoliticianInfo(models.Model):
     politician = models.ForeignKey(Politician)
     schema = models.CharField(max_length=40, db_index=True)
     value = models.CharField(max_length=500)
+    
+    objects = models.Manager()
+    sr_objects = PoliticianInfoManager()
 
     def __unicode__(self):
         return u"%s: %s" % (self.politician, self.schema)
@@ -380,7 +394,7 @@ class RidingManager(models.Manager):
         if slug in RidingManager.FIX_RIDING:
             slug = RidingManager.FIX_RIDING[slug]
         return self.get_query_set().get(slug=slug)
-    getByName = get_by_name
+    get_by_name = get_by_name
 
 PROVINCE_CHOICES = (
     ('AB', 'Alberta'),

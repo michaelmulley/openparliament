@@ -2,6 +2,7 @@ import urllib, urllib2
 import re
 import httplib2
 import json
+from functools import wraps
 
 from django.db import models
 from django.conf import settings
@@ -59,10 +60,12 @@ def postcode_to_edid_webserv(postcode):
         return None
     return int(codelist[0])
     
-def simple_function_cache(target):
+def memoize_property(target):
+    """Caches the result of a method that takes no arguments."""
     
     cacheattr = '_cache_' + target.__name__
     
+    @wraps(target)
     def wrapped(self):
         if not hasattr(self, cacheattr):
             setattr(self, cacheattr, target(self))

@@ -67,8 +67,8 @@ def import_votes(session=None):
         votequestion.save()
         for voter in detailroot.findall('Participant'):
             name = voter.find('FirstName').text + ' ' + voter.find('LastName').text
-            riding = Riding.objects.getByName(voter.find('Constituency').text)
-            pol = Politician.objects.getByName(name=name, session=session, riding=riding)
+            riding = Riding.objects.get_by_name(voter.find('Constituency').text)
+            pol = Politician.objects.get_by_name(name=name, session=session, riding=riding)
             member = ElectedMember.objects.get_by_pol(politician=pol, date=votequestion.date)
             rvote = voter.find('RecordedVote')
             if rvote.find('Yea').text == '1':

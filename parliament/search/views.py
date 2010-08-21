@@ -92,7 +92,7 @@ def try_postcode_first(request):
     
 def try_politician_first(request):
     try:
-        pol = Politician.objects.getByName(request.GET['q'].strip(), session=Session.objects.current(), saveAlternate=False, strictMatch=True)
+        pol = Politician.objects.get_by_name(request.GET['q'].strip(), session=Session.objects.current(), saveAlternate=False, strictMatch=True)
         if pol:
             return HttpResponseRedirect(pol.get_absolute_url())
     except:

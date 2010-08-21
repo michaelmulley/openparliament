@@ -11,7 +11,7 @@ from django.utils.safestring import mark_safe
 from parliament.core.models import Session, ElectedMember, Politician
 from parliament.bills.models import Bill
 from parliament.core import parsetools
-from parliament.core.utils import simple_function_cache
+from parliament.core.utils import memoize_property
 from parliament.activity import utils as activity
 
 class HansardManager (models.Manager):
@@ -199,14 +199,14 @@ class Statement(models.Model):
     def date(self):
         return datetime.date(self.time.year, self.time.month, self.time.day)
     
-    @simple_function_cache
+    @memoize_property
     @models.permalink
     def get_absolute_url(self):
-        return ('parliament.hansards.views.hansard', [], {'hansard_id': self.hansard_id, 'statement_seq': self.sequence})
-        #return ('hansard_statement_bydate', [], {
-        #    'statement_seq': self.sequence,
-        #    'hansard_date': '%s-%s-%s' % (self.time.year, self.time.month, self.time.day),
-        #})
+        #return ('parliament.hansards.views.hansard', [], {'hansard_id': self.hansard_id, 'statement_seq': self.sequence})
+        return ('hansard_statement_bydate', [], {
+            'statement_seq': self.sequence,
+            'hansard_date': '%s-%s-%s' % (self.time.year, self.time.month, self.time.day),
+        })
     
     def __unicode__ (self):
         return u"%s speaking about %s around %s" % (self.who, self.topic, self.time)
@@ -238,7 +238,7 @@ class Statement(models.Model):
         return v
     
     @property
-    @simple_function_cache    
+    @memoize_property    
     def name_info(self):
         info = {
             'post': None,

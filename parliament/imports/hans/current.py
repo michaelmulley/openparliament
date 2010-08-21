@@ -44,6 +44,7 @@ class HansardParser2009(HansardParser):
             except Politician.DoesNotExist:
                 print "Related politician search failed for callback %s" % resid
                 if getattr(settings, 'PARLIAMENT_LABEL_FAILED_CALLBACK', False):
+                    # FIXME migrate away from internalxref?
                     InternalXref.objects.get_or_create(schema='pol_parlid', int_value=resid, target_id=-1)
                 return string
             if pol == current_politician:
@@ -131,7 +132,7 @@ class HansardParser2009(HansardParser):
                     t['member_title'] = c.string.strip()
                     t['written_question'] = True
                     try:
-                        pol = Politician.objects.getByName(polname, session=self.hansard.session)
+                        pol = Politician.objects.get_by_name(polname, session=self.hansard.session)
                         t['politician'] = pol
                         t['member'] = ElectedMember.objects.get_by_pol(politician=pol, date=self.date)
                     except Politician.DoesNotExist:
@@ -168,7 +169,7 @@ class HansardParser2009(HansardParser):
                                         polname = re.sub(r'\(.+\)', '', match.group(2)).strip()
                                         try:
                                             #print "Looking for %s..." % polname,
-                                            pol = Politician.objects.getByName(polname, session=self.hansard.session)
+                                            pol = Politician.objects.get_by_name(polname, session=self.hansard.session)
                                             #print "found."
                                         except Politician.DoesNotExist:
                                             pass

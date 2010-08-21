@@ -147,7 +147,7 @@ def get_parlinfo_ids(polset=Politician.objects.filter(parlpage__icontains='webin
             print "Couldn't find on %s" % parlpage
         else:
             match = re.search(r'Item=(.+?)&', parlinfolink['href'])
-            pol.saveParlinfoID(match.group(1))
+            pol.save_parlinfo_id(match.group(1))
             print "Saved for %s" % pol
 
 def normalize_hansard_urls():
@@ -326,7 +326,7 @@ def merge_polnames():
                 print "Alternate name? ",
                 alt = sys.stdin.readline().strip()
                 if len(alt) > 5:
-                    good.addAlternateName(alt)
+                    good.add_alternate_name(alt)
                 else:
                     break
             print "Done!"
@@ -384,7 +384,7 @@ def twitter_from_csv(infile):
     for line in reader:
         name = line['Name'].decode('utf8')
         surname = line['Surname'].decode('utf8')
-        pol = Politician.objects.getByName(' '.join([name, surname]), session=session)
+        pol = Politician.objects.get_by_name(' '.join([name, surname]), session=session)
         PoliticianInfo.objects.get_or_create(politician=pol, schema='twitter', value=line['twitter'].strip())
         
 def twitter_to_list():

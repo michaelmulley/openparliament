@@ -7,7 +7,7 @@ from BeautifulSoup import BeautifulSoup
 
 from parliament.core.models import Session, InternalXref, ElectedMember, Politician, Party
 from parliament.activity import utils as activity
-from parliament.core.utils import memoize, simple_function_cache
+from parliament.core.utils import memoize, memoize_property
 
 
 CALLBACK_URL = 'http://www2.parl.gc.ca/HousePublications/GetWebOptionsCallBack.aspx?SourceSystem=PRISM&ResourceType=Document&ResourceID=%d&language=1&DisplayMode=2'
@@ -93,7 +93,7 @@ class Bill(models.Model):
                 variety='billsponsor',
             )
         
-    @simple_function_cache
+    @memoize_property
     def get_session(self):
         """Returns the most recent session this bill belongs to."""
         try:
