@@ -403,3 +403,30 @@ def slugs_for_pols(qs=None):
         else:
             pol.slug = slug
             pol.save()
+            
+def freebase_id_from_parl_id():
+    import freebase
+    import time
+    for info in PoliticianInfo.sr_objects.filter(schema='parl_id').order_by('value'):
+        if PoliticianInfo.objects.filter(politician=info.politician, schema='freebase_id').exists():
+            continue
+        query = {
+            'type': '/base/cdnpolitics/member_of_parliament',
+            'id': [],
+            'key': {
+                'namespace': '/source/ca/gov/house',
+                'value': info.value
+            }
+        }
+        result = freebase.mqlread(query)
+        print "result: %s" % result
+        #time.sleep(1)
+        if not result:
+            try:
+                print "Nothing for %s (%s)" % (info.value, info.politician)
+            except:
+                pass
+        else:
+            freebase_id = result['id'][0]
+            PoliticianInfo(politician=info.politician, schema='freebase_id', value=freebase_id).save()
+            print "Saved: %s" % freebase_id
