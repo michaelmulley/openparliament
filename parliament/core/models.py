@@ -302,18 +302,29 @@ class Politician(Person):
     def info(self):
         return dict([(i.schema, i.value) for i in self.politicianinfo_set.all()])
         
+    def set_info(self, key, value):
+        try:
+            info = self.politicianinfo_set.get(schema=key)
+        except PoliticianInfo.DoesNotExist:
+            info = PoliticianInfo(politician=self, schema=key)
+        info.value = value
+        info.save()
+        
 class PoliticianInfoManager(models.Manager):
     """Custom manager ensures we always pull in the politician FK."""
     
     def get_query_set(self):
         return super(PoliticianInfoManager, self).get_query_set()\
             .select_related('politician')
-            
+
+# Not necessarily a full list           
 POLITICIAN_INFO_SCHEMAS = (
     'alternate_name',
     'twitter',
     'parl_id',
     'parlinfo_id',
+    'freebase_id',
+    'wikipedia_id'
 )
             
 class PoliticianInfo(models.Model):

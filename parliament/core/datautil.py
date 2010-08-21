@@ -404,6 +404,22 @@ def slugs_for_pols(qs=None):
             pol.slug = slug
             pol.save()
             
+def wikipedia_from_freebase():
+    import freebase
+    for info in PoliticianInfo.sr_objects.filter(schema='freebase_id'):
+        query = {
+            'id': info.value,
+            'key': [{
+                'namespace': '/wikipedia/en_id',
+                'value': None
+            }]
+        }
+        result = freebase.mqlread(query)
+        if result:
+            # freebase.api.mqlkey.unquotekey
+            wiki_id = result['key'][0]['value']
+            info.politician.set_info('wikipedia_id', wiki_id)
+            
 def freebase_id_from_parl_id():
     import freebase
     import time
