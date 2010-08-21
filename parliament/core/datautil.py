@@ -446,3 +446,14 @@ def freebase_id_from_parl_id():
             freebase_id = result['id'][0]
             PoliticianInfo(politician=info.politician, schema='freebase_id', value=freebase_id).save()
             print "Saved: %s" % freebase_id
+            
+def pol_urls_to_ids():
+    for pol in Politician.objects.exclude(parlpage=''):
+        if 'Item' in pol.parlpage and 'parlinfo_id' not in pol.info():
+            print pol.parlpage
+            match = re.search(r'Item=([A-Z0-9-]+)', pol.parlpage)
+            pol.set_info('parlinfo_id', match.group(1))
+        if 'Key' in pol.parlpage and 'parl_id' not in pol.info():
+            print pol.parlpage
+            match = re.search(r'Key=(\d+)', pol.parlpage)
+            pol.set_info('parl_id', match.group(1))

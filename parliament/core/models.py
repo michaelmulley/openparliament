@@ -307,7 +307,7 @@ class Politician(Person):
             info = self.politicianinfo_set.get(schema=key)
         except PoliticianInfo.DoesNotExist:
             info = PoliticianInfo(politician=self, schema=key)
-        info.value = value
+        info.value = unicode(value)
         info.save()
         
 class PoliticianInfoManager(models.Manager):
