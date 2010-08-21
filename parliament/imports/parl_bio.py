@@ -24,12 +24,14 @@ def update_politician_info(pol):
     weblink = soup.find(id="MasterPage_MasterPage_BodyContent_PageContent_Content_DetailsContent_DetailsContent__ctl0_hlWebSite")
     if weblink and weblink['href']:
         pol.set_info('web_site', weblink['href'])
-        
-    constit = u''
-    for row in soup.find(id='MasterPage_MasterPage_BodyContent_PageContent_Content_DetailsContent_DetailsContent__ctl0_divConstituencyOffices').findAll('td'):
-        constit += unicode(row.string) if row.string else ''
-        constit += "\n"
-    if len(constit) > 500:
-        print "TOO LONG %s" % constit
-        constit = constit[:500]
-    pol.set_info('constituency_offices', constit)
+    
+    constit_div = soup.find(id='MasterPage_MasterPage_BodyContent_PageContent_Content_DetailsContent_DetailsContent__ctl0_divConstituencyOffices')
+    if constit_div: 
+        constit = u''
+        for row in constit_div.findAll('td'):
+            constit += unicode(row.string) if row.string else ''
+            constit += "\n"
+        if len(constit) > 500:
+            print "TOO LONG %s" % constit
+            constit = constit[:500]
+        pol.set_info('constituency_offices', constit)
