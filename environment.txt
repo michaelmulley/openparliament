@@ -1,5 +1,5 @@
 BeautifulSoup==3.0.8.1
-Django>=1.2.1
+Django>=1.2.3
 Markdown==2.0.3
 PIL>=1.1.6
 South==0.7.2
@@ -7,7 +7,7 @@ django-devserver==0.0.2
 django-debug-toolbar==0.8.3
 django-extensions==0.4.1
 django-haystack==1.0.1-final
-psycopg2>=2.0.7
+#psycopg2>=2.0.7
 pysolr==2.0.9
 sorl-thumbnail==3.2.5
 wsgiref==0.1.2
@@ -18,5 +18,5 @@ django-piston==0.2.2
 slimmer==0.1.30
 -e git+git://github.com/rhymeswithcycle/django-static.git#egg=django-static
 freebase
-recaptcha-client==1.0.5
+#recaptcha-client==1.0.5
 
