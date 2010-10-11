@@ -22,6 +22,7 @@ class ElectedMemberOptions(admin.ModelAdmin):
 class InternalXrefOptions(admin.ModelAdmin):
     list_display = ('schema', 'text_value', 'int_value', 'target_id')
     search_fields = ('schema', 'text_value', 'int_value', 'target_id')
+    list_editable = ('text_value', 'int_value', 'target_id')
     
 class PartyOptions(admin.ModelAdmin):
     list_display = ('name', 'short_name', 'slug')

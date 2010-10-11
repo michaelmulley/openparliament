@@ -19,7 +19,7 @@ def import_bills(session):
     previous_session = Session.objects.filter(start__lt=session.start)\
         .order_by('-start')[0] # yes, this will raise an exception if there's no older session on record
     
-    legis_sess = InternalXref.objects.get(target_id=session.id, schema='session_legisin').int_value
+    legis_sess = InternalXref.objects.get(text_value=session.id, schema='session_legisin').int_value
     listurl = LEGISINFO_LIST_URL % legis_sess
     listpage = urllib2.urlopen(listurl).read()
     
