@@ -37,6 +37,15 @@ def himher(pol):
     else:
         return 'Them'
         
+@register.filter(name='mrms')
+def mrms(pol):
+    if pol.gender == 'M':
+        return 'Mr.'
+    elif pol.gender == 'F':
+        return 'Ms.'
+    else:
+        return 'Mr./Ms.'
+        
 @register.filter(name='month_num')
 def month_num(month):
     return datetime.date(2010, month, 1).strftime("%B")

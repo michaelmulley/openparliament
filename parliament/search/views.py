@@ -74,9 +74,9 @@ def try_postcode_first(request):
     if match:
         postcode = match.group(1) + " " + match.group(2)
         try:
-            x = InternalXref.objects.get(schema='edid_postcode', text_value=postcode)
+            x = InternalXref.objects.filter(schema='edid_postcode', text_value=postcode)[0]
             edid = x.target_id
-        except InternalXref.DoesNotExist:
+        except IndexError:
             edid = postcode_to_edid(postcode)
             if edid:
                 InternalXref.objects.get_or_create(schema='edid_postcode', text_value=postcode, target_id=edid)

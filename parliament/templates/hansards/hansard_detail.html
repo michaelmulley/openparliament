@@ -6,7 +6,7 @@
 {% block headextra %}<script type="text/javascript" src="{% staticfile "js/pagination.js" %}"></script>
 {% if highlight_statement or highlight_statement == 0%}<link rel="canonical" href="{{ highlight_statement.get_absolute_url }}only/">{% endif %}{% endblock %}
 {% block content %}
-<div class="focus"><p>House of Commons Hansard #{{ hansard.number }} of the {{ hansard.session }}. (The <a href="{{ hansard.url }}">original version</a> is on Parliament's site.)</p></div>
+<div class="focus"><p>House of Commons Hansard #{{ hansard.number }} of the {{ hansard.session }}. (The <a href="{{ hansard.url }}">original version</a> is on Parliament's site.) The <span class="tip tipunderline" title="Most frequently spoken word, excluding a fixed list of extra-boring words (like 'the', or 'government').">word of the day</span> was {% if hansard.wordcloud %}<a href="{{ hansard.wordcloud.url }}" rel="lightbox">{{ hansard.wordoftheday }}</a>{% else %}<strong>{{ hansard.wordoftheday}}</strong>{% endif %}.</p></div>
 
 <div class="clear"></div><div class="context"><h2>Topics</h2></div>
 <div class="focus"><ul class="tile clearafter">

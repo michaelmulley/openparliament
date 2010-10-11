@@ -15,8 +15,8 @@ HAYSTACK_SEARCH_ENGINE = 'solr'
 HAYSTACK_SITECONF = 'parliament.search_sites'
 
 CACHE_MIDDLEWARE_KEY_PREFIX = 'parl'
+CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
-DJANGO_STATIC = True
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -51,6 +51,7 @@ MEDIA_ROOT = PROJ_ROOT + '/static/'
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
 MEDIA_URL = '/static/'
 
+DJANGO_STATIC = True
 DJANGO_STATIC_SAVE_PREFIX = MEDIA_ROOT + 'cacheable/'
 DJANGO_STATIC_NAME_PREFIX = 'cacheable/'
 DJANGO_STATIC_MEDIA_URL = MEDIA_URL

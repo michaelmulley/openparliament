@@ -2,8 +2,9 @@ from haystack import site
 from haystack import indexes
 
 from parliament.core.models import Politician
+from parliament.search.utils import SearchIndex
 
-class PolIndex(indexes.SearchIndex):
+class PolIndex(SearchIndex):
     text = indexes.CharField(document=True, use_template=True)
     sci = indexes.CharField(use_template=True, stored=False)
     pol_name = indexes.CharField(model_attr='name', indexed=False)

@@ -6,7 +6,7 @@
 {% if success %}
 <div class="focus"><p>We've got your e-mail. <strong>But there's one more step.</strong></p>
 <p>Any second now, you should receive a confirmation e-mail from us. It'll contain a link you need to click on in order to activate your alert.</p>
-<p>If you don't receive this confirmation within a few minutes, check your Junk or Spam e-mail folder. (If it's there, you should add <span class="code">alerts@openparliament.ca</span> to your address book to prevent our future e-mails from being junked.) If you still can't find it, try signing up again.</p>
+<p>If you don't receive this confirmation within a few minutes, check your Junk or Spam e-mail folder. (If it's there, you should add <span class="code">alerts@contact.openparliament.ca</span> to your address book to prevent our future e-mails from being junked.) If you still can't find it, try signing up again.</p>
 <p>Thanks!</p></div>
 {% else %}
 <div class="clear"></div><div class="context"><h2>What you'll get</h2></div>
@@ -14,8 +14,8 @@
     <p>A message whenever {{ pol.name }} speaks during the debates of the House, telling you exactly what {{ pol|heshe|lower }} said. No more than one e-mail per day. The e-mail gets sent as soon as we process a given day's debates, which is whenever Parliament posts the transcript&mdash;usually early morning of the next day.</p></div>
 <div class="clear"></div><div class="context"><h2>Sign up</h2></div>
 <div class="focus"><form class="signup" action="." method="POST">
-    <table>{{ form }}
-        <tr><td></td><td><input type="submit" value="Sign up"></td></tr></table></form>
+    <table class="standard_form">{{ form }}
+        <tr><th></th><td class="standard_form"><input type="submit" class="button" value="Sign up"></td></tr></table></form>
 </div>
 {% endif %}
 

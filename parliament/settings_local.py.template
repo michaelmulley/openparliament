@@ -18,7 +18,8 @@ DATABASES = {
 HANSARD_CACHE_DIR = '/hansard-cache/'
 SITE_URL='http://openparliament.ca'
 
-BITLY_API_URL = 'http://api.bit.ly/v3/shorten?login=bitlyapidemo&apiKey=R_0da49e0a9118ff35f52f629d2d71bf07&'
+RECAPTCHA_PUBLIC_KEY = '<your public key>'
+RECAPTCHA_PRIVATE_KEY = '<your private key>'
 
 CACHE_BACKEND = 'dummy://'
 CACHE_MIDDLEWARE_SECONDS = 60 * 60 * 3
@@ -28,6 +29,8 @@ HAYSTACK_SOLR_URL = 'http://127.0.0.1:8983/solr'
 TWITTER_USERNAME = ''
 TWITTER_PASSWORD = ''
 TWITTER_LIST_NAME = 'mps'
+
+PARLIAMENT_WORDCLOUD_COMMAND = ('/usr/bin/java', '-jar' ,"/path/to/ibm-word-cloud.jar",  '-c', os.path.join(PROJ_ROOT, '..', 'config', 'wordcloud.conf'), '-w', '800')
 
 PARLIAMENT_HTV_API_KEY = '' # Key for the How'd They Vote API, howdtheyvote.ca
 

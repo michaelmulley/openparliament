@@ -9,8 +9,8 @@ from django.contrib import databrowse
 from django.conf import settings
 from BeautifulSoup import BeautifulSoup
 
-from parliament.core import parsetools
-from parliament.core.utils import memoize_property, memoize, ActiveManager
+from parliament.core import parsetools, text_utils
+from parliament.core.utils import memoize_property, ActiveManager
 
 POL_LOOKUP_URL = 'http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=%d&Language=E'
 
@@ -243,36 +243,11 @@ class Politician(Person):
         super(Politician, self).__init__(*args, **kwargs)
         self._saveAlternate = True
         
-    def save(self):
-        super(Politician, self).save()
-        if getattr(self, '_saveAlternate', False):
-            self.add_alternate_name(self.name)
-    
-    def delete(self):
-        InternalXref.objects.filter(schema__startswith='pol_', target_id=self.id).delete()
-        super(Politician, self).delete()
-
-    def save_parl_id(self, parlid):
-        if PoliticianInfo.objects.filter(schema='parl_id', value=unicode(parlid)).exists():
-            raise Exception("ParlID %d already in use" % parlid)
-        PoliticianInfo(schema='parl_id', value=unicode(parlid), politician=self).save()
-        
-    def save_parlinfo_id(self, parlinfoid):
-        PoliticianInfo.objects.get_or_create(schema='parlinfo_id',
-            value=parlinfoid.lower(), politician=self)
-        
     def add_alternate_name(self, name):
-        PoliticianInfo.objects.get_or_create(schema='alternate_name',
-            value=parsetools.normalizeName(name), politician=self)
-            
+        self.set_info_multivalued('alternate_name', parsetools.normalizeName(name))
+
     def alternate_names(self):
         return self.politicianinfo_set.filter(schema='alternate_name').values_list('value', flat=True)
-            
-    @models.permalink
-    def get_absolute_url(self):
-        if self.slug:
-            return ('parliament.politicians.views.politician', [], {'pol_slug': self.slug})
-        return ('parliament.politicians.views.politician', [], {'pol_id': self.id})
         
     @property
     @memoize_property
@@ -281,7 +256,7 @@ class Politician(Person):
             return ElectedMember.objects.get(politician=self, end_date__isnull=True)
         except ElectedMember.DoesNotExist:
             return False
-    
+
     @property
     @memoize_property        
     def latest_member(self):
@@ -289,7 +264,7 @@ class Politician(Person):
             return ElectedMember.objects.filter(politician=self).order_by('-start_date').select_related('party', 'riding')[0]
         except IndexError:
             return None
-        
+
     @property
     @memoize_property
     def latest_candidate(self):
@@ -297,10 +272,45 @@ class Politician(Person):
             return self.candidacy_set.order_by('-election__date').select_related('election')[0]
         except IndexError:
             return None
+        
+    def delete(self):
+        super(Politician, self).delete()
+        
+    def save(self):
+        super(Politician, self).save()
+        if getattr(self, '_saveAlternate', False):
+            self.add_alternate_name(self.name)
+
+    def save_parl_id(self, parlid):
+        if PoliticianInfo.objects.filter(schema='parl_id', value=unicode(parlid)).exists():
+            raise Exception("ParlID %d already in use" % parlid)
+        self.set_info_multivalued('parl_id', parlid)
+        
+    def save_parlinfo_id(self, parlinfoid):
+        self.set_info('parlinfo_id', parlinfoid.lower())
+            
+    @models.permalink
+    def get_absolute_url(self):
+        if self.slug:
+            return ('parliament.politicians.views.politician', [], {'pol_slug': self.slug})
+        return ('parliament.politicians.views.politician', [], {'pol_id': self.id})
+        
+    @models.permalink
+    def get_contact_url(self):
+        if self.slug:
+            return ('parliament.contact.views.contact_politician', [], {'pol_slug': self.slug})
+        return ('parliament.contact.views.contact_politician', [], {'pol_id': self.id})
             
     @memoize_property
     def info(self):
-        return dict([(i.schema, i.value) for i in self.politicianinfo_set.all()])
+        return dict([i for i in self.politicianinfo_set.all().values_list('schema', 'value')])
+        
+    @memoize_property
+    def info_multivalued(self):
+        info = {}
+        for i in self.politicianinfo_set.all().values_list('schema', 'value'):
+            info.setdefault(i[0], []).append(i[1])
+        return info
         
     def set_info(self, key, value):
         try:
@@ -309,6 +319,12 @@ class Politician(Person):
             info = PoliticianInfo(politician=self, schema=key)
         info.value = unicode(value)
         info.save()
+        
+    def set_info_multivalued(self, key, value):
+        PoliticianInfo.objects.get_or_create(politician=self, schema=key, value=unicode(value))
+        
+    def find_favourite_word(self):
+        self.set_info('favourite_word', text_utils.most_frequent_word(self.statement_set.all()))
         
 class PoliticianInfoManager(models.Manager):
     """Custom manager ensures we always pull in the politician FK."""
@@ -341,9 +357,6 @@ class PoliticianInfo(models.Model):
     @property
     def int_value(self):
         return int(self.value)
-
-    class Meta:
-        ordering = ('schema',)
 
 class SessionManager(models.Manager):
     

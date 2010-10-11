@@ -7,7 +7,7 @@ from BeautifulSoup import BeautifulSoup
 
 from parliament.core.models import Session, InternalXref, ElectedMember, Politician, Party
 from parliament.activity import utils as activity
-from parliament.core.utils import memoize, memoize_property
+from parliament.core.utils import memoize_property
 
 
 CALLBACK_URL = 'http://www2.parl.gc.ca/HousePublications/GetWebOptionsCallBack.aspx?SourceSystem=PRISM&ResourceType=Document&ResourceID=%d&language=1&DisplayMode=2'
@@ -74,6 +74,9 @@ class Bill(models.Model):
     @models.permalink
     def get_absolute_url(self):
         return ('parliament.bills.views.bill', [self.id])
+        
+    def get_legisinfo_billtext_url(self):
+        return self.legisinfo_url.replace('List=toc', 'List=toc-1')
         
     def save(self, *args, **kwargs):
         if not self.number_only:

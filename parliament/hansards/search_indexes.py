@@ -1,9 +1,10 @@
 from haystack import site
 from haystack import indexes
 
+from parliament.search.utils import SearchIndex
 from parliament.hansards.models import Statement
 
-class StatementIndex(indexes.RealTimeSearchIndex):
+class StatementIndex(SearchIndex):
     text = indexes.CharField(document=True, model_attr='text_plain')
     sc = indexes.CharField(stored=False, use_template=True)
     date = indexes.DateTimeField(model_attr='time')

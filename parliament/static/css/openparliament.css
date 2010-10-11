@@ -9,7 +9,7 @@ a:hover{text-decoration:underline;}
 img {border: 0;}
 
 /* LAYOUT */ 
-#content{width:960px;margin-left:auto;margin-right:auto;padding-top:15px;}
+#content{width:960px;margin-left:auto;margin-right:auto;padding-top:15px;position:relative;}
 #content_wrap{clear:both;background-color:white;padding-bottom:20px;}
 div.context{clear:both;float:left;width:160px;margin-left:10px;margin-bottom:10px;}
 .context_4 div.context{width:220px;}
@@ -25,9 +25,11 @@ div.focus.pageheader{margin-bottom:0;}
 .clear{clear:both;}
 .clearafter:after{visibility:hidden;display:block;font-size:0;content:" ";clear:both;height:0;}
 .three{width:160px;}
-.six{width:340px;}
 .four{width:220px;}
+.five{width:280px;}
+.six{width:340px;}
 .spacer{height:10px;}
+.gutter{width:20px;}
 .context{font-size:14px;}
 .context p,.context li{margin-right:15px;}
 .context h3{font-size:15px;}
@@ -63,15 +65,27 @@ ul.tile{list-style-type:none;margin:0 0 10px 0;padding:0;}
 .code{font-family:"Courier New",Courier,monospaced;padding:0 2px;white-space:pre;}
 .feed{margin-left:3px;padding:0 0 0 19px;background:url("../images/feed-icon-14x14.png") no-repeat 0 50%;}
 ul.bulleted{list-style:none outside url('../images/bullet.png');margin:0 0 20px 0;padding:0;}
-.bulleted li{padding:0 0 4px 0;}
-form.signup table td,th{padding:5px 20px 5px 0;}
-form.signup input[type="text"]{font-size:15px;width:300px;}
-form.signup input[type="submit"]{font-size:15px;}
+ul.bulleted.inside{padding-left: 18px;}
+.bulleted li{padding:0 0 4px 0; max-width: 600px;}
 ul.errorlist{list-style-type:none;background-color:#901019;margin:0 0 10px 0;padding:0;}
 ul.errorlist li{padding:4px 10px;color:white;font-weight:bold;}
+ul.errorlist a {color:white;text-decoration:underline;}
 .tipunderline{border-bottom: 1px dashed #333333;}
-
-
+.standard td,th{vertical-align:top;padding:2px 0;}
+.standard th{text-align:left;font-size:110%;border-bottom:1px dotted #666;}
+.standard_form td,th{vertical-align:top;padding:0 20px 10px 0;}
+.standard_form th{text-align:left;width:160px;color:#522D07;}
+table.standard_form{margin-top:20px;border-spacing:0;}
+/* That the TD requires the standard_form class for width is a hack to get the recaptcha widget to work. */
+td.standard_form{width:520px;}
+.standard_form td{width: 520px;}
+.standard_form ul{list-style-type:none;margin:0;padding:0;}
+.standard_form li{margin:0 0 10px 0;padding:0 0 0 20px;position:relative;}
+.standard_form li input{position:absolute;left:-5px;}
+.standard_form input[type=text],.standard_form textarea{width:100%;font-size:15px;font-family:sans-serif;padding:3px 4px;background-color:#EEE;border:1px solid #777;}
+.standard_form textarea{height:220px;}
+.standard_form input[type=text]:hover,.standard_form textarea:hover{background-color:white;}
+#marginalia{width:155px;padding:5px;background-color:#f9f7cd;border:1px dotted #666;color:#444;position:absolute;left: 0;}
 
 /* PAGINATION */
 .pagination{text-align:center;width:640px;}
@@ -147,7 +161,7 @@ div.headshot span{display: block;position: relative;font-size: 10px;color: #8888
 .result.statement .focus p {max-width: 640px;}
 .result.statement{border:none;padding-top:5px;}
 #page_searchbox{width:400px;font-size:15px;padding:4px;}
-#searchbutton{background-color:#CCCCCC;border:1px solid #AAAAAA;color:#7d450b;font-size:15px;font-weight:bold;margin-left:12px;padding:5px;width:80px;}
+#searchbutton{margin-left:12px;}
 .search_options{font-weight: bold; margin-top: 5px;}
 
 /* HOME */
@@ -162,4 +176,22 @@ div.headshot span{display: block;position: relative;font-size: 10px;color: #8888
 p.share_link{font-weight:bold;}
 p.share_link input{width:300px;padding-left:5px;}
 
+/* BUTTONS */
+.button{padding:5px 10px;display:inline;background:#2c6da0 url('../images/css_button_bg.png') repeat-x bottom;border:none;color:#fff;cursor:pointer;font-weight:bold;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;font-size:15px;}
+.button:hover{background-position:0 -35px;}
+.button:active{background-position:0 top;position:relative;top:1px;padding:6px 10px 4px;background-position:0 top;}
 
+/* SLIMBOX */
+#lbOverlay{position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background-color:#000;cursor:pointer;}
+#lbCenter,#lbBottomContainer{position:absolute;z-index:9999;overflow:hidden;background-color:#fff;}
+.lbLoading{background:#fff url(../images/slimbox/loading.gif) no-repeat center;}
+#lbImage{position:absolute;left:0;top:0;border:10px solid #fff;background-repeat:no-repeat;}
+#lbPrevLink,#lbNextLink{display:block;position:absolute;top:0;width:50%;outline:none;}
+#lbPrevLink{left:0;}
+#lbPrevLink:hover{background:transparent url(../images/slimbox/prevlabel.gif) no-repeat 0 15%;}
+#lbNextLink{right:0;}
+#lbNextLink:hover{background:transparent url(../images/slimbox/nextlabel.gif) no-repeat 100% 15%;}
+#lbBottom{font-family:sans-serif;font-size:10px;color:#666;line-height:1.4em;text-align:left;border:10px solid #fff;border-top-style:none;}
+#lbCloseLink{display:block;float:right;width:66px;height:22px;background:transparent url(../images/slimbox/closelabel.gif) no-repeat center;margin:5px 0;outline:none;}
+#lbCaption,#lbNumber{margin-right:71px;}
+#lbCaption{font-weight:bold;}

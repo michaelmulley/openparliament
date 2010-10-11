@@ -21,14 +21,29 @@
         <ul class="bulleted"><li><a href="/alerts/signup/?politician={{ pol.id }}">Get e-mail</a> whenever {{ pol|heshe|lower }} speaks in the House</li>
         <li>Subscribe to feeds of <a href="{% url politician_activity_feed pol_id=pol.id %}" class="feed">recent activity</a> (what you see to the right) or <a href="{% url politician_statement_feed pol_id=pol.id %}" class="feed">statements in the House</a></li></ul> {% endif %}   
 
-{% with pol.info as info %}{% if info.parl_id %}
+{% with pol.info as info %}
+
+{% if member.current and info.email %}
+{# <h3>Your Say</h3>
+<ul class="bulleted">
+<li><a href="/contact/{{ pol.slug }}/">Contact {{ pol.name_given }}</a></li></ul> #}
+{% endif %}
+
+{% if info.parl_id %}
 <h3>Elsewhere</h3>
 <ul class="bulleted">
 {% if info.web_site %}<li><a href="{{ info.web_site }}">{{ pol|hisher }} site</a></li>{% endif %}
 <li>On the <a href="http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key={{ info.parl_id }}&amp;Language=E">Parliament</a> site</li>
 {% if info.twitter %}<li><a href="http://twitter.com/{{ info.twitter }}">Twitter</a> (and Twitter messages <a href="http://twitter.com/search?q=%40{{ info.twitter }}">to {{ pol|himher|lower }}</a>)</li>{% endif %}
 {% if info.wikipedia_id %}<li><a href="http://en.wikipedia.org/wiki/index.html?curid={{ info.wikipedia_id }}">Wikipedia</a></li>{% endif %}
-</ul>{% endif %}{% endwith %}
+</ul>{% endif %}
+
+{% if info.favourite_word %}
+<h3>Crucial Fact</h3>
+<ul class="bulleted"><li>{{ pol|hisher }} <span class="tip tipunderline" title="Most frequently spoken word in the House, excluding a fixed list of extra-boring words (like 'the', or 'government').">favourite word</span> is <strong>{{ info.favourite_word }}</strong>.</li></ul>
+{% endif %}
+
+{% endwith %}
         </div>
 <div class="focus">
 {% if member %}<h2>{% if not member.current %}Last in Parliament {{ member.end_date|date:"F Y"}}, as {% endif %}<span class="trag prartytag_{{ member.party.slug|lower }}">{{ member.party.short_name }}</span> MP for {{ member.riding }}</h2>{% endif %}

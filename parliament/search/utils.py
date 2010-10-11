@@ -3,7 +3,14 @@ import datetime, re, math, urllib
 from django.utils.html import escape
 from django.utils.safestring import mark_safe
 from django.conf import settings
+
+from haystack import indexes
 import pysolr
+
+if getattr(settings, 'PARLIAMENT_AUTOUPDATE_SEARCH_INDEXES', False):
+    SearchIndex = indexes.RealTimeSearchIndex
+else:
+    SearchIndex = indexes.SearchIndex
 
 def delete_from_index(solr_id):
     solr = pysolr.Solr(settings.HAYSTACK_SOLR_URL)

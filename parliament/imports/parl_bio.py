@@ -34,4 +34,4 @@ def update_politician_info(pol):
         if len(constit) > 500:
             print "TOO LONG %s" % constit
             constit = constit[:500]
-        pol.set_info('constituency_offices', constit)
+        pol.set_info('constituency_offices', constit.replace('Telephone:', 'Phone:'))

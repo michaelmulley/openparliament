@@ -78,6 +78,28 @@ def _getHansardNumber(page):
         else:
             raise Exception("Couldn't parse number from Hansard title: %s" % title)
             
+def hansards_from_calendar(session=None):
+    if not session:
+        session = Session.objects.current()
+    SKIP_HANSARDS = {
+    'http://www2.parl.gc.ca/HousePublications/Publication.aspx?Language=E&Mode=2&Parl=36&Ses=2&DocId=2332160' : True,
+    }
+    url = 'http://www2.parl.gc.ca/housechamberbusiness/chambersittings.aspx?View=H&Parl=%d&Ses=%d&Language=E&Mode=2' % (session.parliamentnum, session.sessnum)
+    #print "Getting calendar..."
+    soup = BeautifulSoup(urllib2.urlopen(url))
+    #print "Calendar retrieved."
+    cal = soup.find('div', id='ctl00_PageContent_calTextCalendar')
+    for link in cal.findAll('a', href=True):
+        hurl = 'http://www2.parl.gc.ca' + link['href']
+        if hurl in SKIP_HANSARDS:
+            continue
+        hurl = hurl.replace('Mode=2&', 'Mode=1&')
+        #print "Loading url %s" % hurl
+        try:
+            loadHansard(url=hurl, session=session)
+        except Exception, e:
+            print "Failure on %s: %s" % (hurl, e)            
+            
 def loadHansard(hansard=None, url=None, session=None):
     if hansard:
         try:

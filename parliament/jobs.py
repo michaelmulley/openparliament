@@ -7,7 +7,6 @@ from parliament.politicians import twit
 from parliament.politicians import googlenews as gnews
 from parliament.imports import parlvotes, legisinfo, hans
 from parliament.core.models import Politician, Session
-from parliament.core import datautil
 from django.core.mail import mail_admins
 from parliament.hansards.models import Hansard
 from parliament.activity import utils as activityutils
@@ -46,7 +45,7 @@ def prune_activities():
     
 @transaction.commit_on_success
 def hansards_load():
-    datautil.hansards_from_calendar()
+    hans.hansards_from_calendar()
     return True
         
 @transaction.commit_manually
@@ -75,3 +74,9 @@ def hansards_parse():
 def hansards():
     hansards_load()
     hansards_parse()
+    
+def wordcloud():
+    h = Hansard.objects.all()[0]
+    h.get_wordoftheday()
+    if not h.wordcloud:
+        h.generate_wordcloud()

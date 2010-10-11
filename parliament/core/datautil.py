@@ -1,9 +1,13 @@
-"""This file is mostly a dumping ground for various largely one-off data import and massaging routines."""
+"""This file is mostly a dumping ground for various largely one-off data import and massaging routines.
+
+Production code should NOT import from this file."""
 
 import sys, re, urllib, urllib2, os, csv
 from collections import defaultdict
 import urlparse
 import itertools
+from operator import itemgetter
+from heapq import nlargest
 
 from django.db import transaction, models
 from django.db.models import Count
@@ -13,7 +17,7 @@ from django.template.defaultfilters import slugify
 from BeautifulSoup import BeautifulSoup
 
 from parliament.imports import hans
-from parliament.core import parsetools
+from parliament.core import parsetools, text_utils
 from parliament.core.models import *
 from parliament.hansards.models import Hansard, HansardCache, Statement
 from parliament.elections.models import Election, Candidacy
@@ -60,15 +64,15 @@ def delete_invalid_pol_pics():
             p.save()
             
 def delete_invalid_pol_urls():
-    for pol in Politician.objects.exclude(models.Q(site__isnull=True) | models.Q(site='')):
+    for pol in Politician.objects.filter(politicianinfo__schema='web_site').distinct():
+        site = pol.info()['web_site']
         try:
-            urllib2.urlopen(pol.site)
-            print "Success for %s" % pol.site
+            urllib2.urlopen(site)
+            print "Success for %s" % site
         except urllib2.URLError, e:
-            print "REMOVING %s " % pol.site
+            print "REMOVING %s " % site
             print e
-            pol.site = ''
-            pol.save() 
+            pol.politicianinfo_set.filter(schema='web_site').delete()
 
 
 def parse_all_hansards(): 
@@ -96,16 +100,11 @@ def export_words(outfile, queryset=None):
     for s in queryset.iterator():
         outfile.write(s.text_plain().encode('utf8'))
         outfile.write("\n")
-        
+
 def export_tokenized_words(outfile, queryset):
-    r_punctuation = re.compile(r"[^\s\w0-9'-]", re.UNICODE)
-    r_whitespace = re.compile(r'\s+')
-    for s in queryset.iterator():
-        txt = s.text_plain()
-        txt = r_punctuation.sub('', txt.lower())
-        txt = r_whitespace.sub(' ', txt)
-        outfile.write(txt.encode('utf8').strip())
-        outfile.write(" / ")
+    for word in text_utils.qs_token_iterator(queryset, statement_separator="/"):
+        outfile.write(word.encode('utf8'))
+        outfile.write(' ')
 
 def corpus_for_pol(pol):
     
@@ -164,28 +163,6 @@ def cache_hansards():
             hans.loadHansard(h)
         except Exception, e:
             print "Failure %s" % e
-
-def hansards_from_calendar(session=None):
-    if not session:
-        session = Session.objects.current()
-    SKIP_HANSARDS = {
-    'http://www2.parl.gc.ca/HousePublications/Publication.aspx?Language=E&Mode=2&Parl=36&Ses=2&DocId=2332160' : True,
-    }
-    url = 'http://www2.parl.gc.ca/housechamberbusiness/chambersittings.aspx?View=H&Parl=%d&Ses=%d&Language=E&Mode=2' % (session.parliamentnum, session.sessnum)
-    #print "Getting calendar..."
-    soup = BeautifulSoup(urllib2.urlopen(url))
-    #print "Calendar retrieved."
-    cal = soup.find('div', id='ctl00_PageContent_calTextCalendar')
-    for link in cal.findAll('a', href=True):
-        hurl = 'http://www2.parl.gc.ca' + link['href']
-        if hurl in SKIP_HANSARDS:
-            continue
-        hurl = hurl.replace('Mode=2&', 'Mode=1&')
-        #print "Loading url %s" % hurl
-        try:
-            hans.loadHansard(url=hurl, session=session)
-        except Exception, e:
-            print "Failure on %s: %s" % (hurl, e)
 
 def populate_members_by():
     for by in Election.objects.filter(byelection=True):
@@ -457,3 +434,9 @@ def pol_urls_to_ids():
             print pol.parlpage
             match = re.search(r'Key=(\d+)', pol.parlpage)
             pol.set_info('parl_id', match.group(1))
+            
+def export_statements(outfile, qs):
+    for s in qs.iterator():
+        if not s.speaker:
+            outfile.write(s.text_plain().encode('utf8'))
+            outfile.write("\n")

@@ -4,13 +4,15 @@ import datetime
 from django.db import models
 from django.conf import settings
 from django.core import urlresolvers
+from django.core.files import File
+from django.core.files.base import ContentFile
 from django.contrib.markup.templatetags.markup import markdown
 from django.utils.html import strip_tags, escape
 from django.utils.safestring import mark_safe
 
 from parliament.core.models import Session, ElectedMember, Politician
 from parliament.bills.models import Bill
-from parliament.core import parsetools
+from parliament.core import parsetools, text_utils
 from parliament.core.utils import memoize_property
 from parliament.activity import utils as activity
 
@@ -25,11 +27,14 @@ class HansardManager (models.Manager):
             
 class Hansard(models.Model):
     date = models.DateField(blank=True, null=True)
-    #number = models.IntegerField(blank=True, null=True) # apparently there exist 'numbers' with letters
-    number = models.CharField(max_length=6, blank=True)
+    number = models.CharField(max_length=6, blank=True) # there exist 'numbers' with letters
     url = models.URLField(verify_exists=False)
     session = models.ForeignKey(Session)
     sequence = models.IntegerField(blank=True, null=True)
+    
+    wordoftheday = models.CharField(max_length=20, blank=True)
+    wordcloud = models.ImageField(upload_to='autoimg/wordcloud', blank=True, null=True)
+    
     
     objects = HansardManager()
     
@@ -108,6 +113,18 @@ class Hansard(models.Model):
         }
         v['statements'] = [s.serializable() for s in self.statement_set.all().order_by('sequence').select_related('member__politician', 'member__party', 'member__riding')]
         return v
+        
+    def get_wordoftheday(self):
+        if not self.wordoftheday:
+            self.wordoftheday = text_utils.most_frequent_word(self.statement_set.all())
+            if self.wordoftheday:
+                self.save()
+        return self.wordoftheday
+        
+    def generate_wordcloud(self):
+        image = text_utils.statements_to_cloud(self.statement_set.all())
+        self.wordcloud.save("%s.png" % self.date, ContentFile(image), save=True)
+        self.save()
 
 class HansardCache(models.Model):
     hansard = models.ForeignKey(Hansard)
@@ -202,11 +219,11 @@ class Statement(models.Model):
     @memoize_property
     @models.permalink
     def get_absolute_url(self):
-        #return ('parliament.hansards.views.hansard', [], {'hansard_id': self.hansard_id, 'statement_seq': self.sequence})
-        return ('hansard_statement_bydate', [], {
-            'statement_seq': self.sequence,
-            'hansard_date': '%s-%s-%s' % (self.time.year, self.time.month, self.time.day),
-        })
+        return ('parliament.hansards.views.hansard', [], {'hansard_id': self.hansard_id, 'statement_seq': self.sequence})
+        #return ('hansard_statement_bydate', [], {
+        #    'statement_seq': self.sequence,
+        #    'hansard_date': '%s-%s-%s' % (self.time.year, self.time.month, self.time.day),
+        #})
     
     def __unicode__ (self):
         return u"%s speaking about %s around %s" % (self.who, self.topic, self.time)

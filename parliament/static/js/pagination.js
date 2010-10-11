@@ -86,7 +86,7 @@ $(function() {
         }
         $('.statement').live('mouseenter', function() {
             $currentStatement = $(this);
-            var offset = $currentStatement.offset();
+            var offset = $currentStatement.position();
             $statementTools.css({'top': offset.top, 'left': offset.left + ($currentStatement.width() - 66)}).show();
         }).live('mouseleave', function() {$statementTools.hide();});
         $('#share_link').click(function() {

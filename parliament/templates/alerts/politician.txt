@@ -1,6 +1,4 @@
-{% autoescape off %}
-
-Here's what {{ alert.politician.name }} had to say in the House of Commons.
+{% autoescape off %}Here's what {{ alert.politician.name }} had to say in the House of Commons.
 
 {% for statement in statements %}
 {{ statement.time|date:"F jS, P" }}
@@ -16,7 +14,7 @@ http://openparliament.ca{{ statement.get_absolute_url }}
 You're receiving this e-mail because you signed up at openparliament.ca to
 receive alerts about {{ alert.politician.name }}.
 
-If you no longer want to receive these messages, just follow the link below
+If you no longer want to receive these messages, just follow the link below:
 http://openparliament.ca{{ alert.get_unsubscribe_url }}
 
 love,

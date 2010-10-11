@@ -98,13 +98,14 @@ def import_bills(session):
             bill.save_sponsor_activity()
     return True
 
-LEGISINFO_STATUS_URL = 'http://www2.parl.gc.ca/Sites/LOP/LEGISINFO/RSSFeeds.asp?parlNumber=%(parliamentnum)s&session=%(sessnum)s&chamber=C&billNumber=%(billnum)s&billLetter=&language=E'
+LEGISINFO_STATUS_URL = 'http://www2.parl.gc.ca/Sites/LOP/LEGISINFO/RSSFeeds.asp?parlNumber=%(parliamentnum)s&session=%(sessnum)s&chamber=C&billNumber=%(billnum)s&billLetter=%(billletter)s&language=E'
 
 def get_bill_feed(bill):
     return feedparser.parse(LEGISINFO_STATUS_URL % {
         'parliamentnum': bill.session.parliamentnum,
         'sessnum': bill.session.sessnum,
-        'billnum': bill.number.replace('C-', '')
+        'billnum': re.sub(r'\D', '', bill.number),
+        'billletter': re.sub(r'[^A-Z]', '', bill.number.replace('C-', '')),
     })
 
 def update_bill_status(bill):

@@ -38,7 +38,7 @@ def alerts_for_hansard(hansard):
             try:
                 send_mail(subject=subj,
                     message=msg,
-                    from_email='alerts@openparliament.ca',
+                    from_email='alerts@contact.openparliament.ca',
                     recipient_list=[alert.email])
             except Exception, e:
                 # FIXME logging

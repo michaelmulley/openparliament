@@ -1,3 +1,16 @@
 {% extends "base.html" %}
 
 {% block navlinks_debates %}class="selected"{% endblock %}
+
+{% block headextra %}
+<script type="text/javascript">
+$(function() {
+    $('a[data-wotd]').marginalia('mouseenter', 'mouseleave', function ($obj) {
+        console.log($obj);
+        if ($obj.attr('data-wotd')) {
+            return "<div style='text-align: center'>Word of the day:<br><strong>" + $obj.attr('data-wotd') + "</strong></div>";
+        }
+    });
+});
+</script>
+{% endblock headextra %}
