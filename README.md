@@ -38,7 +38,7 @@ You should have virtualenv and pip installed. Create a new virtualenv, and insta
 -----------
 
 The site's pretty useless without some data. Download a dump of the openparliament data
-from http://openparliament.ca/data-download/
+from <http://openparliament.ca/data-download/>
 
 Save the SQLite database as `parliament.sqlite`, in the main project directory (same one `manage.py` is in).
 

@@ -130,6 +130,7 @@ margin:0 1em 0 2em;padding:0 0 0 1em;}
 .statement.highlighted{background-color:#fff2b5;}
 div.statement div.focus{margin-bottom:10px;min-height:110px;overflow:hidden;width:680px;}
 .js .statement .focus {max-height:380px;}
+.js .disable-more-links .statement .focus {max-height: none;}
 .statement .focus.truncated{max-height:360px;}
 .statement .focus.nospeaker{min-height:40px;}
 .statement .morelink{position:absolute;width:86px;height:22px;background:transparent url('../images/seemore.png') no-repeat;bottom:22px;left:85px;cursor:pointer;}
