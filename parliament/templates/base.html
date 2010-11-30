@@ -5,7 +5,8 @@
     <title>{% block pagetitle %}{% if pagetitle %}{{ pagetitle }}{% else %}{{ title }}{% endif %}{% endblock pagetitle %} | openparliament.ca</title>
 <link rel="icon" type="image/png" href="{{ MEDIA_URL }}images/favicon.png">
 <link rel="stylesheet" type="text/css" href="{% slimfile "css/openparliament.css" %}">
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+<script type="text/javascript">!window.jQuery && document.write(unescape('%3Cscript src="{{ MEDIA_URL }}js/jquery-1.4.2.min.js"%3E%3C/script%3E'))</script>
 <script type="text/javascript" src="{% staticfile "js/openparliament.js" %}"></script>
 {% block headextra %}{% endblock %}
 <script type="text/javascript">

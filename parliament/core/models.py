@@ -418,7 +418,6 @@ class RidingManager(models.Manager):
         if slug in RidingManager.FIX_RIDING:
             slug = RidingManager.FIX_RIDING[slug]
         return self.get_query_set().get(slug=slug)
-    get_by_name = get_by_name
 
 PROVINCE_CHOICES = (
     ('AB', 'Alberta'),
