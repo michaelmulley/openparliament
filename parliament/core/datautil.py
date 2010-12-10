@@ -174,15 +174,19 @@ def populate_members_by():
             x = sys.stdin.readline()
             populate_members(by, session)
 
-def populate_members(election, session):
+def populate_members(election, session, start_date):
     """ Label all winners in an election Members for the subsequent session. """
-    raise Exception("Not yet implemented after ElectedMember refactor")
     for winner in Candidacy.objects.filter(election=election, elected=True):
         candidate = winner.candidate
         try:
-            member = ElectedMember.objects.get(session=session, politician=candidate)
+            member = ElectedMember.objects.get(politician=candidate,
+                party=winner.party, riding=winner.riding, end_date__isnull=True)
+            member.sessions.add(session)
         except ElectedMember.DoesNotExist:
-            ElectedMember(session=session, politician=candidate, party=winner.party, riding=winner.riding).save()
+            em = ElectedMember.objects.create(
+                politician=candidate, start_date=start_date,
+                party=winner.party, riding=winner.riding)
+            em.sessions.add(session)
             
 def copy_members(from_session, to_session):
     raise Exception("Not yet implemented after ElectedMember refactor")
