@@ -2,8 +2,11 @@ from django.contrib import admin, databrowse
 
 from parliament.core.models import *
 
+class PoliticianInfoInline(admin.TabularInline):
+    model = PoliticianInfo
+
 class PoliticianOptions (admin.ModelAdmin):
-    
+    inlines = [PoliticianInfoInline]
     search_fields = ('name',)
     
 class RidingOptions (admin.ModelAdmin):
