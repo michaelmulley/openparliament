@@ -117,7 +117,7 @@ def importElection(url, election, session=None, soup=None): # FIXME session none
             # Then, evaluate the possibilities in the list
             for posscand in candidates:
                 # You're only a match if you've run for office for the same party in the same province
-                match = ElectedMember.objects.filter(riding__province=riding.province, party=party, member=posscand).count() >= 1 or Candidacy.objects.filter(riding__province=riding.province, party=party, candidate=posscand).count() >= 1
+                match = ElectedMember.objects.filter(riding__province=riding.province, party=party, politician=posscand).count() >= 1 or Candidacy.objects.filter(riding__province=riding.province, party=party, candidate=posscand).count() >= 1
                 if match:
                     if candidate is not None:
                         print "WARNING: Could not disambiguate existing candidates %s" % candidatename
@@ -160,7 +160,7 @@ def importElection(url, election, session=None, soup=None): # FIXME session none
                 else:
                     if saveCandidate: candidate.save()
                     candidacy = Candidacy(candidate=candidate, election=election, riding=riding, party=party)
-            candidacy.occupation = occupation
+            candidacy.occupation = unicode(occupation)
             candidacy.votetotal = votetotal
             candidacy.elected = elected
             candidacy.save()
