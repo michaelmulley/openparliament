@@ -58,9 +58,31 @@
 <div id="activity">
 {% for activity in activities %}
 {% with activity.date|time_since as since %}{% ifchanged since %}<h3><span>{{ since }}</span></h3>{% endifchanged %}{% endwith %}
-{{ activity.payload|safe }}
+{{ activity.payload_wrapped|safe }}
 {% endfor %}
 </div>
+
+{% if user.is_authenticated %}
+<script type="text/javascript">
+$(function() {
+    function hide_activity() {
+        var $p = $(this).parent('p')
+        $.ajax({
+            type: 'POST',
+            url: '{% url parliament.politicians.views.hide_activity %}',
+            data: {'activity_id': $p.data('id')},
+            success: function() {
+                $p.fadeOut();
+            }
+        });
+    }
+    $('p.activity_item').each(function() {
+        var $hidelink = $('<a>hide</a> ').click(hide_activity).hide();
+        $(this).prepend($hidelink).hover(function() {$hidelink.show();}, function(){$hidelink.hide();});
+    });
+});
+</script>
+{% endif %}
 
 <div id="paginated_wrapped" style="display: none">
     <h2>Statements in the House</h2><div class="spacer"></div>

@@ -8,4 +8,5 @@ urlpatterns = patterns('parliament.politicians.views',
     (r'^former/$', 'former_mps'),
     (r'^(?P<pol_slug>[a-z-]+)/$', 'politician'),
     (r'^(?P<pol_id>\d+)/$', 'politician'),
+    (r'^internal/hide_activity/$', 'hide_activity'),
 )
