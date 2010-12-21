@@ -13,6 +13,8 @@ def get_feed(pol):
     return feedparser.parse(GOOGLE_NEWS_URL % urlquote(get_query_string(pol)))
     
 def get_query_string(pol):
+    if 'googlenews_query' in pol.info():
+        return pol.info()['googlenews_query']
     names = pol.alternate_names()
     if len(names) > 1:
         q = '( ' + ' OR '.join(['"%s"' % name for name in names]) + ')'

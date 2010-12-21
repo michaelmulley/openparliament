@@ -1,21 +1,23 @@
-import urllib
 import datetime
 import re
+import urllib
 
-from django.template import Context, loader, RequestContext
-from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
-from django.contrib.syndication.views import Feed
-from django.shortcuts import get_object_or_404
 from django.contrib.markup.templatetags.markup import markdown
-from django.utils.http import urlquote
-from django.views.generic.list_detail import object_list
+from django.contrib.syndication.views import Feed
+from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
+from django.utils.http import urlquote
+from django.shortcuts import get_object_or_404
+from django.template import Context, loader, RequestContext
+from django.views.generic.list_detail import object_list
+
 from BeautifulSoup import BeautifulSoup
 
-from parliament.core.models import Politician, ElectedMember
-from parliament.hansards.models import Statement
 from parliament.activity.models import Activity
 from parliament.activity import utils as activity
+from parliament.core.models import Politician, ElectedMember
+from parliament.hansards.models import Statement
     
 def current_mps(request):
     return object_list(request,
@@ -84,6 +86,15 @@ def politician(request, pol_id=None, pol_slug=None):
         t = loader.get_template("politicians/politician.html")
     return HttpResponse(t.render(c))
     
+def hide_activity(request):
+    if not request.user.is_authenticated() and request.user.is_staff:
+        raise PermissionDenied
+        
+    activity = Activity.objects.get(pk=request.POST['activity_id'])
+    activity.active = False
+    activity.save()
+    return HttpResponse('OK')
+    
 class PoliticianStatementFeed(Feed):
     
     def get_object(self, request, pol_id):
@@ -149,7 +160,7 @@ class PoliticianActivityFeed(Feed):
         return activity.guid
     
     def item_description(self, activity):
-        payload = r_excerpt.sub('<br><span style="display: block; border-left: 1px dotted #AAAAAA; margin-left: 2em; padding-left: 1em; font-style: italic; margin-top: 5px;">', activity.payload)
+        payload = r_excerpt.sub('<br><span style="display: block; border-left: 1px dotted #AAAAAA; margin-left: 2em; padding-left: 1em; font-style: italic; margin-top: 5px;">', activity.payload_wrapped())
         payload = r_title.sub('', payload)
         return payload
         
