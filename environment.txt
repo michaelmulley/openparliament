@@ -16,7 +16,7 @@ twitter==1.4.2
 httplib2==0.6.0
 django-piston==0.2.2
 slimmer==0.1.30
--e git+git://github.com/rhymeswithcycle/django-static.git#egg=django-static
+git+git://github.com/rhymeswithcycle/django-static.git#egg=django-static
 freebase
 #recaptcha-client==1.0.5
 

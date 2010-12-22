@@ -14,7 +14,11 @@ class MemberVoteOptions(admin.ModelAdmin):
     list_display = ('politician', 'votequestion', 'vote')
     raw_id_fields = ('politician', 'member')
     
+class PartyVoteAdmin(admin.ModelAdmin):
+    list_display = ('party', 'votequestion', 'vote', 'disagreement')
+    
 
 admin.site.register(Bill, BillOptions)
 admin.site.register(VoteQuestion, VoteQuestionOptions)
 admin.site.register(MemberVote, MemberVoteOptions)
+admin.site.register(PartyVote, PartyVoteAdmin)

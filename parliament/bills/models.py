@@ -137,6 +137,7 @@ class VoteQuestion(models.Model):
             MemberVote(votequestion=self, member=member, politician_id=member.politician_id, vote='A').save()
             
     def label_party_votes(self):
+        """Create PartyVote objects representing the party-line vote; label individual dissenting votes."""
         membervotes = self.membervote_set.select_related('member', 'member__party').all()
         parties = defaultdict(lambda: defaultdict(int))
         
@@ -146,9 +147,24 @@ class VoteQuestion(models.Model):
         
         partyvotes = {}
         for party in parties:
+            # Find the most common vote
             votes = sorted(parties[party].items(), key=lambda i: i[1])
             partyvotes[party] = votes[-1][0]
-            PartyVote(party=party, votequestion=self, vote=partyvotes[party]).save()
+            
+            # Find how many people voted with the majority
+            yn = (parties[party]['Y'], parties[party]['N'])
+            try:
+                disagreement = float(min(yn))/sum(yn)
+            except ZeroDivisionError:
+                disagreement = 0.0
+                
+            # If more than 15% of the party voted against the party majority,
+            # label this as a free vote.
+            if disagreement >= 0.15:
+                partyvotes[party] = 'F'
+            
+            PartyVote.objects.filter(party=party, votequestion=self).delete()
+            PartyVote.objects.create(party=party, votequestion=self, vote=partyvotes[party], disagreement=disagreement)
         
         for mv in membervotes:
             if mv.member.party.name != 'Independent' \
@@ -187,7 +203,11 @@ class PartyVote(models.Model):
     
     votequestion = models.ForeignKey(VoteQuestion)
     party = models.ForeignKey(Party)
-    vote = models.CharField(max_length=1, choices=VOTE_CHOICES)
+    vote = models.CharField(max_length=1, choices=VOTE_CHOICES_PARTY)
+    disagreement = models.FloatField(null=True)
+    
+    class Meta:
+        unique_together = ('votequestion', 'party')
     
     def __unicode__(self):
         return u'%s voted %s on %s' % (self.party, self.get_vote_display(), self.votequestion)
