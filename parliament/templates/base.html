@@ -42,7 +42,7 @@
 };</script>
 <script type="text/javascript" src="{{ MEDIA_URL }}ie6update/ie6update.js"></script>
 <![endif]-->
-<script type="text/javascript">
+{% comment %}<script type="text/javascript">
   function _loadUserVoice() {
     var s = document.createElement('script');
     s.src = ("https:" == document.location.protocol ? "https://" : "http://") + "cdn.uservoice.com/javascripts/widgets/tab.js";
@@ -50,6 +50,6 @@
   }
   _loadSuper = window.onload;
   window.onload = (typeof window.onload != 'function') ? _loadUserVoice : function() { _loadSuper(); _loadUserVoice(); };
-</script>
+</script>{% endcomment %}
 </body>
 </html>

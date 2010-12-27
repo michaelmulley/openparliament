@@ -151,9 +151,9 @@ $(function() {
       lang: 'en',
       showTab: false
     };
-    $('.feedback').click(function(e) {
+    /* $('.feedback').click(function(e) {
         e.preventDefault();
         UserVoice.Popin.show(uservoiceOptions);
-    });
+    }); */
    
 });

@@ -106,6 +106,34 @@ def get_twitter_share_url(url, description, add_plug=True):
         description += PLUG
     message = "%s %s" % (description, shorturl)
     return 'http://twitter.com/home?' + urllib.urlencode({'status': message})
+    
+#http://stackoverflow.com/questions/561486/how-to-convert-an-integer-to-the-shortest-url-safe-string-in-python
+import string
+ALPHABET = string.ascii_uppercase + string.ascii_lowercase + \
+           string.digits + '-_'
+ALPHABET_REVERSE = dict((c, i) for (i, c) in enumerate(ALPHABET))
+BASE = len(ALPHABET)
+SIGN_CHARACTER = '$'
+def int64_encode(n):
+    """Given integer n, returns a base64-ish string representation."""
+    if n < 0:
+        return SIGN_CHARACTER + int64_encode(-n)
+    s = []
+    while True:
+        n, r = divmod(n, BASE)
+        s.append(ALPHABET[r])
+        if n == 0: break
+    return ''.join(reversed(s))
+
+
+def int64_decode(s):
+    """Turns the output of int64_encode back into an integer"""
+    if s[0] == SIGN_CHARACTER:
+        return -int64_decode(s[1:])
+    n = 0
+    for c in s:
+        n = n * BASE + ALPHABET_REVERSE[c]
+    return n
         
 class ActiveManager(models.Manager):
 

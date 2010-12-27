@@ -107,13 +107,13 @@ def importElection(url, election, session=None, soup=None): # FIXME session none
             # First, assemble a list of possible candidates
             candidate = None
             saveCandidate = False
-            candidates = Politician.objects.filterByName("%s %s" % (first, last))
+            candidates = Politician.objects.filter_by_name("%s %s" % (first, last))
             # If there's nothing in the list, try a little harder
             if len(candidates) == 0:
                 # Does the candidate have many given names?
                 if first.strip().count(' ') >= 1:
                     minifirst = first.strip().split(' ')[0]
-                    candidates = Politician.objects.filterByName("%s %s" % (minifirst, last))
+                    candidates = Politician.objects.filter_by_name("%s %s" % (minifirst, last))
             # Then, evaluate the possibilities in the list
             for posscand in candidates:
                 # You're only a match if you've run for office for the same party in the same province

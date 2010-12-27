@@ -1,12 +1,15 @@
 # coding: utf-8
-import urllib, urllib2, re, os.path, gzip
+
 import datetime
 from decimal import Decimal
+import gzip
+import os
+import re
+import urllib, urllib2
 
-
-from django.db import models, backend
-from django.contrib import databrowse
 from django.conf import settings
+from django.db import models
+
 from BeautifulSoup import BeautifulSoup
 
 from parliament.core import parsetools, text_utils
@@ -15,6 +18,7 @@ from parliament.core.utils import memoize_property, ActiveManager
 POL_LOOKUP_URL = 'http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=%d&Language=E'
 
 class InternalXref(models.Model):
+    """A general-purpose table for quickly storing internal links."""
     text_value = models.CharField(max_length=50, blank=True, db_index=True)
     int_value = models.IntegerField(blank=True, null=True, db_index=True)
     target_id = models.IntegerField(db_index=True)
@@ -41,6 +45,7 @@ class PartyManager(models.Manager):
             return self.get_query_set().get(pk=x[0].target_id)
             
 class Party(models.Model):
+    """A federal political party."""
     name = models.CharField(max_length=100)
     slug = models.CharField(max_length=10, blank=True)
     short_name = models.CharField(max_length=100, blank=True)
@@ -52,7 +57,7 @@ class Party(models.Model):
         ordering = ('name',)
         
     def __init__(self, *args, **kwargs):
-        """ If we're creating a new object, set a flag to save the name to the alternate-names table. """
+        # If we're creating a new object, set a flag to save the name to the alternate-names table.
         super(Party, self).__init__(*args, **kwargs)
         self._saveAlternate = True
 
@@ -81,6 +86,7 @@ class Party(models.Model):
         return self.name
 
 class Person(models.Model):
+    """Abstract base class for models representing a person."""
     
     name = models.CharField(max_length=100)
     name_given = models.CharField("Given name", max_length=50, blank=True)
@@ -96,18 +102,29 @@ class Person(models.Model):
 class PoliticianManager(models.Manager):
     
     def elected(self):
-        return self.get_query_set().annotate(electedcount=models.Count('electedmember')).filter(electedcount__gte=1)
+        """Returns a QuerySet of all politicians that were once elected to office."""
+        return self.get_query_set().annotate(
+            electedcount=models.Count('electedmember')).filter(electedcount__gte=1)
+            
+    def never_elected(self):
+        """Returns a QuerySet of all politicians that were never elected as MPs.
+        
+        (at least during the time period covered by our database)"""
+        return self.get_query_set().filter(electedmember__isnull=True)
         
     def current(self):
-        return self.get_query_set().filter(electedmember__end_date__isnull=True, electedmember__start_date__isnull=False).distinct()
+        """Returns a QuerySet of all current MPs."""
+        return self.get_query_set().filter(electedmember__end_date__isnull=True,
+            electedmember__start_date__isnull=False).distinct()
         
     def elected_but_not_current(self):
+        """Returns a QuerySet of former MPs."""
         return self.get_query_set().exclude(electedmember__end_date__isnull=True)
     
     def filter_by_name(self, name):
+        """Returns a list of politicians matching a given name."""
         return [i.politician for i in 
             PoliticianInfo.sr_objects.filter(schema='alternate_name', value=parsetools.normalizeName(name))]
-    filterByName = filter_by_name
     
     def get_by_name(self, name, session=None, riding=None, election=None, party=None, saveAlternate=True, strictMatch=False):
         """ Return a Politician by name. Uses a bunch of methods to try and deal with variations in names.
@@ -224,14 +241,15 @@ class PoliticianManager(models.Manager):
     getByParlID = get_by_parl_id
 
 class Politician(Person):
+    """Someone who has run for federal office."""
     GENDER_CHOICES = (
         ('M', 'Male'),
         ('F', 'Female'),
     )
 
     dob = models.DateField(blank=True, null=True)
-    site = models.URLField(blank=True, verify_exists=False)
-    parlpage = models.URLField(blank=True, verify_exists=False)
+    site = models.URLField(blank=True, verify_exists=False) # FIXME remove
+    parlpage = models.URLField(blank=True, verify_exists=False) # FIXME remove
     gender = models.CharField(max_length=1, blank=True, choices=GENDER_CHOICES)
     headshot = models.ImageField(upload_to='polpics', blank=True, null=True)
     slug = models.CharField(max_length=30, blank=True, db_index=True)
@@ -239,7 +257,7 @@ class Politician(Person):
     objects = PoliticianManager()
     
     def __init__(self, *args, **kwargs):
-        """ If we're creating a new object, set a flag to save the name to the alternate-names table. """
+        # If we're creating a new object, set a flag to save the name to the alternate-names table.
         super(Politician, self).__init__(*args, **kwargs)
         self._saveAlternate = True
         
@@ -247,11 +265,14 @@ class Politician(Person):
         self.set_info_multivalued('alternate_name', parsetools.normalizeName(name))
 
     def alternate_names(self):
+        """Returns a list of ways of writing this politician's name."""
         return self.politicianinfo_set.filter(schema='alternate_name').values_list('value', flat=True)
         
     @property
     @memoize_property
     def current_member(self):
+        """If this politician is a current MP, returns the corresponding ElectedMember object.
+        Returns False if the politician is not a current MP."""
         try:
             return ElectedMember.objects.get(politician=self, end_date__isnull=True)
         except ElectedMember.DoesNotExist:
@@ -260,6 +281,8 @@ class Politician(Person):
     @property
     @memoize_property        
     def latest_member(self):
+        """If this politician has been an MP, returns the most recent ElectedMember object.
+        Returns None if the politician has never been elected."""
         try:
             return ElectedMember.objects.filter(politician=self).order_by('-start_date').select_related('party', 'riding')[0]
         except IndexError:
@@ -268,13 +291,12 @@ class Politician(Person):
     @property
     @memoize_property
     def latest_candidate(self):
+        """Returns the most recent Candidacy object for this politician.
+        Returns None if we're not aware of any candidacies for this politician."""
         try:
             return self.candidacy_set.order_by('-election__date').select_related('election')[0]
         except IndexError:
             return None
-        
-    def delete(self):
-        super(Politician, self).delete()
         
     def save(self):
         super(Politician, self).save()
@@ -303,10 +325,16 @@ class Politician(Person):
             
     @memoize_property
     def info(self):
+        """Returns a dictionary of PoliticianInfo attributes for this politician.
+        e.g. politician.info()['web_site']
+        """
         return dict([i for i in self.politicianinfo_set.all().values_list('schema', 'value')])
         
     @memoize_property
     def info_multivalued(self):
+        """Returns a dictionary of PoliticianInfo attributes for this politician,
+        where each key is a list of items. This allows more than one value for a
+        given key."""
         info = {}
         for i in self.politicianinfo_set.all().values_list('schema', 'value'):
             info.setdefault(i[0], []).append(i[1])
@@ -344,6 +372,7 @@ POLITICIAN_INFO_SCHEMAS = (
 )
             
 class PoliticianInfo(models.Model):
+    """Key-value store for attributes of a Politician."""
     politician = models.ForeignKey(Politician)
     schema = models.CharField(max_length=40, db_index=True)
     value = models.CharField(max_length=500)
@@ -367,6 +396,7 @@ class SessionManager(models.Manager):
         return self.get_query_set().order_by('-start')[0]
         
 class Session(models.Model):
+    "A session of Parliament."
     
     id = models.CharField(max_length=4, primary_key=True)
     name = models.CharField(max_length=100)
@@ -435,7 +465,10 @@ PROVINCE_CHOICES = (
     ('NU', 'Nunavut'),
 )
 PROVINCE_LOOKUP = dict(PROVINCE_CHOICES)
+
 class Riding(models.Model):
+    "A federal riding."
+    
     name = models.CharField(max_length=60)
     province = models.CharField(max_length=2, choices=PROVINCE_CHOICES)
     slug = models.CharField(max_length=60, unique=True, db_index=True)
@@ -484,6 +517,7 @@ class ElectedMemberManager(models.Manager):
             return qs[0]
     
 class ElectedMember(models.Model):
+    """Represents one person, elected to a given riding for a given party."""
     sessions = models.ManyToManyField(Session)
     politician = models.ForeignKey(Politician)
     riding = models.ForeignKey(Riding)
@@ -504,6 +538,7 @@ class ElectedMember(models.Model):
         return not bool(self.end_date)
         
 class SiteNews(models.Model):
+    """Entries for the semi-blog on the openparliament homepage."""
     date = models.DateTimeField(default=datetime.datetime.now)
     title = models.CharField(max_length=200)
     text = models.TextField()

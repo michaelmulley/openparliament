@@ -8,7 +8,7 @@ register = template.Library()
 
 @register.filter(name='expand_province')
 def expand_province(value):
-    return PROVINCE_LOOKUP[value]
+    return PROVINCE_LOOKUP.get(value, None)
     
 @register.filter(name='heshe')
 def heshe(pol):
