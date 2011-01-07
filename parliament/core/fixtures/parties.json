@@ -1,0 +1,263 @@
+[
+    {
+        "pk": 32, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Abolitionist Party of Canada", 
+            "short_name": "Abolitionist Party of Canada", 
+            "slug": ""
+        }
+    }, 
+    {
+        "pk": 24, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Animal Alliance Environment Voters Party of Canada", 
+            "short_name": "Animal Alliance Environment Voters Party of Canada", 
+            "slug": ""
+        }
+    }, 
+    {
+        "pk": 3, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Bloc Qu\u00e9b\u00e9cois", 
+            "short_name": "Bloc", 
+            "slug": "bloc"
+        }
+    }, 
+    {
+        "pk": 30, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Canada Party", 
+            "short_name": "Canada Party", 
+            "slug": ""
+        }
+    }, 
+    {
+        "pk": 16, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Canadian Action Party", 
+            "short_name": "Canadian Action Party", 
+            "slug": ""
+        }
+    }, 
+    {
+        "pk": 25, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Canadian Alliance", 
+            "short_name": "Canadian Alliance", 
+            "slug": "alliance"
+        }
+    }, 
+    {
+        "pk": 10, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Christian Heritage Party of Canada", 
+            "short_name": "Christian Heritage Party of Canada", 
+            "slug": ""
+        }
+    }, 
+    {
+        "pk": 20, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Communist Party of Canada", 
+            "short_name": "Communist Party of Canada", 
+            "slug": ""
+        }
+    }, 
+    {
+        "pk": 1, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Conservative Party of Canada", 
+            "short_name": "Conservative", 
+            "slug": "cpc"
+        }
+    }, 
+    {
+        "pk": 17, 
+        "model": "core.party", 
+        "fields": {
+            "name": "First Peoples National Party of Canada", 
+            "short_name": "First Peoples National Party of Canada", 
+            "slug": ""
+        }
+    }, 
+    {
+        "pk": 9, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Green Party of Canada", 
+            "short_name": "Green", 
+            "slug": ""
+        }
+    }, 
+    {
+        "pk": 5, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Independent", 
+            "short_name": "Independent", 
+            "slug": "IND"
+        }
+    }, 
+    {
+        "pk": 4, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Liberal Party of Canada", 
+            "short_name": "Liberal", 
+            "slug": "liberal"
+        }
+    }, 
+    {
+        "pk": 15, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Libertarian Party of Canada", 
+            "short_name": "Libertarian Party of Canada", 
+            "slug": ""
+        }
+    }, 
+    {
+        "pk": 21, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Marijuana Party", 
+            "short_name": "Marijuana Party", 
+            "slug": ""
+        }
+    }, 
+    {
+        "pk": 19, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Marxist-Leninist Party", 
+            "short_name": "Marxist-Leninist Party", 
+            "slug": ""
+        }
+    }, 
+    {
+        "pk": 29, 
+        "model": "core.party", 
+        "fields": {
+            "name": "National Party of Canada", 
+            "short_name": "National Party of Canada", 
+            "slug": ""
+        }
+    }, 
+    {
+        "pk": 27, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Natural Law Party of Canada", 
+            "short_name": "Natural Law Party of Canada", 
+            "slug": ""
+        }
+    }, 
+    {
+        "pk": 2, 
+        "model": "core.party", 
+        "fields": {
+            "name": "New Democratic Party", 
+            "short_name": "NDP", 
+            "slug": "NDP"
+        }
+    }, 
+    {
+        "pk": 13, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Newfoundland and Labrador First Party", 
+            "short_name": "Newfoundland and Labrador First Party", 
+            "slug": ""
+        }
+    }, 
+    {
+        "pk": 33, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Parti Rhinoc\u00e9ros", 
+            "short_name": "Parti Rhinoc\u00e9ros", 
+            "slug": ""
+        }
+    }, 
+    {
+        "pk": 31, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Party for the Commonwealth of Canada", 
+            "short_name": "Party for the Commonwealth of Canada", 
+            "slug": ""
+        }
+    }, 
+    {
+        "pk": 18, 
+        "model": "core.party", 
+        "fields": {
+            "name": "People's Political Power Party of Canada", 
+            "short_name": "People's Political Power Party of Canada", 
+            "slug": ""
+        }
+    }, 
+    {
+        "pk": 11, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Progressive Canadian Party", 
+            "short_name": "Progressive Canadian Party", 
+            "slug": ""
+        }
+    }, 
+    {
+        "pk": 26, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Progressive Conservative", 
+            "short_name": "Progressive Conservative", 
+            "slug": "pc"
+        }
+    }, 
+    {
+        "pk": 28, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Reform Party of Canada", 
+            "short_name": "Reform", 
+            "slug": "reform"
+        }
+    }, 
+    {
+        "pk": 22, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Western Block Party", 
+            "short_name": "Western Block Party", 
+            "slug": ""
+        }
+    }, 
+    {
+        "pk": 23, 
+        "model": "core.party", 
+        "fields": {
+            "name": "Work Less Party", 
+            "short_name": "Work Less Party", 
+            "slug": ""
+        }
+    }, 
+    {
+        "pk": 14, 
+        "model": "core.party", 
+        "fields": {
+            "name": "neorhino.ca", 
+            "short_name": "neorhino.ca", 
+            "slug": ""
+        }
+    }
+]
