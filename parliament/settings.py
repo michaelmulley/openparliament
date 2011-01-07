@@ -129,6 +129,8 @@ THUMBNAIL_PROCESSORS = (
 )
 
 SOUTH_TESTS_MIGRATE = False
+TEST_RUNNER = 'parliament.core.test_utils.TestSuiteRunner'
+TEST_APP_PREFIX = 'parliament'
 
 from settings_local import *
 

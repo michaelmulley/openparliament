@@ -1,7 +1,7 @@
 # Required Python libraries for openparliament
 # pip can install these libraries automatically by reading this file:
 # pip install -r environment.txt
-BeautifulSoup==3.0.8.1
+BeautifulSoup>=3.2.0
 Django>=1.2.3
 Markdown==2.0.3
 PIL>=1.1.6

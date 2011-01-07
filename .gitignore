@@ -3,7 +3,6 @@
 *.gz
 *~
 *.tmproj
-*.json
 .DS_Store
 models.dot
 polpics/

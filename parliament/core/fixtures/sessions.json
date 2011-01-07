@@ -1,0 +1,145 @@
+[
+    {
+        "pk": "40-3", 
+        "model": "core.session", 
+        "fields": {
+            "start": "2010-03-03", 
+            "end": null, 
+            "name": "40th Parliament, 3rd Session", 
+            "parliamentnum": 40, 
+            "sessnum": 3
+        }
+    }, 
+    {
+        "pk": "40-2", 
+        "model": "core.session", 
+        "fields": {
+            "start": "2009-01-26", 
+            "end": "2009-12-30", 
+            "name": "40th Parliament, 2nd Session", 
+            "parliamentnum": 40, 
+            "sessnum": 2
+        }
+    }, 
+    {
+        "pk": "40-1", 
+        "model": "core.session", 
+        "fields": {
+            "start": "2008-11-18", 
+            "end": "2008-12-04", 
+            "name": "40th Parliament, 1st Session", 
+            "parliamentnum": 40, 
+            "sessnum": 1
+        }
+    }, 
+    {
+        "pk": "39-2", 
+        "model": "core.session", 
+        "fields": {
+            "start": "2007-10-16", 
+            "end": "2008-09-07", 
+            "name": "39th Parliament, 2nd Session", 
+            "parliamentnum": 39, 
+            "sessnum": 2
+        }
+    }, 
+    {
+        "pk": "39-1", 
+        "model": "core.session", 
+        "fields": {
+            "start": "2006-04-03", 
+            "end": "2007-10-15", 
+            "name": "39th Parliament, 1st Session", 
+            "parliamentnum": 39, 
+            "sessnum": 1
+        }
+    }, 
+    {
+        "pk": "38-1", 
+        "model": "core.session", 
+        "fields": {
+            "start": "2004-10-04", 
+            "end": "2005-11-29", 
+            "name": "38th Parliament, 1st Session", 
+            "parliamentnum": 38, 
+            "sessnum": 1
+        }
+    }, 
+    {
+        "pk": "37-3", 
+        "model": "core.session", 
+        "fields": {
+            "start": "2004-02-02", 
+            "end": "2004-05-23", 
+            "name": "37th Parliament, 3rd Session", 
+            "parliamentnum": 37, 
+            "sessnum": 3
+        }
+    }, 
+    {
+        "pk": "37-2", 
+        "model": "core.session", 
+        "fields": {
+            "start": "2002-09-30", 
+            "end": "2003-11-12", 
+            "name": "37th Parliament, 2nd Session", 
+            "parliamentnum": 37, 
+            "sessnum": 2
+        }
+    }, 
+    {
+        "pk": "37-1", 
+        "model": "core.session", 
+        "fields": {
+            "start": "2001-01-29", 
+            "end": "2002-09-16", 
+            "name": "37th Parliament, 1st Session", 
+            "parliamentnum": 37, 
+            "sessnum": 1
+        }
+    }, 
+    {
+        "pk": "36-2", 
+        "model": "core.session", 
+        "fields": {
+            "start": "1999-10-12", 
+            "end": "2000-10-22", 
+            "name": "36th Parliament, 2nd Session", 
+            "parliamentnum": 36, 
+            "sessnum": 2
+        }
+    }, 
+    {
+        "pk": "36-1", 
+        "model": "core.session", 
+        "fields": {
+            "start": "1997-09-22", 
+            "end": "1999-09-18", 
+            "name": "36th Parliament, 1st Session", 
+            "parliamentnum": 36, 
+            "sessnum": 1
+        }
+    }, 
+    {
+        "pk": "35-2", 
+        "model": "core.session", 
+        "fields": {
+            "start": "1996-02-27", 
+            "end": "1997-04-27", 
+            "name": "35th Parliament, 2nd Session", 
+            "parliamentnum": 35, 
+            "sessnum": 2
+        }
+    }, 
+    {
+        "pk": "35-1", 
+        "model": "core.session", 
+        "fields": {
+            "start": "1994-01-17", 
+            "end": "1996-02-02", 
+            "name": "35th Parliament, 1st Session", 
+            "parliamentnum": 35, 
+            "sessnum": 1
+        }
+    }
+]

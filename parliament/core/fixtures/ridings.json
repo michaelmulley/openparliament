@@ -1,0 +1,5722 @@
+[
+    {
+        "pk": 70001, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": null, 
+            "name": "Athabasca", 
+            "slug": "athabasca"
+        }
+    }, 
+    {
+        "pk": 70170, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": null, 
+            "name": "Beaver River", 
+            "slug": "beaver-river"
+        }
+    }, 
+    {
+        "pk": 48006, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48006, 
+            "name": "Calgary Centre", 
+            "slug": "calgary-centre"
+        }
+    }, 
+    {
+        "pk": 48003, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48003, 
+            "name": "Calgary Centre-North", 
+            "slug": "calgary-centre-north"
+        }
+    }, 
+    {
+        "pk": 48002, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48002, 
+            "name": "Calgary East", 
+            "slug": "calgary-east"
+        }
+    }, 
+    {
+        "pk": 70171, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": null, 
+            "name": "Calgary North", 
+            "slug": "calgary-north"
+        }
+    }, 
+    {
+        "pk": 70002, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": null, 
+            "name": "Calgary North Centre", 
+            "slug": "calgary-north-centre"
+        }
+    }, 
+    {
+        "pk": 48004, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48004, 
+            "name": "Calgary Northeast", 
+            "slug": "calgary-northeast"
+        }
+    }, 
+    {
+        "pk": 70003, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": null, 
+            "name": "Calgary South Centre", 
+            "slug": "calgary-south-centre"
+        }
+    }, 
+    {
+        "pk": 48007, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48007, 
+            "name": "Calgary Southeast", 
+            "slug": "calgary-southeast"
+        }
+    }, 
+    {
+        "pk": 48008, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48008, 
+            "name": "Calgary Southwest", 
+            "slug": "calgary-southwest"
+        }
+    }, 
+    {
+        "pk": 48009, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48009, 
+            "name": "Calgary West", 
+            "slug": "calgary-west"
+        }
+    }, 
+    {
+        "pk": 48005, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48005, 
+            "name": "Calgary--Nose Hill", 
+            "slug": "calgary-nose-hill"
+        }
+    }, 
+    {
+        "pk": 48010, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48010, 
+            "name": "Crowfoot", 
+            "slug": "crowfoot"
+        }
+    }, 
+    {
+        "pk": 48012, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48012, 
+            "name": "Edmonton Centre", 
+            "slug": "edmonton-centre"
+        }
+    }, 
+    {
+        "pk": 70037, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": null, 
+            "name": "Edmonton Centre-East", 
+            "slug": "edmonton-centre-east"
+        }
+    }, 
+    {
+        "pk": 48013, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48013, 
+            "name": "Edmonton East", 
+            "slug": "edmonton-east"
+        }
+    }, 
+    {
+        "pk": 70038, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": null, 
+            "name": "Edmonton North", 
+            "slug": "edmonton-north"
+        }
+    }, 
+    {
+        "pk": 70172, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": null, 
+            "name": "Edmonton Northwest", 
+            "slug": "edmonton-northwest"
+        }
+    }, 
+    {
+        "pk": 70039, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": null, 
+            "name": "Edmonton Southeast", 
+            "slug": "edmonton-southeast"
+        }
+    }, 
+    {
+        "pk": 70040, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": null, 
+            "name": "Edmonton Southwest", 
+            "slug": "edmonton-southwest"
+        }
+    }, 
+    {
+        "pk": 70041, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": null, 
+            "name": "Edmonton West", 
+            "slug": "edmonton-west"
+        }
+    }, 
+    {
+        "pk": 70004, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": null, 
+            "name": "Edmonton--Beaumont", 
+            "slug": "edmonton-beaumont"
+        }
+    }, 
+    {
+        "pk": 48014, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48014, 
+            "name": "Edmonton--Leduc", 
+            "slug": "edmonton-leduc"
+        }
+    }, 
+    {
+        "pk": 48011, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48011, 
+            "name": "Edmonton--Mill Woods--Beaumont", 
+            "slug": "edmonton-mill-woods-beaumont"
+        }
+    }, 
+    {
+        "pk": 48016, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48016, 
+            "name": "Edmonton--Sherwood Park", 
+            "slug": "edmonton-sherwood-park"
+        }
+    }, 
+    {
+        "pk": 48017, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48017, 
+            "name": "Edmonton--Spruce Grove", 
+            "slug": "edmonton-spruce-grove"
+        }
+    }, 
+    {
+        "pk": 48015, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48015, 
+            "name": "Edmonton--St. Albert", 
+            "slug": "edmonton-st-albert"
+        }
+    }, 
+    {
+        "pk": 48018, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48018, 
+            "name": "Edmonton--Strathcona", 
+            "slug": "edmonton-strathcona"
+        }
+    }, 
+    {
+        "pk": 70042, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": null, 
+            "name": "Elk Island", 
+            "slug": "elk-island"
+        }
+    }, 
+    {
+        "pk": 48001, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48001, 
+            "name": "Fort McMurray--Athabasca", 
+            "slug": "fort-mcmurray-athabasca"
+        }
+    }, 
+    {
+        "pk": 70043, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": null, 
+            "name": "Lakeland", 
+            "slug": "lakeland"
+        }
+    }, 
+    {
+        "pk": 48019, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48019, 
+            "name": "Lethbridge", 
+            "slug": "lethbridge"
+        }
+    }, 
+    {
+        "pk": 48020, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48020, 
+            "name": "Macleod", 
+            "slug": "macleod"
+        }
+    }, 
+    {
+        "pk": 48021, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48021, 
+            "name": "Medicine Hat", 
+            "slug": "medicine-hat"
+        }
+    }, 
+    {
+        "pk": 48022, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48022, 
+            "name": "Peace River", 
+            "slug": "peace-river"
+        }
+    }, 
+    {
+        "pk": 48023, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48023, 
+            "name": "Red Deer", 
+            "slug": "red-deer"
+        }
+    }, 
+    {
+        "pk": 70044, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": null, 
+            "name": "St. Albert", 
+            "slug": "st-albert"
+        }
+    }, 
+    {
+        "pk": 70173, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": null, 
+            "name": "Vegreville", 
+            "slug": "vegreville"
+        }
+    }, 
+    {
+        "pk": 48024, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48024, 
+            "name": "Vegreville--Wainwright", 
+            "slug": "vegreville-wainwright"
+        }
+    }, 
+    {
+        "pk": 48025, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48025, 
+            "name": "Westlock--St. Paul", 
+            "slug": "westlock-st-paul"
+        }
+    }, 
+    {
+        "pk": 48026, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48026, 
+            "name": "Wetaskiwin", 
+            "slug": "wetaskiwin"
+        }
+    }, 
+    {
+        "pk": 48027, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48027, 
+            "name": "Wild Rose", 
+            "slug": "wild-rose"
+        }
+    }, 
+    {
+        "pk": 48028, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "AB", 
+            "edid": 48028, 
+            "name": "Yellowhead", 
+            "slug": "yellowhead"
+        }
+    }, 
+    {
+        "pk": 59001, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59001, 
+            "name": "Abbotsford", 
+            "slug": "abbotsford"
+        }
+    }, 
+    {
+        "pk": 59026, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59026, 
+            "name": "British Columbia Southern Interior", 
+            "slug": "british-columbia-southern-interior"
+        }
+    }, 
+    {
+        "pk": 59002, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59002, 
+            "name": "Burnaby--Douglas", 
+            "slug": "burnaby-douglas"
+        }
+    }, 
+    {
+        "pk": 70174, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Burnaby--Kingsway", 
+            "slug": "burnaby-kingsway"
+        }
+    }, 
+    {
+        "pk": 59003, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59003, 
+            "name": "Burnaby--New Westminster", 
+            "slug": "burnaby-new-westminster"
+        }
+    }, 
+    {
+        "pk": 70175, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Capilano--Howe Sound", 
+            "slug": "capilano-howe-sound"
+        }
+    }, 
+    {
+        "pk": 70045, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Cariboo--Chilcotin", 
+            "slug": "cariboo-chilcotin"
+        }
+    }, 
+    {
+        "pk": 59004, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59004, 
+            "name": "Cariboo--Prince George", 
+            "slug": "cariboo-prince-george"
+        }
+    }, 
+    {
+        "pk": 59005, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59005, 
+            "name": "Chilliwack--Fraser Canyon", 
+            "slug": "chilliwack-fraser-canyon"
+        }
+    }, 
+    {
+        "pk": 70176, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Comox--Alberni", 
+            "slug": "comox-alberni"
+        }
+    }, 
+    {
+        "pk": 70177, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Delta", 
+            "slug": "delta"
+        }
+    }, 
+    {
+        "pk": 59006, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59006, 
+            "name": "Delta--Richmond East", 
+            "slug": "delta-richmond-east"
+        }
+    }, 
+    {
+        "pk": 70046, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Delta--South Richmond", 
+            "slug": "delta-south-richmond"
+        }
+    }, 
+    {
+        "pk": 70005, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Dewdney--Alouette", 
+            "slug": "dewdney-alouette"
+        }
+    }, 
+    {
+        "pk": 59008, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59008, 
+            "name": "Esquimalt--Juan de Fuca", 
+            "slug": "esquimalt-juan-de-fuca"
+        }
+    }, 
+    {
+        "pk": 59009, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59009, 
+            "name": "Fleetwood--Port Kells", 
+            "slug": "fleetwood-port-kells"
+        }
+    }, 
+    {
+        "pk": 70047, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Fraser Valley", 
+            "slug": "fraser-valley"
+        }
+    }, 
+    {
+        "pk": 70178, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Fraser Valley East", 
+            "slug": "fraser-valley-east"
+        }
+    }, 
+    {
+        "pk": 70179, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Fraser Valley West", 
+            "slug": "fraser-valley-west"
+        }
+    }, 
+    {
+        "pk": 70141, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Kamloops", 
+            "slug": "kamloops"
+        }
+    }, 
+    {
+        "pk": 70048, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Kamloops, Thompson And Highland Valleys", 
+            "slug": "kamloops-thompson-and-highland-valleys"
+        }
+    }, 
+    {
+        "pk": 70006, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Kamloops--Thompson", 
+            "slug": "kamloops-thompson"
+        }
+    }, 
+    {
+        "pk": 59010, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59010, 
+            "name": "Kamloops--Thompson--Cariboo", 
+            "slug": "kamloops-thompson-cariboo"
+        }
+    }, 
+    {
+        "pk": 70007, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Kelowna", 
+            "slug": "kelowna"
+        }
+    }, 
+    {
+        "pk": 59011, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59011, 
+            "name": "Kelowna--Lake Country", 
+            "slug": "kelowna-lake-country"
+        }
+    }, 
+    {
+        "pk": 70180, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Kootenay East", 
+            "slug": "kootenay-east"
+        }
+    }, 
+    {
+        "pk": 70181, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Kootenay West--Revelstoke", 
+            "slug": "kootenay-west-revelstoke"
+        }
+    }, 
+    {
+        "pk": 70049, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Kootenay--Boundary--Okanagan", 
+            "slug": "kootenay-boundary-okanagan"
+        }
+    }, 
+    {
+        "pk": 59012, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59012, 
+            "name": "Kootenay--Columbia", 
+            "slug": "kootenay-columbia"
+        }
+    }, 
+    {
+        "pk": 59013, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59013, 
+            "name": "Langley", 
+            "slug": "langley"
+        }
+    }, 
+    {
+        "pk": 70050, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Langley--Abbotsford", 
+            "slug": "langley-abbotsford"
+        }
+    }, 
+    {
+        "pk": 70182, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Mission--Coquitlam", 
+            "slug": "mission-coquitlam"
+        }
+    }, 
+    {
+        "pk": 59014, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59014, 
+            "name": "Nanaimo--Alberni", 
+            "slug": "nanaimo-alberni"
+        }
+    }, 
+    {
+        "pk": 59015, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59015, 
+            "name": "Nanaimo--Cowichan", 
+            "slug": "nanaimo-cowichan"
+        }
+    }, 
+    {
+        "pk": 70183, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "New Westminster--Burnaby", 
+            "slug": "new-westminster-burnaby"
+        }
+    }, 
+    {
+        "pk": 59017, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59017, 
+            "name": "New Westminster--Coquitlam", 
+            "slug": "new-westminster-coquitlam"
+        }
+    }, 
+    {
+        "pk": 70051, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "New Westminster--Coquitlam--Burnaby", 
+            "slug": "new-westminster-coquitlam-burnaby"
+        }
+    }, 
+    {
+        "pk": 59016, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59016, 
+            "name": "Newton--North Delta", 
+            "slug": "newton-north-delta"
+        }
+    }, 
+    {
+        "pk": 70184, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "North Island--Powell River", 
+            "slug": "north-island-powell-river"
+        }
+    }, 
+    {
+        "pk": 70008, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "North Okanagan--Shuswap", 
+            "slug": "north-okanagan-shuswap"
+        }
+    }, 
+    {
+        "pk": 59019, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59019, 
+            "name": "North Vancouver", 
+            "slug": "north-vancouver"
+        }
+    }, 
+    {
+        "pk": 70185, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Okanagan Centre", 
+            "slug": "okanagan-centre"
+        }
+    }, 
+    {
+        "pk": 59020, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59020, 
+            "name": "Okanagan--Coquihalla", 
+            "slug": "okanagan-coquihalla"
+        }
+    }, 
+    {
+        "pk": 59018, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59018, 
+            "name": "Okanagan--Shuswap", 
+            "slug": "okanagan-shuswap"
+        }
+    }, 
+    {
+        "pk": 70186, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Okanagan--Similkameen--Merritt", 
+            "slug": "okanagan-similkameen-merritt"
+        }
+    }, 
+    {
+        "pk": 59007, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59007, 
+            "name": "Pitt Meadows--Maple Ridge--Mission", 
+            "slug": "pitt-meadows-maple-ridge-mission"
+        }
+    }, 
+    {
+        "pk": 70142, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Port Moody--Coquitlam", 
+            "slug": "port-moody-coquitlam"
+        }
+    }, 
+    {
+        "pk": 70052, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Port Moody--Coquitlam--Port Coquitlam", 
+            "slug": "port-moody-coquitlam-port-coquitlam"
+        }
+    }, 
+    {
+        "pk": 59021, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59021, 
+            "name": "Port Moody--Westwood--Port Coquitlam", 
+            "slug": "port-moody-westwood-port-coquitlam"
+        }
+    }, 
+    {
+        "pk": 70053, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Prince George--Bulkley Valley", 
+            "slug": "prince-george-bulkley-valley"
+        }
+    }, 
+    {
+        "pk": 59022, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59022, 
+            "name": "Prince George--Peace River", 
+            "slug": "prince-george-peace-river"
+        }
+    }, 
+    {
+        "pk": 59023, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59023, 
+            "name": "Richmond", 
+            "slug": "richmond"
+        }
+    }, 
+    {
+        "pk": 59024, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59024, 
+            "name": "Saanich--Gulf Islands", 
+            "slug": "saanich-gulf-islands"
+        }
+    }, 
+    {
+        "pk": 70054, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Skeena", 
+            "slug": "skeena"
+        }
+    }, 
+    {
+        "pk": 59025, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59025, 
+            "name": "Skeena--Bulkley Valley", 
+            "slug": "skeena-bulkley-valley"
+        }
+    }, 
+    {
+        "pk": 59027, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59027, 
+            "name": "South Surrey--White Rock--Cloverdale", 
+            "slug": "south-surrey-white-rock-cloverdale"
+        }
+    }, 
+    {
+        "pk": 70055, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "South Surrey--White Rock--Langley", 
+            "slug": "south-surrey-white-rock-langley"
+        }
+    }, 
+    {
+        "pk": 70009, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Southern Interior", 
+            "slug": "southern-interior"
+        }
+    }, 
+    {
+        "pk": 70056, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Surrey Central", 
+            "slug": "surrey-central"
+        }
+    }, 
+    {
+        "pk": 59028, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59028, 
+            "name": "Surrey North", 
+            "slug": "surrey-north"
+        }
+    }, 
+    {
+        "pk": 70187, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Surrey--White Rock--South Langley", 
+            "slug": "surrey-white-rock-south-langley"
+        }
+    }, 
+    {
+        "pk": 59029, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59029, 
+            "name": "Vancouver Centre", 
+            "slug": "vancouver-centre"
+        }
+    }, 
+    {
+        "pk": 59030, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59030, 
+            "name": "Vancouver East", 
+            "slug": "vancouver-east"
+        }
+    }, 
+    {
+        "pk": 59031, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59031, 
+            "name": "Vancouver Island North", 
+            "slug": "vancouver-island-north"
+        }
+    }, 
+    {
+        "pk": 59032, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59032, 
+            "name": "Vancouver Kingsway", 
+            "slug": "vancouver-kingsway"
+        }
+    }, 
+    {
+        "pk": 59033, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59033, 
+            "name": "Vancouver Quadra", 
+            "slug": "vancouver-quadra"
+        }
+    }, 
+    {
+        "pk": 59034, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59034, 
+            "name": "Vancouver South", 
+            "slug": "vancouver-south"
+        }
+    }, 
+    {
+        "pk": 70057, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "Vancouver South--Burnaby", 
+            "slug": "vancouver-south-burnaby"
+        }
+    }, 
+    {
+        "pk": 59035, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59035, 
+            "name": "Victoria", 
+            "slug": "victoria"
+        }
+    }, 
+    {
+        "pk": 70143, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "West Kootenay--Okanagan", 
+            "slug": "west-kootenay-okanagan"
+        }
+    }, 
+    {
+        "pk": 70010, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": null, 
+            "name": "West Vancouver--Sunshine Coast", 
+            "slug": "west-vancouver-sunshine-coast"
+        }
+    }, 
+    {
+        "pk": 59036, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "BC", 
+            "edid": 59036, 
+            "name": "West Vancouver--Sunshine Coast--Sea to Sky Country", 
+            "slug": "west-vancouver-sunshine-coast-sea-to-sky-country"
+        }
+    }, 
+    {
+        "pk": 46001, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": 46001, 
+            "name": "Brandon--Souris", 
+            "slug": "brandon-souris"
+        }
+    }, 
+    {
+        "pk": 70144, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": null, 
+            "name": "Charleswood--Assiniboine", 
+            "slug": "charleswood-assiniboine"
+        }
+    }, 
+    {
+        "pk": 70011, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": null, 
+            "name": "Charleswood--St. James", 
+            "slug": "charleswood-st-james"
+        }
+    }, 
+    {
+        "pk": 46002, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": 46002, 
+            "name": "Charleswood--St. James--Assiniboia", 
+            "slug": "charleswood-st-james-assiniboia"
+        }
+    }, 
+    {
+        "pk": 46003, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": 46003, 
+            "name": "Churchill", 
+            "slug": "churchill"
+        }
+    }, 
+    {
+        "pk": 70012, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": null, 
+            "name": "Dauphin--Swan River", 
+            "slug": "dauphin-swan-river"
+        }
+    }, 
+    {
+        "pk": 46004, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": 46004, 
+            "name": "Dauphin--Swan River--Marquette", 
+            "slug": "dauphin-swan-river-marquette"
+        }
+    }, 
+    {
+        "pk": 46005, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": 46005, 
+            "name": "Elmwood--Transcona", 
+            "slug": "elmwood-transcona"
+        }
+    }, 
+    {
+        "pk": 46006, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": 46006, 
+            "name": "Kildonan--St. Paul", 
+            "slug": "kildonan-st-paul"
+        }
+    }, 
+    {
+        "pk": 70188, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": null, 
+            "name": "Lisgar--Marquette", 
+            "slug": "lisgar-marquette"
+        }
+    }, 
+    {
+        "pk": 70189, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": null, 
+            "name": "Portage--Interlake", 
+            "slug": "portage-interlake"
+        }
+    }, 
+    {
+        "pk": 46007, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": 46007, 
+            "name": "Portage--Lisgar", 
+            "slug": "portage-lisgar"
+        }
+    }, 
+    {
+        "pk": 46008, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": 46008, 
+            "name": "Provencher", 
+            "slug": "provencher"
+        }
+    }, 
+    {
+        "pk": 46009, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": 46009, 
+            "name": "Saint Boniface", 
+            "slug": "saint-boniface"
+        }
+    }, 
+    {
+        "pk": 46010, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": 46010, 
+            "name": "Selkirk--Interlake", 
+            "slug": "selkirk-interlake"
+        }
+    }, 
+    {
+        "pk": 70190, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": null, 
+            "name": "Selkirk--Red River", 
+            "slug": "selkirk-red-river"
+        }
+    }, 
+    {
+        "pk": 70191, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": null, 
+            "name": "St. Boniface", 
+            "slug": "st-boniface"
+        }
+    }, 
+    {
+        "pk": 46011, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": 46011, 
+            "name": "Winnipeg Centre", 
+            "slug": "winnipeg-centre"
+        }
+    }, 
+    {
+        "pk": 46012, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": 46012, 
+            "name": "Winnipeg North", 
+            "slug": "winnipeg-north"
+        }
+    }, 
+    {
+        "pk": 70058, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": null, 
+            "name": "Winnipeg North Centre", 
+            "slug": "winnipeg-north-centre"
+        }
+    }, 
+    {
+        "pk": 70059, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": null, 
+            "name": "Winnipeg North--St. Paul", 
+            "slug": "winnipeg-north-st-paul"
+        }
+    }, 
+    {
+        "pk": 46013, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": 46013, 
+            "name": "Winnipeg South", 
+            "slug": "winnipeg-south"
+        }
+    }, 
+    {
+        "pk": 46014, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": 46014, 
+            "name": "Winnipeg South Centre", 
+            "slug": "winnipeg-south-centre"
+        }
+    }, 
+    {
+        "pk": 70192, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": null, 
+            "name": "Winnipeg--St. James", 
+            "slug": "winnipeg-st-james"
+        }
+    }, 
+    {
+        "pk": 70060, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "MB", 
+            "edid": null, 
+            "name": "Winnipeg--Transcona", 
+            "slug": "winnipeg-transcona"
+        }
+    }, 
+    {
+        "pk": 13001, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NB", 
+            "edid": 13001, 
+            "name": "Acadie--Bathurst", 
+            "slug": "acadie-bathurst"
+        }
+    }, 
+    {
+        "pk": 13002, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NB", 
+            "edid": 13002, 
+            "name": "Beaus\u00e9jour", 
+            "slug": "beausejour"
+        }
+    }, 
+    {
+        "pk": 70061, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NB", 
+            "edid": null, 
+            "name": "Beaus\u00e9jour--Petitcodiac", 
+            "slug": "beausejour-petitcodiac"
+        }
+    }, 
+    {
+        "pk": 70193, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NB", 
+            "edid": null, 
+            "name": "Carleton--Charlotte", 
+            "slug": "carleton-charlotte"
+        }
+    }, 
+    {
+        "pk": 70145, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NB", 
+            "edid": null, 
+            "name": "Charlotte", 
+            "slug": "charlotte"
+        }
+    }, 
+    {
+        "pk": 13003, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NB", 
+            "edid": 13003, 
+            "name": "Fredericton", 
+            "slug": "fredericton"
+        }
+    }, 
+    {
+        "pk": 70194, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NB", 
+            "edid": null, 
+            "name": "Fredericton--York--Sunbury", 
+            "slug": "fredericton-york-sunbury"
+        }
+    }, 
+    {
+        "pk": 70013, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NB", 
+            "edid": null, 
+            "name": "Fundy", 
+            "slug": "fundy"
+        }
+    }, 
+    {
+        "pk": 13004, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NB", 
+            "edid": 13004, 
+            "name": "Fundy Royal", 
+            "slug": "fundy-royal"
+        }
+    }, 
+    {
+        "pk": 13005, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NB", 
+            "edid": 13005, 
+            "name": "Madawaska--Restigouche", 
+            "slug": "madawaska-restigouche"
+        }
+    }, 
+    {
+        "pk": 70195, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NB", 
+            "edid": null, 
+            "name": "Madawaska--Victoria", 
+            "slug": "madawaska-victoria"
+        }
+    }, 
+    {
+        "pk": 13006, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NB", 
+            "edid": 13006, 
+            "name": "Miramichi", 
+            "slug": "miramichi"
+        }
+    }, 
+    {
+        "pk": 70146, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NB", 
+            "edid": null, 
+            "name": "Moncton", 
+            "slug": "moncton"
+        }
+    }, 
+    {
+        "pk": 13007, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NB", 
+            "edid": 13007, 
+            "name": "Moncton--Riverview--Dieppe", 
+            "slug": "moncton-riverview-dieppe"
+        }
+    }, 
+    {
+        "pk": 13008, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NB", 
+            "edid": 13008, 
+            "name": "New Brunswick Southwest", 
+            "slug": "new-brunswick-southwest"
+        }
+    }, 
+    {
+        "pk": 70196, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NB", 
+            "edid": null, 
+            "name": "Restigouche--Chaleur", 
+            "slug": "restigouche-chaleur"
+        }
+    }, 
+    {
+        "pk": 13009, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NB", 
+            "edid": 13009, 
+            "name": "Saint John", 
+            "slug": "saint-john"
+        }
+    }, 
+    {
+        "pk": 70014, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NB", 
+            "edid": null, 
+            "name": "St. Croix--Belleisle", 
+            "slug": "st-croix-belleisle"
+        }
+    }, 
+    {
+        "pk": 13010, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NB", 
+            "edid": 13010, 
+            "name": "Tobique--Mactaquac", 
+            "slug": "tobique-mactaquac"
+        }
+    }, 
+    {
+        "pk": 10001, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NL", 
+            "edid": 10001, 
+            "name": "Avalon", 
+            "slug": "avalon"
+        }
+    }, 
+    {
+        "pk": 70015, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NL", 
+            "edid": null, 
+            "name": "Bonavista--Exploits", 
+            "slug": "bonavista-exploits"
+        }
+    }, 
+    {
+        "pk": 10002, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NL", 
+            "edid": 10002, 
+            "name": "Bonavista--Gander--Grand Falls--Windsor", 
+            "slug": "bonavista-gander-grand-falls-windsor"
+        }
+    }, 
+    {
+        "pk": 70062, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NL", 
+            "edid": null, 
+            "name": "Bonavista--Trinity--Conception", 
+            "slug": "bonavista-trinity-conception"
+        }
+    }, 
+    {
+        "pk": 70063, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NL", 
+            "edid": null, 
+            "name": "Burin--St. George's", 
+            "slug": "burin-st-george-s"
+        }
+    }, 
+    {
+        "pk": 70064, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NL", 
+            "edid": null, 
+            "name": "Gander--Grand Falls", 
+            "slug": "gander-grand-falls"
+        }
+    }, 
+    {
+        "pk": 10003, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NL", 
+            "edid": 10003, 
+            "name": "Humber--St. Barbe--Baie Verte", 
+            "slug": "humber-st-barbe-baie-verte"
+        }
+    }, 
+    {
+        "pk": 10004, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NL", 
+            "edid": 10004, 
+            "name": "Labrador", 
+            "slug": "labrador"
+        }
+    }, 
+    {
+        "pk": 10005, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NL", 
+            "edid": 10005, 
+            "name": "Random--Burin--St. George's", 
+            "slug": "random-burin-st-george-s"
+        }
+    }, 
+    {
+        "pk": 10006, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NL", 
+            "edid": 10006, 
+            "name": "St. John's East", 
+            "slug": "st-john-s-east"
+        }
+    }, 
+    {
+        "pk": 70016, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NL", 
+            "edid": null, 
+            "name": "St. John's North", 
+            "slug": "st-john-s-north"
+        }
+    }, 
+    {
+        "pk": 70017, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NL", 
+            "edid": null, 
+            "name": "St. John's South", 
+            "slug": "st-john-s-south"
+        }
+    }, 
+    {
+        "pk": 10007, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NL", 
+            "edid": 10007, 
+            "name": "St. John's South--Mount Pearl", 
+            "slug": "st-john-s-south-mount-pearl"
+        }
+    }, 
+    {
+        "pk": 70065, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NL", 
+            "edid": null, 
+            "name": "St. John's West", 
+            "slug": "st-john-s-west"
+        }
+    }, 
+    {
+        "pk": 70198, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": null, 
+            "name": "Annapolis Valley--Hants", 
+            "slug": "annapolis-valley-hants"
+        }
+    }, 
+    {
+        "pk": 70147, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": null, 
+            "name": "Bras D'Or", 
+            "slug": "bras-d-or"
+        }
+    }, 
+    {
+        "pk": 70066, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": null, 
+            "name": "Bras D'Or--Cape Breton", 
+            "slug": "bras-d-or-cape-breton"
+        }
+    }, 
+    {
+        "pk": 70199, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": null, 
+            "name": "Cape Breton Highlands--Canso", 
+            "slug": "cape-breton-highlands-canso"
+        }
+    }, 
+    {
+        "pk": 12001, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": 12001, 
+            "name": "Cape Breton--Canso", 
+            "slug": "cape-breton-canso"
+        }
+    }, 
+    {
+        "pk": 70200, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": null, 
+            "name": "Cape Breton--East Richmond", 
+            "slug": "cape-breton-east-richmond"
+        }
+    }, 
+    {
+        "pk": 70201, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": null, 
+            "name": "Cape Breton--The Sydneys", 
+            "slug": "cape-breton-the-sydneys"
+        }
+    }, 
+    {
+        "pk": 12002, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": 12002, 
+            "name": "Central Nova", 
+            "slug": "central-nova"
+        }
+    }, 
+    {
+        "pk": 70067, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": null, 
+            "name": "Cumberland--Colchester", 
+            "slug": "cumberland-colchester"
+        }
+    }, 
+    {
+        "pk": 12007, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": 12007, 
+            "name": "Cumberland--Colchester--Musquodoboit Valley", 
+            "slug": "cumberland-colchester-musquodoboit-valley"
+        }
+    }, 
+    {
+        "pk": 70068, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": null, 
+            "name": "Dartmouth", 
+            "slug": "dartmouth"
+        }
+    }, 
+    {
+        "pk": 12003, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": 12003, 
+            "name": "Dartmouth--Cole Harbour", 
+            "slug": "dartmouth-cole-harbour"
+        }
+    }, 
+    {
+        "pk": 12004, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": 12004, 
+            "name": "Halifax", 
+            "slug": "halifax"
+        }
+    }, 
+    {
+        "pk": 12005, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": 12005, 
+            "name": "Halifax West", 
+            "slug": "halifax-west"
+        }
+    }, 
+    {
+        "pk": 12006, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": 12006, 
+            "name": "Kings--Hants", 
+            "slug": "kings-hants"
+        }
+    }, 
+    {
+        "pk": 70018, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": null, 
+            "name": "North Nova", 
+            "slug": "north-nova"
+        }
+    }, 
+    {
+        "pk": 70069, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": null, 
+            "name": "Pictou--Antigonish--Guysborough", 
+            "slug": "pictou-antigonish-guysborough"
+        }
+    }, 
+    {
+        "pk": 12008, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": 12008, 
+            "name": "Sackville--Eastern Shore", 
+            "slug": "sackville-eastern-shore"
+        }
+    }, 
+    {
+        "pk": 70070, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": null, 
+            "name": "Sackville--Musquodoboit Valley--Eastern Shore", 
+            "slug": "sackville-musquodoboit-valley-eastern-shore"
+        }
+    }, 
+    {
+        "pk": 70071, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": null, 
+            "name": "South Shore", 
+            "slug": "south-shore"
+        }
+    }, 
+    {
+        "pk": 12009, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": 12009, 
+            "name": "South Shore--St. Margaret's", 
+            "slug": "south-shore-st-margaret-s"
+        }
+    }, 
+    {
+        "pk": 70202, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": null, 
+            "name": "South West Nova", 
+            "slug": "south-west-nova"
+        }
+    }, 
+    {
+        "pk": 12010, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": 12010, 
+            "name": "Sydney--Victoria", 
+            "slug": "sydney-victoria"
+        }
+    }, 
+    {
+        "pk": 12011, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NS", 
+            "edid": 12011, 
+            "name": "West Nova", 
+            "slug": "west-nova"
+        }
+    }, 
+    {
+        "pk": 70197, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NT", 
+            "edid": null, 
+            "name": "Nunatsiaq", 
+            "slug": "nunatsiaq"
+        }
+    }, 
+    {
+        "pk": 61001, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NT", 
+            "edid": 61001, 
+            "name": "Western Arctic", 
+            "slug": "western-arctic"
+        }
+    }, 
+    {
+        "pk": 62001, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "NU", 
+            "edid": 62001, 
+            "name": "Nunavut", 
+            "slug": "nunavut"
+        }
+    }, 
+    {
+        "pk": 35001, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35001, 
+            "name": "Ajax--Pickering", 
+            "slug": "ajax-pickering"
+        }
+    }, 
+    {
+        "pk": 70203, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Algoma", 
+            "slug": "algoma"
+        }
+    }, 
+    {
+        "pk": 70072, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Algoma--Manitoulin", 
+            "slug": "algoma-manitoulin"
+        }
+    }, 
+    {
+        "pk": 35002, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35002, 
+            "name": "Algoma--Manitoulin--Kapuskasing", 
+            "slug": "algoma-manitoulin-kapuskasing"
+        }
+    }, 
+    {
+        "pk": 70073, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Ancaster--Dundas--Flamborough--Aldershot", 
+            "slug": "ancaster-dundas-flamborough-aldershot"
+        }
+    }, 
+    {
+        "pk": 35003, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35003, 
+            "name": "Ancaster--Dundas--Flamborough--Westdale", 
+            "slug": "ancaster-dundas-flamborough-westdale"
+        }
+    }, 
+    {
+        "pk": 35004, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35004, 
+            "name": "Barrie", 
+            "slug": "barrie"
+        }
+    }, 
+    {
+        "pk": 70074, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Barrie--Simcoe--Bradford", 
+            "slug": "barrie-simcoe-bradford"
+        }
+    }, 
+    {
+        "pk": 35005, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35005, 
+            "name": "Beaches--East York", 
+            "slug": "beaches-east-york"
+        }
+    }, 
+    {
+        "pk": 70204, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Beaches--Woodbine", 
+            "slug": "beaches-woodbine"
+        }
+    }, 
+    {
+        "pk": 35006, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35006, 
+            "name": "Bramalea--Gore--Malton", 
+            "slug": "bramalea-gore-malton"
+        }
+    }, 
+    {
+        "pk": 70075, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Bramalea--Gore--Malton--Springdale", 
+            "slug": "bramalea-gore-malton-springdale"
+        }
+    }, 
+    {
+        "pk": 70205, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Brampton", 
+            "slug": "brampton"
+        }
+    }, 
+    {
+        "pk": 70076, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Brampton Centre", 
+            "slug": "brampton-centre"
+        }
+    }, 
+    {
+        "pk": 35008, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35008, 
+            "name": "Brampton West", 
+            "slug": "brampton-west"
+        }
+    }, 
+    {
+        "pk": 70077, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Brampton West--Mississauga", 
+            "slug": "brampton-west-mississauga"
+        }
+    }, 
+    {
+        "pk": 35007, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35007, 
+            "name": "Brampton--Springdale", 
+            "slug": "brampton-springdale"
+        }
+    }, 
+    {
+        "pk": 35009, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35009, 
+            "name": "Brant", 
+            "slug": "brant"
+        }
+    }, 
+    {
+        "pk": 70148, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Broadview--Greenwood", 
+            "slug": "broadview-greenwood"
+        }
+    }, 
+    {
+        "pk": 70149, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Bruce--Grey", 
+            "slug": "bruce-grey"
+        }
+    }, 
+    {
+        "pk": 35026, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35026, 
+            "name": "Bruce--Grey--Owen Sound", 
+            "slug": "bruce-grey-owen-sound"
+        }
+    }, 
+    {
+        "pk": 35010, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35010, 
+            "name": "Burlington", 
+            "slug": "burlington"
+        }
+    }, 
+    {
+        "pk": 35011, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35011, 
+            "name": "Cambridge", 
+            "slug": "cambridge"
+        }
+    }, 
+    {
+        "pk": 70150, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Carleton--Gloucester", 
+            "slug": "carleton-gloucester"
+        }
+    }, 
+    {
+        "pk": 70019, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Carleton--Lanark", 
+            "slug": "carleton-lanark"
+        }
+    }, 
+    {
+        "pk": 35012, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35012, 
+            "name": "Carleton--Mississippi Mills", 
+            "slug": "carleton-mississippi-mills"
+        }
+    }, 
+    {
+        "pk": 35013, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35013, 
+            "name": "Chatham-Kent--Essex", 
+            "slug": "chatham-kent-essex"
+        }
+    }, 
+    {
+        "pk": 70020, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Clarington--Scugog--Uxbridge", 
+            "slug": "clarington-scugog-uxbridge"
+        }
+    }, 
+    {
+        "pk": 70206, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Cochrane--Superior", 
+            "slug": "cochrane-superior"
+        }
+    }, 
+    {
+        "pk": 35015, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35015, 
+            "name": "Davenport", 
+            "slug": "davenport"
+        }
+    }, 
+    {
+        "pk": 35016, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35016, 
+            "name": "Don Valley East", 
+            "slug": "don-valley-east"
+        }
+    }, 
+    {
+        "pk": 70207, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Don Valley North", 
+            "slug": "don-valley-north"
+        }
+    }, 
+    {
+        "pk": 35017, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35017, 
+            "name": "Don Valley West", 
+            "slug": "don-valley-west"
+        }
+    }, 
+    {
+        "pk": 35018, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35018, 
+            "name": "Dufferin--Caledon", 
+            "slug": "dufferin-caledon"
+        }
+    }, 
+    {
+        "pk": 70078, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Dufferin--Peel--Wellington--Grey", 
+            "slug": "dufferin-peel-wellington-grey"
+        }
+    }, 
+    {
+        "pk": 35014, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35014, 
+            "name": "Durham", 
+            "slug": "durham"
+        }
+    }, 
+    {
+        "pk": 35019, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35019, 
+            "name": "Eglinton--Lawrence", 
+            "slug": "eglinton-lawrence"
+        }
+    }, 
+    {
+        "pk": 35020, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35020, 
+            "name": "Elgin--Middlesex--London", 
+            "slug": "elgin-middlesex-london"
+        }
+    }, 
+    {
+        "pk": 70208, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Elgin--Norfolk", 
+            "slug": "elgin-norfolk"
+        }
+    }, 
+    {
+        "pk": 70209, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Erie", 
+            "slug": "erie"
+        }
+    }, 
+    {
+        "pk": 70079, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Erie--Lincoln", 
+            "slug": "erie-lincoln"
+        }
+    }, 
+    {
+        "pk": 35021, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35021, 
+            "name": "Essex", 
+            "slug": "essex"
+        }
+    }, 
+    {
+        "pk": 70210, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Essex--Kent", 
+            "slug": "essex-kent"
+        }
+    }, 
+    {
+        "pk": 70211, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Essex--Windsor", 
+            "slug": "essex-windsor"
+        }
+    }, 
+    {
+        "pk": 35022, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35022, 
+            "name": "Etobicoke Centre", 
+            "slug": "etobicoke-centre"
+        }
+    }, 
+    {
+        "pk": 35024, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35024, 
+            "name": "Etobicoke North", 
+            "slug": "etobicoke-north"
+        }
+    }, 
+    {
+        "pk": 35023, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35023, 
+            "name": "Etobicoke--Lakeshore", 
+            "slug": "etobicoke-lakeshore"
+        }
+    }, 
+    {
+        "pk": 35025, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35025, 
+            "name": "Glengarry--Prescott--Russell", 
+            "slug": "glengarry-prescott-russell"
+        }
+    }, 
+    {
+        "pk": 70021, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Grey--Bruce--Owen Sound", 
+            "slug": "grey-bruce-owen-sound"
+        }
+    }, 
+    {
+        "pk": 35027, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35027, 
+            "name": "Guelph", 
+            "slug": "guelph"
+        }
+    }, 
+    {
+        "pk": 70080, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Guelph--Wellington", 
+            "slug": "guelph-wellington"
+        }
+    }, 
+    {
+        "pk": 35028, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35028, 
+            "name": "Haldimand--Norfolk", 
+            "slug": "haldimand-norfolk"
+        }
+    }, 
+    {
+        "pk": 70081, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Haldimand--Norfolk--Brant", 
+            "slug": "haldimand-norfolk-brant"
+        }
+    }, 
+    {
+        "pk": 35029, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35029, 
+            "name": "Haliburton--Kawartha Lakes--Brock", 
+            "slug": "haliburton-kawartha-lakes-brock"
+        }
+    }, 
+    {
+        "pk": 70082, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Haliburton--Victoria--Brock", 
+            "slug": "haliburton-victoria-brock"
+        }
+    }, 
+    {
+        "pk": 35030, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35030, 
+            "name": "Halton", 
+            "slug": "halton"
+        }
+    }, 
+    {
+        "pk": 70212, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Halton--Peel", 
+            "slug": "halton-peel"
+        }
+    }, 
+    {
+        "pk": 35031, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35031, 
+            "name": "Hamilton Centre", 
+            "slug": "hamilton-centre"
+        }
+    }, 
+    {
+        "pk": 70083, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Hamilton East", 
+            "slug": "hamilton-east"
+        }
+    }, 
+    {
+        "pk": 35032, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35032, 
+            "name": "Hamilton East--Stoney Creek", 
+            "slug": "hamilton-east-stoney-creek"
+        }
+    }, 
+    {
+        "pk": 35033, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35033, 
+            "name": "Hamilton Mountain", 
+            "slug": "hamilton-mountain"
+        }
+    }, 
+    {
+        "pk": 70084, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Hamilton West", 
+            "slug": "hamilton-west"
+        }
+    }, 
+    {
+        "pk": 70213, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Hamilton--Wentworth", 
+            "slug": "hamilton-wentworth"
+        }
+    }, 
+    {
+        "pk": 70085, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Hastings--Frontenac--Lennox And Addington", 
+            "slug": "hastings-frontenac-lennox-and-addington"
+        }
+    }, 
+    {
+        "pk": 35034, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35034, 
+            "name": "Huron--Bruce", 
+            "slug": "huron-bruce"
+        }
+    }, 
+    {
+        "pk": 35035, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35035, 
+            "name": "Kenora", 
+            "slug": "kenora"
+        }
+    }, 
+    {
+        "pk": 70086, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Kenora--Rainy River", 
+            "slug": "kenora-rainy-river"
+        }
+    }, 
+    {
+        "pk": 70214, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Kent", 
+            "slug": "kent"
+        }
+    }, 
+    {
+        "pk": 70151, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Kent--Essex", 
+            "slug": "kent-essex"
+        }
+    }, 
+    {
+        "pk": 35036, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35036, 
+            "name": "Kingston and the Islands", 
+            "slug": "kingston-and-the-islands"
+        }
+    }, 
+    {
+        "pk": 70215, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Kitchener", 
+            "slug": "kitchener"
+        }
+    }, 
+    {
+        "pk": 35037, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35037, 
+            "name": "Kitchener Centre", 
+            "slug": "kitchener-centre"
+        }
+    }, 
+    {
+        "pk": 35038, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35038, 
+            "name": "Kitchener--Conestoga", 
+            "slug": "kitchener-conestoga"
+        }
+    }, 
+    {
+        "pk": 35039, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35039, 
+            "name": "Kitchener--Waterloo", 
+            "slug": "kitchener-waterloo"
+        }
+    }, 
+    {
+        "pk": 35046, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35046, 
+            "name": "Lambton--Kent--Middlesex", 
+            "slug": "lambton-kent-middlesex"
+        }
+    }, 
+    {
+        "pk": 70216, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Lambton--Middlesex", 
+            "slug": "lambton-middlesex"
+        }
+    }, 
+    {
+        "pk": 70087, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Lanark--Carleton", 
+            "slug": "lanark-carleton"
+        }
+    }, 
+    {
+        "pk": 35040, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35040, 
+            "name": "Lanark--Frontenac--Lennox and Addington", 
+            "slug": "lanark-frontenac-lennox-and-addington"
+        }
+    }, 
+    {
+        "pk": 35041, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35041, 
+            "name": "Leeds--Grenville", 
+            "slug": "leeds-grenville"
+        }
+    }, 
+    {
+        "pk": 70217, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Lincoln", 
+            "slug": "lincoln"
+        }
+    }, 
+    {
+        "pk": 70218, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "London East", 
+            "slug": "london-east"
+        }
+    }, 
+    {
+        "pk": 35043, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35043, 
+            "name": "London North Centre", 
+            "slug": "london-north-centre"
+        }
+    }, 
+    {
+        "pk": 35044, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35044, 
+            "name": "London West", 
+            "slug": "london-west"
+        }
+    }, 
+    {
+        "pk": 35042, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35042, 
+            "name": "London--Fanshawe", 
+            "slug": "london-fanshawe"
+        }
+    }, 
+    {
+        "pk": 70219, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "London--Middlesex", 
+            "slug": "london-middlesex"
+        }
+    }, 
+    {
+        "pk": 70088, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Markham", 
+            "slug": "markham"
+        }
+    }, 
+    {
+        "pk": 35045, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35045, 
+            "name": "Markham--Unionville", 
+            "slug": "markham-unionville"
+        }
+    }, 
+    {
+        "pk": 70220, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Markham--Whitchurch-Stouffville", 
+            "slug": "markham-whitchurch-stouffville"
+        }
+    }, 
+    {
+        "pk": 70022, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Middlesex--Kent--Lambton", 
+            "slug": "middlesex-kent-lambton"
+        }
+    }, 
+    {
+        "pk": 70089, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Mississauga Centre", 
+            "slug": "mississauga-centre"
+        }
+    }, 
+    {
+        "pk": 70090, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Mississauga East", 
+            "slug": "mississauga-east"
+        }
+    }, 
+    {
+        "pk": 35048, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35048, 
+            "name": "Mississauga East--Cooksville", 
+            "slug": "mississauga-east-cooksville"
+        }
+    }, 
+    {
+        "pk": 35050, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35050, 
+            "name": "Mississauga South", 
+            "slug": "mississauga-south"
+        }
+    }, 
+    {
+        "pk": 70091, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Mississauga West", 
+            "slug": "mississauga-west"
+        }
+    }, 
+    {
+        "pk": 35047, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35047, 
+            "name": "Mississauga--Brampton South", 
+            "slug": "mississauga-brampton-south"
+        }
+    }, 
+    {
+        "pk": 35049, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35049, 
+            "name": "Mississauga--Erindale", 
+            "slug": "mississauga-erindale"
+        }
+    }, 
+    {
+        "pk": 35051, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35051, 
+            "name": "Mississauga--Streetsville", 
+            "slug": "mississauga-streetsville"
+        }
+    }, 
+    {
+        "pk": 70221, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Nepean", 
+            "slug": "nepean"
+        }
+    }, 
+    {
+        "pk": 35052, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35052, 
+            "name": "Nepean--Carleton", 
+            "slug": "nepean-carleton"
+        }
+    }, 
+    {
+        "pk": 35053, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35053, 
+            "name": "Newmarket--Aurora", 
+            "slug": "newmarket-aurora"
+        }
+    }, 
+    {
+        "pk": 70092, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Niagara Centre", 
+            "slug": "niagara-centre"
+        }
+    }, 
+    {
+        "pk": 35054, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35054, 
+            "name": "Niagara Falls", 
+            "slug": "niagara-falls"
+        }
+    }, 
+    {
+        "pk": 35055, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35055, 
+            "name": "Niagara West--Glanbrook", 
+            "slug": "niagara-west-glanbrook"
+        }
+    }, 
+    {
+        "pk": 35056, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35056, 
+            "name": "Nickel Belt", 
+            "slug": "nickel-belt"
+        }
+    }, 
+    {
+        "pk": 70093, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Nipissing", 
+            "slug": "nipissing"
+        }
+    }, 
+    {
+        "pk": 35057, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35057, 
+            "name": "Nipissing--Timiskaming", 
+            "slug": "nipissing-timiskaming"
+        }
+    }, 
+    {
+        "pk": 70094, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Northumberland", 
+            "slug": "northumberland"
+        }
+    }, 
+    {
+        "pk": 35058, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35058, 
+            "name": "Northumberland--Quinte West", 
+            "slug": "northumberland-quinte-west"
+        }
+    }, 
+    {
+        "pk": 70095, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Oak Ridges", 
+            "slug": "oak-ridges"
+        }
+    }, 
+    {
+        "pk": 35059, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35059, 
+            "name": "Oak Ridges--Markham", 
+            "slug": "oak-ridges-markham"
+        }
+    }, 
+    {
+        "pk": 35060, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35060, 
+            "name": "Oakville", 
+            "slug": "oakville"
+        }
+    }, 
+    {
+        "pk": 70222, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Oakville--Milton", 
+            "slug": "oakville-milton"
+        }
+    }, 
+    {
+        "pk": 70223, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Ontario", 
+            "slug": "ontario"
+        }
+    }, 
+    {
+        "pk": 35061, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35061, 
+            "name": "Oshawa", 
+            "slug": "oshawa"
+        }
+    }, 
+    {
+        "pk": 35062, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35062, 
+            "name": "Ottawa Centre", 
+            "slug": "ottawa-centre"
+        }
+    }, 
+    {
+        "pk": 35064, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35064, 
+            "name": "Ottawa South", 
+            "slug": "ottawa-south"
+        }
+    }, 
+    {
+        "pk": 70224, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Ottawa West", 
+            "slug": "ottawa-west"
+        }
+    }, 
+    {
+        "pk": 35066, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35066, 
+            "name": "Ottawa West--Nepean", 
+            "slug": "ottawa-west-nepean"
+        }
+    }, 
+    {
+        "pk": 35063, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35063, 
+            "name": "Ottawa--Orl\u00e9ans", 
+            "slug": "ottawa-orleans"
+        }
+    }, 
+    {
+        "pk": 35065, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35065, 
+            "name": "Ottawa--Vanier", 
+            "slug": "ottawa-vanier"
+        }
+    }, 
+    {
+        "pk": 35067, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35067, 
+            "name": "Oxford", 
+            "slug": "oxford"
+        }
+    }, 
+    {
+        "pk": 35068, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35068, 
+            "name": "Parkdale--High Park", 
+            "slug": "parkdale-high-park"
+        }
+    }, 
+    {
+        "pk": 35069, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35069, 
+            "name": "Parry Sound--Muskoka", 
+            "slug": "parry-sound-muskoka"
+        }
+    }, 
+    {
+        "pk": 70096, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Perth--Middlesex", 
+            "slug": "perth-middlesex"
+        }
+    }, 
+    {
+        "pk": 35070, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35070, 
+            "name": "Perth--Wellington", 
+            "slug": "perth-wellington"
+        }
+    }, 
+    {
+        "pk": 70225, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Perth--Wellington--Waterloo", 
+            "slug": "perth-wellington-waterloo"
+        }
+    }, 
+    {
+        "pk": 35071, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35071, 
+            "name": "Peterborough", 
+            "slug": "peterborough"
+        }
+    }, 
+    {
+        "pk": 70097, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Pickering--Ajax--Uxbridge", 
+            "slug": "pickering-ajax-uxbridge"
+        }
+    }, 
+    {
+        "pk": 35072, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35072, 
+            "name": "Pickering--Scarborough East", 
+            "slug": "pickering-scarborough-east"
+        }
+    }, 
+    {
+        "pk": 35073, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35073, 
+            "name": "Prince Edward--Hastings", 
+            "slug": "prince-edward-hastings"
+        }
+    }, 
+    {
+        "pk": 35074, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35074, 
+            "name": "Renfrew--Nipissing--Pembroke", 
+            "slug": "renfrew-nipissing-pembroke"
+        }
+    }, 
+    {
+        "pk": 35075, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35075, 
+            "name": "Richmond Hill", 
+            "slug": "richmond-hill"
+        }
+    }, 
+    {
+        "pk": 70226, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Rosedale", 
+            "slug": "rosedale"
+        }
+    }, 
+    {
+        "pk": 35078, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35078, 
+            "name": "Sarnia--Lambton", 
+            "slug": "sarnia-lambton"
+        }
+    }, 
+    {
+        "pk": 35079, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35079, 
+            "name": "Sault Ste. Marie", 
+            "slug": "sault-ste-marie"
+        }
+    }, 
+    {
+        "pk": 35081, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35081, 
+            "name": "Scarborough Centre", 
+            "slug": "scarborough-centre"
+        }
+    }, 
+    {
+        "pk": 70098, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Scarborough East", 
+            "slug": "scarborough-east"
+        }
+    }, 
+    {
+        "pk": 35084, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35084, 
+            "name": "Scarborough Southwest", 
+            "slug": "scarborough-southwest"
+        }
+    }, 
+    {
+        "pk": 70227, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Scarborough West", 
+            "slug": "scarborough-west"
+        }
+    }, 
+    {
+        "pk": 35080, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35080, 
+            "name": "Scarborough--Agincourt", 
+            "slug": "scarborough-agincourt"
+        }
+    }, 
+    {
+        "pk": 35082, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35082, 
+            "name": "Scarborough--Guildwood", 
+            "slug": "scarborough-guildwood"
+        }
+    }, 
+    {
+        "pk": 35083, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35083, 
+            "name": "Scarborough--Rouge River", 
+            "slug": "scarborough-rouge-river"
+        }
+    }, 
+    {
+        "pk": 70228, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Simcoe Centre", 
+            "slug": "simcoe-centre"
+        }
+    }, 
+    {
+        "pk": 35086, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35086, 
+            "name": "Simcoe North", 
+            "slug": "simcoe-north"
+        }
+    }, 
+    {
+        "pk": 35085, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35085, 
+            "name": "Simcoe--Grey", 
+            "slug": "simcoe-grey"
+        }
+    }, 
+    {
+        "pk": 35076, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35076, 
+            "name": "St. Catharines", 
+            "slug": "st-catharines"
+        }
+    }, 
+    {
+        "pk": 35077, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35077, 
+            "name": "St. Paul's", 
+            "slug": "st-paul-s"
+        }
+    }, 
+    {
+        "pk": 70099, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Stoney Creek", 
+            "slug": "stoney-creek"
+        }
+    }, 
+    {
+        "pk": 70152, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Stormont--Dundas", 
+            "slug": "stormont-dundas"
+        }
+    }, 
+    {
+        "pk": 70100, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Stormont--Dundas--Charlottenburgh", 
+            "slug": "stormont-dundas-charlottenburgh"
+        }
+    }, 
+    {
+        "pk": 35087, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35087, 
+            "name": "Stormont--Dundas--South Glengarry", 
+            "slug": "stormont-dundas-south-glengarry"
+        }
+    }, 
+    {
+        "pk": 35088, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35088, 
+            "name": "Sudbury", 
+            "slug": "sudbury"
+        }
+    }, 
+    {
+        "pk": 35089, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35089, 
+            "name": "Thornhill", 
+            "slug": "thornhill"
+        }
+    }, 
+    {
+        "pk": 70101, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Thunder Bay--Atikokan", 
+            "slug": "thunder-bay-atikokan"
+        }
+    }, 
+    {
+        "pk": 70153, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Thunder Bay--Nipigon", 
+            "slug": "thunder-bay-nipigon"
+        }
+    }, 
+    {
+        "pk": 35090, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35090, 
+            "name": "Thunder Bay--Rainy River", 
+            "slug": "thunder-bay-rainy-river"
+        }
+    }, 
+    {
+        "pk": 35091, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35091, 
+            "name": "Thunder Bay--Superior North", 
+            "slug": "thunder-bay-superior-north"
+        }
+    }, 
+    {
+        "pk": 70102, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Timiskaming--Cochrane", 
+            "slug": "timiskaming-cochrane"
+        }
+    }, 
+    {
+        "pk": 70229, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Timiskaming--French-River", 
+            "slug": "timiskaming-french-river"
+        }
+    }, 
+    {
+        "pk": 70230, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Timmins--Chapleau", 
+            "slug": "timmins-chapleau"
+        }
+    }, 
+    {
+        "pk": 35092, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35092, 
+            "name": "Timmins--James Bay", 
+            "slug": "timmins-james-bay"
+        }
+    }, 
+    {
+        "pk": 35093, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35093, 
+            "name": "Toronto Centre", 
+            "slug": "toronto-centre"
+        }
+    }, 
+    {
+        "pk": 70103, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Toronto Centre--Rosedale", 
+            "slug": "toronto-centre-rosedale"
+        }
+    }, 
+    {
+        "pk": 35094, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35094, 
+            "name": "Toronto--Danforth", 
+            "slug": "toronto-danforth"
+        }
+    }, 
+    {
+        "pk": 35095, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35095, 
+            "name": "Trinity--Spadina", 
+            "slug": "trinity-spadina"
+        }
+    }, 
+    {
+        "pk": 35096, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35096, 
+            "name": "Vaughan", 
+            "slug": "vaughan"
+        }
+    }, 
+    {
+        "pk": 70104, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Vaughan--King--Aurora", 
+            "slug": "vaughan-king-aurora"
+        }
+    }, 
+    {
+        "pk": 70154, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Victoria--Haliburton", 
+            "slug": "victoria-haliburton"
+        }
+    }, 
+    {
+        "pk": 70231, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Waterloo", 
+            "slug": "waterloo"
+        }
+    }, 
+    {
+        "pk": 70105, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Waterloo--Wellington", 
+            "slug": "waterloo-wellington"
+        }
+    }, 
+    {
+        "pk": 35097, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35097, 
+            "name": "Welland", 
+            "slug": "welland"
+        }
+    }, 
+    {
+        "pk": 70232, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Welland--St. Catharines--Thorold", 
+            "slug": "welland-st-catharines-thorold"
+        }
+    }, 
+    {
+        "pk": 70233, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Wellington--Grey--Dufferin--Simcoe", 
+            "slug": "wellington-grey-dufferin-simcoe"
+        }
+    }, 
+    {
+        "pk": 35098, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35098, 
+            "name": "Wellington--Halton Hills", 
+            "slug": "wellington-halton-hills"
+        }
+    }, 
+    {
+        "pk": 70155, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Wentworth--Burlington", 
+            "slug": "wentworth-burlington"
+        }
+    }, 
+    {
+        "pk": 70106, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Whitby--Ajax", 
+            "slug": "whitby-ajax"
+        }
+    }, 
+    {
+        "pk": 35099, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35099, 
+            "name": "Whitby--Oshawa", 
+            "slug": "whitby-oshawa"
+        }
+    }, 
+    {
+        "pk": 35100, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35100, 
+            "name": "Willowdale", 
+            "slug": "willowdale"
+        }
+    }, 
+    {
+        "pk": 35102, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35102, 
+            "name": "Windsor West", 
+            "slug": "windsor-west"
+        }
+    }, 
+    {
+        "pk": 70107, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "Windsor--St. Clair", 
+            "slug": "windsor-st-clair"
+        }
+    }, 
+    {
+        "pk": 35101, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35101, 
+            "name": "Windsor--Tecumseh", 
+            "slug": "windsor-tecumseh"
+        }
+    }, 
+    {
+        "pk": 35103, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35103, 
+            "name": "York Centre", 
+            "slug": "york-centre"
+        }
+    }, 
+    {
+        "pk": 70108, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": null, 
+            "name": "York North", 
+            "slug": "york-north"
+        }
+    }, 
+    {
+        "pk": 35105, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35105, 
+            "name": "York South--Weston", 
+            "slug": "york-south-weston"
+        }
+    }, 
+    {
+        "pk": 35106, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35106, 
+            "name": "York West", 
+            "slug": "york-west"
+        }
+    }, 
+    {
+        "pk": 35104, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "ON", 
+            "edid": 35104, 
+            "name": "York--Simcoe", 
+            "slug": "york-simcoe"
+        }
+    }, 
+    {
+        "pk": 11001, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "PE", 
+            "edid": 11001, 
+            "name": "Cardigan", 
+            "slug": "cardigan"
+        }
+    }, 
+    {
+        "pk": 11002, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "PE", 
+            "edid": 11002, 
+            "name": "Charlottetown", 
+            "slug": "charlottetown"
+        }
+    }, 
+    {
+        "pk": 11003, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "PE", 
+            "edid": 11003, 
+            "name": "Egmont", 
+            "slug": "egmont"
+        }
+    }, 
+    {
+        "pk": 70109, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "PE", 
+            "edid": null, 
+            "name": "Hillsborough", 
+            "slug": "hillsborough"
+        }
+    }, 
+    {
+        "pk": 11004, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "PE", 
+            "edid": 11004, 
+            "name": "Malpeque", 
+            "slug": "malpeque"
+        }
+    }, 
+    {
+        "pk": 70156, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Abitibi", 
+            "slug": "abitibi"
+        }
+    }, 
+    {
+        "pk": 70110, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Abitibi--Baie-James--Nunavik", 
+            "slug": "abitibi-baie-james-nunavik"
+        }
+    }, 
+    {
+        "pk": 24046, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24046, 
+            "name": "Abitibi--Baie-James--Nunavik--Eeyou", 
+            "slug": "abitibi-baie-james-nunavik-eeyou"
+        }
+    }, 
+    {
+        "pk": 24001, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24001, 
+            "name": "Abitibi--T\u00e9miscamingue", 
+            "slug": "abitibi-temiscamingue"
+        }
+    }, 
+    {
+        "pk": 24002, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24002, 
+            "name": "Ahuntsic", 
+            "slug": "ahuntsic"
+        }
+    }, 
+    {
+        "pk": 24003, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24003, 
+            "name": "Alfred-Pellan", 
+            "slug": "alfred-pellan"
+        }
+    }, 
+    {
+        "pk": 70111, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Anjou--Rivi\u00e8re-Des-Prairies", 
+            "slug": "anjou-riviere-des-prairies"
+        }
+    }, 
+    {
+        "pk": 70023, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Argenteuil--Mirabel", 
+            "slug": "argenteuil-mirabel"
+        }
+    }, 
+    {
+        "pk": 70157, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Argenteuil--Papineau", 
+            "slug": "argenteuil-papineau"
+        }
+    }, 
+    {
+        "pk": 24004, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24004, 
+            "name": "Argenteuil--Papineau--Mirabel", 
+            "slug": "argenteuil-papineau-mirabel"
+        }
+    }, 
+    {
+        "pk": 24054, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24054, 
+            "name": "Bas-Richelieu--Nicolet--B\u00e9cancour", 
+            "slug": "bas-richelieu-nicolet-becancour"
+        }
+    }, 
+    {
+        "pk": 24005, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24005, 
+            "name": "Beauce", 
+            "slug": "beauce"
+        }
+    }, 
+    {
+        "pk": 24006, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24006, 
+            "name": "Beauharnois--Salaberry", 
+            "slug": "beauharnois-salaberry"
+        }
+    }, 
+    {
+        "pk": 70024, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Beauport", 
+            "slug": "beauport"
+        }
+    }, 
+    {
+        "pk": 24007, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24007, 
+            "name": "Beauport--Limoilou", 
+            "slug": "beauport-limoilou"
+        }
+    }, 
+    {
+        "pk": 70112, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Beauport--Montmorency--C\u00f4te-De- Beaupr\u00e9--\u00cele-D'Orl\u00e9ans", 
+            "slug": "beauport-montmorency-cote-de-beaupre-ile-d-orleans"
+        }
+    }, 
+    {
+        "pk": 70158, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Beauport--Montmorency--Orl\u00e9ans", 
+            "slug": "beauport-montmorency-orleans"
+        }
+    }, 
+    {
+        "pk": 70234, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Bellechasse", 
+            "slug": "bellechasse"
+        }
+    }, 
+    {
+        "pk": 70113, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Bellechasse--Etchemins--Montmagny--L'Islet", 
+            "slug": "bellechasse-etchemins-montmagny-l-islet"
+        }
+    }, 
+    {
+        "pk": 24008, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24008, 
+            "name": "Berthier--Maskinong\u00e9", 
+            "slug": "berthier-maskinonge"
+        }
+    }, 
+    {
+        "pk": 70114, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Berthier--Montcalm", 
+            "slug": "berthier-montcalm"
+        }
+    }, 
+    {
+        "pk": 70235, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Blainville--Deux-Montagnes", 
+            "slug": "blainville-deux-montagnes"
+        }
+    }, 
+    {
+        "pk": 70115, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Bonaventure--Gasp\u00e9--\u00celes-De-La-Madeleine--Pabok", 
+            "slug": "bonaventure-gaspe-iles-de-la-madeleine-pabok"
+        }
+    }, 
+    {
+        "pk": 70236, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Bonaventure--\u00celes-De-La-Madeleine", 
+            "slug": "bonaventure-iles-de-la-madeleine"
+        }
+    }, 
+    {
+        "pk": 24009, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24009, 
+            "name": "Bourassa", 
+            "slug": "bourassa"
+        }
+    }, 
+    {
+        "pk": 24010, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24010, 
+            "name": "Brome--Missisquoi", 
+            "slug": "brome-missisquoi"
+        }
+    }, 
+    {
+        "pk": 24011, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24011, 
+            "name": "Brossard--La Prairie", 
+            "slug": "brossard-la-prairie"
+        }
+    }, 
+    {
+        "pk": 70116, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Chambly", 
+            "slug": "chambly"
+        }
+    }, 
+    {
+        "pk": 24012, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24012, 
+            "name": "Chambly--Borduas", 
+            "slug": "chambly-borduas"
+        }
+    }, 
+    {
+        "pk": 70117, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Champlain", 
+            "slug": "champlain"
+        }
+    }, 
+    {
+        "pk": 70025, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Charlesbourg", 
+            "slug": "charlesbourg"
+        }
+    }, 
+    {
+        "pk": 24013, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24013, 
+            "name": "Charlesbourg--Haute-Saint-Charles", 
+            "slug": "charlesbourg-haute-saint-charles"
+        }
+    }, 
+    {
+        "pk": 70118, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Charlesbourg--Jacques-Cartier", 
+            "slug": "charlesbourg-jacques-cartier"
+        }
+    }, 
+    {
+        "pk": 70119, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Charlevoix", 
+            "slug": "charlevoix"
+        }
+    }, 
+    {
+        "pk": 70026, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Charlevoix--Montmorency", 
+            "slug": "charlevoix-montmorency"
+        }
+    }, 
+    {
+        "pk": 70159, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Chicoutimi", 
+            "slug": "chicoutimi"
+        }
+    }, 
+    {
+        "pk": 24016, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24016, 
+            "name": "Chicoutimi--Le Fjord", 
+            "slug": "chicoutimi-le-fjord"
+        }
+    }, 
+    {
+        "pk": 70120, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Ch\u00e2teauguay", 
+            "slug": "chateauguay"
+        }
+    }, 
+    {
+        "pk": 24015, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24015, 
+            "name": "Ch\u00e2teauguay--Saint-Constant", 
+            "slug": "chateauguay-saint-constant"
+        }
+    }, 
+    {
+        "pk": 24017, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24017, 
+            "name": "Compton--Stanstead", 
+            "slug": "compton-stanstead"
+        }
+    }, 
+    {
+        "pk": 24018, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24018, 
+            "name": "Drummond", 
+            "slug": "drummond"
+        }
+    }, 
+    {
+        "pk": 70237, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Frontenac", 
+            "slug": "frontenac"
+        }
+    }, 
+    {
+        "pk": 70121, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Frontenac--M\u00e9gantic", 
+            "slug": "frontenac-megantic"
+        }
+    }, 
+    {
+        "pk": 70238, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Gasp\u00e9", 
+            "slug": "gaspe"
+        }
+    }, 
+    {
+        "pk": 24019, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24019, 
+            "name": "Gasp\u00e9sie--\u00celes-de-la-Madeleine", 
+            "slug": "gaspesie-iles-de-la-madeleine"
+        }
+    }, 
+    {
+        "pk": 24020, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24020, 
+            "name": "Gatineau", 
+            "slug": "gatineau"
+        }
+    }, 
+    {
+        "pk": 70239, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Gatineau--La Li\u00e8vre", 
+            "slug": "gatineau-la-lievre"
+        }
+    }, 
+    {
+        "pk": 24041, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24041, 
+            "name": "Haute-Gasp\u00e9sie--La Mitis--Matane--Matap\u00e9dia", 
+            "slug": "haute-gaspesie-la-mitis-matane-matapedia"
+        }
+    }, 
+    {
+        "pk": 24021, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24021, 
+            "name": "Hochelaga", 
+            "slug": "hochelaga"
+        }
+    }, 
+    {
+        "pk": 70122, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Hochelaga--Maisonneuve", 
+            "slug": "hochelaga-maisonneuve"
+        }
+    }, 
+    {
+        "pk": 24022, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24022, 
+            "name": "Honor\u00e9-Mercier", 
+            "slug": "honore-mercier"
+        }
+    }, 
+    {
+        "pk": 24023, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24023, 
+            "name": "Hull--Aylmer", 
+            "slug": "hull-aylmer"
+        }
+    }, 
+    {
+        "pk": 24024, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24024, 
+            "name": "Jeanne-Le Ber", 
+            "slug": "jeanne-le-ber"
+        }
+    }, 
+    {
+        "pk": 24025, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24025, 
+            "name": "Joliette", 
+            "slug": "joliette"
+        }
+    }, 
+    {
+        "pk": 70123, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Jonqui\u00e8re", 
+            "slug": "jonquiere"
+        }
+    }, 
+    {
+        "pk": 24026, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24026, 
+            "name": "Jonqui\u00e8re--Alma", 
+            "slug": "jonquiere-alma"
+        }
+    }, 
+    {
+        "pk": 70240, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Kamouraska--Rivi\u00e8re-Du-Loup", 
+            "slug": "kamouraska-riviere-du-loup"
+        }
+    }, 
+    {
+        "pk": 70124, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Kamouraska--Rivi\u00e8re-Du-Loup--T\u00e9miscouata--Les Basques", 
+            "slug": "kamouraska-riviere-du-loup-temiscouata-les-basques"
+        }
+    }, 
+    {
+        "pk": 24028, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24028, 
+            "name": "La Pointe-de-l'\u00cele", 
+            "slug": "la-pointe-de-l-ile"
+        }
+    }, 
+    {
+        "pk": 70241, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "La Prairie", 
+            "slug": "la-prairie"
+        }
+    }, 
+    {
+        "pk": 24029, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24029, 
+            "name": "LaSalle--\u00c9mard", 
+            "slug": "lasalle-emard"
+        }
+    }, 
+    {
+        "pk": 70160, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Lac-Saint-Jean", 
+            "slug": "lac-saint-jean"
+        }
+    }, 
+    {
+        "pk": 70125, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Lac-Saint-Jean--Saguenay", 
+            "slug": "lac-saint-jean-saguenay"
+        }
+    }, 
+    {
+        "pk": 24027, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24027, 
+            "name": "Lac-Saint-Louis", 
+            "slug": "lac-saint-louis"
+        }
+    }, 
+    {
+        "pk": 70242, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Lachine--Lac-Saint-Louis", 
+            "slug": "lachine-lac-saint-louis"
+        }
+    }, 
+    {
+        "pk": 70126, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Laurentides", 
+            "slug": "laurentides"
+        }
+    }, 
+    {
+        "pk": 24030, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24030, 
+            "name": "Laurentides--Labelle", 
+            "slug": "laurentides-labelle"
+        }
+    }, 
+    {
+        "pk": 70027, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Laurier", 
+            "slug": "laurier"
+        }
+    }, 
+    {
+        "pk": 24031, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24031, 
+            "name": "Laurier--Sainte-Marie", 
+            "slug": "laurier-sainte-marie"
+        }
+    }, 
+    {
+        "pk": 24032, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24032, 
+            "name": "Laval", 
+            "slug": "laval"
+        }
+    }, 
+    {
+        "pk": 70127, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Laval Centre", 
+            "slug": "laval-centre"
+        }
+    }, 
+    {
+        "pk": 70128, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Laval East", 
+            "slug": "laval-east"
+        }
+    }, 
+    {
+        "pk": 70129, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Laval West", 
+            "slug": "laval-west"
+        }
+    }, 
+    {
+        "pk": 24033, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24033, 
+            "name": "Laval--Les \u00celes", 
+            "slug": "laval-les-iles"
+        }
+    }, 
+    {
+        "pk": 70028, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Longueuil", 
+            "slug": "longueuil"
+        }
+    }, 
+    {
+        "pk": 24035, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24035, 
+            "name": "Longueuil--Pierre-Boucher", 
+            "slug": "longueuil-pierre-boucher"
+        }
+    }, 
+    {
+        "pk": 70162, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Lotbini\u00e8re", 
+            "slug": "lotbiniere"
+        }
+    }, 
+    {
+        "pk": 24036, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24036, 
+            "name": "Lotbini\u00e8re--Chutes-de-la-Chaudi\u00e8re", 
+            "slug": "lotbiniere-chutes-de-la-chaudiere"
+        }
+    }, 
+    {
+        "pk": 70131, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Lotbini\u00e8re--L'\u00c9rable", 
+            "slug": "lotbiniere-l-erable"
+        }
+    }, 
+    {
+        "pk": 24037, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24037, 
+            "name": "Louis-H\u00e9bert", 
+            "slug": "louis-hebert"
+        }
+    }, 
+    {
+        "pk": 24038, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24038, 
+            "name": "Louis-Saint-Laurent", 
+            "slug": "louis-saint-laurent"
+        }
+    }, 
+    {
+        "pk": 70161, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "L\u00e9vis", 
+            "slug": "levis"
+        }
+    }, 
+    {
+        "pk": 24034, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24034, 
+            "name": "L\u00e9vis--Bellechasse", 
+            "slug": "levis-bellechasse"
+        }
+    }, 
+    {
+        "pk": 70130, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "L\u00e9vis-Et-Chutes-De-La-Chaudi\u00e8re", 
+            "slug": "levis-et-chutes-de-la-chaudiere"
+        }
+    }, 
+    {
+        "pk": 24039, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24039, 
+            "name": "Manicouagan", 
+            "slug": "manicouagan"
+        }
+    }, 
+    {
+        "pk": 24040, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24040, 
+            "name": "Marc-Aur\u00e8le-Fortin", 
+            "slug": "marc-aurele-fortin"
+        }
+    }, 
+    {
+        "pk": 70029, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Matap\u00e9dia--Matane", 
+            "slug": "matapedia-matane"
+        }
+    }, 
+    {
+        "pk": 70132, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Mercier", 
+            "slug": "mercier"
+        }
+    }, 
+    {
+        "pk": 24043, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24043, 
+            "name": "Montcalm", 
+            "slug": "montcalm"
+        }
+    }, 
+    {
+        "pk": 24058, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24058, 
+            "name": "Montmagny--L'Islet--Kamouraska--Rivi\u00e8re-du-Loup", 
+            "slug": "montmagny-l-islet-kamouraska-riviere-du-loup"
+        }
+    }, 
+    {
+        "pk": 24014, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24014, 
+            "name": "Montmorency--Charlevoix--Haute-C\u00f4te-Nord", 
+            "slug": "montmorency-charlevoix-haute-cote-nord"
+        }
+    }, 
+    {
+        "pk": 24044, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24044, 
+            "name": "Mount Royal", 
+            "slug": "mount-royal"
+        }
+    }, 
+    {
+        "pk": 70243, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "M\u00e9gantic--Compton--Stanstead", 
+            "slug": "megantic-compton-stanstead"
+        }
+    }, 
+    {
+        "pk": 24042, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24042, 
+            "name": "M\u00e9gantic--L'\u00c9rable", 
+            "slug": "megantic-l-erable"
+        }
+    }, 
+    {
+        "pk": 70244, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Notre-Dame-De-Gr\u00e2ce", 
+            "slug": "notre-dame-de-grace"
+        }
+    }, 
+    {
+        "pk": 24045, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24045, 
+            "name": "Notre-Dame-de-Gr\u00e2ce--Lachine", 
+            "slug": "notre-dame-de-grace-lachine"
+        }
+    }, 
+    {
+        "pk": 70030, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Nunavik--Eeyou", 
+            "slug": "nunavik-eeyou"
+        }
+    }, 
+    {
+        "pk": 24047, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24047, 
+            "name": "Outremont", 
+            "slug": "outremont"
+        }
+    }, 
+    {
+        "pk": 24048, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24048, 
+            "name": "Papineau", 
+            "slug": "papineau"
+        }
+    }, 
+    {
+        "pk": 70133, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Papineau--Saint-Denis", 
+            "slug": "papineau-saint-denis"
+        }
+    }, 
+    {
+        "pk": 70245, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Papineau--Saint-Michel", 
+            "slug": "papineau-saint-michel"
+        }
+    }, 
+    {
+        "pk": 24049, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24049, 
+            "name": "Pierrefonds--Dollard", 
+            "slug": "pierrefonds-dollard"
+        }
+    }, 
+    {
+        "pk": 24050, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24050, 
+            "name": "Pontiac", 
+            "slug": "pontiac"
+        }
+    }, 
+    {
+        "pk": 70134, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Pontiac--Gatineau--Labelle", 
+            "slug": "pontiac-gatineau-labelle"
+        }
+    }, 
+    {
+        "pk": 70031, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Portneuf", 
+            "slug": "portneuf"
+        }
+    }, 
+    {
+        "pk": 24051, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24051, 
+            "name": "Portneuf--Jacques-Cartier", 
+            "slug": "portneuf-jacques-cartier"
+        }
+    }, 
+    {
+        "pk": 24052, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24052, 
+            "name": "Qu\u00e9bec", 
+            "slug": "quebec"
+        }
+    }, 
+    {
+        "pk": 70135, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Qu\u00e9bec East", 
+            "slug": "quebec-east"
+        }
+    }, 
+    {
+        "pk": 70246, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Qu\u00e9bec-Est", 
+            "slug": "quebec-est"
+        }
+    }, 
+    {
+        "pk": 24053, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24053, 
+            "name": "Repentigny", 
+            "slug": "repentigny"
+        }
+    }, 
+    {
+        "pk": 70032, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Richelieu", 
+            "slug": "richelieu"
+        }
+    }, 
+    {
+        "pk": 24055, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24055, 
+            "name": "Richmond--Arthabaska", 
+            "slug": "richmond-arthabaska"
+        }
+    }, 
+    {
+        "pk": 70247, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Richmond--Wolfe", 
+            "slug": "richmond-wolfe"
+        }
+    }, 
+    {
+        "pk": 70163, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Rimouski--Mitis", 
+            "slug": "rimouski-mitis"
+        }
+    }, 
+    {
+        "pk": 70033, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Rimouski--T\u00e9miscouata", 
+            "slug": "rimouski-temiscouata"
+        }
+    }, 
+    {
+        "pk": 24056, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24056, 
+            "name": "Rimouski-Neigette--T\u00e9miscouata--Les Basques", 
+            "slug": "rimouski-neigette-temiscouata-les-basques"
+        }
+    }, 
+    {
+        "pk": 70136, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Rimouski-Neigette-Et-La Mitis", 
+            "slug": "rimouski-neigette-et-la-mitis"
+        }
+    }, 
+    {
+        "pk": 70034, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Rivi\u00e8re-Du-Loup--Montmagny", 
+            "slug": "riviere-du-loup-montmagny"
+        }
+    }, 
+    {
+        "pk": 24057, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24057, 
+            "name": "Rivi\u00e8re-des-Mille-\u00celes", 
+            "slug": "riviere-des-mille-iles"
+        }
+    }, 
+    {
+        "pk": 24059, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24059, 
+            "name": "Rivi\u00e8re-du-Nord", 
+            "slug": "riviere-du-nord"
+        }
+    }, 
+    {
+        "pk": 70035, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Roberval", 
+            "slug": "roberval"
+        }
+    }, 
+    {
+        "pk": 24060, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24060, 
+            "name": "Roberval--Lac-Saint-Jean", 
+            "slug": "roberval-lac-saint-jean"
+        }
+    }, 
+    {
+        "pk": 70164, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Rosemont", 
+            "slug": "rosemont"
+        }
+    }, 
+    {
+        "pk": 24061, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24061, 
+            "name": "Rosemont--La Petite-Patrie", 
+            "slug": "rosemont-la-petite-patrie"
+        }
+    }, 
+    {
+        "pk": 70137, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Rosemont--Petite-Patrie", 
+            "slug": "rosemont-petite-patrie"
+        }
+    }, 
+    {
+        "pk": 24062, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24062, 
+            "name": "Saint-Bruno--Saint-Hubert", 
+            "slug": "saint-bruno-saint-hubert"
+        }
+    }, 
+    {
+        "pk": 70248, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Saint-Denis", 
+            "slug": "saint-denis"
+        }
+    }, 
+    {
+        "pk": 70165, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Saint-Eustache--Sainte-Th\u00e9r\u00e8se", 
+            "slug": "saint-eustache-sainte-therese"
+        }
+    }, 
+    {
+        "pk": 70249, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Saint-Henri--Westmount", 
+            "slug": "saint-henri-westmount"
+        }
+    }, 
+    {
+        "pk": 70250, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Saint-Hubert", 
+            "slug": "saint-hubert"
+        }
+    }, 
+    {
+        "pk": 24063, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24063, 
+            "name": "Saint-Hyacinthe--Bagot", 
+            "slug": "saint-hyacinthe-bagot"
+        }
+    }, 
+    {
+        "pk": 24064, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24064, 
+            "name": "Saint-Jean", 
+            "slug": "saint-jean"
+        }
+    }, 
+    {
+        "pk": 24065, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24065, 
+            "name": "Saint-Lambert", 
+            "slug": "saint-lambert"
+        }
+    }, 
+    {
+        "pk": 24066, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24066, 
+            "name": "Saint-Laurent--Cartierville", 
+            "slug": "saint-laurent-cartierville"
+        }
+    }, 
+    {
+        "pk": 70251, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Saint-L\u00e9onard", 
+            "slug": "saint-leonard"
+        }
+    }, 
+    {
+        "pk": 24067, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24067, 
+            "name": "Saint-L\u00e9onard--Saint-Michel", 
+            "slug": "saint-leonard-saint-michel"
+        }
+    }, 
+    {
+        "pk": 70138, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Saint-Maurice", 
+            "slug": "saint-maurice"
+        }
+    }, 
+    {
+        "pk": 24068, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24068, 
+            "name": "Saint-Maurice--Champlain", 
+            "slug": "saint-maurice-champlain"
+        }
+    }, 
+    {
+        "pk": 24069, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24069, 
+            "name": "Shefford", 
+            "slug": "shefford"
+        }
+    }, 
+    {
+        "pk": 24070, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24070, 
+            "name": "Sherbrooke", 
+            "slug": "sherbrooke"
+        }
+    }, 
+    {
+        "pk": 70252, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Terrebonne", 
+            "slug": "terrebonne"
+        }
+    }, 
+    {
+        "pk": 24071, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24071, 
+            "name": "Terrebonne--Blainville", 
+            "slug": "terrebonne-blainville"
+        }
+    }, 
+    {
+        "pk": 24072, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24072, 
+            "name": "Trois-Rivi\u00e8res", 
+            "slug": "trois-rivieres"
+        }
+    }, 
+    {
+        "pk": 70139, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "T\u00e9miscamingue", 
+            "slug": "temiscamingue"
+        }
+    }, 
+    {
+        "pk": 70253, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Vaudreuil", 
+            "slug": "vaudreuil"
+        }
+    }, 
+    {
+        "pk": 24073, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24073, 
+            "name": "Vaudreuil-Soulanges", 
+            "slug": "vaudreuil-soulanges"
+        }
+    }, 
+    {
+        "pk": 70166, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Verch\u00e8res", 
+            "slug": "vercheres"
+        }
+    }, 
+    {
+        "pk": 24074, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24074, 
+            "name": "Verch\u00e8res--Les Patriotes", 
+            "slug": "vercheres-les-patriotes"
+        }
+    }, 
+    {
+        "pk": 70167, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Verdun--Saint-Henri", 
+            "slug": "verdun-saint-henri"
+        }
+    }, 
+    {
+        "pk": 70140, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Verdun--Saint-Henri--Saint-Paul--Pointe Saint-Charles", 
+            "slug": "verdun-saint-henri-saint-paul-pointe-saint-charles"
+        }
+    }, 
+    {
+        "pk": 70254, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": null, 
+            "name": "Verdun--Saint-Paul", 
+            "slug": "verdun-saint-paul"
+        }
+    }, 
+    {
+        "pk": 24075, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "QC", 
+            "edid": 24075, 
+            "name": "Westmount--Ville-Marie", 
+            "slug": "westmount-ville-marie"
+        }
+    }, 
+    {
+        "pk": 47001, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": 47001, 
+            "name": "Battlefords--Lloydminster", 
+            "slug": "battlefords-lloydminster"
+        }
+    }, 
+    {
+        "pk": 47002, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": 47002, 
+            "name": "Blackstrap", 
+            "slug": "blackstrap"
+        }
+    }, 
+    {
+        "pk": 70036, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": null, 
+            "name": "Churchill River", 
+            "slug": "churchill-river"
+        }
+    }, 
+    {
+        "pk": 47004, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": 47004, 
+            "name": "Cypress Hills--Grasslands", 
+            "slug": "cypress-hills-grasslands"
+        }
+    }, 
+    {
+        "pk": 47003, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": 47003, 
+            "name": "Desneth\u00e9--Missinippi--Churchill River", 
+            "slug": "desnethe-missinippi-churchill-river"
+        }
+    }, 
+    {
+        "pk": 70255, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": null, 
+            "name": "Kindersley--Lloydminster", 
+            "slug": "kindersley-lloydminster"
+        }
+    }, 
+    {
+        "pk": 70256, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": null, 
+            "name": "Mackenzie", 
+            "slug": "mackenzie"
+        }
+    }, 
+    {
+        "pk": 70257, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": null, 
+            "name": "Moose Jaw--Lake Centre", 
+            "slug": "moose-jaw-lake-centre"
+        }
+    }, 
+    {
+        "pk": 47005, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": 47005, 
+            "name": "Palliser", 
+            "slug": "palliser"
+        }
+    }, 
+    {
+        "pk": 47006, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": 47006, 
+            "name": "Prince Albert", 
+            "slug": "prince-albert"
+        }
+    }, 
+    {
+        "pk": 70258, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": null, 
+            "name": "Prince Albert--Churchill River", 
+            "slug": "prince-albert-churchill-river"
+        }
+    }, 
+    {
+        "pk": 70168, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": null, 
+            "name": "Qu'Appelle", 
+            "slug": "qu-appelle"
+        }
+    }, 
+    {
+        "pk": 70259, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": null, 
+            "name": "Regina--Lumsden", 
+            "slug": "regina-lumsden"
+        }
+    }, 
+    {
+        "pk": 47007, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": 47007, 
+            "name": "Regina--Lumsden--Lake Centre", 
+            "slug": "regina-lumsden-lake-centre"
+        }
+    }, 
+    {
+        "pk": 47008, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": 47008, 
+            "name": "Regina--Qu'Appelle", 
+            "slug": "regina-qu-appelle"
+        }
+    }, 
+    {
+        "pk": 70260, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": null, 
+            "name": "Regina--Wascana", 
+            "slug": "regina-wascana"
+        }
+    }, 
+    {
+        "pk": 70261, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": null, 
+            "name": "Saskatoon--Clark's Crossing", 
+            "slug": "saskatoon-clark-s-crossing"
+        }
+    }, 
+    {
+        "pk": 70262, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": null, 
+            "name": "Saskatoon--Dundurn", 
+            "slug": "saskatoon-dundurn"
+        }
+    }, 
+    {
+        "pk": 47009, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": 47009, 
+            "name": "Saskatoon--Humboldt", 
+            "slug": "saskatoon-humboldt"
+        }
+    }, 
+    {
+        "pk": 47010, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": 47010, 
+            "name": "Saskatoon--Rosetown--Biggar", 
+            "slug": "saskatoon-rosetown-biggar"
+        }
+    }, 
+    {
+        "pk": 47011, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": 47011, 
+            "name": "Saskatoon--Wanuskewin", 
+            "slug": "saskatoon-wanuskewin"
+        }
+    }, 
+    {
+        "pk": 47012, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": 47012, 
+            "name": "Souris--Moose Mountain", 
+            "slug": "souris-moose-mountain"
+        }
+    }, 
+    {
+        "pk": 70263, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": null, 
+            "name": "Swift Current--Maple Creek--Assiniboia", 
+            "slug": "swift-current-maple-creek-assiniboia"
+        }
+    }, 
+    {
+        "pk": 70264, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": null, 
+            "name": "The Battlefords--Meadow Lake", 
+            "slug": "the-battlefords-meadow-lake"
+        }
+    }, 
+    {
+        "pk": 70169, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": null, 
+            "name": "Wanuskewin", 
+            "slug": "wanuskewin"
+        }
+    }, 
+    {
+        "pk": 47013, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": 47013, 
+            "name": "Wascana", 
+            "slug": "wascana"
+        }
+    }, 
+    {
+        "pk": 47014, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "SK", 
+            "edid": 47014, 
+            "name": "Yorkton--Melville", 
+            "slug": "yorkton-melville"
+        }
+    }, 
+    {
+        "pk": 60001, 
+        "model": "core.riding", 
+        "fields": {
+            "province": "YT", 
+            "edid": 60001, 
+            "name": "Yukon", 
+            "slug": "yukon"
+        }
+    }
+]
