@@ -35,7 +35,7 @@
 
 {% endblock content %}
 </div><div class="clear"></div></div>
-<div id="footer">{% block footer %}<p><a href="/about/">Only somewhat copyright</a> 2010 openparliament.ca. {% block footerextra %}{% endblock %} Questions, suggestions, complaints, epic poetry? <a class="maillink">E-mail</a>, or our <a href="http://openparliament.uservoice.com/" class="feedback">feedback forum</a>.</p>{% endblock footer %}</div>
+<div id="footer">{% block footer %}<p><a href="/about/">Only somewhat copyright</a> {% now "Y" %} openparliament.ca. {% block footerextra %}{% endblock %} Questions, suggestions, complaints, epic poetry? <a class="maillink">E-mail</a>, or our <a href="http://openparliament.uservoice.com/" class="feedback">feedback forum</a>.</p>{% endblock footer %}</div>
 <!--[if IE 6]>
 <script type="text/javascript">var IE6UPDATE_OPTIONS = {
     icons_path: "{{ MEDIA_URL }}ie6update/images/"
