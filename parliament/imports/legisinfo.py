@@ -121,7 +121,7 @@ def update_bill_status(bill):
     bill.save()
     
 def update_statuses_for_session(session, private_members_also=True):
-    print "Updating statuses for %s" % session
+    #print "Updating statuses for %s" % session
     bills = Bill.objects.filter(sessions=session).exclude(law=True).exclude(number_only=1)
     if not private_members_also:
         bills = bills.exclude(privatemember=True)

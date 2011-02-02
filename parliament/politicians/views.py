@@ -26,17 +26,15 @@ def current_mps(request):
         extra_context={'title': 'Current Members of Parliament'})
         
 def former_mps(request):
-    former_members = ElectedMember.objects.all()\
+    former_members = ElectedMember.objects.exclude(end_date__isnull=True)\
         .order_by('riding__province', 'politician__name_family', '-start_date')\
         .select_related('politician', 'riding', 'party')
     seen = set()
     object_list = []
     for member in former_members:
-        if member.politician.id not in seen:
-            if member.end_date:
-                # Not a current MP
-                object_list.append(member)
-            seen.add(member.politician.id)
+        if member.politician_id not in seen:
+            object_list.append(member)
+            seen.add(member.politician_id)
     
     c = RequestContext(request, {
         'object_list': object_list,
@@ -53,7 +51,8 @@ def politician(request, pol_id=None, pol_slug=None):
         if pol.slug:
             return HttpResponsePermanentRedirect(pol.get_absolute_url())
     
-    show_statements = bool('page' in request.GET or not pol.latest_member.current)
+    show_statements = bool('page' in request.GET or 
+        (pol.latest_member and not pol.latest_member.current))
     
     if show_statements:
         STATEMENTS_PER_PAGE = 10
