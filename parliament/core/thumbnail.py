@@ -1,6 +1,4 @@
 
-import pdb
-
 def crop_first(image, requested_size, opts):
     if 'crop_first' in opts:
         (t, r, b, l) = (int(x) for x in opts['crop_first'].split(','))

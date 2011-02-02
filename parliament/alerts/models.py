@@ -28,3 +28,7 @@ class PoliticianAlert(models.Model):
     @models.permalink
     def get_unsubscribe_url(self):
         return ('parliament.alerts.views.unsubscribe', [], {'alert_id': self.id, 'key': self.get_key()})
+    
+    def __unicode__(self):
+        return u"%s for %s (%s)" % \
+            (self.email, self.politician.name, 'active' if self.active else 'inactive')
