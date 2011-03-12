@@ -2,6 +2,7 @@ from piston.handler import BaseHandler
 from piston.resource import Resource
 from piston.utils import rc, throttle
 
+from parliament.core.models import Politician
 from parliament.hansards.models import Hansard
 from django.core import urlresolvers
 
@@ -26,6 +27,24 @@ class HansardListHandler(BaseHandler):
         
     def read(self, request):
         return Hansard.objects.all()
+        
+class PoliticianHandler(BaseHandler):
+    allowed_methods = ('GET',)
+    fields = ('id', 'gender', 'url', 'info_multivalued', 
+        ('electedmember_set', ('start_date', 'end_date', 
+            ('riding', ('name', 'edid')),
+            ('party', ('name', 'id')))))
+    model = Politician
+    
+    def read(self, request, politician_id=None, callback_id=None):
+        try:
+            if politician_id:
+                return Politician.objects.get(pk=politician_id)
+            elif callback_id:
+                return Politician.objects.get_by_parl_id(callback_id)
+        except Politician.DoesNotExist as e:
+            return rc.NOT_FOUND
 
 hansard_resource = Resource(HansardHandler)
 hansardlist_resource = Resource(HansardListHandler)
+politician_resource = Resource(PoliticianHandler)

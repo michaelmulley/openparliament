@@ -214,10 +214,10 @@ class PoliticianManager(models.Manager):
         except PoliticianInfo.DoesNotExist:
             if not lookOnline:
                 return None # FIXME inconsistent behaviour: when should we return None vs. exception?
-            print "Unknown parlid %d... " % parlid,
+            #print "Unknown parlid %d... " % parlid,
             soup = BeautifulSoup(urllib2.urlopen(POL_LOOKUP_URL % parlid))
             if soup.find('table', id='MasterPage_BodyContent_PageContent_PageContent_pnlError'):
-                print "Error page for parlid %d" % parlid
+                #print "Error page for parlid %d" % parlid
                 raise Politician.DoesNotExist("Invalid page for parlid %s" % parlid)
             polname = soup.find('span', id='MasterPage_MasterPage_BodyContent_PageContent_Content_TombstoneContent_TombstoneContent_ucHeaderMP_lblMPNameData').string
             polriding = soup.find('a', id='MasterPage_MasterPage_BodyContent_PageContent_Content_TombstoneContent_TombstoneContent_ucHeaderMP_hlConstituencyProfile').string
@@ -231,7 +231,7 @@ class PoliticianManager(models.Manager):
                 pol = self.get_by_name(name=polname, session=session, riding=riding)
             else:
                 pol = self.get_by_name(name=polname, riding=riding)
-            print "found %s." % pol
+            #print "found %s." % pol
             pol.save_parl_id(parlid)
             polid = pol.id
             if parlinfolink:
@@ -317,6 +317,11 @@ class Politician(Person):
             return ('parliament.politicians.views.politician', [], {'pol_slug': self.slug})
         return ('parliament.politicians.views.politician', [], {'pol_id': self.id})
         
+    # temporary, hackish, for stupid api framework
+    @property
+    def url(self):
+        return "http://openparliament.ca" + self.get_absolute_url()
+        
     @models.permalink
     def get_contact_url(self):
         if self.slug:
@@ -375,7 +380,7 @@ class PoliticianInfo(models.Model):
     """Key-value store for attributes of a Politician."""
     politician = models.ForeignKey(Politician)
     schema = models.CharField(max_length=40, db_index=True)
-    value = models.CharField(max_length=500)
+    value = models.TextField()
     
     objects = models.Manager()
     sr_objects = PoliticianInfoManager()
