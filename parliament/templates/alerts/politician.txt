@@ -1,4 +1,4 @@
-{% autoescape off %}Here's what {{ alert.politician.name }} had to say in the House of Commons.
+{% autoescape off %}{% filter wordwrap:76 %}Here's what {{ alert.politician.name }} had to say in the House of Commons.
 
 {% for statement in statements %}
 {{ statement.time|date:"F jS, P" }}
@@ -6,7 +6,7 @@
 http://openparliament.ca{{ statement.get_absolute_url }}
 ----------------------------------------------------------
 
-{{ statement.text_plain|wordwrap:78 }}
+{{ statement.text_plain }}
 
 {% endfor %}
 
@@ -19,4 +19,4 @@ http://openparliament.ca{{ alert.get_unsubscribe_url }}
 
 love,
 openparliament.ca
-{% endautoescape %}
+{% endfilter %}{% endautoescape %}
