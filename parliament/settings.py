@@ -132,6 +132,49 @@ SOUTH_TESTS_MIGRATE = False
 TEST_RUNNER = 'parliament.core.test_utils.TestSuiteRunner'
 TEST_APP_PREFIX = 'parliament'
 
+LOGGING = {
+    'version': 1,
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+        },
+        'simple': {
+            'format': '%(module)s %(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'null': {
+            'level':'DEBUG',
+            'class':'django.utils.log.NullHandler',
+        },
+        'console':{
+            'level':'DEBUG',
+            'class':'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers':['null'],
+            'propagate': True,
+            'level':'INFO',
+        },
+        'django.request': {
+            'handlers': ['mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'parliament': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        }
+    },
+}
+
 from settings_local import *
 
 if 'EXTRA_APPS' in globals():

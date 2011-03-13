@@ -18,6 +18,10 @@ def twitter():
     twit.save_tweets()
     return True
     
+def twitter_ids():
+    from parliament.imports import politwitter
+    politwitter.import_twitter_ids()
+    
 def googlenews():
     for pol in Politician.objects.current():
         gnews.save_politician_news(pol)
