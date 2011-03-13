@@ -179,8 +179,8 @@ class VoteQuestion(models.Model):
         return ('parliament.bills.views.vote', [self.id])
 
 VOTE_CHOICES = [
-    ('Y', 'Yea'),
-    ('N', 'Nay'),
+    ('Y', 'Yes'),
+    ('N', 'No'),
     ('P', 'Paired'),
     ('A', "Didn't vote"),
 ]
