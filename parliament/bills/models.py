@@ -84,7 +84,7 @@ class Bill(models.Model):
         
     @models.permalink
     def get_absolute_url(self):
-        return ('parliament.bills.views.bill', [self.id])
+        return ('parliament.bills.views.bill_pk_redirect', [self.id])
         
     def get_legisinfo_billtext_url(self):
         return self.legisinfo_url.replace('List=toc', 'List=toc-1')

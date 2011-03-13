@@ -160,7 +160,7 @@ r_statement_affil = re.compile(r'<(bill|pol) id="(\d+)" name="(.+?)">(.+?)</\1>'
 def statement_affil_link(match):
     if match.group(1) == 'bill':
         # FIXME hardcode url for speed?
-        view = 'parliament.bills.views.bill'
+        view = 'parliament.bills.views.bill_pk_redirect'
     else:
         view = 'parliament.politicians.views.politician'
     return '<a href="%s" class="related_link" title="%s">%s</a>' % (urlresolvers.reverse(view, args=(match.group(2),)), match.group(3), match.group(4))

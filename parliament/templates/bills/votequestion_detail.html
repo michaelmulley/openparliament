@@ -10,7 +10,7 @@
 
 {% block content %}
 {% if vote.bill %}<div class="clear"></div><div class="context"><h2>Bill</h2></div>
-<div class="focus"><p><a href="{% url parliament.bills.views.bill bill_id=vote.bill.id %}">{{ vote.bill.number }}</a> {{ vote.bill.name }}</p></div>{% endif %}
+<div class="focus"><p><a href="{{ vote.bill.get_absolute_url }}">{{ vote.bill.number }}</a> {{ vote.bill.name }}</p></div>{% endif %}
 <div class="clear"></div><div class="context"><h2>Vote topic</h2></div>
 <div class="focus">{{ vote.description|markdown }}</p></div>
 <div class="clear"></div><div class="context"><h2>Result</h2></div>

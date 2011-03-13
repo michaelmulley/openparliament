@@ -1,21 +1,29 @@
 import datetime
+import re
 
-from django.template import Context, loader, RequestContext
-from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.contrib.syndication.views import Feed
-from django.shortcuts import get_object_or_404
-from django.views.generic.list_detail import object_list, object_detail
+from django.core import urlresolvers
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from django.contrib.syndication.views import Feed
+from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
+from django.shortcuts import get_object_or_404
+from django.template import Context, loader, RequestContext
 from django.template.defaultfilters import date as format_date
+from django.views.generic.list_detail import object_list, object_detail
+
 
 from parliament.bills.models import Bill, VoteQuestion, MemberVote
 from parliament.core.models import Session
 from parliament.hansards.models import Statement
 
-def bill(request, bill_id):
-    PER_PAGE = 10
+def bill_pk_redirect(request, bill_id):
     bill = get_object_or_404(Bill, pk=bill_id)
+    return HttpResponsePermanentRedirect(
+        urlresolvers.reverse('parliament.bills.views.bill', kwargs={
+        'session_id': bill.get_session().id, 'bill_number': bill.number}))
+
+def bill(request, session_id, bill_number):
+    PER_PAGE = 10
+    bill = get_object_or_404(Bill, sessions=session_id, number=bill_number)
     statements = bill.statement_set.all().order_by('-time', '-sequence').select_related('member', 'member__politician', 'member__riding', 'member__party')
     paginator = Paginator(statements, PER_PAGE)
 

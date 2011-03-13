@@ -32,7 +32,7 @@ class PartyOptions(admin.ModelAdmin):
     
 class PoliticianInfoOptions(admin.ModelAdmin):
     list_display = ('politician', 'schema', 'value')
-    search_fields = ('politician__name', 'schema')
+    search_fields = ('politician__name', 'schema', 'value')
     
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "politician":
