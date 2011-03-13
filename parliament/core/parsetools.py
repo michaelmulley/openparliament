@@ -97,13 +97,12 @@ def munge_postcode (code):
     return None
     
 def none_to_empty(s):
-    if s is None:
-        return ''
-    else:
-        return s
+    return s if s is not None else ''
     
 def etree_extract_text(elem):
     text = ''
     for x in elem.getiterator():
-        text += none_to_empty(x.text) + none_to_empty(x.tail)
+        if text and x.tag in ('Para', 'P', 'p'):
+            text += "\n\n"
+        text += (none_to_empty(x.text) + none_to_empty(x.tail)).replace("\n", ' ')
     return text
