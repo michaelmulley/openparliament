@@ -46,7 +46,7 @@ def index(request):
     sessions = Session.objects.with_bills()
     len(sessions) # evaluate it
     bills = Bill.objects.filter(sessions=sessions[0])
-    votes = VoteQuestion.objects.filter(session=sessions[0])[:6]
+    votes = VoteQuestion.objects.select_related('bill').filter(session=sessions[0])[:6]
 
     return object_list(request,
         queryset=bills,
@@ -60,7 +60,7 @@ def index(request):
 def bills_for_session(request, session_id):
     session = get_object_or_404(Session, pk=session_id)
     bills = Bill.objects.filter(sessions=session)
-    votes = VoteQuestion.objects.filter(session=session)[:6]
+    votes = VoteQuestion.objects.select_related('bill').filter(session=session)[:6]
 
     return object_list(request,
         queryset=bills,
@@ -72,7 +72,7 @@ def bills_for_session(request, session_id):
 def votes_for_session(request, session_id):
     session = get_object_or_404(Session, pk=session_id)
     return object_list(request,
-        queryset=VoteQuestion.objects.filter(session=session),
+        queryset=VoteQuestion.objects.select_related(depth=1).filter(session=session),
         extra_context={'session': session, 'title': 'Votes for the %s' % session})
         
 def vote(request, vote_id):

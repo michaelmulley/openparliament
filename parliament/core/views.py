@@ -4,8 +4,9 @@ from django.contrib.markup.templatetags.markup import markdown
 from django.contrib.syndication.views import Feed
 from django.views.decorators.cache import never_cache
 
+from parliament.bills.models import VoteQuestion
 from parliament.hansards.models import Hansard
-from parliament.core.models import SiteNews
+from parliament.core.models import Session, SiteNews
 
 def home(request):
     
@@ -13,6 +14,8 @@ def home(request):
     c = RequestContext(request, {
         'latest_hansard': Hansard.objects.all()[0],
         'sitenews': SiteNews.objects.filter(active=True)[:6],
+        'votes': VoteQuestion.objects.filter(session=Session.objects.current())\
+            .select_related('bill')[:6],
     })
     return HttpResponse(t.render(c))
     
