@@ -29,8 +29,10 @@ def import_twitter_ids():
                 pol.set_info('twitter', new)
                 
 def update_twitter_list():
-    t = twitter.Twitter(auth=twitter.OAuth(**settings.TWITTER_OAUTH))
-    current_names = set(PoliticianInfo.objects.filter(schema='twitter').values_list('value', flat=True))
+    from twitter import twitter_globals
+    twitter_globals.POST_ACTIONS.append('create_all')
+    t = twitter.Twitter(auth=twitter.OAuth(**settings.TWITTER_OAUTH), domain='api.twitter.com/1')
+    current_names = set(PoliticianInfo.objects.exclude(value='').filter(schema='twitter').values_list('value', flat=True))
     list_names= set()
     cursor = -1
     while cursor:
@@ -45,7 +47,7 @@ def update_twitter_list():
         logger.error("Users on list, not in DB: %r" % not_in_db)
     
     not_on_list = (current_names - list_names)
-    t.user.listname.create_all(settings.TWITTER_USER_NAME, listname=settings.TWITTER_LIST_NAME,
+    t.user.listname.members.create_all(user=settings.TWITTER_USERNAME, listname=settings.TWITTER_LIST_NAME,
         screen_name=','.join(not_on_list))
     logger.warning("Users added to Twitter list: %r" % not_on_list)
         
