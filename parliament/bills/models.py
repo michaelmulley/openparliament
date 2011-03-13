@@ -11,6 +11,7 @@ from parliament.core.utils import memoize_property
 
 
 CALLBACK_URL = 'http://www2.parl.gc.ca/HousePublications/GetWebOptionsCallBack.aspx?SourceSystem=PRISM&ResourceType=Document&ResourceID=%d&language=1&DisplayMode=2'
+BILL_VOTES_URL = 'http://www2.parl.gc.ca/Housebills/BillVotes.aspx?Language=E&Parl=%s&Ses=%s&Bill=%s'
 class BillManager(models.Manager):
     
     def get_by_callback_id(self, callback):
@@ -22,38 +23,48 @@ class BillManager(models.Manager):
             return self.get_query_set().get(pk=xref.target_id)
         except InternalXref.DoesNotExist:
             pass
+            
         callpage = urllib2.urlopen(CALLBACK_URL % callback)
-        match = re.search(r"href='/HousePublications/Redirector\.aspx\?RedirectUrl=([^'>]+)'>Bill Votes</A>", callpage.read())
+        
+        match = re.search(r'Parl=(\d+)&Ses=(\d)(?:&Bill=|#)([CS][0-9]+[A-Z]?)', callpage.read())
         if not match:
-            print "Couldn't find Bill Votes link in get_by_callback_id"
+            print "Couldn't find parseable link in get_by_callback_id"
             raise Bill.DoesNotExist()
-        votesurl = urllib.unquote(match.group(1))
-        votespage = urllib2.urlopen(votesurl)
-        match = re.search(r'Parl=(\d+)&Ses=(\d+)&Bill=C(\d+[A-Z]?)', votesurl)
-        if not match:
-            raise Bill.DoesNotExist("Couldn't parse Bill Votes link")
-        session = Session.objects.get(parliamentnum=match.group(1), sessnum=match.group(2))
-        billnum = 'C-%s' % match.group(3)
-        #match = re.search(r'([A-Z]+-\d+)\s+(.+)', votediv.string.strip())
-        #billnum, billname = match.group(1), match.group(2)
+        (parliamentnum, sessnum, billnum) = match.groups()
+        billnum = billnum[0] + '-' + billnum[1:] # we use the C-52 style, not C52\
+        session = Session.objects.get(parliamentnum=parliamentnum, sessnum=sessnum)
         try:
             bill = self.get_query_set().get(number=billnum, sessions=session)
         except Bill.DoesNotExist:
-            votesoup = BeautifulSoup(votespage.read())
-            votediv = votesoup.find('div', 'VotesBill')
-            billname = votediv.string.strip()
-            bill = Bill(name=billname, number=billnum)
+            # Let's see if we can get the bill name
+            billname = ''
+            if billnum[0] == 'C':
+                try:
+                    votespage = urllib2.urlopen(BILL_VOTES_URL %
+                        (parliamentnum, sessnum, billnum.replace('-', '')))
+                    votesoup = BeautifulSoup(votespage.read())
+                    votediv = votesoup.find('div', 'VotesBill')
+                    billname = votediv.string.strip()
+                except Exception as e:
+                    print e # FIXME logging
+            
+            bill = Bill(name=billname, number=billnum, institution=billnum[0])
             bill.session = session
             bill.save()
+        
         InternalXref(schema='bill_callbackid', int_value=callback, target_id=bill.id).save()
         return bill
         
 
 class Bill(models.Model):
     
-    name = models.CharField(max_length=500)
+    name = models.TextField(blank=True)
     number = models.CharField(max_length=10)
     number_only = models.SmallIntegerField()
+    institution = models.CharField(max_length=1, db_index=True, choices=(
+        ('C', 'House'),
+        ('S', 'Senate'),
+    ))
     sessions = models.ManyToManyField(Session)
     legisinfo_url = models.URLField(blank=True, null=True, verify_exists=False)
     privatemember = models.NullBooleanField()
@@ -66,7 +77,7 @@ class Bill(models.Model):
     objects = BillManager()
     
     class Meta:
-        ordering = ('number_only',)
+        ordering = ('privatemember', 'institution', 'number_only')
     
     def __unicode__(self):
         return "%s - %s" % (self.number, self.name)

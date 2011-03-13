@@ -4,7 +4,12 @@
 {% block breadcrumbs %}Bills{% endblock %}
 {% block headextra %}<link rel="alternate" type="application/rss+xml" title="New bills in the House" href="{% url bill_list_feed  %}">{% endblock headextra %}
 {% block content %}
-{% if session.has_votes %}<div class="focus"><p>Most votes in the House are related to a particular bill, and clicking a bill below will show you the relevant votes. But some votes aren't tied to a bill. The <a href="{% url parliament.bills.views.votes_for_session session_id=session.id %}">vote list</a> for this session includes all votes.</p></div>{% endif %}
+
+{% if votes %}
+<div class="context"><h2>{% if session_list %}Recent votes{% else %}Votes{% endif %}</h2></div>
+<div class="focus"><ul class="tile">{% for vote in votes %}<li class="six twoline overflowtip"><a href="{% url parliament.bills.views.vote vote_id=vote.id %}">#{{ vote.number }}</a> <span class="tag voteresult_{{ vote.result }}">{{ vote.get_result_display }}</span> {% if vote.bill %}<a href="{{ vote.bill.get_absolute_url }}">{{ vote.bill.number }}</a> {% endif %}{{ vote.description }}</li>{% endfor %}</ul><div class="clear"></div><p>See <a href="{% url parliament.bills.views.votes_for_session session_id=session.id %}">all votes</a> for this session.</p></div><div class="clear"></div>
+{% endif %}
+
 {% regroup object_list by privatemember as pmem %}
 {% for pm in pmem %}
 

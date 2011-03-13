@@ -26,10 +26,10 @@ def googlenews():
 def votes():
     parlvotes.import_votes()
     
-@transaction.commit_on_success
 def bills():
     legisinfo.import_bills(Session.objects.current())
-    return True
+    legisinfo.import_bills(Session.objects.current(), institution='S')
+    
     
 def billstatus(private_members_also=False):
     legisinfo.update_statuses_for_session(Session.objects.current(), private_members_also=private_members_also)

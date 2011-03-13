@@ -43,19 +43,31 @@ def bill(request, bill_id):
     return HttpResponse(t.render(c))
     
 def index(request):
-    sessions = Session.objects.with_bills().distinct()
+    sessions = Session.objects.with_bills()
     len(sessions) # evaluate it
+    bills = Bill.objects.filter(sessions=sessions[0])
+    votes = VoteQuestion.objects.filter(session=sessions[0])[:6]
+
     return object_list(request,
-        queryset=Bill.objects.filter(sessions=sessions[0]),
-        extra_context={'session_list': sessions, 'session': sessions[0], 'title': 'Bills & Votes'},
+        queryset=bills,
+        extra_context={
+            'session_list': sessions,
+            'votes': votes,
+            'session': sessions[0],
+            'title': 'Bills & Votes'},
         template_name='bills/index.html')
         
 def bills_for_session(request, session_id):
     session = get_object_or_404(Session, pk=session_id)
     bills = Bill.objects.filter(sessions=session)
+    votes = VoteQuestion.objects.filter(session=session)[:6]
+
     return object_list(request,
         queryset=bills,
-        extra_context={'session': session, 'title': 'Bills for the %s' % session})
+        extra_context={
+            'session': session,
+            'votes': votes,
+            'title': 'Bills for the %s' % session})
         
 def votes_for_session(request, session_id):
     session = get_object_or_404(Session, pk=session_id)

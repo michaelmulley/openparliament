@@ -10,102 +10,106 @@ from parliament.core.models import InternalXref, Politician, ElectedMember, Sess
 from parliament.bills.models import Bill
 from parliament.activity import utils as activity
 
-LEGISINFO_LIST_URL = 'http://www2.parl.gc.ca/Sites/LOP/LEGISINFO/index.asp?Language=E&List=list&Type=0&Chamber=C&StartList=2&EndList=2000&Session=%d'
+LEGISINFO_LIST_URL = 'http://www2.parl.gc.ca/Sites/LOP/LEGISINFO/index.asp?Language=E&List=list&Type=%s&Chamber=%s&StartList=2&EndList=2000&Session=%d'
 LEGISINFO_DETAIL_URL = 'http://www2.parl.gc.ca/Sites/LOP/LEGISINFO/index.asp?Language=E&Session=%d&query=%d&List=toc'
 
 
 @transaction.commit_on_success
-def import_bills(session):
+def import_bills(session, institution='C'):
     previous_session = Session.objects.filter(start__lt=session.start)\
         .order_by('-start')[0] # yes, this will raise an exception if there's no older session on record
     
     legis_sess = InternalXref.objects.get(text_value=session.id, schema='session_legisin').int_value
-    listurl = LEGISINFO_LIST_URL % legis_sess
-    listpage = urllib2.urlopen(listurl).read()
+    for billtype in [0,1,2,3]:
+        listurl = LEGISINFO_LIST_URL % (billtype, institution, legis_sess)
+        listpage = urllib2.urlopen(listurl).read()
     
-    r_listlink = re.compile(r'<a href="index\.asp\?Language=E&Session=\d+&query=(\d+)&List=toc">\s*(C-\d+[A-Z]?)\s*</a>', re.UNICODE)
-    for match in r_listlink.finditer(listpage):
-        legisinfoid = int(match.group(1))
-        billnumber_full = match.group(2)
-        try:
-            bill = Bill.objects.get(sessions=session, number=billnumber_full)
-        except Bill.DoesNotExist:
-            bill = None
-        
-        if not getattr(bill, 'legisinfo_url', None):
-            # Not yet in the database. Go parse.
-            detailurl = LEGISINFO_DETAIL_URL % (legis_sess, legisinfoid)
+        r_listlink = re.compile(r'<a href="index\.asp\?Language=E&Session=\d+&query=(\d+)&List=toc">\s*([CS]-\d+[A-Z]?)\s*</a>', re.UNICODE)
+        for match in r_listlink.finditer(listpage):
+            legisinfoid = int(match.group(1))
+            billnumber_full = match.group(2)
             try:
-                detailpage = urllib2.urlopen(detailurl).read().decode('windows-1252')
-            except urllib2.URLError, e:
-                print "ERROR: URLError on %s" % detailurl
-                print e
-                continue
-            match = re.search(r'<td>\s*(An [aA]ct.+?)<br', detailpage)
-            if not match:
-                soup = BeautifulSoup(detailpage)
+                bill = Bill.objects.get(sessions=session, number=billnumber_full)
+            except Bill.DoesNotExist:
+                bill = None
+        
+            if not getattr(bill, 'legisinfo_url', None):
+                # Not yet in the database. Go parse.
+                detailurl = LEGISINFO_DETAIL_URL % (legis_sess, legisinfoid)
                 try:
-                    billname = unicode(soup.find(text=billnumber_full).next.next.next)
-                    print "WARNING: soupmatching bill name as %s" % billname
-                except Exception, e:
-                    print "Couldn't parse bill name at %s" % detailurl
+                    detailpage = urllib2.urlopen(detailurl).read().decode('windows-1252')
+                except urllib2.URLError, e:
+                    print "ERROR: URLError on %s" % detailurl
                     print e
                     continue
-            else:
-                billname = match.group(1)[:500]
-            
-            # Is this a reintroduced bill?
-            merging = False
-            try:
-                mergebill = Bill.objects.get(sessions=previous_session, number=billnumber_full, name__iexact=billname)
-                if not bill:
-                    bill = mergebill
-                    merging = True
-                    print "MERGING BILL"
+                match = re.search(r'<td>\s*(An [aA]ct.+?)<br', detailpage)
+                if not match:
+                    soup = BeautifulSoup(detailpage)
+                    try:
+                        billname = unicode(soup.find(text=billnumber_full).next.next.next)
+                        print "WARNING: soupmatching bill name as %s" % billname
+                    except Exception, e:
+                        print "Couldn't parse bill name at %s" % detailurl
+                        print e
+                        continue
                 else:
-                    mail_admins('Bills may need to be merged', "%s: ids %s %s" % (billnumber_full, mergebill.id, bill.id))
-            except Bill.DoesNotExist:
-                # Nope. New bill.
-                if not bill:
-                    bill = Bill(number=billnumber_full, name=billname)
-                    bill.session = session
+                    billname = match.group(1)
             
-            if bill.session != session:
-                bill.sessions.add(session)
-            
-            bill.legisinfo_url = detailurl
-            
-            membermatch = re.search(r'<font color="#005500"><b><a href=.http://www2\.parl\.gc\.ca/parlinfo/Files/Parliamentarian\.aspx\?Item=([A-Z0-9-]+?)&.+?>(.+?)<', detailpage)
-            if membermatch:
+                # Is this a reintroduced bill?
+                merging = False
                 try:
-                    bill.sponsor_politician = Politician.objects.get_by_parlinfo_id(membermatch.group(1))
-                except models.ObjectDoesNotExist:
-                    membername = membermatch.group(2)
-                    membername = re.sub(r'\(.+?\)', '', membername) # parens
-                    membername = re.sub(r'.+ Hon\.', '', membername) # honorific
+                    mergebill = Bill.objects.get(sessions=previous_session, number=billnumber_full, name__iexact=billname)
+                    if not bill:
+                        bill = mergebill
+                        merging = True
+                        print "MERGING BILL"
+                    else:
+                        mail_admins('Bills may need to be merged', "%s: ids %s %s" % (billnumber_full, mergebill.id, bill.id))
+                except Bill.DoesNotExist:
+                    # Nope. New bill.
+                    if not bill:
+                        bill = Bill(number=billnumber_full, name=billname, institution=institution)
+                        bill.session = session
+            
+                if bill.session != session:
+                    bill.sessions.add(session)
+            
+                bill.legisinfo_url = detailurl
+                if billname and not bill.name:
+                    bill.name = billname
+            
+                membermatch = re.search(r'<font color="#005500"><b><a href=.http://www2\.parl\.gc\.ca/parlinfo/Files/Parliamentarian\.aspx\?Item=([A-Z0-9-]+?)&.+?>(.+?)<', detailpage)
+                if membermatch:
                     try:
-                        bill.sponsor_politician = Politician.objects.get_by_name(membername.strip(), session=session)
-                        bill.sponsor_politician.save_parlinfo_id(membermatch.group(1))
-                    except (Politician.DoesNotExist, Politician.MultipleObjectsReturned):
-                        print "WARNING: Could not identify politician for bill %s" % billnumber_full
-                if bill.sponsor_politician:
-                    try:
-                        bill.sponsor_member = ElectedMember.objects.get_by_pol(politician=bill.sponsor_politician,
-                            session=session)
-                    except:
-                        print "WARNING: Couldn't find member for politician %s" % bill.sponsor_politician
-            bill.save()
-            bill.save_sponsor_activity()
+                        bill.sponsor_politician = Politician.objects.get_by_parlinfo_id(membermatch.group(1))
+                    except models.ObjectDoesNotExist:
+                        membername = membermatch.group(2)
+                        membername = re.sub(r'\(.+?\)', '', membername) # parens
+                        membername = re.sub(r'.+ Hon\.', '', membername) # honorific
+                        try:
+                            bill.sponsor_politician = Politician.objects.get_by_name(membername.strip(), session=session)
+                            bill.sponsor_politician.save_parlinfo_id(membermatch.group(1))
+                        except (Politician.DoesNotExist, Politician.MultipleObjectsReturned):
+                            print "WARNING: Could not identify politician for bill %s" % billnumber_full
+                    if bill.sponsor_politician:
+                        try:
+                            bill.sponsor_member = ElectedMember.objects.get_by_pol(politician=bill.sponsor_politician,
+                                session=session)
+                        except:
+                            print "WARNING: Couldn't find member for politician %s" % bill.sponsor_politician
+                bill.save()
+                bill.save_sponsor_activity()
     return True
 
-LEGISINFO_STATUS_URL = 'http://www2.parl.gc.ca/Sites/LOP/LEGISINFO/RSSFeeds.asp?parlNumber=%(parliamentnum)s&session=%(sessnum)s&chamber=C&billNumber=%(billnum)s&billLetter=%(billletter)s&language=E'
+LEGISINFO_STATUS_URL = 'http://www2.parl.gc.ca/Sites/LOP/LEGISINFO/RSSFeeds.asp?parlNumber=%(parliamentnum)s&session=%(sessnum)s&chamber=%(chamber)s&billNumber=%(billnum)s&billLetter=%(billletter)s&language=E'
 
 def get_bill_feed(bill):
     return feedparser.parse(LEGISINFO_STATUS_URL % {
         'parliamentnum': bill.session.parliamentnum,
         'sessnum': bill.session.sessnum,
         'billnum': re.sub(r'\D', '', bill.number),
-        'billletter': re.sub(r'[^A-Z]', '', bill.number.replace('C-', '')),
+        'billletter': re.sub(r'[^A-Z]', '', bill.number[1:]),
+        'chamber': bill.number[0],
     })
 
 def update_bill_status(bill):
