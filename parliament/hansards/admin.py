@@ -2,12 +2,12 @@ from django.contrib import admin, databrowse
 
 from parliament.hansards.models import *
 
-class HansardOptions(admin.ModelAdmin):
+class DocumentOptions(admin.ModelAdmin):
     list_display=('number', 'date', 'session')
     list_filter=('session', 'date')
     
-admin.site.register(Hansard, HansardOptions)
+admin.site.register(Document, DocumentOptions)
 admin.site.register(Statement)
 
 databrowse.site.register(Statement)
-databrowse.site.register(Hansard)
+databrowse.site.register(Document)

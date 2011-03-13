@@ -11,14 +11,14 @@ from django.views import generic
 from django.views.decorators.vary import vary_on_headers
 
 from parliament.core.utils import get_twitter_share_url
-from parliament.hansards.models import Hansard, HansardCache, Statement
+from parliament.hansards.models import Document, HansardCache, Statement
 
 def _get_hansard(hansard_id, hansard_date):
     if hansard_id:
-        return get_object_or_404(Hansard, pk=hansard_id)
+        return get_object_or_404(Document, pk=hansard_id)
     elif hansard_date:
         try:
-            return Hansard.objects.get(date=datetime.date(*[int(x) for x in hansard_date.split('-')]))
+            return Document.objects.get(date=datetime.date(*[int(x) for x in hansard_date.split('-')]))
         except Exception:
             raise Http404
     else:
@@ -32,7 +32,7 @@ def hansard(request, hansard_id=None, hansard_date=None, statement_seq=None):
         
     hansard = _get_hansard(hansard_id, hansard_date)
     
-    statement_qs = Statement.objects.filter(hansard=hansard).select_related('member__politician', 'member__riding', 'member__party')
+    statement_qs = Statement.objects.filter(document=hansard).select_related('member__politician', 'member__riding', 'member__party')
     paginator = Paginator(statement_qs, PER_PAGE)
 
     highlight_statement = None
@@ -73,7 +73,7 @@ def hansard(request, hansard_id=None, hansard_date=None, statement_seq=None):
 def statement_twitter(request, hansard_id, statement_seq):
     """Redirects to a Twitter page, prepopulated with sharing info for a particular statement."""
     try:
-        statement = Statement.objects.get(hansard=hansard_id, sequence=statement_seq)
+        statement = Statement.objects.get(document=hansard_id, sequence=statement_seq)
     except Statement.DoesNotExist:
         raise Http404
         
@@ -91,7 +91,7 @@ def statement_permalink(request, statement_seq, hansard_id=None, hansard_date=No
     """A page displaying only a single statement. Used as a non-JS permalink."""
     
     hansard = _get_hansard(hansard_id, hansard_date)
-    statement = get_object_or_404(Statement, hansard=hansard, sequence=statement_seq)
+    statement = get_object_or_404(Statement, document=hansard, sequence=statement_seq)
     
     if statement.politician:
         who = statement.politician.name
@@ -114,19 +114,19 @@ def statement_permalink(request, statement_seq, hansard_id=None, hansard_date=No
     return HttpResponse(t.render(c))
     
 def hansardcache (request, hansard_id):
-    cache = HansardCache.objects.get(hansard=hansard_id)
+    cache = HansardCache.objects.get(document=hansard_id)
     return HttpResponse(cache.getHTML())
     
 def index(request):
     return generic.date_based.archive_index(request, 
-        queryset=Hansard.objects.all(), 
+        queryset=Document.objects.all(), 
         date_field='date',
         num_latest=17,
         extra_context={'title': 'The Debates of the House of Commons'})
         
 def by_year(request, year):
     return generic.date_based.archive_year(request,
-        queryset=Hansard.objects.all().order_by('date'),
+        queryset=Document.objects.all().order_by('date'),
         date_field='date',
         year=year,
         make_object_list=True,

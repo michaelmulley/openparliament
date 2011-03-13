@@ -116,6 +116,7 @@ INSTALLED_APPS = [
     'parliament.politicians',
     'parliament.activity',
     'parliament.alerts',
+    'parliament.committees',
 ]
 
 THUMBNAIL_SUBDIR = '_thumbs'

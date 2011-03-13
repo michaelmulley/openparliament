@@ -7,13 +7,14 @@ from django.views.decorators.cache import never_cache
 
 from parliament.core.models import Session, SiteNews
 from parliament.bills.models import VoteQuestion
-from parliament.hansards.models import Hansard
+from parliament.hansards.models import Document
+from parliament.core.models import Session, SiteNews
 
 def home(request):
     
     t = loader.get_template("home.html")
     c = RequestContext(request, {
-        'latest_hansard': Hansard.objects.all()[0],
+        'latest_hansard': Document.objects.all()[0],
         'sitenews': SiteNews.objects.filter(active=True)[:6],
         'votes': VoteQuestion.objects.filter(session=Session.objects.current())\
             .select_related('bill')[:6],

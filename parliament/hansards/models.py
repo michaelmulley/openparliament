@@ -15,28 +15,21 @@ from parliament.bills.models import Bill
 from parliament.core import parsetools, text_utils
 from parliament.core.utils import memoize_property
 from parliament.activity import utils as activity
-
-class HansardManager (models.Manager):
-    
-    def establishSequence(self):
-        seq = 0
-        for h in self.get_query_set().filter(date__isnull=False).order_by('date'):
-            h.sequence = seq
-            h.save()
-            seq += 1
             
-class Hansard(models.Model):
+class Document(models.Model):
+    document_type = models.CharField(max_length=1, db_index=True, choices=(
+        ('D', 'Debate'),
+        ('E', 'Committee Evidence'),
+    ))
     date = models.DateField(blank=True, null=True)
     number = models.CharField(max_length=6, blank=True) # there exist 'numbers' with letters
     url = models.URLField(verify_exists=False)
     session = models.ForeignKey(Session)
-    sequence = models.IntegerField(blank=True, null=True)
     
-    wordoftheday = models.CharField(max_length=20, blank=True)
+    source_id = models.IntegerField(blank=True, null=True)
+    
+    most_frequent_word = models.CharField(max_length=20, blank=True)
     wordcloud = models.ImageField(upload_to='autoimg/wordcloud', blank=True, null=True)
-    
-    
-    objects = HansardManager()
     
     class Meta:
         ordering = ('-date',)
@@ -115,23 +108,23 @@ class Hansard(models.Model):
         return v
         
     def get_wordoftheday(self):
-        if not self.wordoftheday:
-            self.wordoftheday = text_utils.most_frequent_word(self.statement_set.filter(speaker=False))
-            if self.wordoftheday:
+        if not self.most_frequent_word:
+            self.most_frequent_word = text_utils.most_frequent_word(self.statement_set.filter(procedural=False))
+            if self.most_frequent_word:
                 self.save()
-        return self.wordoftheday
+        return self.most_frequent_word
         
     def generate_wordcloud(self):
-        image = text_utils.statements_to_cloud_by_party(self.statement_set.filter(speaker=False))
+        image = text_utils.statements_to_cloud_by_party(self.statement_set.filter(procedural=False))
         self.wordcloud.save("%s.png" % self.date, ContentFile(image), save=True)
         self.save()
 
 class HansardCache(models.Model):
-    hansard = models.ForeignKey(Hansard)
+    document = models.ForeignKey(Document)
     filename = models.CharField(max_length=100)
     
     def makeFilename(self):
-        return '%d_%d_%s.html.gz' % (self.hansard.session.parliamentnum, self.hansard.session.sessnum, self.hansard.number)
+        return '%d_%d_%s.html.gz' % (self.document.session.parliamentnum, self.document.session.sessnum, self.document.number)
     
     def makeFilepath(self, filename):
         return settings.HANSARD_CACHE_DIR + filename
@@ -166,7 +159,7 @@ def statement_affil_link(match):
     return '<a href="%s" class="related_link" title="%s">%s</a>' % (urlresolvers.reverse(view, args=(match.group(2),)), match.group(3), match.group(4))
     
 class Statement(models.Model):
-    hansard = models.ForeignKey(Hansard)
+    document = models.ForeignKey(Document)
     time = models.DateTimeField(blank=True, null=True, db_index=True)
     heading = models.CharField(max_length=110, blank=True)
     topic = models.CharField(max_length=200, blank=True)
@@ -219,7 +212,7 @@ class Statement(models.Model):
     @memoize_property
     @models.permalink
     def get_absolute_url(self):
-        return ('parliament.hansards.views.hansard', [], {'hansard_id': self.hansard_id, 'statement_seq': self.sequence})
+        return ('parliament.hansards.views.hansard', [], {'hansard_id': self.document_id, 'statement_seq': self.sequence})
         #return ('hansard_statement_bydate', [], {
         #    'statement_seq': self.sequence,
         #    'hansard_date': '%s-%s-%s' % (self.time.year, self.time.month, self.time.day),

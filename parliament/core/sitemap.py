@@ -1,6 +1,6 @@
 from django.contrib.sitemaps import Sitemap
 from parliament.core.models import Politician
-from parliament.hansards.models import Hansard
+from parliament.hansards.models import Document
 from parliament.bills.models import Bill, VoteQuestion
 
 class PoliticianSitemap(Sitemap):
@@ -11,7 +11,7 @@ class PoliticianSitemap(Sitemap):
 class HansardSitemap(Sitemap):
     
     def items(self):
-        return Hansard.objects.all()
+        return Document.objects.all()
         
     def lastmod(self, obj):
         return obj.date
