@@ -1,18 +1,22 @@
+#coding: utf-8
+
 import re
 import urllib
 
-from django.template import Context, loader, RequestContext
-from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.conf import settings
 from django.contrib.syndication.views import Feed
+from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
+from django.template import Context, loader, RequestContext
+from django.utils.safestring import mark_safe
+
 import pysolr
 
-from parliament.core.models import Politician, Session, ElectedMember, Riding, InternalXref
-from parliament.hansards.models import Statement
-from parliament.core.utils import postcode_to_edid
-from parliament.search.utils import autohighlight, SearchPaginator
 from parliament.core import parsetools
-from parliament.core.views import closed
+from parliament.core.models import Politician, Session, ElectedMember, Riding, InternalXref
+from parliament.core.utils import postcode_to_edid
+from parliament.core.views import closed, flatpage_response
+from parliament.hansards.models import Statement
+from parliament.search.utils import autohighlight, SearchPaginator
 
 PER_PAGE = getattr(settings, 'SEARCH_RESULTS_PER_PAGE', 10)
 ALLOWABLE_OPTIONS = {
@@ -85,7 +89,12 @@ def try_postcode_first(request):
                 member = ElectedMember.objects.get(end_date__isnull=True, riding__edid=edid)
                 return HttpResponseRedirect(member.politician.get_absolute_url())
             except ElectedMember.DoesNotExist:
-                pass
+                return flatpage_response(request, u"Ain’t nobody lookin’ out for you",
+                    mark_safe(u"""It looks like that postal code is in the riding of %s. There is no current
+                    Member of Parliament for that riding. By law, a byelection must be called within
+                    180 days of a resignation causing a vacancy. (If you think we’ve got our facts
+                    wrong about your riding or MP, please send an <a class='maillink'>e-mail</a>.)"""
+                    % Riding.objects.get(edid=edid).dashed_name))
             except ElectedMember.MultipleObjectsReturned:
                 raise Exception("Too many MPs for postcode %s" % postcode)
     return False

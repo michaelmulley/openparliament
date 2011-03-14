@@ -1,12 +1,13 @@
-from django.template import Context, loader, RequestContext
-from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.contrib.markup.templatetags.markup import markdown
 from django.contrib.syndication.views import Feed
+from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
+from django.template import Context, loader, RequestContext
+from django.utils.html import conditional_escape
 from django.views.decorators.cache import never_cache
 
+from parliament.core.models import Session, SiteNews
 from parliament.bills.models import VoteQuestion
 from parliament.hansards.models import Hansard
-from parliament.core.models import Session, SiteNews
 
 def home(request):
     
@@ -23,15 +24,18 @@ def home(request):
 def closed(request, message=None):
     if not message:
         message = "We're currently down for planned maintenance. We'll be back soon."
+    resp = flatpage_response(request, 'closedparliament.ca', message)
+    resp.status_code = 503
+    return resp
+    
+def flatpage_response(request, title, message):
     t = loader.get_template("flatpages/default.html")
     c = RequestContext(request, {
         'flatpage': {
-            'title': 'closedparliament.ca',
-            'content': """<div class="focus"><p>%s</p></div>""" % message},
+            'title': title,
+            'content': """<div class="focus"><p>%s</p></div>""" % conditional_escape(message)},
     })
-    resp = HttpResponse(t.render(c))
-    resp.status_code = 503
-    return resp
+    return HttpResponse(t.render(c))
     
 class SiteNewsFeed(Feed):
     
