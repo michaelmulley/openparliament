@@ -7,7 +7,7 @@
 
 {% if votes %}
 <div class="context"><h2>{% if session_list %}Recent votes{% else %}Votes{% endif %}</h2></div>
-<div class="focus"><ul class="tile">{% for vote in votes %}<li class="six twoline overflowtip"><a href="{{ vote.get_absolute_url }}">#{{ vote.number }}</a> <span class="tag voteresult_{{ vote.result }}">{{ vote.get_result_display }}</span> {% if vote.bill %}<a href="{{ vote.bill.get_absolute_url }}">{{ vote.bill.number }}</a> {% endif %}{{ vote.description }}</li>{% endfor %}</ul><div class="clear"></div><p>See <a href="{% url parliament.bills.views.votes_for_session session_id=session.id %}">all {{ votes.0.number }} votes</a> for this session.</p></div><div class="clear"></div>
+<div class="focus"><ul class="tile">{% for vote in votes %}<li class="six twoline overflowtip"><a href="{{ vote.get_absolute_url }}">#{{ vote.number }}</a> <span class="tag voteresult_{{ vote.result }}">{{ vote.get_result_display }}</span> {% if vote.bill %}<a href="{{ vote.bill.get_absolute_url }}">{{ vote.bill.number }}</a> {% endif %}{{ vote.description }}</li>{% endfor %}</ul><div class="clear"></div>{% if votes.0.number > 6 %}<p>See <a href="{% url parliament.bills.views.votes_for_session session_id=session.id %}">all {{ votes.0.number }} votes</a> for this session.</p>{% endif %}</div><div class="clear"></div>
 {% endif %}
 
 {% regroup object_list by privatemember as pmem %}

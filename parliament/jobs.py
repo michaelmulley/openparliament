@@ -74,6 +74,7 @@ def hansards_parse():
             transaction.commit()
         if getattr(settings, 'PARLIAMENT_SEND_EMAIL', True):
             alertutils.alerts_for_hansard(hansard)
+    transaction.commit()
             
 def hansards():
     hansards_load()
