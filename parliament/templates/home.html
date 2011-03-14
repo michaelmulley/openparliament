@@ -17,7 +17,7 @@
         {% for topic in latest_hansard.topics_with_qp %}<li class="four oneline overflowtip"><a href="{% url parliament.hansards.views.hansard hansard_id=latest_hansard.id statement_seq=topic.1 %}#hl">{{ topic.0 }}</a></li>{% endfor %}
         </ul><div class="clear"></div></div>
 {% if votes %}<div class="clear"><div class="context"><h2>Recent votes</h2></div>
-<div class="focus"><ul class="tile">{% for vote in votes %}<li class="six twoline overflowtip"><a href="{% url parliament.bills.views.vote vote_id=vote.id %}">#{{ vote.number }}</a> <span class="tag voteresult_{{ vote.result }}">{{ vote.get_result_display }}</span> {% if vote.bill %}<a href="{{ vote.bill.get_absolute_url }}">{{ vote.bill.number }}</a> {% endif %}{{ vote.description }}</li>{% endfor %}</ul><div class="clear"></div></div>{% endif %}
+<div class="focus"><ul class="tile">{% for vote in votes %}<li class="six twoline overflowtip"><a href="{{ vote.get_absolute_url }}">#{{ vote.number }}</a> <span class="tag voteresult_{{ vote.result }}">{{ vote.get_result_display }}</span> {% if vote.bill %}<a href="{{ vote.bill.get_absolute_url }}">{{ vote.bill.number }}</a> {% endif %}{{ vote.description }}</li>{% endfor %}</ul><div class="clear"></div></div>{% endif %}
 <div class="clear"></div><div class="context"><h2>What’s new around here</h2></div>
 <div class="focus"><p>Learn about site updates on our <a href="{% url sitenews_feed %}" class="feed">site news feed</a>, or follow <a href="http://twitter.com/openparlca">@openparlca</a> on Twitter.</p>{% for item in sitenews %}
 <h3 id="n{{ item.id }}">{{ item.title }} <span class="heading_context">{{ item.date|date:"F jS"}}</span></h3>

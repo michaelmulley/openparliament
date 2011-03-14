@@ -187,7 +187,8 @@ class VoteQuestion(models.Model):
             
     @models.permalink
     def get_absolute_url(self):
-        return ('parliament.bills.views.vote', [self.id])
+        return ('parliament.bills.views.vote', [],
+            {'session_id': self.session_id, 'number': self.number})
 
 VOTE_CHOICES = [
     ('Y', 'Yes'),

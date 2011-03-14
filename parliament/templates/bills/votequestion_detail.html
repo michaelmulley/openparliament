@@ -26,7 +26,7 @@
 {% for party in parties %}
 <div class="clear"></div><div class="context"><h2>{{ party.grouper }}</h2></div>
 <div class="focus"><ul class="tile">
-{% for membervote in party.list %}<li class="four oneline overflowtip"><span class="tag voteresult_{{ membervote.vote }}">{{ membervote.get_vote_display }}</span> <a href="{% url parliament.politicians.views.politician pol_id=membervote.member.politician_id %}">{{ membervote.member.politician.name }}</a></li>{% endfor %}
+{% for membervote in party.list %}<li class="four oneline overflowtip"><span class="tag voteresult_{{ membervote.vote }}">{{ membervote.get_vote_display }}</span> <a href="{{ membervote.member.politician.get_absolute_url }}">{{ membervote.member.politician.name }}</a></li>{% endfor %}
 </ul><div class="clear"></div></div>
 {% endfor %}
 {% endblock content %}

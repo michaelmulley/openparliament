@@ -83,8 +83,14 @@ def votes_for_session(request, session_id):
         queryset=VoteQuestion.objects.select_related(depth=1).filter(session=session),
         extra_context={'session': session, 'title': 'Votes for the %s' % session})
         
-def vote(request, vote_id):
+def vote_pk_redirect(request, vote_id):
     vote = get_object_or_404(VoteQuestion, pk=vote_id)
+    return HttpResponsePermanentRedirect(
+        urlresolvers.reverse('parliament.bills.views.vote', kwargs={
+        'session_id': vote.session_id, 'number': vote.number}))
+        
+def vote(request, session_id, number):
+    vote = get_object_or_404(VoteQuestion, session=session_id, number=number)
     membervotes = MemberVote.objects.filter(votequestion=vote)\
         .order_by('member__party', 'member__politician__name_family')\
         .select_related('member', 'member__party', 'member__politician')
