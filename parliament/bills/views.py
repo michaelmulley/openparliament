@@ -40,7 +40,7 @@ def bill(request, session_id, bill_number):
         'bill': bill,
         'page': page,
         'votequestions': bill.votequestion_set.all().order_by('-date'),
-        'title': 'Bill %s' % bill.number, 
+        'title': ('Bill %s' % bill.number) + (' (Historical)' if bill.session.end else ''), 
         'statements_full_date': True,
         'statements_context_link': True,
     })

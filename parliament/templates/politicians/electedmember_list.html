@@ -4,7 +4,7 @@
 {% block contentclass %}context_3{% endblock %}
 {% block breadcrumbs %}{{ block.super }}Current MPs{% endblock %}
 {% block content %}
-{% block formerlink %}<div class="focus"><p>Looking for an ex-Member? See our list of <a href="{% url parliament.politicians.views.former_mps %}">former MPs</a> (since 1994).</p></div>{% endblock %}
+{% block formerlink %}<div class="focus"><p><strong>Looking for your MP?</strong> Enter your postal code in the search box above. <strong>Looking for an ex-Member?</strong> See our list of <a href="{% url parliament.politicians.views.former_mps %}">former MPs</a> (since 1994).</p></div>{% endblock %}
 {% regroup object_list by riding.province as province_list %}
 {% for province in province_list %}
 <div class="clear"></div><div class="context"><a name="{{ province.grouper }}"></a><h2>{{ province.grouper|expand_province }}</h2></div>
