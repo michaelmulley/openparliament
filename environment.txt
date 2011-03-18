@@ -18,6 +18,7 @@ feedparser==4.1
 twitter>=1.5
 httplib2==0.6.0
 django-piston==0.2.2
+django-tastypie==0.9.7
 slimmer==0.1.30
 git+git://github.com/rhymeswithcycle/django-static.git#egg=django-static
 freebase
