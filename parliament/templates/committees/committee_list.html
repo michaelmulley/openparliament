@@ -1,0 +1,10 @@
+{% extends "committees/base.html" %}
+
+{% block content %}
+<div class="context"><h2>Current committees</h2></div>
+<div class="focus">
+    <ul class="tile">{% for committee in object_list %}
+        <li class="six oneline overflowtip"><a href="{{ committee.get_absolute_url }}">{{ committee.name }}</a></li>{% endfor %}
+    </ul>
+</div>
+{% endblock %}

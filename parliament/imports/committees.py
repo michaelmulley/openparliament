@@ -11,7 +11,7 @@ def import_committee_list(session=None):
     if session is None:
         session = Session.objects.current()
         
-    ids_seen = set()
+    #ids_seen = set()
     
     def make_committee(namestring, parent=None):
         print namestring
@@ -35,5 +35,5 @@ def import_committee_list(session=None):
         for sub in li.findAll('li', 'SubCommitteeItem'):
             make_committee(sub.find('a').string, parent=com)
             
-    Committee.objects.exclude(id__in=ids_seen).update(active=False)
+    #Committee.objects.exclude(id__in=ids_seen).update(active=False)
     
