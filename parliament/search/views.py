@@ -8,6 +8,7 @@ from django.contrib.syndication.views import Feed
 from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.template import Context, loader, RequestContext
 from django.utils.safestring import mark_safe
+from django.views.decorators.vary import vary_on_headers
 
 import pysolr
 
@@ -23,6 +24,8 @@ ALLOWABLE_OPTIONS = {
     'sort': ['score desc', 'date asc', 'date desc'],
 }
 solr = pysolr.Solr(settings.HAYSTACK_SOLR_URL)
+
+@vary_on_headers('X-Requested-With')
 def search(request):
     if 'q' in request.GET and request.GET['q']:
         if not 'page' in request.GET:

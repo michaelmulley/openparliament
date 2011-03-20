@@ -10,6 +10,7 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpRespons
 from django.utils.http import urlquote
 from django.shortcuts import get_object_or_404
 from django.template import Context, loader, RequestContext
+from django.views.decorators.vary import vary_on_headers
 from django.views.generic.list_detail import object_list
 
 from BeautifulSoup import BeautifulSoup
@@ -43,6 +44,7 @@ def former_mps(request):
     t = loader.get_template("politicians/former_electedmember_list.html")
     return HttpResponse(t.render(c))
 
+@vary_on_headers('X-Requested-With')
 def politician(request, pol_id=None, pol_slug=None):
     if pol_slug:
         pol = get_object_or_404(Politician, slug=pol_slug)

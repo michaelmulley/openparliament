@@ -2,12 +2,13 @@ import datetime
 import json
 import urllib, urllib2
 
-from django.template import Context, loader, RequestContext
-from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
-from django.views import generic
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.conf import settings
+from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.shortcuts import get_object_or_404
+from django.template import Context, loader, RequestContext
+from django.views import generic
+from django.views.decorators.vary import vary_on_headers
 
 from parliament.core.utils import get_twitter_share_url
 from parliament.hansards.models import Hansard, HansardCache, Statement
@@ -23,6 +24,7 @@ def _get_hansard(hansard_id, hansard_date):
     else:
         raise Exception("hansard() requires an ID or date")
 
+@vary_on_headers('X-Requested-With')
 def hansard(request, hansard_id=None, hansard_date=None, statement_seq=None):
     PER_PAGE = 15
     if 'singlepage' in request.GET:

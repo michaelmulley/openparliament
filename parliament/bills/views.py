@@ -9,7 +9,7 @@ from django.shortcuts import get_object_or_404
 from django.template import Context, loader, RequestContext
 from django.template.defaultfilters import date as format_date
 from django.views.generic.list_detail import object_list, object_detail
-
+from django.views.decorators.vary import vary_on_headers
 
 from parliament.bills.models import Bill, VoteQuestion, MemberVote
 from parliament.core.models import Session
@@ -21,6 +21,7 @@ def bill_pk_redirect(request, bill_id):
         urlresolvers.reverse('parliament.bills.views.bill', kwargs={
         'session_id': bill.get_session().id, 'bill_number': bill.number}))
 
+@vary_on_headers('X-Requested-With')
 def bill(request, session_id, bill_number):
     PER_PAGE = 10
     bill = get_object_or_404(Bill, sessions=session_id, number=bill_number)
