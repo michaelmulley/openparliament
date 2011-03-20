@@ -17,6 +17,10 @@ from parliament.core.utils import memoize_property
 from parliament.activity import utils as activity
             
 class Document(models.Model):
+    
+    DEBATE = 'D'
+    EVIDENCE = 'E'
+    
     document_type = models.CharField(max_length=1, db_index=True, choices=(
         ('D', 'Debate'),
         ('E', 'Committee Evidence'),
@@ -26,7 +30,7 @@ class Document(models.Model):
     url = models.URLField(verify_exists=False)
     session = models.ForeignKey(Session)
     
-    source_id = models.IntegerField(blank=True, null=True)
+    source_id = models.IntegerField(blank=True, null=True, db_index=True)
     
     most_frequent_word = models.CharField(max_length=20, blank=True)
     wordcloud = models.ImageField(upload_to='autoimg/wordcloud', blank=True, null=True)
@@ -35,7 +39,10 @@ class Document(models.Model):
         ordering = ('-date',)
     
     def __unicode__ (self):
-        return u"Hansard #%s for %s" % (self.number, self.date)
+        if self.document_type == self.DEBATE:
+            return u"Hansard #%s for %s" % (self.number, self.date)
+        else:
+            return u"%s evidence for %s" % (self.committeemeeting.committee.acronym, self.date)
     
     @property
     def url_date(self):

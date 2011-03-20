@@ -17,7 +17,8 @@ from django.utils.html import escape
 from django.conf import settings
 
 from parliament.core.models import *
-from parliament.hansards.models import Hansard, Statement, HansardCache
+from parliament.hansards.models import Statement, HansardCache
+from parliament.hansards.models import Document as Hansard
 from parliament.bills.models import Bill
 from parliament.core import parsetools
 from parliament.core.parsetools import r_politicalpost, r_honorific, r_notamember

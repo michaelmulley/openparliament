@@ -5,10 +5,10 @@ from django.conf import settings
 
 from parliament.politicians import twit
 from parliament.politicians import googlenews as gnews
-from parliament.imports import parlvotes, legisinfo, hans
+from parliament.imports import parlvotes, legisinfo, hans, parl_cmte
 from parliament.core.models import Politician, Session
 from django.core.mail import mail_admins
-from parliament.hansards.models import Hansard
+from parliament.hansards.models import Document
 from parliament.activity import utils as activityutils
 from parliament.alerts import utils as alertutils
 from parliament.activity.models import Activity
@@ -39,6 +39,16 @@ def prune_activities():
         activityutils.prune(Activity.public.filter(politician=pol))
     return True
     
+def committees():
+    from parliament.committees.models import Committee
+    sess = Session.objects.current()
+    parl_cmte.import_committee_list(session=sess)
+    for comm in Committee.objects.filter(sessions=sess).order_by('-parent'):
+        # subcommittees last
+        parl_cmte.import_committee_meetings(comm, sess)
+        parl_cmte.import_committee_reports(comm, sess)
+        time.sleep(1)
+    
 @transaction.commit_on_success
 def hansards_load():
     hans.hansards_from_calendar()
@@ -46,7 +56,9 @@ def hansards_load():
         
 @transaction.commit_manually
 def hansards_parse():
-    for hansard in Hansard.objects.all().annotate(scount=models.Count('statement')).exclude(scount__gt=0).order_by('date').iterator():
+    for hansard in Document.objects.filter(document_type=Document.DEBATE)\
+      .annotate(scount=models.Count('statement'))\
+      .exclude(scount__gt=0).order_by('date').iterator():
         try:
             hans.parseAndSave(hansard)
         except Exception, e:
@@ -56,7 +68,7 @@ def hansards_parse():
         else:
             transaction.commit()
         # now reload the Hansard to get the date
-        hansard = Hansard.objects.get(pk=hansard.id)
+        hansard = Document.objects.get(pk=hansard.id)
         try:
             hansard.save_activity()
         except Exception, e:
@@ -73,7 +85,8 @@ def hansards():
     hansards_parse()
     
 def wordcloud():
-    h = Hansard.objects.all()[0]
+    # FIXME
+    h = Document.objects.filter(document_type=Document.DEBATE)[0]
     h.get_wordoftheday()
     if not h.wordcloud:
         h.generate_wordcloud()

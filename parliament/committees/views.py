@@ -12,3 +12,6 @@ committee_list = ListView.as_view(
 def committee(request, commitee_id=None, acronym=None):
     pass
     
+def activity(request, committee_id, activity_id):
+    pass
+    

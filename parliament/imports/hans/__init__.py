@@ -16,13 +16,14 @@ from django.db.models import Q
 from django.db import transaction
 
 from parliament.core.models import *
-from parliament.hansards.models import Hansard, Statement, HansardCache
+from parliament.hansards.models import Statement, HansardCache
+from parliament.hansards.models import Document as Hansard
 from parliament.core import parsetools
 from parliament.imports.hans import current, old
 
 def qp(id):
     """Utility quick-parse function. Takes a Hansard ID"""
-    return parseAndSave(Hansard.objects.get(pk=id))
+    return parseAndSave(Document.objects.get(pk=id))
     
 def soup(id):
     cache = loadHansard(Hansard.objects.get(pk=id))
