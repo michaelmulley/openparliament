@@ -8,14 +8,25 @@ import twitter
 from parliament.core.models import Politician, PoliticianInfo
 from parliament.activity import utils as activity
 
+import logging
+logger = logging.getLogger(__name__)
+
 def save_tweets():
-    twitter_to_pol = dict([(i.value.lower(), i.politician) for i in PoliticianInfo.objects.filter(schema='twitter').select_related('politician')])
-    
+    twitter_to_pol = dict([(int(i.value), i.politician) for i in PoliticianInfo.objects.filter(schema='twitter_id').select_related('politician')])
+    screen_names = set(PoliticianInfo.objects.filer(schema='twitter').value_list('value', flat=True))
     twit = twitter.Twitter(domain='api.twitter.com/1')
     statuses = twit.openparlca.lists.mps.statuses(per_page=200)
     statuses.reverse()
     for status in statuses:
-        pol = twitter_to_pol[status['user']['screen_name'].lower()]
+        try:
+            pol = twitter_to_pol[status['user']['id']]
+        except KeyError:
+            logger.error("Can't find twitter ID %s (name %s)" 
+                % (status['user']['id'], status['user']['screen_name']))
+            continue
+        if status['user']['screen_name'] not in screen_names:
+            # Changed screen name
+            pol.set_info('twitter', status['user']['screen_name'])
         date = datetime.date.fromtimestamp(
             email.utils.mktime_tz(
                 email.utils.parsedate_tz(status['created_at'])
@@ -27,5 +38,7 @@ def save_tweets():
         text = status['text'].replace('&lt;', '<').replace('&gt;', '>')
         activity.save_activity({'text': status['text']}, politician=pol,
             date=date, guid=guid, variety='twitter')
+            
+
         
     
