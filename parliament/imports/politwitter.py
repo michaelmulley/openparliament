@@ -50,4 +50,13 @@ def update_twitter_list():
     t.user.listname.members.create_all(user=settings.TWITTER_USERNAME, listname=settings.TWITTER_LIST_NAME,
         screen_name=','.join(not_on_list))
     logger.warning("Users added to Twitter list: %r" % not_on_list)
+    
+def get_id_from_screen_name(screen_name):
+    t = twitter.Twitter(auth=twitter.OAuth(**settings.TWITTER_OAUTH), domain='api.twitter.com/1')
+    return t.users.show(screen_name=screen_name)['id']
+    
+def get_ids_from_screen_names():
+    for p in Politician.objects.current():
+        if 'twitter' in p.info() and 'twitter_id' not in p.info():
+            p.set_info('twitter_id', get_id_from_screen_name(p.info()['twitter']))
         
