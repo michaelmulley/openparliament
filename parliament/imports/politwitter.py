@@ -58,5 +58,8 @@ def get_id_from_screen_name(screen_name):
 def get_ids_from_screen_names():
     for p in Politician.objects.current():
         if 'twitter' in p.info() and 'twitter_id' not in p.info():
-            p.set_info('twitter_id', get_id_from_screen_name(p.info()['twitter']))
+            try:
+                p.set_info('twitter_id', get_id_from_screen_name(p.info()['twitter']))
+            except Exception:
+                logger.exception(u"Couldn't get twitter ID for %s" % p.name)
         

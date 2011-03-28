@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 
 def save_tweets():
     twitter_to_pol = dict([(int(i.value), i.politician) for i in PoliticianInfo.objects.filter(schema='twitter_id').select_related('politician')])
-    screen_names = set(PoliticianInfo.objects.filer(schema='twitter').value_list('value', flat=True))
+    screen_names = set(PoliticianInfo.objects.filter(schema='twitter').values_list('value', flat=True))
     twit = twitter.Twitter(domain='api.twitter.com/1')
     statuses = twit.openparlca.lists.mps.statuses(per_page=200)
     statuses.reverse()
