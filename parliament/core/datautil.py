@@ -314,22 +314,22 @@ def merge_polnames():
     
 @transaction.commit_on_success
 def merge_pols():
-    print "Enter ID of primary pol object: ",
-    goodid = int(sys.stdin.readline().strip())
+    print "Enter ID of primary pol object: "
+    goodid = int(raw_input().strip())
     good = Politician.objects.get(pk=goodid)
     for em in ElectedMember.objects.filter(politician=good):
         print em
     for cand in Candidacy.objects.filter(candidate=good):
         print cand
-    print "Enter ID of bad pol object: ",
-    badid = int(sys.stdin.readline().strip())
+    print "Enter ID of bad pol object: "
+    badid = int(raw_input().strip())
     bad = Politician.objects.get(pk=badid)
     for em in ElectedMember.objects.filter(politician=bad):
         print em
     for cand in Candidacy.objects.filter(candidate=bad):
         print cand
-    print "Go? (y/n) ",
-    yn = sys.stdin.readline().strip().lower()
+    print "Go? (y/n) "
+    yn = raw_input().strip().lower()
     if yn == 'y':
         _merge_pols(good, bad)
         print "Done!"

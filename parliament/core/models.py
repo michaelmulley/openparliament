@@ -9,11 +9,15 @@ import urllib, urllib2
 
 from django.conf import settings
 from django.db import models
+from django.template.defaultfilters import slugify
 
 from BeautifulSoup import BeautifulSoup
 
 from parliament.core import parsetools, text_utils
 from parliament.core.utils import memoize_property, ActiveManager
+
+import logging
+logger = logging.getLogger(__name__)
 
 POL_LOOKUP_URL = 'http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=%d&Language=E'
 
@@ -267,6 +271,17 @@ class Politician(Person):
     def alternate_names(self):
         """Returns a list of ways of writing this politician's name."""
         return self.politicianinfo_set.filter(schema='alternate_name').values_list('value', flat=True)
+        
+    def add_slug(self):
+        """Assigns a slug to this politician, unless there's a conflict."""
+        if self.slug:
+            return True
+        slug = slugify(self.name)
+        if Politician.objects.filter(slug=slug).exists():
+            logger.warning("Slug %s already taken" % slug)
+            return False
+        self.slug = slug
+        self.save()
         
     @property
     @memoize_property

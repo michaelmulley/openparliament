@@ -1,16 +1,62 @@
-import urllib2, re
+import csv
+from decimal import Decimal
+import re
+import urllib2
 
 from BeautifulSoup import BeautifulSoup
 from django.contrib.localflavor.ca.ca_provinces import PROVINCES_NORMALIZED
+from django.db import transaction
 from django.db.models import Q
 
 from parliament.core import parsetools
 from parliament.core.models import *
 from parliament.elections.models import Election, Candidacy
 
-# sample URL: http://www2.parl.gc.ca/Sites/LOP/HFER/hfer.asp?Language=E&Search=Bres&ridProvince=0&genElection=0&byElection=2009%2F11%2F09&submit1=Search
+@transaction.commit_on_success
+def import_ec_results(election, url="http://enr.elections.ca/DownloadResults.aspx",
+    acceptable_types=('validated',)):
+    """Import an election from the text format used on enr.elections.ca
+    (after the 2011 general election)"""
+    
+    for line in urllib2.urlopen(url):
+        line = line.decode('iso-8859-1').split('\t')
+        edid = line[0]
+        if not edid.isdigit():
+            continue
+        result_type = line[3]
+        if result_type not in acceptable_types:
+            continue
+        last_name = line[5]
+        first_name = line[7]
+        party_name = line[8]
+        votetotal = int(line[10])
+        votepercent = Decimal(line[11])
+        
+        riding = Riding.objects.get(edid=edid)
+        try:
+            party = Party.objects.get_by_name(party_name)
+        except Party.DoesNotExist:
+            print "No party found for %r" % party_name
+            print "Please enter party ID:"
+            party = Party.objects.get(pk=raw_input().strip())
+            party.add_alternate_name(party_name)
+            print repr(party.name)
+            
+        Candidacy.objects.create_from_name(
+            first_name=first_name,
+            last_name=last_name,
+            party=party,
+            riding=riding,
+            election=election,
+            votetotal=votetotal,
+            votepercent=votepercent,
+            elected=None
+        )
 
-def importElection(url, election, session=None, soup=None): # FIXME session none only for now
+def import_parl_election(url, election, session=None, soup=None): # FIXME session none only for now
+    """Import an election from parl.gc.ca results.
+    
+    Sample URL: http://www2.parl.gc.ca/Sites/LOP/HFER/hfer.asp?Language=E&Search=Bres&ridProvince=0&genElection=0&byElection=2009%2F11%2F09&submit1=Search"""
     
     def _addParty(link):
         match = re.search(r'\?([^"]+)', link)
