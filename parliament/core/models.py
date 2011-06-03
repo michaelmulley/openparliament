@@ -19,7 +19,7 @@ from parliament.core.utils import memoize_property, ActiveManager
 import logging
 logger = logging.getLogger(__name__)
 
-POL_LOOKUP_URL = 'http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=%d&Language=E'
+POL_LOOKUP_URL = 'http://www.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=%d&Language=E'
 
 class InternalXref(models.Model):
     """A general-purpose table for quickly storing internal links."""
@@ -219,7 +219,10 @@ class PoliticianManager(models.Manager):
             if not lookOnline:
                 return None # FIXME inconsistent behaviour: when should we return None vs. exception?
             #print "Unknown parlid %d... " % parlid,
-            soup = BeautifulSoup(urllib2.urlopen(POL_LOOKUP_URL % parlid))
+            try:
+                soup = BeautifulSoup(urllib2.urlopen(POL_LOOKUP_URL % parlid))
+            except urllib2.HTTPError:
+                raise Politician.DoesNotExist("Couldn't open " + (POL_LOOKUP_URL % parlid))
             if soup.find('table', id='MasterPage_BodyContent_PageContent_PageContent_pnlError'):
                 #print "Error page for parlid %d" % parlid
                 raise Politician.DoesNotExist("Invalid page for parlid %s" % parlid)
