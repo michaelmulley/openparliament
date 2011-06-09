@@ -262,14 +262,11 @@ class Politician(Person):
     slug = models.CharField(max_length=30, blank=True, db_index=True)
     
     objects = PoliticianManager()
-    
-    def __init__(self, *args, **kwargs):
-        # If we're creating a new object, set a flag to save the name to the alternate-names table.
-        super(Politician, self).__init__(*args, **kwargs)
-        self._saveAlternate = True
         
     def add_alternate_name(self, name):
-        self.set_info_multivalued('alternate_name', parsetools.normalizeName(name))
+        normname = parsetools.normalizeName(name)
+        if normname not in self.alternate_names():
+            self.set_info_multivalued('alternate_name', normname)
 
     def alternate_names(self):
         """Returns a list of ways of writing this politician's name."""
@@ -318,8 +315,7 @@ class Politician(Person):
         
     def save(self):
         super(Politician, self).save()
-        if getattr(self, '_saveAlternate', False):
-            self.add_alternate_name(self.name)
+        self.add_alternate_name(self.name)
 
     def save_parl_id(self, parlid):
         if PoliticianInfo.objects.filter(schema='parl_id', value=unicode(parlid)).exists():
