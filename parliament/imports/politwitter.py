@@ -3,30 +3,36 @@ import urllib2
 
 from django.conf import settings
 
-from lxml import objectify
+from lxml import etree, objectify
 import twitter
 
-from parliament.core.models import Politician, PoliticianInfo
+from parliament.core.models import Politician, PoliticianInfo, Session
 
 import logging
 logger = logging.getLogger(__name__)
 
 def import_twitter_ids():
     source = urllib2.urlopen('http://politwitter.ca/api.php?format=xml&call=listmp')
-    tree = objectify.parse(source)
+    # politwitter XML sometimes includes invalid entities
+    parser = objectify.makeparser(recover=True)
+    tree = objectify.parse(source, parser)
+    current_session = Session.objects.current()
     for member in tree.xpath('//member'):
-        if not member.website_official:
-            logger.info("No website for %s" % member.name)
-            continue
-        parlid = re.search(r'Key=(\d+)&', str(member.website_official)).group(1)
-        pol = Politician.objects.get_by_parl_id(parlid)
+        try:
+            pol = Politician.objects.get_by_name(unicode(member.name), session=current_session)
+        except Politician.DoesNotExist:
+            print "Could not find politician %r" % member.name
         current = pol.info().get('twitter')
         new = str(member.twitter_username)
-        if str(current).lower() != new.lower():
+        if new and str(current).lower() != new.lower():
             logger.error(u"Twitter username change for %s: %s -> %s"
                 % (pol, current, new))
             if not current:
-                pol.set_info('twitter', new)
+                try:
+                    pol.set_info('twitter_id', get_id_from_screen_name(new))
+                    pol.set_info('twitter', new)
+                except Exception as e:
+                    print repr(e)
                 
 def update_twitter_list():
     from twitter import twitter_globals
