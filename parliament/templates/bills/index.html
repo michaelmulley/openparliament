@@ -14,7 +14,7 @@
 {% for pm in pmem %}
 
 {% if forloop.counter == 2 %}{% block sessions_list %}
-<div class="focus"><p>Bills are separated according to the parliamentary session during which they were introduced. The bills above have been introduced in the current session. (Or reintroduced&mdash;a bill which has not been withdrawn is automatically reintroduced in subsequent sessions.)</p></div>
+<div class="focus"><p>Bills are separated according to the parliamentary session during which they were introduced. The bills above have been introduced (or reintroduced) in the current session.</p></div>
 <div class="clear"></div><div class="context"><h2>Sessions</h2></div>
 <div class="focus"><ul class="tile">
     {% for session in session_list %}{% if not forloop.first %}
