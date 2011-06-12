@@ -12,6 +12,10 @@ from parliament.core.utils import memoize_property
 
 CALLBACK_URL = 'http://www2.parl.gc.ca/HousePublications/GetWebOptionsCallBack.aspx?SourceSystem=PRISM&ResourceType=Document&ResourceID=%d&language=1&DisplayMode=2'
 BILL_VOTES_URL = 'http://www2.parl.gc.ca/Housebills/BillVotes.aspx?Language=E&Parl=%s&Ses=%s&Bill=%s'
+
+LEGISINFO_BILL_URL = 'http://www.parl.gc.ca/LegisInfo/BillDetails.aspx?Language=%(lang)s&Mode=1&Bill=%(bill)s&Parl=%(parliament)s&Ses=%(session)s'
+PARLIAMENT_DOCVIEWER_URL = 'http://parl.gc.ca/HousePublications/Publication.aspx?Language=%(lang)s&Mode=1&DocId=%(docid)s'
+
 class BillManager(models.Manager):
     
     def get_by_callback_id(self, callback):
@@ -59,6 +63,9 @@ class BillManager(models.Manager):
 class Bill(models.Model):
     
     name = models.TextField(blank=True)
+    name_fr = models.TextField(blank=True)
+    short_title_en = models.TextField(blank=True)
+    short_title_fr = models.TextField(blank=True)
     number = models.CharField(max_length=10)
     number_only = models.SmallIntegerField()
     institution = models.CharField(max_length=1, db_index=True, choices=(
@@ -66,13 +73,17 @@ class Bill(models.Model):
         ('S', 'Senate'),
     ))
     sessions = models.ManyToManyField(Session)
-    legisinfo_url = models.URLField(blank=True, null=True, verify_exists=False)
     privatemember = models.NullBooleanField()
     sponsor_member = models.ForeignKey(ElectedMember, blank=True, null=True)
     sponsor_politician= models.ForeignKey(Politician, blank=True, null=True)
     law = models.NullBooleanField()
     status = models.CharField(max_length=200, blank=True)
+    status_fr = models.CharField(max_length=200, blank=True)
+    status_date = models.DateField(blank=True, null=True)
     added = models.DateField(default=datetime.date.today, db_index=True)
+    introduced = models.DateField(blank=True, null=True)
+    text_docid = models.IntegerField(blank=True, null=True,
+        help_text="The parl.gc.ca document ID of the latest version of the bill's text")
     
     objects = BillManager()
     
@@ -86,14 +97,33 @@ class Bill(models.Model):
     def get_absolute_url(self):
         return ('parliament.bills.views.bill_pk_redirect', [self.id])
         
-    def get_legisinfo_billtext_url(self):
-        return self.legisinfo_url.replace('List=toc', 'List=toc-1')
+    def get_legisinfo_url(self, lang='E'):
+        return LEGISINFO_BILL_URL % {
+            'lang': lang,
+            'bill': self.number.replace('-', ''),
+            'parliament': self.session.parliamentnum,
+            'session': self.session.sessnum
+        }
+        
+    legisinfo_url = property(get_legisinfo_url)
+        
+    def get_billtext_url(self, lang='E'):
+        if not self.text_docid:
+            return None
+        return PARLIAMENT_DOCVIEWER_URL % {
+            'lang': lang,
+            'docid': self.text_docid
+        }
         
     def save(self, *args, **kwargs):
         if not self.number_only:
             self.number_only = int(re.sub(r'\D', '', self.number))
         if getattr(self, 'privatemember', None) is None:
             self.privatemember = bool(self.number_only >= 200)
+        if not self.institution:
+            self.institution = self.number[0]
+        if not self.law and 'Royal Assent' in self.status:
+            self.law = True
         super(Bill, self).save(*args, **kwargs)
         if getattr(self, '_save_session', None):
             self.sessions.add(self._save_session)

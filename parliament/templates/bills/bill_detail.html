@@ -9,10 +9,11 @@
 {% block content %}
 
 <div class="focus">
+{% if bill.short_title_en %}<h2>{{ bill.short_title_en }}</h2>{% endif %}    
 <h3>{{ bill.name }}</h3>
 {% if bill.session.end %}<p>This bill was last introduced in the {{ bill.session }}, which ended in {{ bill.session.end|date:"F Y"}}.</p>{% endif %}
 {% with bill.sessions.all as sessions %}{% if sessions|length > 1 %}<p>This bill was previously introduced in {{ sessions|list_filter:bill.session|list_prefix:"the "|english_list:"; " }}.</p>{% endif %}{% endwith %}
-{% if bill.number_only == 1 %}<p>This bill, the first introduced in any session, is a <a href="http://en.wikipedia.org/wiki/Bills_C-1_and_S-1">formal tradition</a> rather than proposed legislation. (It has nothing to do with oaths of office. The Senate equivalent is called <em>An Act relating to Railways</em> and&mdash;you guessed it!&mdash;in no way relates to railways.)</p>{% endif %}
+{% if bill.number_only == 1 %}<p>This bill, the first introduced in any session, is a <a href="http://en.wikipedia.org/wiki/Bills_C-1_and_S-1">formal tradition</a> rather than proposed legislation. {% if bill.institution == 'S' %}It doesn't actually have anything to do with railways.{% else %}(It has nothing to do with oaths of office. The Senate equivalent is called <em>An Act relating to Railways</em> and&mdash;you guessed it!&mdash;in no way relates to railways.){% endif %}</p>{% endif %}
 </div>
 {% if bill.sponsor_politician %}
 <div class="clear"></div><div class="context"><h2>Sponsor</h2></div>
@@ -25,7 +26,7 @@
     </div>{% endif %}
 {% if bill.legisinfo_url %}
 <div class="clear"></div><div class="context"><h2>Elsewhere</h2></div>
-<div class="focus"><p>All sorts of information on this bill&mdash;including the <a href="{{ bill.get_legisinfo_billtext_url }}">full text of the bill</a>&mdash;is available at <a href="{{ bill.legisinfo_url }}">LEGISinfo</a>, provided by the Library of Parliament.</p></div>{% endif %}
+<div class="focus"><p>All sorts of information on this bill is available at <a href="{{ bill.legisinfo_url }}">LEGISinfo</a>, provided by the Library of Parliament.{% if bill.text_docid %} You can also read the <a href="{{ bill.get_billtext_url }}">full text of the bill</a>.{% endif %}</p></div>{% endif %}
 {% if votequestions %}
 <div class="clear"></div><div class="context"><h2>Votes</h2></div>
 <div class="focus"><ul class="tile">

@@ -115,7 +115,7 @@ class BillListFeed(Feed):
     link = "/bills/"
     
     def items(self):
-        return Bill.objects.all().order_by('-added', 'number_only')[:25]
+        return Bill.objects.all().order_by('-introduced', 'number_only')[:25]
     
     def item_title(self, item):
         return "Bill %s (%s)" % (item.number,
