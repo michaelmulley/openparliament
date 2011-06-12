@@ -68,6 +68,7 @@ def import_bills(session):
                 # This is presumably our first import of the bill; check if this
                 # looks like a reintroduced bill and we want to merge with an 
                 # older Bill object.
+                bill._newbill = True
                 try:
                     mergebill = Bill.objects.get(sessions=previous_session,
                         number=bill.number,
@@ -118,4 +119,6 @@ def import_bills(session):
                 
             if bill._changed:
                 bill.save()
+                if getattr(bill, '_newbill', False):
+                    bill.save_sponsor_activity()
             

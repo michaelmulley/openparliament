@@ -133,7 +133,7 @@ class Bill(models.Model):
             activity.save_activity(
                 obj=self,
                 politician=self.sponsor_politician,
-                date=self.added - datetime.timedelta(days=1), # we generally pick it up the day after it appears
+                date=self.introduced if self.introduced else (self.added - datetime.timedelta(days=1)),
                 variety='billsponsor',
             )
         
