@@ -46,7 +46,7 @@ def import_bills(session):
                 value = unicode(value)
             if getattr(bill, field) != value:
                 setattr(bill, field, value)
-            bill._changed = True
+                bill._changed = True
             
         def parse_date(d):
             return datetime.date(*[int(x) for x in d[:10].split('-')])
@@ -117,7 +117,7 @@ def import_bills(session):
             except IndexError:
                 pass
                 
-            if bill._changed:
+            if getattr(bill, '_changed', False):
                 bill.save()
                 if getattr(bill, '_newbill', False):
                     bill.save_sponsor_activity()
