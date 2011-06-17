@@ -51,7 +51,7 @@ def hansards_parse():
             hans.parseAndSave(hansard)
         except Exception, e:
             transaction.rollback()
-            mail_admins("Hansard parse failure on #%s" % hansard.id, unicode(e))
+            mail_admins("Hansard parse failure on #%s" % hansard.id, repr(e))
             continue
         else:
             transaction.commit()

@@ -109,7 +109,7 @@ td.standard_form{width:520px;}
 .partytag_bloc{background-color:#a7ecf6;}
 .partytag_cpc,.partytag_alliance, .partytag_canadian-alliance, .partytag_conservative, .partytag_progressive-conservative, .partytag_pc {background-color:#acd0f6;}
 /* .partytag_progressive-conservative{background-color: #75acff;} */
-.partytag_reform {background-color: #A9FA98;}
+.partytag_reform .partytag_green {background-color: #A9FA98;}
 .partytag_ndp{background-color:#f6cfa5;}
 .activity_news{background-color:#F1F28D;}
 .activity_statement{background-color:#ddb8a2;}
