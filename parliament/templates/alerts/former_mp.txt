@@ -1,0 +1,17 @@
+{% autoescape off %}{% filter wordwrap:76 %}{% load ours %}Hi,
+
+You're signed for email alerts whenever {{ politician.name }} speaks in the House of Commons. But {{ politician.name_given }}'s not in Parliament anymore.
+
+The new MP for the riding of {{ riding.name }} is {{ new_politician.name }}. To sign for email alerts for {{ new_politician|himher|lower }}, visit:
+
+http://openparliament.ca/alerts/signup/?politician={{ new_politician.id }}
+
+And to read more about {{ new_politician.name }}, visit:
+
+http://openparliament.ca{{ new_politician.get_absolute_url }}
+
+This is the last e-mail you'll get from us about {{ politician.name }}. (I'm nostalgic already.)
+
+bittersweetly yours,
+the openparliament.ca robot
+{% endfilter %}{% endautoescape %}
