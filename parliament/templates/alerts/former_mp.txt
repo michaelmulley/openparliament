@@ -2,7 +2,7 @@
 
 You're signed for email alerts whenever {{ politician.name }} speaks in the House of Commons. But {{ politician.name_given }}'s not in Parliament anymore.
 
-The new MP for the riding of {{ riding.name }} is {{ new_politician.name }}. To sign for email alerts for {{ new_politician|himher|lower }}, visit:
+The new MP for the riding of {{ riding.name }} is {{ new_politician.name }}. To sign up for email alerts for {{ new_politician|himher|lower }}, visit:
 
 http://openparliament.ca/alerts/signup/?politician={{ new_politician.id }}
 
