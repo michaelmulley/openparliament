@@ -364,6 +364,13 @@ class Politician(Person):
             info = self.politicianinfo_set.get(schema=key)
         except PoliticianInfo.DoesNotExist:
             info = PoliticianInfo(politician=self, schema=key)
+        except PoliticianInfo.MultipleObjectsReturned:
+            logger.error("Multiple objects found for schema %s on politician %r: %r" %
+                (key, self,
+                 self.politicianinfo_set.filter(schema=key).values_list('value', flat=True)
+                    ))
+            self.politicianinfo_set.filter(schema=key).delete()
+            info = PoliticianInfo(politician=self, schema=key)
         info.value = unicode(value)
         info.save()
         

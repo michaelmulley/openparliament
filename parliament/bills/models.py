@@ -17,48 +17,16 @@ LEGISINFO_BILL_URL = 'http://www.parl.gc.ca/LegisInfo/BillDetails.aspx?Language=
 PARLIAMENT_DOCVIEWER_URL = 'http://parl.gc.ca/HousePublications/Publication.aspx?Language=%(lang)s&Mode=1&DocId=%(docid)s'
 
 class BillManager(models.Manager):
-    
-    def get_by_callback_id(self, callback):
-        """Given a callback ID from a link on a Hansard page, return a Bill."""
+
+    def get_by_legisinfo_id(self, legisinfo_id):
+        """Given a House of Commons ID (e.g. from LEGISinfo, or a Hansard link),
+        return a Bill, creating it if necessary."""
+        legisinfo_id = int(legisinfo_id)
         try:
-            xref = InternalXref.objects.get(schema='bill_callbackid', int_value=callback)
-            if xref.target_id < 0:
-                raise Bill.DoesNotExist("Stored as invalid callback")
-            return self.get_query_set().get(pk=xref.target_id)
-        except InternalXref.DoesNotExist:
-            pass
-            
-        callpage = urllib2.urlopen(CALLBACK_URL % callback)
-        
-        match = re.search(r'Parl=(\d+)&Ses=(\d)(?:&Bill=|#)([CS][0-9]+[A-Z]?)', callpage.read())
-        if not match:
-            print "Couldn't find parseable link in get_by_callback_id"
-            raise Bill.DoesNotExist()
-        (parliamentnum, sessnum, billnum) = match.groups()
-        billnum = billnum[0] + '-' + billnum[1:] # we use the C-52 style, not C52\
-        session = Session.objects.get(parliamentnum=parliamentnum, sessnum=sessnum)
-        try:
-            bill = self.get_query_set().get(number=billnum, sessions=session)
+            return self.get(billinsession__legisinfo_id=legisinfo_id)
         except Bill.DoesNotExist:
-            # Let's see if we can get the bill name
-            billname = ''
-            if billnum[0] == 'C':
-                try:
-                    votespage = urllib2.urlopen(BILL_VOTES_URL %
-                        (parliamentnum, sessnum, billnum.replace('-', '')))
-                    votesoup = BeautifulSoup(votespage.read())
-                    votediv = votesoup.find('div', 'VotesBill')
-                    billname = votediv.string.strip()
-                except Exception as e:
-                    print e # FIXME logging
-            
-            bill = Bill(name=billname, number=billnum, institution=billnum[0])
-            bill.session = session
-            bill.save()
-        
-        InternalXref(schema='bill_callbackid', int_value=callback, target_id=bill.id).save()
-        return bill
-        
+            from parliament.imports import legisinfo
+            return legisinfo.import_bill_by_id(legisinfo_id)
 
 class Bill(models.Model):
     
@@ -72,11 +40,13 @@ class Bill(models.Model):
         ('C', 'House'),
         ('S', 'Senate'),
     ))
-    sessions = models.ManyToManyField(Session)
+    sessions = models.ManyToManyField(Session, through='BillInSession')
     privatemember = models.NullBooleanField()
     sponsor_member = models.ForeignKey(ElectedMember, blank=True, null=True)
     sponsor_politician= models.ForeignKey(Politician, blank=True, null=True)
     law = models.NullBooleanField()
+
+    # TODO: Remodel status to allow multiple status events, with dates
     status = models.CharField(max_length=200, blank=True)
     status_fr = models.CharField(max_length=200, blank=True)
     status_date = models.DateField(blank=True, null=True)
@@ -125,8 +95,6 @@ class Bill(models.Model):
         if not self.law and 'Royal Assent' in self.status:
             self.law = True
         super(Bill, self).save(*args, **kwargs)
-        if getattr(self, '_save_session', None):
-            self.sessions.add(self._save_session)
 
     def save_sponsor_activity(self):
         if self.sponsor_politician:
@@ -144,15 +112,32 @@ class Bill(models.Model):
             return self.sessions.all().order_by('-start')[0]
         except (IndexError, ValueError):
             return getattr(self, '_save_session', None)
-            
-    def set_session(self, session):
-        self._save_session = session
         
-    session = property(get_session, set_session)
+    session = property(get_session)
+
+class BillInSession(models.Model):
+    """Represents a bill, as introduced in a single session.
+
+    All bills are, technically, introduced only in a single session.
+    But, in a decision which ended up being pretty complicated, we combine
+    reintroduced bills into a single Bill object. But it's this model
+    that maps one-to-one to most IDs used elsewhere.
+    """
+    bill = models.ForeignKey(Bill)
+    session = models.ForeignKey(Session)
+
+    legisinfo_id = models.PositiveIntegerField(blank=True, null=True)
+    introduced = models.DateField(blank=True, null=True)
+    sponsor_politician= models.ForeignKey(Politician, blank=True, null=True)
+    sponsor_member = models.ForeignKey(ElectedMember, blank=True, null=True)
+
+    def __unicode__(self):
+        return u"%s in session %s" % (self.bill, self.session_id)
+
         
 VOTE_RESULT_CHOICES = (
     ('Y', 'Passed'), # Agreed to
-    ('N', 'Failed'), # Negatives
+    ('N', 'Failed'), # Negatived
     ('T', 'Tie'),
 )
 class VoteQuestion(models.Model):

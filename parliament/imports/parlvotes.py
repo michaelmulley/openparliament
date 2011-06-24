@@ -8,6 +8,9 @@ from parliament.bills.models import Bill, VoteQuestion, MemberVote
 from parliament.core.models import ElectedMember, Politician, Riding, Session
 from parliament.core import parsetools
 
+import logging
+logger = logging.getLogger(__name__)
+
 VOTELIST_URL = 'http://www2.parl.gc.ca/HouseChamberBusiness/Chambervotelist.aspx?Language=E&Mode=1&Parl=%(parliamentnum)s&Ses=%(sessnum)s&xml=True&SchemaVersion=1.0'
 VOTEDETAIL_URL = 'http://www2.parl.gc.ca/HouseChamberBusiness/Chambervotedetail.aspx?Language=E&Mode=1&Parl=%(parliamentnum)s&Ses=%(sessnum)s&FltrParl=%(parliamentnum)s&FltrSes=%(sessnum)s&vote=%(votenum)s&xml=True'
 
@@ -33,6 +36,9 @@ def import_votes(session=None):
             yea_total=int(vote.find('TotalYeas').text),
             nay_total=int(vote.find('TotalNays').text),
             paired_total=int(vote.find('TotalPaired').text))
+        if sum((votequestion.yea_total, votequestion.nay_total)) < 100:
+            logger.error("Fewer than 100 votes on vote#%s" % votenumber)
+            continue
         decision = vote.find('Decision').text
         if decision == 'Agreed to':
             votequestion.result = 'Y'

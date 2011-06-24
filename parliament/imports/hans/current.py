@@ -30,12 +30,10 @@ class HansardParser2009(HansardParser):
         resid, restype = int(resid.group(1)), restype.group(1)
         if restype == 'Document':
             try:
-                bill = Bill.objects.get_by_callback_id(resid)
+                bill = Bill.objects.get_by_legisinfo_id(resid)
             except Exception, e:
                 print "Related bill search failed for callback %s" % resid
                 print repr(e)
-                if getattr(settings, 'PARLIAMENT_LABEL_FAILED_CALLBACK', False):
-                    InternalXref.objects.get_or_create(schema='bill_callbackid', int_value=resid, target_id=-1)
                 return string
             return u'<bill id="%d" name="%s">%s</bill>' % (bill.id, escape(bill.name), string)
         elif restype == 'Affiliation':
