@@ -9,7 +9,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         
         # Adding field 'BillInSession.legisinfo_id'
-        db.add_column('bills_billinsession', 'legisinfo_id', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True), keep_default=False)
+        db.add_column('bills_billinsession', 'legisinfo_id', self.gf('django.db.models.fields.PositiveIntegerField')(db_index=True, null=True, blank=True), keep_default=False)
 
         # Adding field 'BillInSession.introduced'
         db.add_column('bills_billinsession', 'introduced', self.gf('django.db.models.fields.DateField')(null=True, blank=True), keep_default=False)
@@ -64,7 +64,7 @@ class Migration(SchemaMigration):
             'bill': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['bills.Bill']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'introduced': ('django.db.models.fields.DateField', [], {'null': 'True', 'blank': 'True'}),
-            'legisinfo_id': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
+            'legisinfo_id': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True', 'null': 'True', 'blank': 'True'}),
             'session': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.Session']"}),
             'sponsor_member': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.ElectedMember']", 'null': 'True', 'blank': 'True'}),
             'sponsor_politician': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.Politician']", 'null': 'True', 'blank': 'True'})

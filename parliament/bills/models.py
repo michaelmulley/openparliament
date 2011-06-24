@@ -126,7 +126,7 @@ class BillInSession(models.Model):
     bill = models.ForeignKey(Bill)
     session = models.ForeignKey(Session)
 
-    legisinfo_id = models.PositiveIntegerField(blank=True, null=True)
+    legisinfo_id = models.PositiveIntegerField(db_index=True, blank=True, null=True)
     introduced = models.DateField(blank=True, null=True)
     sponsor_politician= models.ForeignKey(Politician, blank=True, null=True)
     sponsor_member = models.ForeignKey(ElectedMember, blank=True, null=True)
