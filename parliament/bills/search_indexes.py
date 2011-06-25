@@ -10,8 +10,8 @@ class BillIndex(SearchIndex):
     sci = indexes.CharField(stored=False, use_template=True)
     number = indexes.CharField(model_attr='number', indexed=False)
     url = indexes.CharField(model_attr='get_absolute_url', indexed=False)
-    date = indexes.DateField(model_attr='introduced')
-    session = indexes.CharField(model_attr='session', indexed=False)
+    date = indexes.DateField(model_attr='introduced', null=True)
+    session = indexes.CharField(model_attr='session', indexed=False, null=True)
 
     def prepare_date(self, obj):
         if self.prepared_data.get('date'):

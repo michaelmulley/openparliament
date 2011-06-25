@@ -165,7 +165,7 @@ def _import_bill(lbill, session, previous_session=None):
 
     if getattr(bill, '_changed', False):
         bill.save()
-        if getattr(bill, '_newbill', False):
+        if getattr(bill, '_newbill', False) and not session.end:
             bill.save_sponsor_activity()
     if getattr(bis, '_changed', False):
         bis.bill = bis.bill # bizarrely, the django orm makes you do this
