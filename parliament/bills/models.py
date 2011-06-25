@@ -125,7 +125,7 @@ class Bill(models.Model):
         try:
             return self.sessions.all().order_by('-start')[0]
         except (IndexError, ValueError):
-            return getattr(self, '_save_session', None)
+            return None
         
     session = property(get_session)
 

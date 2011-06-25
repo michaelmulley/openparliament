@@ -425,6 +425,10 @@ class SessionManager(models.Manager):
     
     def current(self):
         return self.get_query_set().order_by('-start')[0]
+
+    def get_by_date(self, date):
+        return self.filter(models.Q(end__isnull=True) | models.Q(end__gte=date))\
+            .get(start__lte=date)
         
 class Session(models.Model):
     "A session of Parliament."
