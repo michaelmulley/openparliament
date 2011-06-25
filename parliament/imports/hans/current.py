@@ -125,7 +125,10 @@ class HansardParser2009(HansardParser):
             elif c.name == 'a' and c.has_key('name') and c['name'].startswith('T'):
                 match = re.search(r'^T(\d\d)(\d\d)$', c['name'])
                 if match:
-                    t.setNext('timestamp', parsetools.time(hour=int(match.group(1)), minute=int(match.group(2))))
+                    t.setNext('timestamp', parsetools.time_to_datetime(
+                        hour=int(match.group(1)),
+                        minute=int(match.group(2)),
+                        date=self.date))
                 else:
                     raise ParseException("Couldn't match time %s" % c.attrs['name'])
                 

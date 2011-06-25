@@ -17,6 +17,19 @@ def time(hour, minute):
         hour = hour % 24 # no, really. the house of commons is so badass they meet at 25 o'clock
     return datetime.time(hour=hour, minute=minute)
 
+def time_to_datetime(hour, minute, date):
+    """Given hour, minute, and a datetime.date, returns a datetime.datetime.
+
+    Necessary to deal with the occasional wacky 25 o'clock timestamps in Hansard.
+    """
+    if hour < 24:
+        return datetime.datetime.combine(date, datetime.time(hour=hour, minute=minute))
+    else:
+        return datetime.datetime.combine(
+            date + datetime.timedelta(days=hour//24),
+            datetime.time(hour=hour % 24, minute=minute)
+        )
+
 def normalizeHansardURL(u):
     docid = re.search(r'DocId=(\d+)', u).group(1)
     parl = re.search(r'Parl=(\d+)', u).group(1)
@@ -55,7 +68,7 @@ def slugify(s):
     return re.sub(r'--+', '-', s)
 
 def normalizeName(s):
-    return tameWhitespace(removeAccents(stripHonorific(s).lower()))
+    return tameWhitespace(removeAccents(stripHonorific(s).lower())).strip()
 
 def munge_date(date):
     if date.count('0000') > 0:

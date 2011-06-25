@@ -172,8 +172,12 @@ class HansardParser(object):
     def saveProceedingsStatement(self, text, t):
         text = parsetools.sane_quotes(parsetools.tameWhitespace(text.strip()))
         if len(text):
+            timestamp = t['timestamp']
+            if not isinstance(timestamp, datetime.datetime):
+                # The older parser provides only datetime.time objects
+                timestamp = datetime.datetime.combine(self.date, timestamp)
             statement = Statement(hansard=self.hansard,
-                time=datetime.datetime.combine(self.date, t['timestamp']),
+                time=timestamp,
                 text=text, sequence=self.statement_index,
                 who='Proceedings')
             self.statement_index += 1
@@ -191,8 +195,12 @@ class HansardParser(object):
             if not t['member_title']:
                 t['member_title'] = 'Proceedings'
                 print "WARNING: No title for %s" % t.getText()
+            timestamp = t['timestamp']
+            if not isinstance(timestamp, datetime.datetime):
+                # The older parser provides only datetime.time objects
+                timestamp = datetime.datetime.combine(self.date, timestamp)
             statement = Statement(hansard=self.hansard, heading=t['heading'], topic=t['topic'],
-             time=datetime.datetime.combine(self.date, t['timestamp']), member=t['member'],
+             time=timestamp, member=t['member'],
              politician=t['politician'], who=t['member_title'],
              text=t.getText(), sequence=self.statement_index, written_question=bool(t['written_question']))
             if r_notamember.search(t['member_title']) and 'Speaker' in t['member_title']:
