@@ -28,6 +28,20 @@ class BillManager(models.Manager):
             from parliament.imports import legisinfo
             return legisinfo.import_bill_by_id(legisinfo_id)
 
+    def create_temporary_bill(self, legisinfo_id, number, session):
+        """Creates a bare-bones Bill object, to be filled in later.
+
+        Used because often it'll be a day or two between when a bill ID is
+        first referenced in Hansard and when it shows up in LEGISinfo.
+        """
+        if BillInSession.objects.filter(legisinfo_id=int(legisinfo_id)).exists():
+            raise Bill.MultipleObjectsReturned(
+                "There's already a bill with LEGISinfo id %s" % legisinfo_id)
+        bill = self.create(number=number)
+        BillInSession.objects.create(bill=bill, session=session,
+                legisinfo_id=int(legisinfo_id))
+        return bill
+
 class Bill(models.Model):
     
     name = models.TextField(blank=True)

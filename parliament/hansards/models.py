@@ -156,7 +156,7 @@ class HansardCache(models.Model):
         infile.close()
         return html
         
-r_statement_affil = re.compile(r'<(bill|pol) id="(\d+)" name="(.+?)">(.+?)</\1>', re.UNICODE)
+r_statement_affil = re.compile(r'<(bill|pol) id="(\d+)" name="(.*?)">(.+?)</\1>', re.UNICODE)
 def statement_affil_link(match):
     if match.group(1) == 'bill':
         # FIXME hardcode url for speed?

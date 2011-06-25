@@ -130,11 +130,11 @@ def _import_bill(lbill, session, previous_session=None):
         bis.sponsor_politician = Politician.objects.get_by_parl_id(pol_id)
         bis._changed = True
         try:
-            bis.sponsor_member = ElectedMember.objects.get_by_pol(politician=bill.sponsor_politician,
+            bis.sponsor_member = ElectedMember.objects.get_by_pol(politician=bis.sponsor_politician,
                                                                    session=session)
         except Exception:
             logger.error("Couldn't find ElectedMember for bill %s, pol %r" %
-                         (bill.number, bill.sponsor_politician))
+                         (bill.number, bis.sponsor_politician))
         if not bill.sponsor_politician:
             bill.sponsor_politician = bis.sponsor_politician
             bill.sponsor_member = bis.sponsor_member
@@ -144,13 +144,16 @@ def _import_bill(lbill, session, previous_session=None):
     if not bill.introduced:
         bill.introduced = bis.introduced
 
-    
-    _update(bill, 'status',
-           lbill.xpath('Events/LastMajorStageEvent/Event/Status/Title[@language="en"]')[0].text)
-    _update(bill, 'status_fr',
-           lbill.xpath('Events/LastMajorStageEvent/Event/Status/Title[@language="fr"]')[0].text)
-    _update(bill, 'status_date', _parse_date(
-        lbill.xpath('Events/LastMajorStageEvent/Event/@date')[0]))
+    try:
+        _update(bill, 'status',
+            lbill.xpath('Events/LastMajorStageEvent/Event/Status/Title[@language="en"]')[0].text)
+        _update(bill, 'status_fr',
+            lbill.xpath('Events/LastMajorStageEvent/Event/Status/Title[@language="fr"]')[0].text)
+        _update(bill, 'status_date', _parse_date(
+            lbill.xpath('Events/LastMajorStageEvent/Event/@date')[0]))
+    except IndexError:
+        # Some older bills don't have status information
+        pass
 
     try:
         _update(bill, 'text_docid', int(
@@ -165,6 +168,7 @@ def _import_bill(lbill, session, previous_session=None):
         if getattr(bill, '_newbill', False):
             bill.save_sponsor_activity()
     if getattr(bis, '_changed', False):
+        bis.bill = bis.bill # bizarrely, the django orm makes you do this
         bis.save()
 
     return bill

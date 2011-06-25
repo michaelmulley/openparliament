@@ -9,6 +9,9 @@ old.py - (fairly crufty) parser for the format used from 1994 to 2006
 """
 from parliament.imports.hans.common import *
 
+import logging
+logger = logging.getLogger(__name__)
+
 class HansardParser2009(HansardParser):
     
     def __init__(self, hansard, html):
@@ -31,6 +34,13 @@ class HansardParser2009(HansardParser):
         if restype == 'Document':
             try:
                 bill = Bill.objects.get_by_legisinfo_id(resid)
+            except Bill.DoesNotExist:
+                match = re.search(r'\b[CS]\-\d+[A-E]?\b', string)
+                if not match:
+                    logger.error("Invalid bill link %s" % string)
+                    return string
+                bill = Bill.objects.create_temporary_bill(legisinfo_id=resid,
+                    number=match.group(0), session=self.hansard.session)
             except Exception, e:
                 print "Related bill search failed for callback %s" % resid
                 print repr(e)
