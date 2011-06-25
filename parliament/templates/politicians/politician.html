@@ -33,7 +33,7 @@
 <h3>Elsewhere</h3>
 <ul class="bulleted">
 {% if info.web_site %}<li><a href="{{ info.web_site }}">{{ pol|hisher }} site</a></li>{% endif %}
-<li>On the <a href="http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key={{ info.parl_id }}&amp;Language=E">Parliament</a> site</li>
+<li>On the <a href="{{ pol.parlpage }}">Parliament</a> site</li>
 {% if info.twitter %}<li><a href="http://twitter.com/{{ info.twitter }}">Twitter</a> (and Twitter messages <a href="http://twitter.com/search?q=%40{{ info.twitter }}">to {{ pol|himher|lower }}</a>)</li>{% endif %}
 {% if info.wikipedia_id %}<li><a href="http://en.wikipedia.org/wiki/index.html?curid={{ info.wikipedia_id }}">Wikipedia</a></li>{% endif %}
 </ul>{% endif %}

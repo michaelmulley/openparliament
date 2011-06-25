@@ -4,11 +4,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Albina", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128217&Language=E", 
+             
             "name": "Albina Guarnieri", 
             "dob": "1953-06-23", 
             "gender": "F", 
-            "site": "http://www.albinaguarnieri.com/", 
+             
             "name_family": "Guarnieri", 
             "headshot": "polpics/127.jpg", 
             "slug": "albina-guarnieri"
@@ -19,11 +19,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Alex", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128622&Language=E", 
+             
             "name": "Alex Atamanenko", 
             "dob": "1945-01-24", 
             "gender": "M", 
-            "site": "http://www.alexndp.ca/", 
+             
             "name_family": "Atamanenko", 
             "headshot": "polpics/400.jpg", 
             "slug": "alex-atamanenko"
@@ -34,11 +34,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Alice", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128331&Language=E", 
+             
             "name": "Alice Wong", 
             "dob": "1948-06-30", 
             "gender": "F", 
-            "site": "http://www.alicewong.ca/", 
+             
             "name_family": "Wong", 
             "headshot": "polpics/614.jpg", 
             "slug": "alice-wong"
@@ -49,11 +49,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Andrew", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128874&Language=E", 
+             
             "name": "Andrew Kania", 
             "dob": "1967-12-07", 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "Kania", 
             "headshot": "polpics/574.jpg", 
             "slug": "andrew-kania"
@@ -64,11 +64,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Andrew", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128592&Language=E", 
+             
             "name": "Andrew Scheer", 
             "dob": "1979-05-20", 
             "gender": "M", 
-            "site": "http://www.andrewmp.ca/", 
+             
             "name_family": "Scheer", 
             "headshot": "polpics/256.jpg", 
             "slug": "andrew-scheer"
@@ -79,11 +79,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Andr\u00e9", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128255&Language=E", 
+             
             "name": "Andr\u00e9 Arthur", 
             "dob": "1943-12-21", 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "Arthur", 
             "headshot": "polpics/399.jpg", 
             "slug": "andre-arthur"
@@ -94,11 +94,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Andr\u00e9", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128565&Language=E", 
+             
             "name": "Andr\u00e9 Bellavance", 
             "dob": "1964-06-03", 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "Bellavance", 
             "headshot": "polpics/23.jpg", 
             "slug": "andre-bellavance"
@@ -109,11 +109,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Barry", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128299&Language=E", 
+             
             "name": "Barry Devolin", 
             "dob": "1963-03-10", 
             "gender": "M", 
-            "site": "http://www.barrydevolin.ca/", 
+             
             "name_family": "Devolin", 
             "headshot": "polpics/87.jpg", 
             "slug": "barry-devolin"
@@ -124,11 +124,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Bernard", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128222&Language=E", 
+             
             "name": "Bernard Bigras", 
             "dob": "1969-06-04", 
             "gender": "M", 
-            "site": "http://www.bernardbigras.qc.ca/", 
+             
             "name_family": "Bigras", 
             "headshot": "polpics/29.jpg", 
             "slug": "bernard-bigras"
@@ -139,11 +139,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Bernard", 
-            "parlpage": "http://www2.parl.gc.ca/parlinfo/Files/Parliamentarian.aspx?Item=E179296B-086B-4072-9082-6795B9B0DA4C&Language=E", 
+             
             "name": "Bernard G\u00e9n\u00e9reux", 
             "dob": null, 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "G\u00e9n\u00e9reux", 
             "headshot": "polpics/8347.jpg", 
             "slug": "bernard-genereux"
@@ -154,11 +154,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Bev", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128265&Language=E", 
+             
             "name": "Bev Oda", 
             "dob": "1944-07-27", 
             "gender": "F", 
-            "site": "http://www.bevoda.ca/", 
+             
             "name_family": "Oda", 
             "headshot": "polpics/217.jpg", 
             "slug": "bev-oda"
@@ -169,11 +169,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Bev", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128495&Language=E", 
+             
             "name": "Bev Shipley", 
             "dob": "1947-06-22", 
             "gender": "M", 
-            "site": "http://www.bevshipley.ca/", 
+             
             "name_family": "Shipley", 
             "headshot": "polpics/452.jpg", 
             "slug": "bev-shipley"
@@ -184,11 +184,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Blaine", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128820&Language=E", 
+             
             "name": "Blaine Calkins", 
             "dob": "1968-12-25", 
             "gender": "M", 
-            "site": "http://www.blainecalkinsmp.com/", 
+             
             "name_family": "Calkins", 
             "headshot": "polpics/412.jpg", 
             "slug": "blaine-calkins"
@@ -199,11 +199,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Blake", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128600&Language=E", 
+             
             "name": "Blake Richards", 
             "dob": "1974-11-08", 
             "gender": "M", 
-            "site": "http://www.blakerichards.ca/", 
+             
             "name_family": "Richards", 
             "headshot": "polpics/611.jpg", 
             "slug": "blake-richards"
@@ -214,11 +214,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Bob", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128429&Language=E", 
+             
             "name": "Bob Dechert", 
             "dob": "1958-05-18", 
             "gender": "M", 
-            "site": "http://www.bobdechertmp.ca/", 
+             
             "name_family": "Dechert", 
             "headshot": "polpics/585.jpg", 
             "slug": "bob-dechert"
@@ -229,11 +229,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Bob", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128246&Language=E", 
+             
             "name": "Bob Rae", 
             "dob": "1948-08-02", 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "Rae", 
             "headshot": "polpics/551.jpg", 
             "slug": "bob-rae"
@@ -244,11 +244,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Bonnie", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128102&Language=E", 
+             
             "name": "Bonnie Crombie", 
             "dob": "1960-02-05", 
             "gender": "F", 
-            "site": "http://www.bonniecrombiemp.ca/", 
+             
             "name_family": "Crombie", 
             "headshot": "polpics/586.jpg", 
             "slug": "bonnie-crombie"
@@ -259,11 +259,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Bradley", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128379&Language=E", 
+             
             "name": "Bradley Trost", 
             "dob": "1974-05-15", 
             "gender": "M", 
-            "site": "http://www.bradtrost.ca/", 
+             
             "name_family": "Trost", 
             "headshot": "polpics/290.jpg", 
             "slug": "bradley-trost"
@@ -274,11 +274,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Brent", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128244&Language=E", 
+             
             "name": "Brent Rathgeber", 
             "dob": "1964-07-24", 
             "gender": "M", 
-            "site": "http://www.brentrathgeber.ca/", 
+             
             "name_family": "Rathgeber", 
             "headshot": "polpics/607.jpg", 
             "slug": "brent-rathgeber"
@@ -289,11 +289,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Brian", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128667&Language=E", 
+             
             "name": "Brian Jean", 
             "dob": "1963-02-03", 
             "gender": "M", 
-            "site": "http://www.brianjean.ca/", 
+             
             "name_family": "Jean", 
             "headshot": "polpics/143.jpg", 
             "slug": "brian-jean"
@@ -304,11 +304,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Brian", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128381&Language=E", 
+             
             "name": "Brian Murphy", 
             "dob": "1961-03-17", 
             "gender": "M", 
-            "site": "http://www.brianfpmurphy.ca/", 
+             
             "name_family": "Murphy", 
             "headshot": "polpics/443.jpg", 
             "slug": "brian-murphy"
@@ -319,11 +319,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Brian", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128665&Language=E", 
+             
             "name": "Brian Storseth", 
             "dob": "1978-02-13", 
             "gender": "M", 
-            "site": "http://www.brianstorseth.ca/", 
+             
             "name_family": "Storseth", 
             "headshot": "polpics/455.jpg", 
             "slug": "brian-storseth"
@@ -334,11 +334,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Bruce", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128543&Language=E", 
+             
             "name": "Bruce Stanton", 
             "dob": "1957-12-20", 
             "gender": "M", 
-            "site": "http://www.brucestanton.com/", 
+             
             "name_family": "Stanton", 
             "headshot": "polpics/453.jpg", 
             "slug": "bruce-stanton"
@@ -349,11 +349,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Bryon", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128125&Language=E", 
+             
             "name": "Bryon Wilfert", 
             "dob": "1952-07-14", 
             "gender": "M", 
-            "site": "http://www.bryonwilfert.com/", 
+             
             "name_family": "Wilfert", 
             "headshot": "polpics/304.jpg", 
             "slug": "bryon-wilfert"
@@ -364,11 +364,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Carole", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128171&Language=E", 
+             
             "name": "Carole Freeman", 
             "dob": null, 
             "gender": "F", 
-            "site": "", 
+             
             "name_family": "Freeman", 
             "headshot": "polpics/426.jpg", 
             "slug": "carole-freeman"
@@ -379,11 +379,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Cathy", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128737&Language=E", 
+             
             "name": "Cathy McLeod", 
             "dob": "1957-06-12", 
             "gender": "F", 
-            "site": "http://www.cathymcleod.com/", 
+             
             "name_family": "McLeod", 
             "headshot": "polpics/612.jpg", 
             "slug": "cathy-mcleod"
@@ -394,11 +394,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Cheryl", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128257&Language=E", 
+             
             "name": "Cheryl Gallant", 
             "dob": "1960-05-23", 
             "gender": "F", 
-            "site": "http://www.cherylgallant.com/cheryl/", 
+             
             "name_family": "Gallant", 
             "headshot": "polpics/113.jpg", 
             "slug": "cheryl-gallant"
@@ -409,11 +409,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Chris", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128220&Language=E", 
+             
             "name": "Chris Charlton", 
             "dob": "1963-07-04", 
             "gender": "F", 
-            "site": "http://www.chrischarlton.ca/", 
+             
             "name_family": "Charlton", 
             "headshot": "polpics/415.jpg", 
             "slug": "chris-charlton"
@@ -424,11 +424,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Chris", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128728&Language=E", 
+             
             "name": "Chris Warkentin", 
             "dob": "1978-11-20", 
             "gender": "M", 
-            "site": "http://www.chriswarkentin.ca/", 
+             
             "name_family": "Warkentin", 
             "headshot": "polpics/461.jpg", 
             "slug": "chris-warkentin"
@@ -439,11 +439,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Christian", 
-            "parlpage": "", 
+             
             "name": "Christian Jobin", 
             "dob": null, 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "Jobin", 
             "headshot": "", 
             "slug": ""
@@ -454,11 +454,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Christian", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128163&Language=E", 
+             
             "name": "Christian Paradis", 
             "dob": "1974-01-01", 
             "gender": "M", 
-            "site": "http://www.christianparadis.com/", 
+             
             "name_family": "Paradis", 
             "headshot": "polpics/448.jpg", 
             "slug": "christian-paradis"
@@ -469,11 +469,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Chuck", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128584&Language=E", 
+             
             "name": "Chuck Strahl", 
             "dob": "1957-02-25", 
             "gender": "M", 
-            "site": "http://www.chuckstrahl.com/mp/", 
+             
             "name_family": "Strahl", 
             "headshot": "polpics/277.jpg", 
             "slug": "chuck-strahl"
@@ -484,11 +484,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Claude", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128499&Language=E", 
+             
             "name": "Claude Gravelle", 
             "dob": "1949-10-26", 
             "gender": "M", 
-            "site": "http://www.claudegravelle.ca/", 
+             
             "name_family": "Gravelle", 
             "headshot": "polpics/588.jpg", 
             "slug": "claude-gravelle"
@@ -499,11 +499,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Colin", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128368&Language=E", 
+             
             "name": "Colin Mayes", 
             "dob": "1948-04-11", 
             "gender": "M", 
-            "site": "http://colinmayes.ca/", 
+             
             "name_family": "Mayes", 
             "headshot": "polpics/441.jpg", 
             "slug": "colin-mayes"
@@ -514,11 +514,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Daniel", 
-            "parlpage": "http://www2.parl.gc.ca/parlinfo/Files/Parliamentarian.aspx?Item=AB653798-9940-43D4-9B18-C9BC015EB94E&Language=E", 
+             
             "name": "Daniel Paill\u00e9", 
             "dob": null, 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "Paill\u00e9", 
             "headshot": "polpics/paille.jpg", 
             "slug": "daniel-paille"
@@ -529,11 +529,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Daniel", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128194&Language=E", 
+             
             "name": "Daniel Petit", 
             "dob": "1948-09-27", 
             "gender": "M", 
-            "site": "http://www.danielpetit.ca/", 
+             
             "name_family": "Petit", 
             "headshot": "polpics/449.jpg", 
             "slug": "daniel-petit"
@@ -544,11 +544,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Daryl", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128356&Language=E", 
+             
             "name": "Daryl Kramp", 
             "dob": "1947-06-14", 
             "gender": "M", 
-            "site": "http://www.darylkramp.ca/index.html", 
+             
             "name_family": "Kramp", 
             "headshot": "polpics/157.jpg", 
             "slug": "daryl-kramp"
@@ -559,11 +559,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "David", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128218&Language=E", 
+             
             "name": "David Christopherson", 
             "dob": "1954-10-05", 
             "gender": "M", 
-            "site": "http://davidchristopherson.ndp.ca/", 
+             
             "name_family": "Christopherson", 
             "headshot": "polpics/65.jpg", 
             "slug": "david-christopherson"
@@ -574,11 +574,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "David", 
-            "parlpage": "http://www2.parl.gc.ca/parlinfo/Files/Parliamentarian.aspx?Item=99FE4F4B-B5B4-4F70-B3A0-F66F24350743&Language=E", 
+             
             "name": "David Collenette", 
             "dob": null, 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "Collenette", 
             "headshot": "polpics/4464.jpg", 
             "slug": ""
@@ -589,11 +589,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "David", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128579&Language=E", 
+             
             "name": "David McGuinty", 
             "dob": "1960-02-25", 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "McGuinty", 
             "headshot": "polpics/193.jpg", 
             "slug": "david-mcguinty"
@@ -604,11 +604,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "David", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128598&Language=E", 
+             
             "name": "David Sweet", 
             "dob": "1957-06-24", 
             "gender": "M", 
-            "site": "http://www.davidsweet.ca/", 
+             
             "name_family": "Sweet", 
             "headshot": "polpics/456.jpg", 
             "slug": "david-sweet"
@@ -619,11 +619,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "David", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128415&Language=E", 
+             
             "name": "David Tilson", 
             "dob": "1941-03-19", 
             "gender": "M", 
-            "site": "http://www.davidtilson.ca/", 
+             
             "name_family": "Tilson", 
             "headshot": "polpics/286.jpg", 
             "slug": "david-tilson"
@@ -634,11 +634,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Deepak", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128296&Language=E", 
+             
             "name": "Deepak Obhrai", 
             "dob": "1950-07-05", 
             "gender": "M", 
-            "site": "http://www.deepakobhrai.com/", 
+             
             "name_family": "Obhrai", 
             "headshot": "polpics/216.jpg", 
             "slug": "deepak-obhrai"
@@ -649,11 +649,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Denis", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128153&Language=E", 
+             
             "name": "Denis Coderre", 
             "dob": "1963-07-25", 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "Coderre", 
             "headshot": "polpics/68.jpg", 
             "slug": "denis-coderre"
@@ -664,11 +664,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Denise", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128236&Language=E", 
+             
             "name": "Denise Savoie", 
             "dob": "1943-11-21", 
             "gender": "F", 
-            "site": "http://www.denisesavoie.ca/", 
+             
             "name_family": "Savoie", 
             "headshot": "polpics/451.jpg", 
             "slug": "denise-savoie"
@@ -679,11 +679,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Derek", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128211&Language=E", 
+             
             "name": "Derek Lee", 
             "dob": "1948-10-02", 
             "gender": "M", 
-            "site": "http://www.derekleemp.com/", 
+             
             "name_family": "Lee", 
             "headshot": "polpics/167.jpg", 
             "slug": "derek-lee"
@@ -694,11 +694,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Diane", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128446&Language=E", 
+             
             "name": "Diane Ablonczy", 
             "dob": "1949-05-06", 
             "gender": "F", 
-            "site": "http://www.dianeablonczy.com/", 
+             
             "name_family": "Ablonczy", 
             "headshot": "polpics/2.jpg", 
             "slug": "diane-ablonczy"
@@ -709,11 +709,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Diane", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128425&Language=E", 
+             
             "name": "Diane Bourgeois", 
             "dob": "1949-11-14", 
             "gender": "F", 
-            "site": "http://www.dianebourgeois.org/", 
+             
             "name_family": "Bourgeois", 
             "headshot": "polpics/41.jpg", 
             "slug": "diane-bourgeois"
@@ -724,11 +724,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Don", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=78726&Language=E", 
+             
             "name": "Don Bell", 
             "dob": "1942-03-10", 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "Bell", 
             "headshot": "polpics/22.jpg", 
             "slug": ""
@@ -739,11 +739,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Don", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128327&Language=E", 
+             
             "name": "Don Davies", 
             "dob": "1963-01-16", 
             "gender": "M", 
-            "site": "http://www.dondavies.ca/", 
+             
             "name_family": "Davies", 
             "headshot": "polpics/616.jpg", 
             "slug": "don-davies"
@@ -754,11 +754,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Dona", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128215&Language=E", 
+             
             "name": "Dona Cadman", 
             "dob": "1950-07-09", 
             "gender": "F", 
-            "site": "http://www.donacadman.ca/", 
+             
             "name_family": "Cadman", 
             "headshot": "polpics/615.jpg", 
             "slug": "dona-cadman"
@@ -769,11 +769,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Ed", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128375&Language=E", 
+             
             "name": "Ed Fast", 
             "dob": "1955-06-18", 
             "gender": "M", 
-            "site": "http://www.edfast.ca/", 
+             
             "name_family": "Fast", 
             "headshot": "polpics/424.jpg", 
             "slug": "ed-fast"
@@ -784,11 +784,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Ed", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128607&Language=E", 
+             
             "name": "Ed Komarnicki", 
             "dob": "1949-11-18", 
             "gender": "M", 
-            "site": "http://www.edkom.ca/", 
+             
             "name_family": "Komarnicki", 
             "headshot": "polpics/155.jpg", 
             "slug": "ed-komarnicki"
@@ -799,11 +799,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Fin", 
-            "parlpage": "http://www2.parl.gc.ca/parlinfo/Files/Parliamentarian.aspx?Item=D013E8CA-FDD5-4EB4-A0E4-B5F0782A8F6D&Language=E", 
+             
             "name": "Fin Donnelly", 
             "dob": null, 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "Donnelly", 
             "headshot": "polpics/8333.jpg", 
             "slug": "fin-donnelly"
@@ -814,11 +814,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Francine", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128535&Language=E", 
+             
             "name": "Francine Lalonde", 
             "dob": "1940-08-24", 
             "gender": "F", 
-            "site": "", 
+             
             "name_family": "Lalonde", 
             "headshot": "polpics/159.jpg", 
             "slug": "francine-lalonde"
@@ -829,11 +829,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Frank", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128448&Language=E", 
+             
             "name": "Frank Valeriote", 
             "dob": "1954-08-15", 
             "gender": "M", 
-            "site": "http://www.frankvaleriote.ca/", 
+             
             "name_family": "Valeriote", 
             "headshot": "polpics/578.jpg", 
             "slug": "frank-valeriote"
@@ -844,11 +844,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Gail", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128618&Language=E", 
+             
             "name": "Gail Shea", 
             "dob": "1959-04-06", 
             "gender": "F", 
-            "site": "http://www.gailshea.ca/", 
+             
             "name_family": "Shea", 
             "headshot": "polpics/556.jpg", 
             "slug": "gail-shea"
@@ -859,11 +859,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Garry", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128553&Language=E", 
+             
             "name": "Garry Breitkreuz", 
             "dob": "1945-10-21", 
             "gender": "M", 
-            "site": "http://www.garrybreitkreuz.com/", 
+             
             "name_family": "Breitkreuz", 
             "headshot": "polpics/43.jpg", 
             "slug": "garry-breitkreuz"
@@ -874,11 +874,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Gary", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128434&Language=E", 
+             
             "name": "Gary Lunn", 
             "dob": "1957-05-08", 
             "gender": "M", 
-            "site": "http://www.garylunn.com/", 
+             
             "name_family": "Lunn", 
             "headshot": "polpics/174.jpg", 
             "slug": "gary-lunn"
@@ -889,11 +889,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Gary", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128212&Language=E", 
+             
             "name": "Gary Schellenberger", 
             "dob": "1943-09-15", 
             "gender": "M", 
-            "site": "http://www.schellenberger.ca/", 
+             
             "name_family": "Schellenberger", 
             "headshot": "polpics/257.jpg", 
             "slug": "gary-schellenberger"
@@ -904,11 +904,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Geoff", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128433&Language=E", 
+             
             "name": "Geoff Regan", 
             "dob": "1959-11-22", 
             "gender": "M", 
-            "site": "http://www.geoffregan.ca/", 
+             
             "name_family": "Regan", 
             "headshot": "polpics/242.jpg", 
             "slug": "geoff-regan"
@@ -919,11 +919,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Gerald", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128533&Language=E", 
+             
             "name": "Gerald Keddy", 
             "dob": "1953-02-15", 
             "gender": "M", 
-            "site": "http://www.geraldkeddymp.ca/", 
+             
             "name_family": "Keddy", 
             "headshot": "polpics/151.jpg", 
             "slug": "gerald-keddy"
@@ -934,11 +934,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Gilbert", 
-            "parlpage": "http://www2.parl.gc.ca/parlinfo/Files/Parliamentarian.aspx?Item=298F5A2B-699B-461E-B635-4610D2833154&Language=E", 
+             
             "name": "Gilbert Normand", 
             "dob": null, 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "Normand", 
             "headshot": "polpics/4957.jpg", 
             "slug": ""
@@ -949,11 +949,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Glenn", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128626&Language=E", 
+             
             "name": "Glenn Thibeault", 
             "dob": "1969-10-23", 
             "gender": "M", 
-            "site": "http://www.glennthibeaultmp.ca/", 
+             
             "name_family": "Thibeault", 
             "headshot": "polpics/593.jpg", 
             "slug": "glenn-thibeault"
@@ -964,11 +964,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Gord", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128247&Language=E", 
+             
             "name": "Gord Brown", 
             "dob": "1960-08-31", 
             "gender": "M", 
-            "site": "http://www.gordbrown.com/home.html", 
+             
             "name_family": "Brown", 
             "headshot": "polpics/46.jpg", 
             "slug": "gord-brown"
@@ -979,11 +979,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Greg", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128726&Language=E", 
+             
             "name": "Greg Rickford", 
             "dob": "1967-09-24", 
             "gender": "M", 
-            "site": "http://www.gregrickford.ca/", 
+             
             "name_family": "Rickford", 
             "headshot": "polpics/581.jpg", 
             "slug": "greg-rickford"
@@ -994,11 +994,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Greg", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128647&Language=E", 
+             
             "name": "Greg Thompson", 
             "dob": "1947-03-28", 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "Thompson", 
             "headshot": "polpics/285.jpg", 
             "slug": "greg-thompson"
@@ -1009,11 +1009,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Gurbax", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128479&Language=E", 
+             
             "name": "Gurbax Malhi", 
             "dob": "1949-10-12", 
             "gender": "M", 
-            "site": "http://www.gurbaxsinghmalhi.ca/", 
+             
             "name_family": "Malhi", 
             "headshot": "polpics/180.jpg", 
             "slug": "gurbax-malhi"
@@ -1024,11 +1024,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "G\u00e9rard", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128588&Language=E", 
+             
             "name": "G\u00e9rard Asselin", 
             "dob": "1950-04-19", 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "Asselin", 
             "headshot": "polpics/12.jpg", 
             "slug": "gerard-asselin"
@@ -1039,11 +1039,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Harold", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128450&Language=E", 
+             
             "name": "Harold Albrecht", 
             "dob": "1949-10-15", 
             "gender": "M", 
-            "site": "http://www.haroldalbrechtmp.ca/", 
+             
             "name_family": "Albrecht", 
             "headshot": "polpics/396.jpg", 
             "slug": "harold-albrecht"
@@ -1054,11 +1054,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Hedy", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128515&Language=E", 
+             
             "name": "Hedy Fry", 
             "dob": "1941-08-06", 
             "gender": "F", 
-            "site": "http://www.hedyfry.com/", 
+             
             "name_family": "Fry", 
             "headshot": "polpics/109.jpg", 
             "slug": "hedy-fry"
@@ -1069,11 +1069,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Helena", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128818&Language=E", 
+             
             "name": "Helena Guergis", 
             "dob": "1969-02-19", 
             "gender": "F", 
-            "site": "http://www.helenaguergis.com/", 
+             
             "name_family": "Guergis", 
             "headshot": "polpics/129.jpg", 
             "slug": "helena-guergis"
@@ -1084,11 +1084,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Inky", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128669&Language=E", 
+             
             "name": "Inky Mark", 
             "dob": "1947-11-17", 
             "gender": "M", 
-            "site": "http://www.inkymark.com/", 
+             
             "name_family": "Mark", 
             "headshot": "polpics/183.jpg", 
             "slug": "inky-mark"
@@ -1099,11 +1099,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "James", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128677&Language=E", 
+             
             "name": "James Bezan", 
             "dob": "1965-05-19", 
             "gender": "M", 
-            "site": "http://www.jamesbezan.com/", 
+             
             "name_family": "Bezan", 
             "headshot": "polpics/28.jpg", 
             "slug": "james-bezan"
@@ -1114,11 +1114,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "James", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128630&Language=E", 
+             
             "name": "James Moore", 
             "dob": "1976-06-10", 
             "gender": "M", 
-            "site": "http://www.jamesmoore.org/", 
+             
             "name_family": "Moore", 
             "headshot": "polpics/208.jpg", 
             "slug": "james-moore"
@@ -1129,11 +1129,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Jason", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128790&Language=E", 
+             
             "name": "Jason Kenney", 
             "dob": "1968-05-30", 
             "gender": "M", 
-            "site": "http://www.jasonkenney.com/", 
+             
             "name_family": "Kenney", 
             "headshot": "polpics/152.jpg", 
             "slug": "jason-kenney"
@@ -1144,11 +1144,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Jean-Claude", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128549&Language=E", 
+             
             "name": "Jean-Claude D'Amours", 
             "dob": "1972-12-19", 
             "gender": "M", 
-            "site": "http://www.jcdamours.ca/", 
+             
             "name_family": "D'Amours", 
             "headshot": "polpics/79.jpg", 
             "slug": "jean-claude-damours"
@@ -1159,11 +1159,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Jeannot", 
-            "parlpage": "http://www2.parl.gc.ca/parlinfo/Files/Parliamentarian.aspx?Item=B4F873BB-C866-426D-A0A9-2181F41CC46D&Language=E", 
+             
             "name": "Jeannot Castonguay", 
             "dob": null, 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "Castonguay", 
             "headshot": "polpics/4303.jpg", 
             "slug": ""
@@ -1174,11 +1174,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Jim", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128403&Language=E", 
+             
             "name": "Jim Flaherty", 
             "dob": "1949-12-30", 
             "gender": "M", 
-            "site": "http://www.jimflaherty.com/", 
+             
             "name_family": "Flaherty", 
             "headshot": "polpics/425.jpg", 
             "slug": "jim-flaherty"
@@ -1189,11 +1189,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Jim", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128453&Language=E", 
+             
             "name": "Jim Maloway", 
             "dob": "1952-11-10", 
             "gender": "M", 
-            "site": "http://www.jimmaloway.ca/", 
+             
             "name_family": "Maloway", 
             "headshot": "polpics/599.jpg", 
             "slug": "jim-maloway"
@@ -1204,11 +1204,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Jim", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128656&Language=E", 
+             
             "name": "Jim Prentice", 
             "dob": "1956-07-20", 
             "gender": "M", 
-            "site": "http://www.jimprentice.ca/", 
+             
             "name_family": "Prentice", 
             "headshot": "polpics/236.jpg", 
             "slug": "jim-prentice"
@@ -1219,11 +1219,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Joe", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128527&Language=E", 
+             
             "name": "Joe Comartin", 
             "dob": "1947-12-26", 
             "gender": "M", 
-            "site": "http://www.joecomartin.ca/", 
+             
             "name_family": "Comartin", 
             "headshot": "polpics/69.jpg", 
             "slug": "joe-comartin"
@@ -1234,11 +1234,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Joe", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128187&Language=E", 
+             
             "name": "Joe Preston", 
             "dob": "1955-06-14", 
             "gender": "M", 
-            "site": "http://www.joeprestonmp.ca/", 
+             
             "name_family": "Preston", 
             "headshot": "polpics/237.jpg", 
             "slug": "joe-preston"
@@ -1249,11 +1249,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Joe", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128743&Language=E", 
+             
             "name": "Joe Volpe", 
             "dob": "1947-09-21", 
             "gender": "M", 
-            "site": "http://www.joevolpemp.ca/", 
+             
             "name_family": "Volpe", 
             "headshot": "polpics/298.jpg", 
             "slug": "joe-volpe"
@@ -1264,11 +1264,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Johanne", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128461&Language=E", 
+             
             "name": "Johanne Deschamps", 
             "dob": "1959-04-02", 
             "gender": "F", 
-            "site": "http://www.johannedeschamps.qc.ca/", 
+             
             "name_family": "Deschamps", 
             "headshot": "polpics/83.jpg", 
             "slug": "johanne-deschamps"
@@ -1279,11 +1279,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "John", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128360&Language=E", 
+             
             "name": "John Baird", 
             "dob": "1969-05-26", 
             "gender": "M", 
-            "site": "http://www.johnbaird.com/", 
+             
             "name_family": "Baird", 
             "headshot": "polpics/401.jpg", 
             "slug": "john-baird"
@@ -1294,11 +1294,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "John", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128475&Language=E", 
+             
             "name": "John Cummins", 
             "dob": "1942-03-12", 
             "gender": "M", 
-            "site": "http://www.johncummins.ca/", 
+             
             "name_family": "Cummins", 
             "headshot": "polpics/77.jpg", 
             "slug": "john-cummins"
@@ -1309,11 +1309,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "John", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128620&Language=E", 
+             
             "name": "John Rafferty", 
             "dob": "1953-07-03", 
             "gender": "M", 
-            "site": "http://www.johnrafferty.ndp.ca/", 
+             
             "name_family": "Rafferty", 
             "headshot": "polpics/595.jpg", 
             "slug": "john-rafferty"
@@ -1324,11 +1324,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "John", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128658&Language=E", 
+             
             "name": "John Weston", 
             "dob": "1958-04-19", 
             "gender": "M", 
-            "site": "http://www.johnweston.ca/", 
+             
             "name_family": "Weston", 
             "headshot": "polpics/617.jpg", 
             "slug": "john-weston"
@@ -1339,11 +1339,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Joy", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128374&Language=E", 
+             
             "name": "Joy Smith", 
             "dob": "1947-02-20", 
             "gender": "F", 
-            "site": "http://www.joysmith.ca/", 
+             
             "name_family": "Smith", 
             "headshot": "polpics/268.jpg", 
             "slug": "joy-smith"
@@ -1354,11 +1354,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Joyce", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128541&Language=E", 
+             
             "name": "Joyce Murray", 
             "dob": "1954-07-11", 
             "gender": "F", 
-            "site": "http://www.joycemurray.ca/", 
+             
             "name_family": "Murray", 
             "headshot": "polpics/550.jpg", 
             "slug": "joyce-murray"
@@ -1369,11 +1369,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Judy", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128792&Language=E", 
+             
             "name": "Judy Foote", 
             "dob": "1952-06-23", 
             "gender": "F", 
-            "site": "", 
+             
             "name_family": "Foote", 
             "headshot": "polpics/553.jpg", 
             "slug": "judy-foote"
@@ -1384,11 +1384,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Kelly", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128336&Language=E", 
+             
             "name": "Kelly Block", 
             "dob": "1961-11-30", 
             "gender": "F", 
-            "site": "http://www.kellyblock.ca/", 
+             
             "name_family": "Block", 
             "headshot": "polpics/604.jpg", 
             "slug": "kelly-block"
@@ -1399,11 +1399,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Ken", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128385&Language=E", 
+             
             "name": "Ken Dryden", 
             "dob": "1947-08-08", 
             "gender": "M", 
-            "site": "http://www.kendryden.ca/", 
+             
             "name_family": "Dryden", 
             "headshot": "polpics/93.jpg", 
             "slug": "ken-dryden"
@@ -1414,11 +1414,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Kevin", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128663&Language=E", 
+             
             "name": "Kevin Sorenson", 
             "dob": "1958-11-03", 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "Sorenson", 
             "headshot": "polpics/270.jpg", 
             "slug": "kevin-sorenson"
@@ -1429,11 +1429,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Kirsty", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128309&Language=E", 
+             
             "name": "Kirsty Duncan", 
             "dob": "1966-10-31", 
             "gender": "F", 
-            "site": "", 
+             
             "name_family": "Duncan", 
             "headshot": "polpics/577.jpg", 
             "slug": "kirsty-duncan"
@@ -1444,11 +1444,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Larry", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128636&Language=E", 
+             
             "name": "Larry Miller", 
             "dob": "1956-07-21", 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "Miller", 
             "headshot": "polpics/202.jpg", 
             "slug": "larry-miller"
@@ -1459,11 +1459,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Lawrence", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128304&Language=E", 
+             
             "name": "Lawrence MacAulay", 
             "dob": "1946-09-09", 
             "gender": "M", 
-            "site": "http://www.lawrencemacaulay.ca/", 
+             
             "name_family": "MacAulay", 
             "headshot": "polpics/176.jpg", 
             "slug": "lawrence-macaulay"
@@ -1474,11 +1474,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Lee", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128206&Language=E", 
+             
             "name": "Lee Richardson", 
             "dob": "1947-10-31", 
             "gender": "M", 
-            "site": "http://www.leerichardson.ca/", 
+             
             "name_family": "Richardson", 
             "headshot": "polpics/245.jpg", 
             "slug": "lee-richardson"
@@ -1489,11 +1489,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Leon", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128411&Language=E", 
+             
             "name": "Leon Benoit", 
             "dob": "1950-07-07", 
             "gender": "M", 
-            "site": "http://www.leonbenoit.ca/", 
+             
             "name_family": "Benoit", 
             "headshot": "polpics/25.jpg", 
             "slug": "leon-benoit"
@@ -1504,11 +1504,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Libby", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128493&Language=E", 
+             
             "name": "Libby Davies", 
             "dob": "1953-02-27", 
             "gender": "F", 
-            "site": "http://www.libbydavies.ca/", 
+             
             "name_family": "Davies", 
             "headshot": "polpics/80.jpg", 
             "slug": "libby-davies"
@@ -1519,11 +1519,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Lisa", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128412&Language=E", 
+             
             "name": "Lisa Raitt", 
             "dob": "1968-05-07", 
             "gender": "F", 
-            "site": "http://www.lisaraittmp.ca/", 
+             
             "name_family": "Raitt", 
             "headshot": "polpics/579.jpg", 
             "slug": "lisa-raitt"
@@ -1534,11 +1534,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Lois", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128209&Language=E", 
+             
             "name": "Lois Brown", 
             "dob": "1955-01-22", 
             "gender": "F", 
-            "site": "http://www.loisbrown.ca/", 
+             
             "name_family": "Brown", 
             "headshot": "polpics/587.jpg", 
             "slug": "lois-brown"
@@ -1549,11 +1549,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Luc", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128177&Language=E", 
+             
             "name": "Luc Desnoyers", 
             "dob": "1950-10-02", 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "Desnoyers", 
             "headshot": "polpics/570.jpg", 
             "slug": "luc-desnoyers"
@@ -1564,11 +1564,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Malcolm", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128407&Language=E", 
+             
             "name": "Malcolm Allen", 
             "dob": "1953-05-30", 
             "gender": "M", 
-            "site": "http://www.malcolmallen.ca/", 
+             
             "name_family": "Allen", 
             "headshot": "polpics/597.jpg", 
             "slug": "malcolm-allen"
@@ -1579,11 +1579,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Marc", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128557&Language=E", 
+             
             "name": "Marc Lemay", 
             "dob": "1951-04-04", 
             "gender": "M", 
-            "site": "http://www.marclemaydepute.org/", 
+             
             "name_family": "Lemay", 
             "headshot": "polpics/168.jpg", 
             "slug": "marc-lemay"
@@ -1594,11 +1594,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Marcel", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=78542&Language=E", 
+             
             "name": "Marcel Lussier", 
             "dob": "1944-06-30", 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "Lussier", 
             "headshot": "polpics/436.jpg", 
             "slug": ""
@@ -1609,11 +1609,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Mark", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128531&Language=E", 
+             
             "name": "Mark Eyking", 
             "dob": "1960-08-30", 
             "gender": "M", 
-            "site": "http://markeyking.liberal.ca/default_e.aspx", 
+             
             "name_family": "Eyking", 
             "headshot": "polpics/100.jpg", 
             "slug": "mark-eyking"
@@ -1624,11 +1624,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Marlene", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128273&Language=E", 
+             
             "name": "Marlene Jennings", 
             "dob": "1951-11-10", 
             "gender": "F", 
-            "site": "", 
+             
             "name_family": "Jennings", 
             "headshot": "polpics/144.jpg", 
             "slug": "marlene-jennings"
@@ -1639,11 +1639,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Martha Hall", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128179&Language=E", 
+             
             "name": "Martha Hall Findlay", 
             "dob": "1959-08-17", 
             "gender": "F", 
-            "site": "http://www.marthahallfindlay.ca/", 
+             
             "name_family": "Findlay", 
             "headshot": "polpics/549.jpg", 
             "slug": "martha-hall-findlay"
@@ -1654,11 +1654,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Massimo", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128159&Language=E", 
+             
             "name": "Massimo Pacetti", 
             "dob": "1962-08-22", 
             "gender": "M", 
-            "site": "http://pacetti.lpcq.ca/", 
+             
             "name_family": "Pacetti", 
             "headshot": "polpics/219.jpg", 
             "slug": "massimo-pacetti"
@@ -1669,11 +1669,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Maurice", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128586&Language=E", 
+             
             "name": "Maurice Vellacott", 
             "dob": "1955-09-29", 
             "gender": "M", 
-            "site": "http://www.mauricevellacott.ca/", 
+             
             "name_family": "Vellacott", 
             "headshot": "polpics/296.jpg", 
             "slug": "maurice-vellacott"
@@ -1684,11 +1684,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Maxime", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128319&Language=E", 
+             
             "name": "Maxime Bernier", 
             "dob": "1963-01-18", 
             "gender": "M", 
-            "site": "http://www.maximebernier.com/", 
+             
             "name_family": "Bernier", 
             "headshot": "polpics/404.jpg", 
             "slug": "maxime-bernier"
@@ -1699,11 +1699,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Meili", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128106&Language=E", 
+             
             "name": "Meili Faille", 
             "dob": "1972-06-18", 
             "gender": "F", 
-            "site": "http://www.meilifaille.org/", 
+             
             "name_family": "Faille", 
             "headshot": "polpics/101.jpg", 
             "slug": "meili-faille"
@@ -1714,11 +1714,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Merv", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128442&Language=E", 
+             
             "name": "Merv Tweed", 
             "dob": "1955-08-06", 
             "gender": "M", 
-            "site": "http://www.mervtweed.com/", 
+             
             "name_family": "Tweed", 
             "headshot": "polpics/291.jpg", 
             "slug": "merv-tweed"
@@ -1729,11 +1729,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Michael", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128250&Language=E", 
+             
             "name": "Michael Chong", 
             "dob": "1971-11-22", 
             "gender": "M", 
-            "site": "http://www.michaelchong.ca/", 
+             
             "name_family": "Chong", 
             "headshot": "polpics/64.jpg", 
             "slug": "michael-chong"
@@ -1744,11 +1744,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Monique", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128267&Language=E", 
+             
             "name": "Monique Guay", 
             "dob": "1959-10-27", 
             "gender": "F", 
-            "site": "http://www.moniqueguay.qc.ca/", 
+             
             "name_family": "Guay", 
             "headshot": "polpics/128.jpg", 
             "slug": "monique-guay"
@@ -1759,11 +1759,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Nathan", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128759&Language=E", 
+             
             "name": "Nathan Cullen", 
             "dob": "1972-07-13", 
             "gender": "M", 
-            "site": "http://www.nathancullen.ca/", 
+             
             "name_family": "Cullen", 
             "headshot": "polpics/75.jpg", 
             "slug": "nathan-cullen"
@@ -1774,11 +1774,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Niki", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128733&Language=E", 
+             
             "name": "Niki Ashton", 
             "dob": "1982-09-09", 
             "gender": "F", 
-            "site": "http://www.nikiashton.ca/", 
+             
             "name_family": "Ashton", 
             "headshot": "polpics/598.jpg", 
             "slug": "niki-ashton"
@@ -1789,11 +1789,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Olivia", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128233&Language=E", 
+             
             "name": "Olivia Chow", 
             "dob": "1957-03-24", 
             "gender": "F", 
-            "site": "http://www.oliviachow.ca/", 
+             
             "name_family": "Chow", 
             "headshot": "polpics/416.jpg", 
             "slug": "olivia-chow"
@@ -1804,11 +1804,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Pablo", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128151&Language=E", 
+             
             "name": "Pablo Rodriguez", 
             "dob": "1967-06-21", 
             "gender": "M", 
-            "site": "http://www.pablorodriguez.ca/", 
+             
             "name_family": "Rodriguez", 
             "headshot": "polpics/248.jpg", 
             "slug": "pablo-rodriguez"
@@ -1819,11 +1819,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Pascal-Pierre", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128283&Language=E", 
+             
             "name": "Pascal-Pierre Paill\u00e9", 
             "dob": "1978-05-30", 
             "gender": "M", 
-            "site": "http://www.pppaille.org/", 
+             
             "name_family": "Paill\u00e9", 
             "headshot": "polpics/566.jpg", 
             "slug": "pascal-pierre-paille"
@@ -1834,11 +1834,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Pat", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128421&Language=E", 
+             
             "name": "Pat Martin", 
             "dob": "1955-12-13", 
             "gender": "M", 
-            "site": "http://www.patmartin.ca/", 
+             
             "name_family": "Martin", 
             "headshot": "polpics/185.jpg", 
             "slug": "pat-martin"
@@ -1849,11 +1849,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Patricia", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128489&Language=E", 
+             
             "name": "Patricia Davidson", 
             "dob": "1946-06-30", 
             "gender": "F", 
-            "site": "http://www.patriciadavidson.ca/", 
+             
             "name_family": "Davidson", 
             "headshot": "polpics/418.jpg", 
             "slug": "patricia-davidson"
@@ -1864,11 +1864,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Patrick", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128457&Language=E", 
+             
             "name": "Patrick Brown", 
             "dob": "1978-05-26", 
             "gender": "M", 
-            "site": "http://www.servingbarrie.com/", 
+             
             "name_family": "Brown", 
             "headshot": "polpics/410.jpg", 
             "slug": "patrick-brown"
@@ -1879,11 +1879,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Paul", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128483&Language=E", 
+             
             "name": "Paul Calandra", 
             "dob": "1970-05-13", 
             "gender": "M", 
-            "site": "http://www.paulcalandra.com/", 
+             
             "name_family": "Calandra", 
             "headshot": "polpics/589.jpg", 
             "slug": "paul-calandra"
@@ -1894,11 +1894,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Paul", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128094&Language=E", 
+             
             "name": "Paul Szabo", 
             "dob": "1948-05-10", 
             "gender": "M", 
-            "site": "http://www.paulszabo.com/", 
+             
             "name_family": "Szabo", 
             "headshot": "polpics/279.jpg", 
             "slug": "paul-szabo"
@@ -1909,11 +1909,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Paule", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128287&Language=E", 
+             
             "name": "Paule Brunelle", 
             "dob": "1953-08-21", 
             "gender": "F", 
-            "site": "", 
+             
             "name_family": "Brunelle", 
             "headshot": "polpics/48.jpg", 
             "slug": "paule-brunelle"
@@ -1924,11 +1924,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Peter", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128505&Language=E", 
+             
             "name": "Peter Julian", 
             "dob": "1962-04-16", 
             "gender": "M", 
-            "site": "http://www.peterjulian.ca/", 
+             
             "name_family": "Julian", 
             "headshot": "polpics/146.jpg", 
             "slug": "peter-julian"
@@ -1939,11 +1939,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Pierre", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128469&Language=E", 
+             
             "name": "Pierre Lemieux", 
             "dob": "1963-04-09", 
             "gender": "M", 
-            "site": "http://www.pierrelemieux.ca/", 
+             
             "name_family": "Lemieux", 
             "headshot": "polpics/435.jpg", 
             "slug": "pierre-lemieux"
@@ -1954,11 +1954,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Pierre", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128108&Language=E", 
+             
             "name": "Pierre Paquette", 
             "dob": "1955-06-01", 
             "gender": "M", 
-            "site": "http://www.pierrepaquette.qc.ca/", 
+             
             "name_family": "Paquette", 
             "headshot": "polpics/221.jpg", 
             "slug": "pierre-paquette"
@@ -1969,11 +1969,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Rahim", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=78487&Language=E", 
+             
             "name": "Rahim Jaffer", 
             "dob": "1971-12-15", 
             "gender": "M", 
-            "site": "http://www.rahimjaffer.com/", 
+             
             "name_family": "Jaffer", 
             "headshot": "polpics/142.jpg", 
             "slug": ""
@@ -1984,11 +1984,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Ralph", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128559&Language=E", 
+             
             "name": "Ralph Goodale", 
             "dob": "1949-10-05", 
             "gender": "M", 
-            "site": "http://www.rgoodale.ca/?s=home", 
+             
             "name_family": "Goodale", 
             "headshot": "polpics/121.jpg", 
             "slug": "ralph-goodale"
@@ -1999,11 +1999,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Randy", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128539&Language=E", 
+             
             "name": "Randy Hoback", 
             "dob": "1967-12-19", 
             "gender": "M", 
-            "site": "http://www.randyhobackmp.ca/", 
+             
             "name_family": "Hoback", 
             "headshot": "polpics/603.jpg", 
             "slug": "randy-hoback"
@@ -2014,11 +2014,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Ray", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128477&Language=E", 
+             
             "name": "Ray Boughen", 
             "dob": "1937-05-25", 
             "gender": "M", 
-            "site": "http://www.rayboughen.ca/", 
+             
             "name_family": "Boughen", 
             "headshot": "polpics/602.jpg", 
             "slug": "ray-boughen"
@@ -2029,11 +2029,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Raymonde", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128263&Language=E", 
+             
             "name": "Raymonde Folco", 
             "dob": "1940-03-16", 
             "gender": "F", 
-            "site": "", 
+             
             "name_family": "Folco", 
             "headshot": "polpics/105.jpg", 
             "slug": "raymonde-folco"
@@ -2044,11 +2044,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Raynald", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128571&Language=E", 
+             
             "name": "Raynald Blais", 
             "dob": "1954-01-05", 
             "gender": "M", 
-            "site": "http://www.raynaldblais.qc.ca/", 
+             
             "name_family": "Blais", 
             "headshot": "polpics/31.jpg", 
             "slug": "raynald-blais"
@@ -2059,11 +2059,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Rick", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128372&Language=E", 
+             
             "name": "Rick Dykstra", 
             "dob": "1966-04-10", 
             "gender": "M", 
-            "site": "http://www.rickdykstra.ca/", 
+             
             "name_family": "Dykstra", 
             "headshot": "polpics/423.jpg", 
             "slug": "rick-dykstra"
@@ -2074,11 +2074,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Rob", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128551&Language=E", 
+             
             "name": "Rob Merrifield", 
             "dob": "1953-12-19", 
             "gender": "M", 
-            "site": "http://www.merrifieldmp.com/", 
+             
             "name_family": "Merrifield", 
             "headshot": "polpics/201.jpg", 
             "slug": "rob-merrifield"
@@ -2089,11 +2089,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Rob", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128321&Language=E", 
+             
             "name": "Rob Oliphant", 
             "dob": "1956-01-07", 
             "gender": "M", 
-            "site": "http://www.roboliphantmp.ca/", 
+             
             "name_family": "Oliphant", 
             "headshot": "polpics/576.jpg", 
             "slug": "rob-oliphant"
@@ -2104,11 +2104,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Robert", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128363&Language=E", 
+             
             "name": "Robert Bouchard", 
             "dob": "1943-03-30", 
             "gender": "M", 
-            "site": "http://www.robertbouchard.org/", 
+             
             "name_family": "Bouchard", 
             "headshot": "polpics/38.jpg", 
             "slug": "robert-bouchard"
@@ -2119,11 +2119,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Rodney", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128119&Language=E", 
+             
             "name": "Rodney Weston", 
             "dob": "1964-03-28", 
             "gender": "M", 
-            "site": "http://www.rodneyweston.ca/", 
+             
             "name_family": "Weston", 
             "headshot": "polpics/561.jpg", 
             "slug": "rodney-weston"
@@ -2134,11 +2134,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Roger", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128277&Language=E", 
+             
             "name": "Roger Pomerleau", 
             "dob": "1947-06-07", 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "Pomerleau", 
             "headshot": "polpics/563.jpg", 
             "slug": "roger-pomerleau"
@@ -2149,11 +2149,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Rona", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128390&Language=E", 
+             
             "name": "Rona Ambrose", 
             "dob": "1969-03-15", 
             "gender": "F", 
-            "site": "http://www.ronaambrose.com/", 
+             
             "name_family": "Ambrose", 
             "headshot": "polpics/6.jpg", 
             "slug": "rona-ambrose"
@@ -2164,11 +2164,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Roy", 
-            "parlpage": "http://www2.parl.gc.ca/parlinfo/Files/Parliamentarian.aspx?Item=B584B209-262D-4FF7-AFFF-AD7B64EF8C69&Language=E", 
+             
             "name": "Roy MacLaren", 
             "dob": null, 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "MacLaren", 
             "headshot": "polpics/7278.jpg", 
             "slug": ""
@@ -2179,11 +2179,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Royal", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128387&Language=E", 
+             
             "name": "Royal Galipeau", 
             "dob": "1947-01-05", 
             "gender": "M", 
-            "site": "http://www.royalgalipeau.ca/en", 
+             
             "name_family": "Galipeau", 
             "headshot": "polpics/427.jpg", 
             "slug": "royal-galipeau"
@@ -2194,11 +2194,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Ruby", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128624&Language=E", 
+             
             "name": "Ruby Dhalla", 
             "dob": "1974-02-18", 
             "gender": "F", 
-            "site": "http://www.rubydhalla.ca/", 
+             
             "name_family": "Dhalla", 
             "headshot": "polpics/88.jpg", 
             "slug": "ruby-dhalla"
@@ -2209,11 +2209,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Russ", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128602&Language=E", 
+             
             "name": "Russ Hiebert", 
             "dob": "1969-02-08", 
             "gender": "M", 
-            "site": "http://www.russhiebert.ca/", 
+             
             "name_family": "Hiebert", 
             "headshot": "polpics/136.jpg", 
             "slug": "russ-hiebert"
@@ -2224,11 +2224,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Scott", 
-            "parlpage": "http://www2.parl.gc.ca/parlinfo/Files/Parliamentarian.aspx?Item=D34B2845-A4E3-457B-B0EB-E95AC232D51D&Language=E", 
+             
             "name": "Scott Armstrong", 
             "dob": null, 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "Armstrong", 
             "headshot": "polpics/8337.jpg", 
             "slug": "scott-armstrong"
@@ -2239,11 +2239,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Scott", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128638&Language=E", 
+             
             "name": "Scott Brison", 
             "dob": "1967-05-10", 
             "gender": "M", 
-            "site": "http://www.brison.ca/", 
+             
             "name_family": "Brison", 
             "headshot": "polpics/44.jpg", 
             "slug": "scott-brison"
@@ -2254,11 +2254,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Serge", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128135&Language=E", 
+             
             "name": "Serge Cardin", 
             "dob": "1950-07-02", 
             "gender": "M", 
-            "site": "http://www.sergecardin.org/", 
+             
             "name_family": "Cardin", 
             "headshot": "polpics/53.jpg", 
             "slug": "serge-cardin"
@@ -2269,11 +2269,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Serge", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128465&Language=E", 
+             
             "name": "Serge M\u00e9nard", 
             "dob": "1941-09-27", 
             "gender": "M", 
-            "site": "http://www.sergemenard.org/", 
+             
             "name_family": "M\u00e9nard", 
             "headshot": "polpics/199.jpg", 
             "slug": "serge-menard"
@@ -2284,11 +2284,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Shawn", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128131&Language=E", 
+             
             "name": "Shawn Murphy", 
             "dob": "1951-07-27", 
             "gender": "M", 
-            "site": "http://www.shawnmurphymp.ca/", 
+             
             "name_family": "Murphy", 
             "headshot": "polpics/209.jpg", 
             "slug": "shawn-murphy"
@@ -2299,11 +2299,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Steve", 
-            "parlpage": "", 
+             
             "name": "Steve McClurg", 
             "dob": null, 
             "gender": "", 
-            "site": "", 
+             
             "name_family": "McClurg", 
             "headshot": "", 
             "slug": ""
@@ -2314,11 +2314,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Steven", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128274&Language=E", 
+             
             "name": "Steven Blaney", 
             "dob": "1965-04-08", 
             "gender": "M", 
-            "site": "http://www.stevenblaney.ca/", 
+             
             "name_family": "Blaney", 
             "headshot": "polpics/408.jpg", 
             "slug": "steven-blaney"
@@ -2329,11 +2329,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Steven", 
-            "parlpage": "", 
+             
             "name": "Steven Cage", 
             "dob": null, 
             "gender": "", 
-            "site": "", 
+             
             "name_family": "Cage", 
             "headshot": "", 
             "slug": ""
@@ -2344,11 +2344,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Steven", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128324&Language=E", 
+             
             "name": "Steven Fletcher", 
             "dob": "1972-06-17", 
             "gender": "M", 
-            "site": "http://www.stevenfletcher.com/", 
+             
             "name_family": "Fletcher", 
             "headshot": "polpics/104.jpg", 
             "slug": "steven-fletcher"
@@ -2359,11 +2359,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Stockwell", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128517&Language=E", 
+             
             "name": "Stockwell Day", 
             "dob": "1950-08-16", 
             "gender": "M", 
-            "site": "http://www.stockwellday.com/", 
+             
             "name_family": "Day", 
             "headshot": "polpics/81.jpg", 
             "slug": "stockwell-day"
@@ -2374,11 +2374,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "St\u00e9phane", 
-            "parlpage": "", 
+             
             "name": "St\u00e9phane Girard", 
             "dob": null, 
             "gender": "", 
-            "site": "", 
+             
             "name_family": "Girard", 
             "headshot": "", 
             "slug": ""
@@ -2389,11 +2389,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "St\u00e9phany", 
-            "parlpage": "", 
+             
             "name": "St\u00e9phany Crowley", 
             "dob": null, 
             "gender": "", 
-            "site": "", 
+             
             "name_family": "Crowley", 
             "headshot": "", 
             "slug": ""
@@ -2404,11 +2404,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Sylvain", 
-            "parlpage": "", 
+             
             "name": "Sylvain Desch\u00eanes", 
             "dob": null, 
             "gender": "", 
-            "site": "", 
+             
             "name_family": "Desch\u00eanes", 
             "headshot": "", 
             "slug": ""
@@ -2419,11 +2419,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Sylvie", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128322&Language=E", 
+             
             "name": "Sylvie Boucher", 
             "dob": "1962-12-18", 
             "gender": "F", 
-            "site": "http://www.sylvieboucher.ca/", 
+             
             "name_family": "Boucher", 
             "headshot": "polpics/409.jpg", 
             "slug": "sylvie-boucher"
@@ -2434,11 +2434,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Tamara", 
-            "parlpage": "", 
+             
             "name": "Tamara Lorincz", 
             "dob": null, 
             "gender": "", 
-            "site": "", 
+             
             "name_family": "Lorincz", 
             "headshot": "", 
             "slug": ""
@@ -2449,11 +2449,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Ted", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128405&Language=E", 
+             
             "name": "Ted Menzies", 
             "dob": "1952-02-18", 
             "gender": "M", 
-            "site": "http://www.tedmenzies.ca/", 
+             
             "name_family": "Menzies", 
             "headshot": "polpics/200.jpg", 
             "slug": "ted-menzies"
@@ -2464,11 +2464,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Terence", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128340&Language=E", 
+             
             "name": "Terence Young", 
             "dob": "1952-07-24", 
             "gender": "M", 
-            "site": "http://www.terenceyoung.com/", 
+             
             "name_family": "Young", 
             "headshot": "polpics/590.jpg", 
             "slug": "terence-young"
@@ -2479,11 +2479,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Theresa", 
-            "parlpage": "", 
+             
             "name": "Theresa Kiefer", 
             "dob": null, 
             "gender": "", 
-            "site": "", 
+             
             "name_family": "Kiefer", 
             "headshot": "", 
             "slug": ""
@@ -2494,11 +2494,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Tim", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128297&Language=E", 
+             
             "name": "Tim Uppal", 
             "dob": "1974-11-17", 
             "gender": "M", 
-            "site": "http://www.timuppal.ca/", 
+             
             "name_family": "Uppal", 
             "headshot": "polpics/606.jpg", 
             "slug": "tim-uppal"
@@ -2509,11 +2509,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Tom", 
-            "parlpage": "", 
+             
             "name": "Tom Gossen", 
             "dob": null, 
             "gender": "", 
-            "site": "", 
+             
             "name_family": "Gossen", 
             "headshot": "", 
             "slug": ""
@@ -2524,11 +2524,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Tom", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128473&Language=E", 
+             
             "name": "Tom Lukiwski", 
             "dob": "1951-10-05", 
             "gender": "M", 
-            "site": "http://www.lukiwski.ca/", 
+             
             "name_family": "Lukiwski", 
             "headshot": "polpics/173.jpg", 
             "slug": "tom-lukiwski"
@@ -2539,11 +2539,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Tom", 
-            "parlpage": "", 
+             
             "name": "Tom Prue", 
             "dob": null, 
             "gender": "", 
-            "site": "", 
+             
             "name_family": "Prue", 
             "headshot": "", 
             "slug": ""
@@ -2554,11 +2554,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Tony", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128575&Language=E", 
+             
             "name": "Tony Clement", 
             "dob": "1961-01-27", 
             "gender": "M", 
-            "site": "http://www.tonyclement.ca/", 
+             
             "name_family": "Clement", 
             "headshot": "polpics/417.jpg", 
             "slug": "tony-clement"
@@ -2569,11 +2569,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Tracey  Jastinder", 
-            "parlpage": "", 
+             
             "name": "Tracey  Jastinder Mann", 
             "dob": null, 
             "gender": "", 
-            "site": "", 
+             
             "name_family": "Mann", 
             "headshot": "", 
             "slug": ""
@@ -2584,11 +2584,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Vic", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128392&Language=E", 
+             
             "name": "Vic Toews", 
             "dob": "1952-09-10", 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "Toews", 
             "headshot": "polpics/287.jpg", 
             "slug": "vic-toews"
@@ -2599,11 +2599,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Victoria", 
-            "parlpage": "", 
+             
             "name": "Victoria Minnes", 
             "dob": null, 
             "gender": "", 
-            "site": "", 
+             
             "name_family": "Minnes", 
             "headshot": "", 
             "slug": ""
@@ -2614,11 +2614,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Wai", 
-            "parlpage": "", 
+             
             "name": "Wai Young", 
             "dob": null, 
             "gender": "", 
-            "site": "", 
+             
             "name_family": "Young", 
             "headshot": "", 
             "slug": ""
@@ -2629,11 +2629,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "William", 
-            "parlpage": "", 
+             
             "name": "William Jonsson", 
             "dob": null, 
             "gender": "", 
-            "site": "", 
+             
             "name_family": "Jonsson", 
             "headshot": "", 
             "slug": ""
@@ -2644,11 +2644,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Yvan", 
-            "parlpage": "", 
+             
             "name": "Yvan C\u00f4t\u00e9", 
             "dob": null, 
             "gender": "", 
-            "site": "", 
+             
             "name_family": "C\u00f4t\u00e9", 
             "headshot": "", 
             "slug": ""
@@ -2659,11 +2659,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Yves", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128147&Language=E", 
+             
             "name": "Yves Lessard", 
             "dob": "1943-01-02", 
             "gender": "M", 
-            "site": "http://www.yveslessard.com/", 
+             
             "name_family": "Lessard", 
             "headshot": "polpics/169.jpg", 
             "slug": "yves-lessard"
@@ -2674,11 +2674,11 @@
         "model": "core.politician", 
         "fields": {
             "name_given": "Yvon", 
-            "parlpage": "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=128661&Language=E", 
+             
             "name": "Yvon L\u00e9vesque", 
             "dob": "1940-03-10", 
             "gender": "M", 
-            "site": "", 
+             
             "name_family": "L\u00e9vesque", 
             "headshot": "polpics/170.jpg", 
             "slug": "yvon-levesque"

@@ -255,8 +255,6 @@ class Politician(Person):
     )
 
     dob = models.DateField(blank=True, null=True)
-    site = models.URLField(blank=True, verify_exists=False) # FIXME remove
-    parlpage = models.URLField(blank=True, verify_exists=False) # FIXME remove
     gender = models.CharField(max_length=1, blank=True, choices=GENDER_CHOICES)
     headshot = models.ImageField(upload_to='polpics', blank=True, null=True)
     slug = models.CharField(max_length=30, blank=True, db_index=True)
@@ -313,8 +311,8 @@ class Politician(Person):
         except IndexError:
             return None
         
-    def save(self):
-        super(Politician, self).save()
+    def save(self, *args, **kwargs):
+        super(Politician, self).save(*args, **kwargs)
         self.add_alternate_name(self.name)
 
     def save_parl_id(self, parlid):
@@ -335,6 +333,13 @@ class Politician(Person):
     @property
     def url(self):
         return "http://openparliament.ca" + self.get_absolute_url()
+
+    @property
+    def parlpage(self):
+        try:
+            return "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=%s&Language=E" % self.info()['parl_id']
+        except KeyError:
+            return None
         
     @models.permalink
     def get_contact_url(self):

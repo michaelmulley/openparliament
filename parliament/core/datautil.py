@@ -26,31 +26,25 @@ def update_hansards():
     hansards_from_calendar()
     parse_all_hansards()
 
-def load_pol_pics():
-    for pol in Politician.objects.exclude(parlpage='').filter(models.Q(headshot__isnull=True) | models.Q(headshot='')):
-        print "#%d: %s" % (pol.id, pol)
-        print pol.parlpage
-        soup = BeautifulSoup(urllib2.urlopen(pol.parlpage))
-        img = soup.find('img', id='MasterPage_MasterPage_BodyContent_PageContent_Content_TombstoneContent_TombstoneContent_ucHeaderMP_imgPhoto')
-        if not img:
-            img = soup.find('img', id="ctl00_cphContent_imgParliamentarianPicture")
-            if not img:
-                raise Exception("Didn't work for %s" % pol.parlpage)
-        imgurl = img['src']
-        if '?' not in imgurl: # no query string
-            imgurl = urllib.quote(imgurl.encode('utf8')) # but there might be accents!
-        imgurl = urlparse.urljoin(pol.parlpage, imgurl)
-        try:
-            test = urllib2.urlopen(imgurl)
-            content = urllib.urlretrieve(imgurl)
-        except Exception, e:
-            print "ERROR ON %s" % pol
-            print e
-            print imgurl
-            continue
-        #filename = urlparse.urlparse(imgurl).path.split('/')[-1]
-        pol.headshot.save(str(pol.id) + ".jpg", File(open(content[0])), save=True)
-        pol.save()
+def load_pol_pic(pol):
+    print "#%d: %s" % (pol.id, pol)
+    print pol.parlpage
+    soup = BeautifulSoup(urllib2.urlopen(pol.parlpage))
+    img = soup.find('img', id='MasterPage_MasterPage_BodyContent_PageContent_Content_TombstoneContent_TombstoneContent_ucHeaderMP_imgPhoto')
+    if not img:
+        raise Exception("Didn't work for %s" % pol.parlpage)
+    imgurl = img['src']
+    if '?' not in imgurl: # no query string
+        imgurl = urllib.quote(imgurl.encode('utf8')) # but there might be accents!
+    if 'BlankMPPhoto' in imgurl:
+        print "Blank photo"
+        return
+    imgurl = urlparse.urljoin(pol.parlpage, imgurl)
+    test = urllib2.urlopen(imgurl)
+    content = urllib.urlretrieve(imgurl)
+    #filename = urlparse.urlparse(imgurl).path.split('/')[-1]
+    pol.headshot.save(str(pol.id) + ".jpg", File(open(content[0])), save=True)
+    pol.save()
 
 def delete_invalid_pol_pics():
     from PIL import Image
@@ -136,7 +130,7 @@ def spark_index(bucketsize, bigrams=False):
             bucketcount = 0
             bucketidx += 1
             
-def get_parlinfo_ids(polset=Politician.objects.filter(parlpage__icontains='webinfo.parl')):
+def get_parlinfo_ids(polset):
     
     for pol in polset:
         page = urllib2.urlopen(pol.parlpage)
