@@ -203,7 +203,8 @@ class HansardParser(object):
              time=timestamp, member=t['member'],
              politician=t['politician'], who=t['member_title'],
              text=t.getText(), sequence=self.statement_index, written_question=bool(t['written_question']))
-            if r_notamember.search(t['member_title']) and 'Speaker' in t['member_title']:
+            if r_notamember.search(t['member_title'])\
+              and ('Speaker' in t['member_title'] or 'The Chair' in t['member_title']):
                 statement.speaker = True
             self.statement_index += 1
             self.statements.append(statement)
