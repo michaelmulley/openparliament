@@ -24,7 +24,7 @@
 <div class="focus"><p>{% if bill.law %}This bill has received Royal Assent and is now <strong>law</strong>.{% else %}{{ bill.status }} {% if bill.session.end %}<br>(This bill <strong>did not</strong> become law.){% endif %}{% endif %}</p>
 {% if not bill.session.end and not bill.law %}<p>Subscribe to a <a href="{% url bill_feed bill_id=bill.id %}" class="feed">feed</a> of speeches and votes in the House related to Bill {{ bill.number }}.</p>{% endif %}
     </div>{% endif %}
-{% if bill.legisinfo_url %}
+{% if bill.name %}
 <div class="clear"></div><div class="context"><h2>Elsewhere</h2></div>
 <div class="focus"><p>All sorts of information on this bill is available at <a href="{{ bill.legisinfo_url }}">LEGISinfo</a>, provided by the Library of Parliament.{% if bill.text_docid %} You can also read the <a href="{{ bill.get_billtext_url }}">full text of the bill</a>.{% endif %}</p></div>{% endif %}
 {% if votequestions %}
