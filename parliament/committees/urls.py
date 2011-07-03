@@ -1,7 +1,8 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('parliament.committees.views',
-    (r'^$', 'committee_list'),
-    (r'^(?P<acronym>[A-Z0-9]{4})/$', 'committee'),
-    (r'^(?P<committee_id>\d+)/$', 'committee'),
+    url(r'^$', 'committee_list', name='committee_list'),
+    (r'^(?P<committee_id>\d+)/', 'committee_id_redirect'),
+    (r'^(?P<slug>[^/]+)/$', 'committee'),
+    url(r'^(?P<committee_slug>[^/]+)/(?P<session_id>\d+-\d)/(?P<number>\d+)/$', 'committee_meeting', name='committee_meeting'),
 )

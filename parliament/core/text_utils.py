@@ -103,7 +103,7 @@ PARTY_COLOURS = {
 def statements_to_cloud_by_party(qs):
     counter = WordAndAttributeCounter()
     for statement in qs:
-        if statement.member and not statement.speaker:
+        if statement.member and not statement.procedural:
             party = statement.member.party.slug.lower()
         else:
             party = None

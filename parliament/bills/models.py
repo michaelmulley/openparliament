@@ -165,6 +165,8 @@ class VoteQuestion(models.Model):
     yea_total = models.SmallIntegerField()
     nay_total = models.SmallIntegerField()
     paired_total = models.SmallIntegerField()
+    context_statement = models.ForeignKey('hansards.Statement',
+        blank=True, null=True, on_delete=models.SET_NULL)
     
     def __unicode__(self):
         return u"Vote #%s on %s" % (self.number, self.date)

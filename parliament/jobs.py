@@ -5,7 +5,7 @@ from django.conf import settings
 
 from parliament.politicians import twit
 from parliament.politicians import googlenews as gnews
-from parliament.imports import parlvotes, legisinfo, hans, parl_cmte
+from parliament.imports import parlvotes, legisinfo, parl_document, parl_cmte
 from parliament.core.models import Politician, Session
 from django.core.mail import mail_admins
 from parliament.hansards.models import Document
@@ -39,9 +39,10 @@ def prune_activities():
         activityutils.prune(Activity.public.filter(politician=pol))
     return True
     
-def committees():
+def committees(sess=None):
     from parliament.committees.models import Committee
-    sess = Session.objects.current()
+    if sess is None:
+        sess = Session.objects.current()
     parl_cmte.import_committee_list(session=sess)
     for comm in Committee.objects.filter(sessions=sess).order_by('-parent'):
         # subcommittees last
@@ -51,7 +52,7 @@ def committees():
     
 @transaction.commit_on_success
 def hansards_load():
-    hans.hansards_from_calendar()
+    parl_document.fetch_latest_debates()
     return True
         
 @transaction.commit_manually
@@ -60,7 +61,7 @@ def hansards_parse():
       .annotate(scount=models.Count('statement'))\
       .exclude(scount__gt=0).order_by('date').iterator():
         try:
-            hans.parseAndSave(hansard)
+            parl_document.import_document(hansard, interactive=False)
         except Exception, e:
             transaction.rollback()
             mail_admins("Hansard parse failure on #%s" % hansard.id, repr(e))
@@ -76,7 +77,7 @@ def hansards_parse():
             raise e
         else:
             transaction.commit()
-        if getattr(settings, 'PARLIAMENT_SEND_EMAIL', True):
+        if getattr(settings, 'PARLIAMENT_SEND_EMAIL', False):
             alertutils.alerts_for_hansard(hansard)
     transaction.commit()
             

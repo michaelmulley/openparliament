@@ -18,7 +18,7 @@
     {% if pol.headshot %}<div class="headshot"><img class="headshot" src="{% thumbnail pol.headshot 142x230 autocrop %}" alt=""><span>House of Commons photo</span></div>{% endif %}
         {% if member.current %}
         <h3>Track {{ pol.name_given }}</h3>
-        <ul class="bulleted"><li><a href="/alerts/signup/?politician={{ pol.id }}">Get e-mail</a> whenever {{ pol|heshe|lower }} speaks in the House</li>
+        <ul class="bulleted"><li><a href="/alerts/signup/?politician={{ pol.id }}">Get e-mail</a> whenever {{ pol|heshe|lower }} speaks in House debates</li>
         <li>Subscribe to feeds of <a href="{% url politician_activity_feed pol_id=pol.id %}" class="feed">recent activity</a> (what you see to the right) or <a href="{% url politician_statement_feed pol_id=pol.id %}" class="feed">statements in the House</a></li></ul> {% endif %}   
 
 {% with pol.info as info %}

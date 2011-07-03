@@ -1,4 +1,6 @@
-"""Parse the Hansards of the House of Commons.
+"""This *was* the parser for the current HTML format on parl.gc.ca.
+
+But now we have XML. See parl_document.py.
 
 This module is organized like so:
 __init__.py - utility functions, simple parse interface
@@ -7,7 +9,7 @@ current.py - parser for the Hansard format used from 2006 to the present
 old.py - (fairly crufty) parser for the format used from 1994 to 2006
 
 """
-from parliament.imports.hans.common import *
+from parliament.imports.hans_old.common import *
 
 import logging
 logger = logging.getLogger(__name__)

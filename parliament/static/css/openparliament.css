@@ -1,5 +1,5 @@
 /* GLOBAL SETTINGS */
-body{font-family:"Helvetica Neue",Arial,Helvetica,sans-serif;margin:0;padding:0;line-height:1.33333333333;font-size:15px;background-color:#F0F0F0;}
+body{font-family:"Helvetica Neue",Arial,Helvetica,sans-serif;margin:0;padding:0;line-height:1.33333333333;font-size:15px;color: #111111;background-color:#F0F0F0;}
 p{margin:0 0 10px 0;}
 h1{font-size:32px;font-weight:bold;color:#222222;margin:0 0 20px 0;padding:0;line-height:40px;}
 h2{font-size:24px;font-weight:normal;font-weight:300;margin:0 0 10px 0;color:#522D07;line-height:30px;}
@@ -146,6 +146,7 @@ div.statement div.focus{margin-bottom:10px;min-height:110px;overflow:hidden;widt
 .headshot_thumb{display:block;float:left;margin:4px 8px 4px 2px;border:2px solid #BBBBBB; width: 67px;}
 .statement .focus p {max-width: none;}
 .statement .focus div {max-width: 640px;}
+.statement p.procedural {color: #666; font-style: italic}
 
 /* POLITICIAN PAGE */
 .politician img.headshot{margin-left: auto; margin-right: auto;display:block;border:2px solid #666666;}

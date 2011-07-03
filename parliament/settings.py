@@ -27,9 +27,9 @@ CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 # system time zone.
 TIME_ZONE = 'America/Montreal'
 
-# Language code for this installation. All choices can be found here:
-# http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+# Language code for this installation.
+# MUST BE either 'en' or 'fr'
+LANGUAGE_CODE = 'en'
 
 SITE_ID = 1
 
@@ -111,7 +111,6 @@ INSTALLED_APPS = [
     'parliament.core',
     'parliament.hansards',
     'parliament.elections',
-    'parliament.financials',
     'parliament.bills',
     'parliament.politicians',
     'parliament.activity',

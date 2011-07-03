@@ -2,7 +2,6 @@ import datetime
 import re
 import time
 import urllib2
-import urlparse
 
 from django.db import transaction
 
@@ -10,7 +9,7 @@ from BeautifulSoup import BeautifulSoup
 import lxml.html
 
 from parliament.committees.models import (Committee, CommitteeMeeting,
-    CommitteeActivity, CommitteeReport)
+    CommitteeActivity, CommitteeReport, CommitteeInSession)
 from parliament.core.models import Session
 from parliament.hansards.models import Document
 
@@ -19,23 +18,15 @@ COMMITTEE_LIST_URL = 'http://www2.parl.gc.ca/CommitteeBusiness/CommitteeList.asp
 def import_committee_list(session=None):
     if session is None:
         session = Session.objects.current()
-        
-    #ids_seen = set()
-    
+
     def make_committee(namestring, parent=None):
-        print namestring
-        match = re.search(r'^(.+) \(([A-Z0-9]{4})\)$', namestring)
+        #print namestring
+        match = re.search(r'^(.+) \(([A-Z0-9]{3,5})\)$', namestring)
         (name, acronym) = match.groups()
-        try:
-            comm = Committee.objects.get(acronym=acronym, name=name)
-        except Committee.DoesNotExist:
-            comm = Committee(acronym=acronym, name=name)    
-        comm.active = True
-        comm.parent = parent
-        comm.save()
-        comm.sessions.add(session)
-        ids_seen.add(comm.id)
-        return comm
+        committee, created = Committee.objects.get_or_create(name=name, parent=parent)
+        CommitteeInSession.objects.get_or_create(
+            committee=committee, session=session, acronym=acronym)
+        return committee
     
     soup = BeautifulSoup(urllib2.urlopen(COMMITTEE_LIST_URL %
         (session.parliamentnum, session.sessnum)))
@@ -44,7 +35,6 @@ def import_committee_list(session=None):
         for sub in li.findAll('li', 'SubCommitteeItem'):
             make_committee(sub.find('a').string, parent=com)
     
-    #Committee.objects.exclude(id__in=ids_seen).update(active=False)
     return True
 
 def _docid_from_url(u):
@@ -68,7 +58,8 @@ COMMITTEE_MEETINGS_URL = 'http://www2.parl.gc.ca/CommitteeBusiness/CommitteeMeet
 @transaction.commit_on_success
 def import_committee_meetings(committee, session):
 
-    url = COMMITTEE_MEETINGS_URL % {'acronym': committee.acronym,
+    acronym = committee.get_acronym(session)
+    url = COMMITTEE_MEETINGS_URL % {'acronym': acronym,
         'parliamentnum': session.parliamentnum,
         'sessnum': session.sessnum}
     resp = urllib2.urlopen(url)
@@ -78,8 +69,8 @@ def import_committee_meetings(committee, session):
         number = int(re.sub(r'\D', '', mtg_row.cssselect('.MeetingNumber')[0].text))
         assert number > 0
         try:
-            meeting = CommitteeMeeting.objects.get(committee=committee,
-                session=session, number=number).select_related('evidence')
+            meeting = CommitteeMeeting.objects.select_related('evidence').get(
+                committee=committee,session=session, number=number)
         except CommitteeMeeting.DoesNotExist:
             meeting = CommitteeMeeting(committee=committee,
                 session=session, number=number)
@@ -116,7 +107,6 @@ def import_committee_meetings(committee, session):
                 meeting.evidence = Document.objects.create(
                     source_id=evidence_id,
                     date=meeting.date,
-                    url=urlparse.urljoin(url, evidence_link[0].get('href')),
                     session=session,
                     document_type=Document.EVIDENCE)
         
@@ -146,7 +136,8 @@ COMMITTEE_REPORT_URL = 'http://www2.parl.gc.ca/CommitteeBusiness/ReportsResponse
 @transaction.commit_on_success
 def import_committee_reports(committee, session):
     # FIXME rework to parse out the single all-reports page?
-    url = COMMITTEE_REPORT_URL % {'acronym': committee.acronym,
+    acronym = committee.get_acronym(session)
+    url = COMMITTEE_REPORT_URL % {'acronym': acronym,
         'parliamentnum': session.parliamentnum,
         'sessnum': session.sessnum}
     tree = lxml.html.parse(urllib2.urlopen(url))

@@ -5,8 +5,9 @@ from BeautifulSoup import NavigableString
 
 r_politicalpost = re.compile(r'(Minister|Leader|Secretary|Solicitor|Attorney|Speaker|Deputy |Soliciter|Chair |Parliamentary|President |for )')
 r_honorific = re.compile(r'^(Mr\.?|Mrs\.?|Ms\.?|Miss\.?|Hon\.?|Right Hon\.|The|A|An\.?|Some|M\.|One|Santa|Acting|L\'hon\.|Assistant|Mme)\s(.+)$', re.DOTALL | re.UNICODE)
-r_notamember = re.compile(r'^(The|A|Some|Acting|Santa|One|Assistant|An\.?)')
+r_notamember = re.compile(r'^(The|A|Some|Acting|Santa|One|Assistant|An\.?|Le|La|Une|Des)')
 r_mister = re.compile(r'^(Mr|Mrs|Ms|Miss|Hon|Right Hon|M|Mme)\.?\s+')
+r_parens = re.compile(r'\s*\(.+\)\s*$')
 
 def countWords(text):
     # very quick-n-dirty for now
@@ -63,8 +64,12 @@ def tameWhitespace(s):
 def sane_quotes(s):
     return s.replace('``', '"').replace("''", '"')
     
-def slugify(s):
-    s = re.sub(r'[^a-zA-Z]', '-', removeAccents(s.strip().lower()))
+def slugify(s, allow_numbers=False):
+    if allow_numbers:
+        pattern = r'[^a-zA-Z0-9]'
+    else:
+        pattern = r'[^a-zA-Z]'
+    s = re.sub(pattern, '-', removeAccents(s.strip().lower()))
     return re.sub(r'--+', '-', s)
 
 def normalizeName(s):

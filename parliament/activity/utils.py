@@ -29,6 +29,7 @@ ACTIVITY_MAX = {
     'membervote': 5,
     'statement': 8,
     'billsponsor': 7,
+    'committee': 8,
 } 
 def iter_recent(queryset):
     activity_counts = ACTIVITY_MAX.copy()

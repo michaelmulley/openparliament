@@ -12,6 +12,6 @@ urlpatterns = patterns('parliament.hansards.views',
     (r'^(?P<hansard_id>\d+)/(?P<statement_seq>\d+)/twitter/$', 'statement_twitter'),
     url(r'^(?P<hansard_id>\d+)/(?P<statement_seq>\d+)/only/$', 'statement_permalink', name="hansard_statement_only"),
     url(r'^(?P<hansard_date>[0-9-]+)/(?P<statement_seq>\d+)/only/$', 'statement_permalink', name="hansard_statement_only_bydate"),
-    (r'^hansard/(\d+)/local/$', 'hansardcache'),
+    (r'^(?P<document_id>\d+)/local/(?P<language>en|fr)/$', 'document_cache'),
     (r'^(?P<hansard_id>\d+)/(?P<statement_seq>\d+)/permalink/$', redir_view('parliament.hansards.views.statement_permalink')),
 )

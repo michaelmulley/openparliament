@@ -1,0 +1,23 @@
+{% extends "committees/base.html" %}
+{% load thumbnail django_static %}
+{% block pagetitle %}{{ commitee.best_name }} Committee on {{ meeting.date|date:"N jS, Y" }}{% endblock %}
+{% block pageheading %}{{ committee.best_name }} Committee on {{ meeting.date|date:"N jS, Y" }}{% endblock %}
+{% block breadcrumbs %}<a href="{% url parliament.committees.views.committee_list %}">Committees</a> <a href="{{ committee.get_absolute_url }}">{{ commitee }}</a> <a href="#">{{ meeting.session }}</a> #{{ meeting.number }}{% endblock %}
+{% block headextra %}<script type="text/javascript" src="{% staticfile "js/pagination.js" %}"></script>
+{% if highlight_statement or highlight_statement == 0%}<link rel="canonical" href="{{ highlight_statement.get_absolute_url }}only/">{% endif %}{% endblock %}
+{% block content %}
+<div class="focus"><p>Evidence of meeting #{{ meeting.number }} for <a href="{{ committee.get_absolute_url }}">{{ committee.name }}</a> in the {{ meeting.session }}. (The <a href="{{ document.url }}">original version</a> is on Parliament's site.) The <span class="tip tipunderline" title="Most frequently spoken word, excluding a fixed list of extra-boring words (like 'the', or 'government').">word of the day</span> was {% if document.wordcloud %}<a href="{{ document.wordcloud.url }}" rel="lightbox">{{ document.get_wordoftheday }}</a>{% else %}<strong>{{ document.get_wordoftheday}}</strong>{% endif %}.</p></div>
+
+{% if meeting.activities_list %}
+<div class="clear"></div><div class="context"><h2>On the agenda</h2></div>
+<div class="focus"><ul class="tile">{% for activity in meeting.activities_list %}<li class="six twoline overflowtip"><a href="{{ activity.get_absolute_url }}">{{ activity }}</a></li>{% endfor %}</ul><div class="clear"></div></div>
+{% endif %}
+{# list of people speaking? #}
+
+<div id="paginated">
+
+{% include "hansards/statement_page.inc" %}
+
+</div>
+{% endblock %}
+{% block footer %}<p>View this document on a <a href="{{ pagination_url }}?singlepage=1">single page</a>.</p>{{ block.super }}{% endblock footer %}
