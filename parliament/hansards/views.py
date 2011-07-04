@@ -24,12 +24,24 @@ def _get_hansard(hansard_id, hansard_date):
     else:
         raise Exception("hansard() requires an ID or date")
 
-def hansard(request, hansard_id=None, hansard_date=None, statement_seq=None):
+def hansard(request, hansard_id=None, hansard_date=None, sequence=None):
     hansard = _get_hansard(hansard_id, hansard_date)
-    return document_view(request, hansard, statement_seq=statement_seq)
+    return document_view(request, hansard, sequence=sequence)
+
+def document_redirect(request, document_id, sequence=None):
+    try:
+        document = Document.objects.select_related(
+            'committeemeeting', 'committeemeeting__committee').get(
+            pk=document_id)
+    except Document.DoesNotExist:
+        raise Http404
+    url = document.get_absolute_url(pretty=True)
+    if sequence:
+        url += "%s/" % sequence
+    return HttpResponsePermanentRedirect(url)
 
 @vary_on_headers('X-Requested-With')
-def document_view(request, document, meeting=None, statement_seq=None):
+def document_view(request, document, meeting=None, sequence=None):
 
     per_page = 15
     if 'singlepage' in request.GET:
@@ -41,8 +53,8 @@ def document_view(request, document, meeting=None, statement_seq=None):
 
     highlight_statement = None
     try:
-        if statement_seq is not None and 'page' not in request.GET:
-            highlight_statement = int(statement_seq)
+        if sequence is not None and 'page' not in request.GET:
+            highlight_statement = int(sequence)
             page = int(highlight_statement/per_page) + 1
         else:
             page = int(request.GET.get('page', '1'))
@@ -89,10 +101,10 @@ def document_view(request, document, meeting=None, statement_seq=None):
         })
     return HttpResponse(t.render(RequestContext(request, ctx)))
     
-def statement_twitter(request, hansard_id, statement_seq):
+def statement_twitter(request, hansard_id, sequence):
     """Redirects to a Twitter page, prepopulated with sharing info for a particular statement."""
     try:
-        statement = Statement.objects.get(document=hansard_id, sequence=statement_seq)
+        statement = Statement.objects.get(document=hansard_id, sequence=sequence)
     except Statement.DoesNotExist:
         raise Http404
         
@@ -106,12 +118,12 @@ def statement_twitter(request, hansard_id, statement_seq):
         get_twitter_share_url(statement.get_absolute_url(), description)
     )
     
-def statement_permalink(request, statement_seq, hansard_id=None, hansard_date=None):
+def statement_permalink(request, sequence, hansard_id=None, hansard_date=None):
     """A page displaying only a single statement. Used as a non-JS permalink."""
     #TODO: Work with evidence
     
     hansard = _get_hansard(hansard_id, hansard_date)
-    statement = get_object_or_404(Statement, document=hansard, sequence=statement_seq)
+    statement = get_object_or_404(Statement, document=hansard, sequence=sequence)
     
     if statement.politician:
         who = statement.politician.name

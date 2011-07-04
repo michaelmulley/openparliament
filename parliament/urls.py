@@ -8,7 +8,10 @@ from parliament.core.views import SiteNewsFeed
 
 urlpatterns = patterns('',
     (r'^search/', include('parliament.search.urls')),
-    (r'^hansards/', include('parliament.hansards.urls')),
+    (r'^debates/', include('parliament.hansards.urls')),
+    #(r'^hansards/', include('parliament.hansards.urls')),
+    url(r'^documents/(?P<document_id>\d+)/$', 'parliament.hansards.views.document_redirect', name='document_redirect'),
+    url(r'^documents/(?P<document_id>\d+)/(?P<sequence>\d+)/$', 'parliament.hansards.views.document_redirect', name='document_redirect'),
     (r'^politicians/', include('parliament.politicians.urls')),
     (r'^bills/', include('parliament.bills.urls')),
     (r'^alerts/', include('parliament.alerts.urls')),

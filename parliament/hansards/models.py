@@ -67,10 +67,13 @@ class Document(models.Model):
     def url_date(self):
         return '%s-%s-%s' % (self.date.year, self.date.month, self.date.day)
         
-    @models.permalink
-    def get_absolute_url(self):
-        return ('parliament.hansards.views.hansard', [], {'hansard_id': self.id})
-        #return ('hansard_bydate', [], {'hansard_date': self.url_date})
+    def get_absolute_url(self, pretty=False):
+        if self.document_type == self.DEBATE:
+            return urlresolvers.reverse('debate', kwargs={'hansard_date': self.url_date})
+        elif self.document_type == self.EVIDENCE:
+            if pretty:
+                return self.committeemeeting.get_absolute_url(pretty=True)
+            return urlresolvers.reverse('document_redirect', kwargs={'document_id': self.id})
 
     @property
     def url(self):
@@ -267,7 +270,7 @@ class Statement(models.Model):
     @memoize_property
     @models.permalink
     def get_absolute_url(self):
-        return ('parliament.hansards.views.hansard', [], {'hansard_id': self.document_id, 'statement_seq': self.sequence})
+        return ('document_redirect', [], {'document_id': self.document_id, 'sequence': self.sequence})
         #return ('hansard_statement_bydate', [], {
         #    'statement_seq': self.sequence,
         #    'hansard_date': '%s-%s-%s' % (self.time.year, self.time.month, self.time.day),

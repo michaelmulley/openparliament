@@ -38,6 +38,15 @@ def prune_activities():
     for pol in Politician.objects.current():
         activityutils.prune(Activity.public.filter(politician=pol))
     return True
+
+def committee_evidence():
+    for document in Document.evidence\
+      .annotate(scount=models.Count('statement'))\
+      .exclude(scount__gt=0).order_by('date').iterator():
+        print document
+        parl_document.import_document(document, interactive=False)
+        if document.statement_set.all().count():
+            document.save_activity()
     
 def committees(sess=None):
     from parliament.committees.models import Committee
