@@ -398,6 +398,7 @@ class Politician(Person):
         if total_words < min_words:
             self.del_info('favourite_word')
             self.del_info('wordcloud')
+            return
         self.set_info('favourite_word', text_utils.most_frequent_word(statements))
         if wordcloud:
             image = text_utils.statements_to_cloud(statements)
