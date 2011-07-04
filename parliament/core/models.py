@@ -212,9 +212,6 @@ class PoliticianManager(models.Manager):
         try:
             info = PoliticianInfo.sr_objects.get(schema='parl_id', value=unicode(parlid))
             return info.politician
-            # FIXME label-as-invalid functionality
-            #if polid < 0:
-            #    raise Politician.DoesNotExist("Stored as invalid parlID")
         except PoliticianInfo.DoesNotExist:
             if not lookOnline:
                 return None # FIXME inconsistent behaviour: when should we return None vs. exception?
@@ -253,6 +250,8 @@ class Politician(Person):
         ('M', 'Male'),
         ('F', 'Female'),
     )
+
+    WORDCLOUD_PATH = 'autoimg/wordcloud-pol'
 
     dob = models.DateField(blank=True, null=True)
     gender = models.CharField(max_length=1, blank=True, choices=GENDER_CHOICES)
@@ -326,7 +325,7 @@ class Politician(Person):
     @models.permalink
     def get_absolute_url(self):
         if self.slug:
-            return ('parliament.politicians.views.politician', [], {'pol_slug': self.slug})
+            return 'parliament.politicians.views.politician', [], {'pol_slug': self.slug}
         return ('parliament.politicians.views.politician', [], {'pol_id': self.id})
         
     # temporary, hackish, for stupid api framework
@@ -381,9 +380,32 @@ class Politician(Person):
         
     def set_info_multivalued(self, key, value):
         PoliticianInfo.objects.get_or_create(politician=self, schema=key, value=unicode(value))
+
+    def del_info(self, key):
+        self.politicianinfo_set.filter(schema=key).delete()
         
-    def find_favourite_word(self):
-        self.set_info('favourite_word', text_utils.most_frequent_word(self.statement_set.all()))
+    def find_favourite_word(self, wordcloud=True):
+        statements = self.statement_set.filter(speaker=False)
+        if self.current_member:
+            # For current members, we limit to the last two years for better
+            # comparison, and require at least 2,500 total words.
+            statements = statements.filter(time__gte=datetime.datetime.now() - datetime.timedelta(weeks=100))
+            min_words = 2500
+        else:
+            # For ex-members, we use everything they said
+            min_words = 5000
+        total_words = sum((s.wordcount for s in statements))
+        if total_words < min_words:
+            self.del_info('favourite_word')
+            self.del_info('wordcloud')
+        self.set_info('favourite_word', text_utils.most_frequent_word(statements))
+        if wordcloud:
+            image = text_utils.statements_to_cloud(statements)
+            path = os.path.join(self.WORDCLOUD_PATH, "%s.png" % (self.slug if self.slug else self.id))
+            fullpath = os.path.join(settings.MEDIA_ROOT, path)
+            with open(fullpath, 'wb') as f:
+                f.write(image)
+            self.set_info('wordcloud', path)
         
 class PoliticianInfoManager(models.Manager):
     """Custom manager ensures we always pull in the politician FK."""

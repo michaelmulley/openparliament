@@ -1,6 +1,7 @@
 from collections import defaultdict
 from heapq import nlargest
 from operator import itemgetter
+import random
 import re
 from cStringIO import StringIO
 import subprocess
@@ -17,13 +18,14 @@ def text_token_iterator(text, statement_separator=None):
     if statement_separator:
         yield statement_separator
 
-def qs_token_iterator(queryset, statement_separator=None):
-    for statement in queryset.iterator():
+def statements_token_iterator(statements, statement_separator=None):
+    for statement in statements:
         for x in text_token_iterator(statement.text_plain(), statement_separator):
             yield x
 
             
 STOPWORDS = frozenset(["i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours", "yourself", "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its", "itself", "they", "them", "their", "theirs", "themselves", "what", "which", "who", "whom", "this", "that", "these", "those", "am", "is", "are", "was", "were", "be", "been", "being", "have", "has", "had", "having", "do", "does", "did", "doing", "a", "an", "the", "and", "but", "if", "or", "because", "as", "until", "while", "of", "at", "by", "for", "with", "about", "against", "between", "into", "through", "during", "before", "after", "above", "below", "to", "from", "up", "down", "in", "out", "on", "off", "over", "under", "again", "further", "then", "once", "here", "there", "when", "where", "why", "how", "all", "any", "both", "each", "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than", "too", "very", "s", "t", "can", "will", "just", "don", "should", "now", # this is the nltk stopwords list
+"it's", "we're", "we'll", "they're", "can't", "won't", "isn't", "don't", "he's", "she's", "i'm", "aren't",
 "government", "house", 'committee', 'would', 'speaker', 'motion', 'mr', 'mrs', 'ms', 'member', 'minister', 'canada', 'members',
 'time', 'prime', 'one', 'parliament', 'us', 'bill', 'act', 'like', 'canadians', 'people', 'said', 'want', 'could', 'issue',
 'today', 'hon', 'order', 'party', 'canadian', 'think', 'also', 'new', 'get', 'many', 'say', 'look', 'country', 'legislation',
@@ -79,7 +81,7 @@ class WordAttributeCount(object):
         
 def most_frequent_word(qs):
     counter = WordCounter()
-    for word in qs_token_iterator(qs):
+    for word in statements_token_iterator(qs):
         counter[word] += 1
     try:
         return counter.most_common(1)[0][0]
@@ -98,9 +100,9 @@ PARTY_COLOURS = {
     'reform': '3ae617',
     'ndp': 'f58a18',
 }
-def statements_to_cloud(qs):
+def statements_to_cloud_by_party(qs):
     counter = WordAndAttributeCounter()
-    for statement in qs.iterator():
+    for statement in qs:
         if statement.member and not statement.speaker:
             party = statement.member.party.slug.lower()
         else:
@@ -109,7 +111,20 @@ def statements_to_cloud(qs):
             counter.add(word, party)
     result = [(x[0], unicode(x[1].count), PARTY_COLOURS.get(x[1].winning_attribute(), '777777'))
         for x in counter.most_common(100)]
-    cmd_input = "\n".join(["word\tweight\tcolor"] + [u"\t".join(x) for x in result]).encode('utf8')
+    return _call_wordcloud_generator(result)
+
+CLOUD_COLOURS = ['870920', 'CF3A16', 'FF8420', '87731F', '0F5C54']
+def statements_to_cloud(statements):
+    counter = WordCounter()
+    for word in statements_token_iterator(statements):
+        counter[word] += 1
+    result = [(x[0], unicode(x[1]), random.choice(CLOUD_COLOURS))
+        for x in counter.most_common(60)]
+    return _call_wordcloud_generator(result)
+
+def _call_wordcloud_generator(rows):
+    """Each row should be a tuple of word, weight, color."""
+    cmd_input = "\n".join(["word\tweight\tcolor"] + [u"\t".join(x) for x in rows]).encode('utf8')
     p = subprocess.Popen(settings.PARLIAMENT_WORDCLOUD_COMMAND, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
     return p.communicate(cmd_input)[0]
     

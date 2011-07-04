@@ -116,13 +116,13 @@ class Hansard(models.Model):
         
     def get_wordoftheday(self):
         if not self.wordoftheday:
-            self.wordoftheday = text_utils.most_frequent_word(self.statement_set.all())
+            self.wordoftheday = text_utils.most_frequent_word(self.statement_set.filter(speaker=False))
             if self.wordoftheday:
                 self.save()
         return self.wordoftheday
         
     def generate_wordcloud(self):
-        image = text_utils.statements_to_cloud(self.statement_set.all())
+        image = text_utils.statements_to_cloud_by_party(self.statement_set.filter(speaker=False))
         self.wordcloud.save("%s.png" % self.date, ContentFile(image), save=True)
         self.save()
 

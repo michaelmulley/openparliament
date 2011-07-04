@@ -40,7 +40,10 @@
 
 {% if info.favourite_word %}
 <h3>Crucial Fact</h3>
-<ul class="bulleted"><li>{{ pol|hisher }} <span class="tip tipunderline" title="Most frequently spoken word in the House, excluding a fixed list of extra-boring words (like 'the', or 'government').">favourite word</span> is <strong>{{ info.favourite_word }}</strong>.</li></ul>
+<ul class="bulleted"><li>{{ pol|hisher }} <span class="tip tipunderline" title="Most frequently spoken word in the House, excluding a fixed list of extra-boring words (like 'the', or 'government').">favourite word</span>
+    {% if member.current %}is{% else %}was{% endif %}
+    {% if info.wordcloud %}<a href="{{ MEDIA_URL }}{{ info.wordcloud }}" rel="lightbox">{{ info.favourite_word }}</a>.
+        {% else %}<strong>{{ info.favourite_word }}</strong>.{% endif %}</li></ul>
 {% endif %}
 
 {% endwith %}
