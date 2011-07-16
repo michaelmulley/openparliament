@@ -61,7 +61,8 @@ class Document(models.Model):
         if self.document_type == self.DEBATE:
             return u"Hansard #%s for %s (#%s)" % (self.number, self.date, self.id)
         else:
-            return u"%s evidence for %s (#%s)" % (self.committeemeeting.committee.short_name, self.date, self.id)
+            return u"%s evidence for %s (#%s/#%s)" % (
+                self.committeemeeting.committee.short_name, self.date, self.id, self.source_id)
     
     @property
     def url_date(self):
@@ -110,6 +111,18 @@ class Document(models.Model):
         if qp_seq is not None:
             topics.insert(0, ('Question Period', qp_seq))
         return topics
+
+    def politicians(self):
+        return Politician.objects.filter(statement__document=self).distinct()
+
+    def outside_speakers(self):
+        speakers = {}
+        for val in self.statement_set.filter(politician__isnull=True, who_hocid__isnull=False)\
+          .values_list('who', 'who_context'):
+            who = parsetools.r_parens.sub('', val[0])
+            who = re.sub('^\s*\S+\s+', '', who).strip() # strip honorific
+            speakers[who] = val[1]
+        return speakers
     
     def save_activity(self):
         statements = self.statement_set.filter(procedural=False).select_related('member', 'politician')

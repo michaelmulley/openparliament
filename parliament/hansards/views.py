@@ -97,7 +97,7 @@ def document_view(request, document, meeting=None, sequence=None):
         ctx.update({
             'meeting': meeting,
             'committee': meeting.committee,
-            'pagination_url': meeting.get_absolute_url(),
+            'pagination_url': meeting.get_absolute_url(pretty=True),
         })
     return HttpResponse(t.render(RequestContext(request, ctx)))
     

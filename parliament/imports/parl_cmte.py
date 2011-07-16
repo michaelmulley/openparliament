@@ -54,6 +54,14 @@ def _parse_date(d):
         *time.strptime(d, '%B %d, %Y')[:3]
     )
 
+
+def import_committee_documents(session):
+    for comm in Committee.objects.filter(sessions=session).order_by('-parent'):
+        # subcommittees last
+        import_committee_meetings(comm, session)
+        import_committee_reports(comm, session)
+        time.sleep(1)
+
 COMMITTEE_MEETINGS_URL = 'http://www2.parl.gc.ca/CommitteeBusiness/CommitteeMeetings.aspx?Cmte=%(acronym)s&Language=E&Parl=%(parliamentnum)d&Ses=%(sessnum)d&Mode=1'
 @transaction.commit_on_success
 def import_committee_meetings(committee, session):

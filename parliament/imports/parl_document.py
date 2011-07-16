@@ -44,11 +44,14 @@ def import_document(document, interactive=True):
     xml_fr = document.get_cached_xml('fr')
     pdoc_fr = alpheus.parse_file(xml_fr)
     xml_fr.close()
-
-    if len(pdoc_en.statements) != len(pdoc_fr.statements):
-        raise Exception("French and English statement counts don't match for %r" % document)
-
-    document.date = pdoc_en.meta['date']
+    
+    if document.date and document.date != pdoc_en.meta['date']:
+        # Sometimes they get the date wrong
+        if document.date != pdoc_fr.meta['date']:
+            logger.error("Date mismatch on document #%s: %s %s" % (
+                document.id, document.date, pdoc_en.meta['date']))
+    else:
+        document.date = pdoc_en.meta['date']
     document.number = pdoc_en.meta['document_number']
     document.save()
 
@@ -141,12 +144,16 @@ def import_document(document, interactive=True):
 
         statements.append(s)
 
-    assert len(statements) == len(pdoc_fr.statements)
-    for s, pstate in zip(statements, pdoc_fr.statements):
-        if s.source_id != pstate.meta['id']:
-            raise Exception("Statement IDs do not match in en/fr. %s %s" % (s.source_id, pstate.meta['id']))
+    if len(statements) != len(pdoc_fr.statements):
+        logger.error("French and English statement counts don't match for %r" % document)
+    else:
+        for s, pstate in zip(statements, pdoc_fr.statements):
+            if s.source_id != pstate.meta['id']:
+                raise Exception("Statement IDs do not match in en/fr. %s %s" % (s.source_id, pstate.meta['id']))
 
-        s.content_fr = _process_related_links(pstate.content)
+            s.content_fr = _process_related_links(pstate.content)
+        
+    for s in statements:
         s.save()
 
         s.mentioned_politicians.add(*list(s._related_pols))

@@ -53,11 +53,7 @@ def committees(sess=None):
     if sess is None:
         sess = Session.objects.current()
     parl_cmte.import_committee_list(session=sess)
-    for comm in Committee.objects.filter(sessions=sess).order_by('-parent'):
-        # subcommittees last
-        parl_cmte.import_committee_meetings(comm, sess)
-        parl_cmte.import_committee_reports(comm, sess)
-        time.sleep(1)
+    parl_cmte.import_committee_documents(sess)
     
 @transaction.commit_on_success
 def hansards_load():

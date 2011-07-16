@@ -25,7 +25,7 @@ def committee(request, slug):
     c = RequestContext(request, {
         'title': cmte.name,
         'committee': cmte,
-        'meetings': cmte.committeemeeting_set.order_by('-date')[:16]
+        'meetings': cmte.committeemeeting_set.order_by('-date')
     })
     return HttpResponse(t.render(c))
     
@@ -38,7 +38,7 @@ def committee_meeting(request, committee_slug, session_id, number, sequence=None
 
     document = meeting.evidence
     if document:
-        return document_view(request, document, meeting=meeting, statement_seq=sequence)
+        return document_view(request, document, meeting=meeting, sequence=sequence)
     else:
         return HttpResponse("No evidence")
 
