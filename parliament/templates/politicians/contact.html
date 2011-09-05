@@ -1,6 +1,9 @@
 {% extends "politicians/base.html" %}
 
 {% load ours %}
+
+{% block breadcrumbs %}{{ block.super }} <a href="{% url parliament.politicians.views.current_mps %}">MPs</a> <a href="{% url parliament.politicians.views.current_mps %}#{{ pol.current_member.riding.province }}">{{ pol.current_member.riding.province|expand_province }}</a> <a href="{{ pol.get_absolute_url }}">{{ pol.name}}</a> Contact{% endblock %}
+
 {% block content %}
 <div class="context"><h2>Rules of Engagement</h2></div>
 <div class="focus"><ul class="bulleted inside">
