@@ -1,3 +1,4 @@
+import re
 import urllib2
 
 from BeautifulSoup import BeautifulSoup
@@ -8,24 +9,27 @@ def update_politician_info(pol):
     parlid = pol.info()['parl_id']
     url = 'http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=%s&Language=E' % parlid
     soup = BeautifulSoup(urllib2.urlopen(url))
+
+    def _get_field(fieldname):
+        return soup.find(id=re.compile(r'MasterPage_.+_DetailsContent_.+_' + fieldname + '$'))
     
-    phonespan = soup.find(id='MasterPage_MasterPage_BodyContent_PageContent_Content_DetailsContent_DetailsContent__ctl0_lblTelephoneData')
+    phonespan = _get_field('lblTelephoneData')
     if phonespan and phonespan.string:
         pol.set_info('phone', phonespan.string.replace('  ', ' '))
         
-    faxspan = soup.find(id='MasterPage_MasterPage_BodyContent_PageContent_Content_DetailsContent_DetailsContent__ctl0_lblFaxData')
+    faxspan = _get_field('lblFaxData')
     if faxspan and faxspan.string:
         pol.set_info('fax', faxspan.string.replace('  ', ' '))
         
-    maillink = soup.find(id='MasterPage_MasterPage_BodyContent_PageContent_Content_DetailsContent_DetailsContent__ctl0_hlEMail')
+    maillink = _get_field('hlEMail')
     if maillink and maillink.string:
         pol.set_info('email', maillink.string)
         
-    weblink = soup.find(id="MasterPage_MasterPage_BodyContent_PageContent_Content_DetailsContent_DetailsContent__ctl0_hlWebSite")
+    weblink = _get_field('hlWebSite')
     if weblink and weblink['href']:
         pol.set_info('web_site', weblink['href'])
     
-    constit_div = soup.find(id='MasterPage_MasterPage_BodyContent_PageContent_Content_DetailsContent_DetailsContent__ctl0_divConstituencyOffices')
+    constit_div = _get_field('divConstituencyOffices')
     if constit_div: 
         constit = u''
         for row in constit_div.findAll('td'):
