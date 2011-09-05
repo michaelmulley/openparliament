@@ -23,10 +23,10 @@
 
 {% with pol.info as info %}
 
-{% if member.current and info.email and False %}
+{% if member.current and info.email %}
 <h3>Your Say</h3>
 <ul class="bulleted">
-<li><a href="/contact/{{ pol.slug }}/">Contact {{ pol.name_given }}</a></li></ul>
+<li><a href="./contact/">Contact {{ pol.name_given }}</a></li></ul>
 {% endif %}
 
 {% if info.parl_id %}

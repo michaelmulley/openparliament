@@ -1,0 +1,24 @@
+{% extends "politicians/base.html" %}
+
+{% load ours %}
+{% block content %}
+<div class="context"><h2>Rules of Engagement</h2></div>
+<div class="focus"><ul class="bulleted inside">
+<li>If {{ pol.name }} is your MP, introduce yourself as a <strong>constituent</strong>. If {{ pol|heshe|lower }}’s not, remember that MPs don’t put much stock in letters from outside their districts.</li>
+<li>Be brief and <strong>respectful</strong>.</li>
+<li>Try to ask a <strong>specific</strong> question.</li>
+</ul></div><div class="clear"></div>
+<div class="context"><h2>Paper &amp; Voice</h2></div>
+<div class="focus"><table class="standard"><tr><th>Ottawa</th><td class="gutter"></td><th>Constituency</th></tr>
+    <tr><td class="four"><p>{{ pol.name }}<br>House of Commons<br>Ottawa, ON<br>K1A 0A6</p><p>(No postage required!)</p>
+        {% if info.phone %}<p>Phone: {{ info.phone }}
+            {% if info.fax %}<br>Fax: {{ info.fax }}{% endif %}</p>{% endif %}</td><td></td>
+    <td class="five"><p>{% if info.constituency_offices %}{{ info.constituency_offices|linebreaksbr }}{% else %}Doesn't look like we have that address. Try the official <a href="{{ pol.parlpage }}">Parliament site</a>.{% endif %}</p></td></tr></table>
+</div><div class="clear"></div>
+
+{% if info.email %}
+<div class="context"><h2>E-mail</h2></div>
+<div class="focus"><p>You can reach the office of {{ pol.name }} at <a href="mailto:{{ info.email }}">{{ info.email }}</a></p></div>
+<div class="clear"></div>
+{% endif %}
+{% endblock content %}

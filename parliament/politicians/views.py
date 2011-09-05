@@ -86,6 +86,23 @@ def politician(request, pol_id=None, pol_slug=None):
     else:
         t = loader.get_template("politicians/politician.html")
     return HttpResponse(t.render(c))
+
+def contact(request, pol_id=None, pol_slug=None):
+    if pol_slug:
+        pol = get_object_or_404(Politician, slug=pol_slug)
+    else:
+        pol = get_object_or_404(Politician, pk=pol_id)
+
+    if not pol.current_member:
+        raise Http404
+
+    c = RequestContext(request, {
+        'pol': pol,
+        'info': pol.info(),
+        'title': u'Contact %s' % pol.name
+    })
+    t = loader.get_template("politicians/contact.html")
+    return HttpResponse(t.render(c))
     
 def hide_activity(request):
     if not request.user.is_authenticated() and request.user.is_staff:
