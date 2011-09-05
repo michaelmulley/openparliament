@@ -8,7 +8,7 @@ PIL>=1.1.6
 South==0.7.2
 django-devserver==0.0.2
 django-debug-toolbar==0.8.3
-django-extensions==0.4.1
+git+http://github.com/django-extensions/django-extensions.git#egg=django_extensions
 django-haystack==1.0.1-final
 #psycopg2>=2.0.7
 pysolr==2.0.9
