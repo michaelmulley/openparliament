@@ -336,7 +336,7 @@ class Politician(Person):
     @property
     def parlpage(self):
         try:
-            return "http://webinfo.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=%s&Language=E" % self.info()['parl_id']
+            return "http://www.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=%s&Language=E" % self.info()['parl_id']
         except KeyError:
             return None
         
