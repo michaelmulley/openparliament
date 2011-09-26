@@ -30,6 +30,14 @@ class EvidenceManager(models.Manager):
     def get_query_set(self):
         return super(EvidenceManager, self).get_query_set().filter(document_type=Document.EVIDENCE)
 
+class NoStatementManager(models.Manager):
+    """Manager restricts to Documents that haven't had statements parsed."""
+
+    def get_query_set(self):
+        return super(NoStatementManager, self).get_query_set()\
+            .annotate(scount=models.Count('statement'))\
+            .exclude(scount__gt=0)
+
 class Document(models.Model):
     
     DEBATE = 'D'
@@ -53,13 +61,14 @@ class Document(models.Model):
     objects = models.Manager()
     hansards = HansardManager()
     evidence = EvidenceManager()
+    without_statements = NoStatementManager()
     
     class Meta:
         ordering = ('-date',)
     
     def __unicode__ (self):
         if self.document_type == self.DEBATE:
-            return u"Hansard #%s for %s (#%s)" % (self.number, self.date, self.id)
+            return u"Hansard #%s for %s (#%s/#%s)" % (self.number, self.date, self.id, self.source_id)
         else:
             return u"%s evidence for %s (#%s/#%s)" % (
                 self.committeemeeting.committee.short_name, self.date, self.id, self.source_id)

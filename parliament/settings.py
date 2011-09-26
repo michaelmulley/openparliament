@@ -29,7 +29,7 @@ TIME_ZONE = 'America/Montreal'
 
 # Language code for this installation.
 # MUST BE either 'en' or 'fr'
-LANGUAGE_CODE = 'fr'
+LANGUAGE_CODE = 'en'
 
 SITE_ID = 1
 

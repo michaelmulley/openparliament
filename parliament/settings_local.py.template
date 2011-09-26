@@ -18,6 +18,10 @@ DATABASES = {
 HANSARD_CACHE_DIR = os.path.join(PROJ_ROOT, 'hansard-cache')
 SITE_URL='http://openparliament.ca'
 
+# Language code for this installation.
+# MUST BE either 'en' or 'fr'
+LANGUAGE_CODE = 'en'
+
 # Currently unused
 # RECAPTCHA_PUBLIC_KEY = '<your public key>'
 # RECAPTCHA_PRIVATE_KEY = '<your private key>'
