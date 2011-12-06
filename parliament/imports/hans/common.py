@@ -194,7 +194,7 @@ class HansardParser(object):
         if t.hasText():
             if not t['member_title']:
                 t['member_title'] = 'Proceedings'
-                print "WARNING: No title for %s" % t.getText()
+                print "WARNING: No title for %s" % t.getText().encode('ascii', 'replace')
             timestamp = t['timestamp']
             if not isinstance(timestamp, datetime.datetime):
                 # The older parser provides only datetime.time objects
