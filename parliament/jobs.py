@@ -7,11 +7,13 @@ from parliament.politicians import twit
 from parliament.politicians import googlenews as gnews
 from parliament.imports import parlvotes, legisinfo, parl_document, parl_cmte
 from parliament.core.models import Politician, Session
-from django.core.mail import mail_admins
 from parliament.hansards.models import Document
 from parliament.activity import utils as activityutils
 from parliament.alerts import utils as alertutils
 from parliament.activity.models import Activity
+
+import logging
+logger = logging.getLogger(__name__)
 
 @transaction.commit_on_success
 def twitter():
@@ -69,7 +71,7 @@ def hansards_parse():
             parl_document.import_document(hansard, interactive=False)
         except Exception, e:
             transaction.rollback()
-            mail_admins("Hansard parse failure on #%s" % hansard.id, repr(e))
+            logger.error("Hansard parse failure on #%s: %r" % (hansard.id, e))
             continue
         else:
             transaction.commit()
