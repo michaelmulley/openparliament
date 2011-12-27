@@ -233,7 +233,7 @@ class Document(models.Model):
     def download(self):
         if self.downloaded:
             return True
-        if self.date.year < 2006:
+        if self.date and self.date.year < 2006:
             raise Exception("No XML available before 2006")
         langs = ('en', 'fr')
         paths = [self.get_filepath(l) for l in langs]
@@ -265,7 +265,7 @@ class Statement(models.Model):
 
     procedural = models.BooleanField(default=False, db_index=True)
     written_question = models.CharField(max_length=1, blank=True)
-    statement_type = models.CharField(max_length=15, blank=True)
+    statement_type = models.CharField(max_length=35, blank=True)
     
     bills = models.ManyToManyField(Bill, blank=True)
     mentioned_politicians = models.ManyToManyField(Politician, blank=True, related_name='statements_with_mentions')
