@@ -53,7 +53,7 @@ def import_document(document, interactive=True):
     else:
         document.date = pdoc_en.meta['date']
     document.number = pdoc_en.meta['document_number']
-    document.save()
+    document.public = True
 
     statements = []
 
@@ -149,9 +149,13 @@ def import_document(document, interactive=True):
     else:
         for s, pstate in zip(statements, pdoc_fr.statements):
             if s.source_id != pstate.meta['id']:
-                raise Exception("Statement IDs do not match in en/fr. %s %s" % (s.source_id, pstate.meta['id']))
+                logger.error("Statement IDs do not match in en/fr. %s %s" % (s.source_id, pstate.meta['id']))
+                for s in statements:
+                    s.content_fr = ''
+                break
 
             s.content_fr = _process_related_links(pstate.content)
+        document.multilingual = True
         
     for s in statements:
         s.save()
@@ -161,6 +165,8 @@ def import_document(document, interactive=True):
         if getattr(s, '_related_vote', False):
             s._related_vote.context_statement = s
             s._related_vote.save()
+
+    document.save()
 
     return document
 

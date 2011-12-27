@@ -58,6 +58,9 @@ class Document(models.Model):
 
     downloaded = models.BooleanField(default=False)
 
+    public = models.BooleanField("Display on site?", default=False)
+    multilingual = models.BooleanField("Content parsed in both languages?", default=False)
+
     objects = models.Manager()
     hansards = HansardManager()
     evidence = EvidenceManager()

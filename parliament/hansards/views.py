@@ -166,4 +166,5 @@ def by_year(request, year):
         date_field='date',
         year=year,
         make_object_list=True,
+        template_name="hansards/hansard_archive_year.html",
         extra_context={'title': 'Debates from %s' % year})
