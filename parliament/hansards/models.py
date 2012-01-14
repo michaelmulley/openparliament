@@ -316,7 +316,7 @@ class Statement(models.Model):
         r = []
         for e, f in zip(el, fl):
             idx = e.find('data-originallang="')
-            if idx and self.content_en[idx+19:idx+21] == 'fr':
+            if idx and e[idx+19:idx+21] == 'fr':
                 r.append(f)
             else:
                 r.append(e)
