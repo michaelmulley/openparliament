@@ -51,7 +51,6 @@ def committee_evidence():
             document.save_activity()
     
 def committees(sess=None):
-    from parliament.committees.models import Committee
     if sess is None:
         sess = Session.objects.current()
     parl_cmte.import_committee_list(session=sess)
