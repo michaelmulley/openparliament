@@ -28,6 +28,7 @@ if settings.DEBUG:
         (r'^admin/', include(admin.site.urls)),
         (r'^static/(?P<path>.*)$', 'django.views.static.serve',
                 {'document_root': settings.MEDIA_ROOT}),
+        (r'^rosetta/', include('rosetta.urls')),
     )
 
 if getattr(settings, 'ADMIN_URL', False):

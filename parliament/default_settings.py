@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 
 DEBUG = True
@@ -23,9 +24,18 @@ PARLIAMENT_DB_READONLY = False
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 TIME_ZONE = 'America/Montreal'
 
-# Language code for this installation.
-# MUST BE either 'en' or 'fr'
+# Language code for this installation. All choices can be found here:
+# http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en'
+
+_ = lambda s: s
+
+LANGUAGES = (
+    ('en', _(u'English')),
+    ('fr', _(u'Français'))
+)
+
+DEFAULT_CHARSET = 'utf-8'
 
 SITE_ID = 1
 
@@ -106,6 +116,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'haystack',
     'south',
+    'rosetta',
     'sorl.thumbnail',
     'compressor',
     'parliament.core',
@@ -183,5 +194,3 @@ LOGGING = {
         }
     },
 }
-
-

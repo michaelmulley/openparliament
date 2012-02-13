@@ -24,4 +24,3 @@ freebase
 lxml
 #recaptcha-client==1.0.5
 -e git+git://github.com/rhymeswithcycle/alpheus.git#egg=alpheus
-
