@@ -11,7 +11,7 @@ from parliament.core.utils import ActiveManager
 
 
 class PoliticianAlert(models.Model):
-    email = models.EmailField('Your e-mail')
+    email = models.EmailField(_('Your e-mail'))
     politician = models.ForeignKey(Politician)
     active = models.BooleanField(default=False)
     created = models.DateTimeField(default=datetime.datetime.now)

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-12 23:09-0500\n"
+"POT-Creation-Date: 2012-02-13 21:28-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,8 +18,20 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 
+#: settings.py:38
+msgid "English"
+msgstr ""
+
+#: settings.py:39
+msgid "Français"
+msgstr ""
+
 #: activity/models.py:22
 msgid "Activities"
+msgstr ""
+
+#: alerts/models.py:14
+msgid "Your e-mail"
 msgstr ""
 
 #: alerts/models.py:38
@@ -35,4 +47,14 @@ msgstr ""
 #: alerts/utils.py:72
 #, python-format
 msgid "Your alerts for %s from openparliament.ca"
+msgstr ""
+
+#: alerts/views.py:64
+#, python-format
+msgid "Confirmation required: E-mail alerts about %s"
+msgstr ""
+
+#: alerts/views.py:79 alerts/views.py:97 alerts/views.py:117
+#, python-format
+msgid "E-mail alerts for %s"
 msgstr ""

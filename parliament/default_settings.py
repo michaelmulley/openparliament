@@ -116,7 +116,6 @@ INSTALLED_APPS = [
     'django_extensions',
     'haystack',
     'south',
-    'rosetta',
     'sorl.thumbnail',
     'compressor',
     'parliament.core',

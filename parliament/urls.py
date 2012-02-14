@@ -28,7 +28,6 @@ if settings.DEBUG:
         (r'^admin/', include(admin.site.urls)),
         (r'^static/(?P<path>.*)$', 'django.views.static.serve',
                 {'document_root': settings.MEDIA_ROOT}),
-        (r'^rosetta/', include('rosetta.urls')),
     )
 
 if getattr(settings, 'ADMIN_URL', False):
@@ -36,13 +35,13 @@ if getattr(settings, 'ADMIN_URL', False):
         (settings.ADMIN_URL, include(admin.site.urls)),
         (r'^memcached-status/$', 'parliament.core.maint.memcached_status'),
     )
-    
+
 if getattr(settings, 'PARLIAMENT_SITE_CLOSED', False):
     urlpatterns = patterns('',
         (r'.*', 'parliament.core.views.closed')
     ) + urlpatterns
-    
+
 if getattr(settings, 'EXTRA_URLS', False):
     urlpatterns += patterns('', *settings.EXTRA_URLS)
-    
+
 handler500 = 'parliament.core.errors.server_error'
