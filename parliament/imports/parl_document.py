@@ -5,6 +5,7 @@ These transcripts are either House Hansards, or House committee evidence.
 Most of the heavily-lifting code has been put in a separate module
 called alpheus: http://github.com/rhymeswithcycle/alpheus
 """
+from difflib import SequenceMatcher
 import re
 import sys
 import urllib2
@@ -18,23 +19,27 @@ from BeautifulSoup import BeautifulSoup
 
 from parliament.bills.models import Bill, VoteQuestion
 from parliament.core.models import Politician, ElectedMember, Session
-from parliament.hansards.models import Statement, Document
+from parliament.hansards.models import Statement, Document, OldSequenceMapping
 
 import logging
 logger = logging.getLogger(__name__)
 
 @transaction.commit_on_success
-def import_document(document, interactive=True):
+def import_document(document, interactive=True, reimport_preserving_sequence=False):
+    old_statements = None
     if document.statement_set.all().exists():
-        if interactive:
-            sys.stderr.write("Statements already exist for %r.\nDelete them? (y/n) " % document)
-            yn = raw_input()
-            if yn.strip() == 'y':
-                document.statement_set.all().delete()
-            else:
-                return
+        if reimport_preserving_sequence:
+            if OldSequenceMapping.objects.filter(document=document).exists():
+                raise Exception("Sequence mapping already exits for %s" % document)
+            old_statements = list(document.statement_set.all())
+            document.statement_set.all().delete()
         else:
-            return
+            if not interactive:
+                return
+            sys.stderr.write("Statements already exist for %r.\nDelete them? (y/n) " % document)
+            if raw_input().strip() != 'y':
+                return
+            document.statement_set.all().delete()
 
     document.download()
     xml_en = document.get_cached_xml('en')
@@ -147,15 +152,26 @@ def import_document(document, interactive=True):
     if len(statements) != len(pdoc_fr.statements):
         logger.error("French and English statement counts don't match for %r" % document)
     else:
+        document.multilingual = True
         for s, pstate in zip(statements, pdoc_fr.statements):
             if s.source_id != pstate.meta['id']:
                 logger.error("Statement IDs do not match in en/fr. %s %s" % (s.source_id, pstate.meta['id']))
+                document.multilingual = False
                 for s in statements:
                     s.content_fr = ''
                 break
 
             s.content_fr = _process_related_links(pstate.content)
-        document.multilingual = True
+
+    Statement.set_slugs(statements)
+
+    if old_statements:
+        for mapping in _align_sequences(statements, old_statements):
+            OldSequenceMapping.objects.create(
+                document=document,
+                sequence=mapping[0],
+                slug=mapping[1]
+            )
         
     for s in statements:
         s.save()
@@ -170,6 +186,63 @@ def import_document(document, interactive=True):
 
     return document
 
+def _align_sequences(new_statements, old_statements):
+    """Given two list of statements, returns a list of mappings in the form of
+    (old_statement_sequence, new_statement_slug)"""
+
+    def build_speaker_dict(states):
+        d = {}
+        for s in states:
+            d.setdefault(s.name_info['display_name'], []).append(s)
+        return d
+
+    def get_comparison_sequence(text):
+        return re.split(r'\s+', text)
+
+    def calculate_similarity(old, new):
+        """Given two statements, return a score between 0 and 1 expressing their similarity"""
+        score = 1.0 if old.time == new.time else 0.0
+        oldtext, newtext = old.text_plain(), new.text_plain()
+        if new in chosen:
+            score -= 0.01
+        if newtext in oldtext:
+            similarity = 1.0
+        else:
+            similarity = SequenceMatcher(
+                None, get_comparison_sequence(oldtext), get_comparison_sequence(newtext)
+            ).ratio()
+        return (score + similarity) / 2.0
+
+    new_speakers, old_speakers = build_speaker_dict(new_statements), build_speaker_dict(old_statements)
+    mappings = []
+    chosen = set()
+
+    for speaker, olds in old_speakers.items():
+        news = new_speakers.get(speaker, [])
+        if speaker and len(olds) == len(news):
+            # The easy version: assume we've got the same statements
+            for old, new in zip(olds, news):
+                score = calculate_similarity(old, new)
+                if score < 0.9:
+                    logger.warning("Low similarity for easy match %s: %r %r / %r %r"
+                        % (score, old, old.text_plain(), new, new.text_plain()))
+                mappings.append((old.sequence, new.slug))
+        else:
+            # Try and pair the most similar statement
+            if news:
+                logger.info("Count mismatch for %s" % speaker)
+                for old in olds:
+                    scores = ( (new, calculate_similarity(old, new)) for new in news )
+                    choice, score = max(scores, key=lambda s: s[1])
+                    chosen.add(choice)
+                    if score < 0.75:
+                        logger.warning("Low-score similarity match %s: %r %r / %r %r"
+                            % (score, old, old.text_plain(), choice, choice.text_plain()))
+                    mappings.append((old.sequence, choice.slug))
+            else:
+                logger.warning("No new statements for %s" % speaker)
+
+    return mappings
 
 def _build_tag(name, attrs):
     return u'<%s%s>' % (
