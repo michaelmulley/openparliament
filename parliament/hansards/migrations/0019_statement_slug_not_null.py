@@ -8,38 +8,14 @@ class Migration(SchemaMigration):
 
     def forwards(self, orm):
         
-        # Adding model 'OldSequenceMapping'
-        db.create_table('hansards_oldsequencemapping', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('document', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['hansards.Document'])),
-            ('sequence', self.gf('django.db.models.fields.PositiveIntegerField')()),
-            ('slug', self.gf('django.db.models.fields.SlugField')(max_length=100, db_index=True)),
-        ))
-        db.send_create_signal('hansards', ['OldSequenceMapping'])
-
-        # Adding unique constraint on 'OldSequenceMapping', fields ['document', 'sequence']
-        db.create_unique('hansards_oldsequencemapping', ['document_id', 'sequence'])
-
-        # Adding field 'Statement.slug'
-        db.add_column('hansards_statement', 'slug', self.gf('django.db.models.fields.SlugField')(default=None, max_length=100, null=True, db_index=True, blank=True), keep_default=False)
-
-        # Adding unique constraint on 'Statement', fields ['document', 'slug']
-        db.create_unique('hansards_statement', ['document_id', 'slug'])
+        # Changing field 'Statement.slug'
+        db.alter_column('hansards_statement', 'slug', self.gf('django.db.models.fields.SlugField')(max_length=100))
 
 
     def backwards(self, orm):
         
-        # Removing unique constraint on 'Statement', fields ['document', 'slug']
-        db.delete_unique('hansards_statement', ['document_id', 'slug'])
-
-        # Removing unique constraint on 'OldSequenceMapping', fields ['document', 'sequence']
-        db.delete_unique('hansards_oldsequencemapping', ['document_id', 'sequence'])
-
-        # Deleting model 'OldSequenceMapping'
-        db.delete_table('hansards_oldsequencemapping')
-
-        # Deleting field 'Statement.slug'
-        db.delete_column('hansards_statement', 'slug')
+        # Changing field 'Statement.slug'
+        db.alter_column('hansards_statement', 'slug', self.gf('django.db.models.fields.SlugField')(max_length=100, null=True))
 
 
     models = {
@@ -156,7 +132,7 @@ class Migration(SchemaMigration):
             'politician': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['core.Politician']", 'null': 'True', 'blank': 'True'}),
             'procedural': ('django.db.models.fields.BooleanField', [], {'default': 'False', 'db_index': 'True'}),
             'sequence': ('django.db.models.fields.IntegerField', [], {'db_index': 'True'}),
-            'slug': ('django.db.models.fields.SlugField', [], {'default': 'None', 'max_length': '100', 'null': 'True', 'db_index': 'True', 'blank': 'True'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'db_index': 'True', 'max_length': '100', 'blank': 'True'}),
             'source_id': ('django.db.models.fields.CharField', [], {'max_length': '15', 'blank': 'True'}),
             'statement_type': ('django.db.models.fields.CharField', [], {'max_length': '35', 'blank': 'True'}),
             'time': ('django.db.models.fields.DateTimeField', [], {'db_index': 'True'}),
