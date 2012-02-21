@@ -1,14 +1,15 @@
 #coding: utf-8
 
-import gzip, sys, os, re
+import gzip, os, re
+from collections import defaultdict
 import datetime
 
 from django.db import models
 from django.conf import settings
 from django.core import urlresolvers
-from django.core.files import File
 from django.core.files.base import ContentFile
-from django.utils.html import strip_tags, escape
+from django.template.defaultfilters import slugify
+from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
 
 from parliament.core.models import Session, ElectedMember, Politician
@@ -251,6 +252,8 @@ class Statement(models.Model):
     time = models.DateTimeField(db_index=True)
     source_id = models.CharField(max_length=15, blank=True)
 
+    slug = models.SlugField(max_length=100, blank=True)
+
     h1 = models.CharField(max_length=300, blank=True)
     h2 = models.CharField(max_length=300, blank=True)
     h3 = models.CharField(max_length=300, blank=True)
@@ -267,7 +270,10 @@ class Statement(models.Model):
     wordcount = models.IntegerField()
 
     procedural = models.BooleanField(default=False, db_index=True)
-    written_question = models.CharField(max_length=1, blank=True)
+    written_question = models.CharField(max_length=1, blank=True, choices=(
+        ('Q', 'Question'),
+        ('R', 'Response')
+    ))
     statement_type = models.CharField(max_length=35, blank=True)
     
     bills = models.ManyToManyField(Bill, blank=True)
@@ -275,6 +281,9 @@ class Statement(models.Model):
         
     class Meta:
         ordering = ('sequence',)
+        unique_together = (
+            ('document', 'slug')
+        )
         
     def save(self, *args, **kwargs):
         if not self.wordcount:
@@ -295,7 +304,7 @@ class Statement(models.Model):
     @memoize_property
     @models.permalink
     def get_absolute_url(self):
-        return ('document_redirect', [], {'document_id': self.document_id, 'sequence': self.sequence})
+        return ('document_redirect', [], {'document_id': self.document_id, 'slug': (self.slug if self.slug else self.sequence)})
         #return ('hansard_statement_bydate', [], {
         #    'statement_seq': self.sequence,
         #    'hansard_date': '%s-%s-%s' % (self.time.year, self.time.month, self.time.day),
@@ -389,4 +398,27 @@ class Statement(models.Model):
             info['post'] = re.search(r'\((.+)\)', self.who).group(1).split(',')[0]
             info['display_name'] = self.member.politician.name
         return info
+
+    @staticmethod
+    def set_slugs(statements):
+        counter = defaultdict(int)
+        for statement in statements:
+            slug = slugify(statement.name_info['display_name'])
+            if not slug:
+                slug = 'procedural'
+            counter[slug] += 1
+            statement.slug = slug + '-%s' % counter[slug]
+
+class OldSequenceMapping(models.Model):
+    document = models.ForeignKey(Document)
+    sequence = models.PositiveIntegerField()
+    slug = models.SlugField(max_length=100)
+
+    class Meta:
+        unique_together = (
+            ('document', 'sequence')
+        )
+
+    def __unicode__(self):
+        return u"%s -> %s" % (self.sequence, self.slug)
             
