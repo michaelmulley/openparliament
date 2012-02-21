@@ -10,7 +10,7 @@
 
 <div class="clear"></div><div class="context"><h2>Topics</h2></div>
 <div class="focus"><ul class="tile clearafter">
-{% for topic in hansard.topics_with_qp %}<li class="four oneline overflowtip"><a href="{% if singlepage %}#s{{ topic.1 }}{% else %}{% url debate hansard_date=hansard.url_date sequence=topic.1 %}#hl{% endif %}">{{ topic.0 }}</a></li>{% endfor %}
+{% for topic in hansard.topics_with_qp %}<li class="four oneline overflowtip"><a href="{% if singlepage %}#s{{ topic.1 }}{% else %}{% url debate hansard_date=hansard.url_date slug=topic.1 %}#hl{% endif %}">{{ topic.0 }}</a></li>{% endfor %}
 </ul></div>
 
 <div id="paginated">

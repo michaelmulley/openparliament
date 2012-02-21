@@ -24,11 +24,11 @@ def _get_hansard(hansard_id, hansard_date):
     else:
         raise Exception("hansard() requires an ID or date")
 
-def hansard(request, hansard_id=None, hansard_date=None, sequence=None):
+def hansard(request, hansard_id=None, hansard_date=None, slug=None):
     hansard = _get_hansard(hansard_id, hansard_date)
-    return document_view(request, hansard, sequence=sequence)
+    return document_view(request, hansard, slug=slug)
 
-def document_redirect(request, document_id, sequence=None):
+def document_redirect(request, document_id, slug=None):
     try:
         document = Document.objects.select_related(
             'committeemeeting', 'committeemeeting__committee').get(
@@ -36,12 +36,12 @@ def document_redirect(request, document_id, sequence=None):
     except Document.DoesNotExist:
         raise Http404
     url = document.get_absolute_url(pretty=True)
-    if sequence:
-        url += "%s/" % sequence
+    if slug:
+        url += "%s/" % slug
     return HttpResponsePermanentRedirect(url)
 
 @vary_on_headers('X-Requested-With')
-def document_view(request, document, meeting=None, sequence=None):
+def document_view(request, document, meeting=None, slug=None):
 
     per_page = 15
     if 'singlepage' in request.GET:
@@ -53,12 +53,15 @@ def document_view(request, document, meeting=None, sequence=None):
 
     highlight_statement = None
     try:
-        if sequence is not None and 'page' not in request.GET:
-            highlight_statement = int(sequence)
+        if slug is not None and 'page' not in request.GET:
+            if slug.isdigit():
+                highlight_statement = int(slug)
+            else:
+                highlight_statement = statement_qs.filter(slug=slug).values_list('sequence', flat=True)[0]
             page = int(highlight_statement/per_page) + 1
         else:
             page = int(request.GET.get('page', '1'))
-    except ValueError:
+    except ValueError, IndexError:
         page = 1
 
     # If page request (9999) is out of range, deliver last page of results.
