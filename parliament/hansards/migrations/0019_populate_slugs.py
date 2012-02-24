@@ -22,7 +22,7 @@ class Migration(DataMigration):
         def _set_slugs(statements):
             counter = defaultdict(int)
             for statement in statements:
-                slug = slugify(_get_display_name(statement))
+                slug = slugify(_get_display_name(statement))[:50]
                 if not slug:
                     slug = 'procedural'
                 counter[slug] += 1

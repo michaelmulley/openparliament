@@ -403,7 +403,7 @@ class Statement(models.Model):
     def set_slugs(statements):
         counter = defaultdict(int)
         for statement in statements:
-            slug = slugify(statement.name_info['display_name'])
+            slug = slugify(statement.name_info['display_name'])[:50]
             if not slug:
                 slug = 'procedural'
             counter[slug] += 1
