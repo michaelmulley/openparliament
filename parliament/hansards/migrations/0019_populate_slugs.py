@@ -30,7 +30,7 @@ class Migration(DataMigration):
                 orm.Statement.objects.filter(id=statement.id).update(slug=slug)
 
         for document in orm.Document.objects.all():
-            _set_slugs(document.statement_set.filter(slug__isnull=True))
+            _set_slugs(document.statement_set.filter(slug__isnull=True).select_related('politician'))
 
 
     def backwards(self, orm):
