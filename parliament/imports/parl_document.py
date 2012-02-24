@@ -30,7 +30,8 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
     if document.statement_set.all().exists():
         if reimport_preserving_sequence:
             if OldSequenceMapping.objects.filter(document=document).exists():
-                raise Exception("Sequence mapping already exits for %s" % document)
+                logger.error("Sequence mapping already exits for %s" % document)
+                return
             old_statements = list(document.statement_set.all())
             document.statement_set.all().delete()
         else:
@@ -201,7 +202,7 @@ def _align_sequences(new_statements, old_statements):
 
     def calculate_similarity(old, new):
         """Given two statements, return a score between 0 and 1 expressing their similarity"""
-        score = 1.0 if old.time == new.time else 0.0
+        score = 0.8 if old.time == new.time else 0.0
         oldtext, newtext = old.text_plain(), new.text_plain()
         if new in chosen:
             score -= 0.01
@@ -211,7 +212,7 @@ def _align_sequences(new_statements, old_statements):
             similarity = SequenceMatcher(
                 None, get_comparison_sequence(oldtext), get_comparison_sequence(newtext)
             ).ratio()
-        return (score + similarity) / 2.0
+        return (score + similarity) / 1.8
 
     new_speakers, old_speakers = build_speaker_dict(new_statements), build_speaker_dict(old_statements)
     mappings = []
@@ -231,16 +232,18 @@ def _align_sequences(new_statements, old_statements):
             # Try and pair the most similar statement
             if news:
                 logger.info("Count mismatch for %s" % speaker)
-                for old in olds:
-                    scores = ( (new, calculate_similarity(old, new)) for new in news )
-                    choice, score = max(scores, key=lambda s: s[1])
-                    chosen.add(choice)
-                    if score < 0.75:
-                        logger.warning("Low-score similarity match %s: %r %r / %r %r"
-                            % (score, old, old.text_plain(), choice, choice.text_plain()))
-                    mappings.append((old.sequence, choice.slug))
+                candidates = news
             else:
                 logger.warning("No new statements for %s" % speaker)
+                candidates = new_statements # Calculate similarity with all possibilities
+            for old in olds:
+                scores = ( (cand, calculate_similarity(old, cand)) for cand in candidates )
+                choice, score = max(scores, key=lambda s: s[1])
+                chosen.add(choice)
+                if score < 0.75:
+                    logger.warning("Low-score similarity match %s: %r %r / %r %r"
+                        % (score, old, old.text_plain(), choice, choice.text_plain()))
+                mappings.append((old.sequence, choice.slug))
 
     return mappings
 
