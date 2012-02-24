@@ -44,7 +44,7 @@ def prune_activities():
 def committee_evidence():
     for document in Document.evidence\
       .annotate(scount=models.Count('statement'))\
-      .exclude(scount__gt=0).order_by('date').iterator():
+      .exclude(scount__gt=0).exclude(skip_parsing=True).order_by('date').iterator():
         print document
         parl_document.import_document(document, interactive=False)
         if document.statement_set.all().count():
@@ -65,7 +65,7 @@ def hansards_load():
 def hansards_parse():
     for hansard in Document.objects.filter(document_type=Document.DEBATE)\
       .annotate(scount=models.Count('statement'))\
-      .exclude(scount__gt=0).order_by('date').iterator():
+      .exclude(scount__gt=0).exclude(skip_parsing=True).order_by('date').iterator():
         try:
             parl_document.import_document(hansard, interactive=False)
         except Exception, e:

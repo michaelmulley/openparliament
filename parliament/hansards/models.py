@@ -57,7 +57,10 @@ class Document(models.Model):
     most_frequent_word = models.CharField(max_length=20, blank=True)
     wordcloud = models.ImageField(upload_to='autoimg/wordcloud', blank=True, null=True)
 
-    downloaded = models.BooleanField(default=False)
+    downloaded = models.BooleanField(default=False,
+        help_text="Has the source data been downloaded?")
+    skip_parsing = models.BooleanField(default=False,
+        help_text="Don't try to parse this, presumably because of errors in the source.")
 
     public = models.BooleanField("Display on site?", default=False)
     multilingual = models.BooleanField("Content parsed in both languages?", default=False)
