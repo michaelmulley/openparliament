@@ -105,16 +105,16 @@ class Document(models.Model):
         return topics
         
     def topics(self):
-        """Returns a tuple with (topic, statement sequence ID) for every topic mentioned."""
-        return self._topics(self.statement_set.all().values_list('h2', 'sequence'))
+        """Returns a tuple with (topic, statement slug) for every topic mentioned."""
+        return self._topics(self.statement_set.all().values_list('h2', 'slug'))
         
     def headings(self):
-        """Returns a tuple with (heading, statement sequence ID) for every heading mentioned."""
-        return self._topics(self.statement_set.all().values_list('h1', 'sequence'))
+        """Returns a tuple with (heading, statement slug) for every heading mentioned."""
+        return self._topics(self.statement_set.all().values_list('h1', 'slug'))
     
     def topics_with_qp(self):
         """Returns the same as topics(), but with a link to Question Period at the start of the list."""
-        statements = self.statement_set.all().values_list('h2', 'sequence', 'h1')
+        statements = self.statement_set.all().values_list('h2', 'slug', 'h1')
         topics = self._topics(statements)
         qp_seq = None
         for s in statements:
@@ -152,7 +152,7 @@ class Document(models.Model):
                         topics[statement.topic][1] = statement.text_plain()
                         topics[statement.topic][2] = statement.get_absolute_url()
                 else:
-                    topics[statement.topic] = [statement.sequence, statement.text_plain(), statement.get_absolute_url()]
+                    topics[statement.topic] = [statement.slug, statement.text_plain(), statement.get_absolute_url()]
             for topic in topics:
                 if self.document_type == Document.DEBATE:
                     activity.save_activity({
