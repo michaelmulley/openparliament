@@ -32,13 +32,13 @@ def committee(request, slug):
 def activity(request, committee_id, activity_id):
     pass
 
-def committee_meeting(request, committee_slug, session_id, number, sequence=None):
+def committee_meeting(request, committee_slug, session_id, number, slug=None):
     meeting = get_object_or_404(CommitteeMeeting, committee__slug=committee_slug,
         session=session_id, number=number)
 
     document = meeting.evidence
     if document:
-        return document_view(request, document, meeting=meeting, sequence=sequence)
+        return document_view(request, document, meeting=meeting, slug=slug)
     else:
         return HttpResponse("No evidence")
 
