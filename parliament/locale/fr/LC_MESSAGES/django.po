@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-13 21:28-0500\n"
+"POT-Creation-Date: 2012-02-26 15:36-0500\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -57,4 +57,127 @@ msgstr ""
 #: alerts/views.py:79 alerts/views.py:97 alerts/views.py:117
 #, python-format
 msgid "E-mail alerts for %s"
+msgstr ""
+
+#: bills/models.py:71
+msgid "House"
+msgstr ""
+
+#: bills/models.py:72
+msgid "Senate"
+msgstr ""
+
+#: bills/models.py:89
+msgid "The parl.gc.ca document ID of the latest version of the bill's text"
+msgstr ""
+
+#: bills/models.py:176
+#, python-format
+msgid "%(bill)s in session %(id)s"
+msgstr ""
+
+#: bills/models.py:183
+msgid "Passed"
+msgstr ""
+
+#: bills/models.py:184
+msgid "Failed"
+msgstr ""
+
+#: bills/models.py:185
+msgid "Tie"
+msgstr ""
+
+#: bills/models.py:201
+#, python-format
+msgid "Vote #%(number)s on %(date)s"
+msgstr ""
+
+#: bills/models.py:274
+msgid "Yes"
+msgstr ""
+
+#: bills/models.py:275
+msgid "No"
+msgstr ""
+
+#: bills/models.py:276
+msgid "Paired"
+msgstr ""
+
+#: bills/models.py:277
+msgid "Didn't vote"
+msgstr ""
+
+#: bills/models.py:289
+#, python-format
+msgid "%(politician)s voted %(vote)s on %(question)s"
+msgstr ""
+
+#: bills/models.py:303
+msgid "Free vote"
+msgstr ""
+
+#: bills/models.py:316
+#, python-format
+msgid "%(party)s voted %(vote)s on %(question)s"
+msgstr ""
+
+#: bills/views.py:61 bills/views.py:191
+#, python-format
+msgid "Bill %s"
+msgstr ""
+
+#: bills/views.py:62
+msgid " (Historical)"
+msgstr ""
+
+#: bills/views.py:87
+msgid "Bills & Votes"
+msgstr ""
+
+#: bills/views.py:105
+#, python-format
+msgid "Bills for the %s"
+msgstr ""
+
+#: bills/views.py:118
+#, python-format
+msgid "Votes for the %s"
+msgstr ""
+
+#: bills/views.py:162
+msgid "Bills in the House of Commons"
+msgstr ""
+
+#: bills/views.py:163
+msgid "New bills introduced to the House, from openparliament.ca."
+msgstr ""
+
+#: bills/views.py:172
+#, python-format
+msgid "Bill %(number)s (%(private)s)"
+msgstr ""
+
+#: bills/views.py:174
+msgid "Private member's"
+msgstr ""
+
+#: bills/views.py:175
+msgid "Government"
+msgstr ""
+
+#: bills/views.py:197
+#, python-format
+msgid "From openparliament.ca, speeches about Bill %(number)s, %(name)s"
+msgstr ""
+
+#: bills/views.py:219
+#, python-format
+msgid "Vote #%(number)s (%(result)s)"
+msgstr ""
+
+#: bills/views.py:224
+#, python-format
+msgid "%(name)s (%(party)s%(date)s)"
 msgstr ""
