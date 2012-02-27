@@ -7,7 +7,8 @@ from parliament.core.models import Session
 
 class BillIndex(SearchIndex):
     text = indexes.CharField(document=True, model_attr='name')
-    sci = indexes.CharField(stored=False, use_template=True)
+    searchtext = indexes.CharField(model_attr='name')
+    boosted = indexes.CharField(stored=False, use_template=True)
     number = indexes.CharField(model_attr='number', indexed=False)
     url = indexes.CharField(model_attr='get_absolute_url', indexed=False)
     date = indexes.DateField(model_attr='introduced', null=True)

@@ -68,7 +68,6 @@
 	   is found that matches, it will be ignored
 	-->
 <lib dir="../../contrib/clustering/lib/" />
-<lib dir="/total/crap/dir/ignored" />
 
 <!-- an exact path can be used to specify a specific file.  This
 	   will cause a serious error to be logged if it can't be loaded.
@@ -699,8 +698,28 @@
 			 will be overridden by parameters in the request
 		  -->
 	<lst name="defaults">
+		<str name="defType">edismax</str>
 		<str name="echoParams">explicit</str>
-		<int name="rows">10</int>
+		<int name="rows">20</int>
+		<float name="tie">0.1</float>
+		<str name="qf">
+			searchtext boosted^3
+		</str>
+		<str name="pf">
+			searchtext boosted^3
+		</str>
+		<str name="fl">id, django_ct, django_id, province, politician, politician_id, url, number, topic, date, party, session, committee</str>
+		<str name="bf">recip(ms(NOW/HOUR,date),3.16e-11,1,1)^1.5</str>
+		<str name="mm">75%</str>
+		<int name="ps">100</int>
+		<!-- example highlighter config, enable per-query with hl=true -->
+		<str name="hl.fl">text</str>
+		<str name="hl">true</str>
+		<str name="hl.alternateField">text</str>
+		<str name="hl.fragsize">280</str>
+		<str name="hl.maxAlternateFieldLength">280</str>
+		<str name="hl.simple.pre">~hl~</str>
+		<str name="hl.simple.post">~/hl~</str>
 	</lst>
 	<!-- In addition to defaults, "appends" params can be specified
 			 to identify values which should be appended to the list of

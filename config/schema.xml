@@ -533,6 +533,8 @@
 			unknown fields indexed and/or stored by default -->
 	<!--dynamicField name="*" type="ignored" multiValued="true" /-->
 
+	<field name="id" type="string" indexed="true" stored="true" required="true" />
+
 	<field name="django_ct" type="string" indexed="false"  stored="true"  multiValued="false" />
 	<field name="django_id" type="string" indexed="false"  stored="true"  multiValued="false" />
 
@@ -542,9 +544,13 @@
 
 	<field name="url" type="string" indexed="false" stored="true" multiValued="false" />
 
-	<field name="text" type="text_en" indexed="true" stored="true" multiValued="false" />
+	<field name="text" type="text_en" indexed="false" stored="true" multiValued="false" />
+	
+	<field name="searchtext" type="text_en" indexed="true" stored="false" multiValued="false" />
 
-	<field name="politician_id" type="slong" indexed="true" stored="true" multiValued="false" />
+	<field name="boosted" type="text_en" indexed="true" stored="false" multiValued="false" />
+
+	<field name="politician_id" type="long" indexed="true" stored="true" multiValued="false" />
 
 	<field name="number" type="string" indexed="false" stored="true" multiValued="false" />
 
@@ -556,11 +562,7 @@
 
 	<field name="party" type="string" indexed="true" stored="true" multiValued="false" />
 
-	<field name="sc" type="text" indexed="true" stored="false" multiValued="false" />
-
-	<field name="sci" type="text" indexed="true" stored="false" multiValued="false" />
-
-	<field name="pol_name" type="string" indexed="false" stored="true" multiValued="false" />
+	<field name="committee" type="string" indexed="true" stored="true" multiValued="false" />
 
 </fields>
 
@@ -570,7 +572,7 @@
 <uniqueKey>id</uniqueKey>
 
 <!-- field for the QueryParser to use when an explicit fieldname is absent -->
-<defaultSearchField>text</defaultSearchField>
+<defaultSearchField>searchtext</defaultSearchField>
 
 <!-- SolrQueryParser configuration: defaultOperator="AND|OR" -->
 <solrQueryParser defaultOperator="OR"/>

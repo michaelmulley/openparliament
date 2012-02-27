@@ -336,7 +336,7 @@ class Statement(models.Model):
 
             
 
-    def text_html(self, language='floor'): #settings.LANGUAGE_CODE):
+    def text_html(self, language=settings.LANGUAGE_CODE):
         return mark_safe(getattr(self, 'content_' + language))
 
     def text_plain(self, language=settings.LANGUAGE_CODE):
@@ -411,6 +411,12 @@ class Statement(models.Model):
                 slug = 'procedural'
             counter[slug] += 1
             statement.slug = slug + '-%s' % counter[slug]
+
+    @property
+    def committee_name(self):
+        if self.document.document_type != Document.EVIDENCE:
+            return ''
+        return self.document.committeemeeting.committee.short_name
 
 class OldSequenceMapping(models.Model):
     document = models.ForeignKey(Document)
