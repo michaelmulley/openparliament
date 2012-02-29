@@ -1,11 +1,10 @@
-# Django settings for parliament project.
 import os
 
 DEBUG = False
 
-ADMINS = (
+ADMINS = [
     ('Michael Mulley', 'michael@michaelmulley.com'),
-)
+]
 
 MANAGERS = ADMINS
 
@@ -20,11 +19,6 @@ CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
-# On Unix systems, a value of None will cause Django to use the same
-# timezone as the operating system.
-# If running in a Windows environment this must be set to the same as your
-# system time zone.
 TIME_ZONE = 'America/Montreal'
 
 # Language code for this installation.
@@ -70,7 +64,7 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -80,16 +74,16 @@ MIDDLEWARE_CLASSES = (
     #'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
-)
+]
 
 ROOT_URLCONF = 'parliament.urls'
 
-TEMPLATE_DIRS = (
+TEMPLATE_DIRS = [
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     PROJ_ROOT + "/templates",
-)
+]
 
 INSTALLED_APPS = [
     'django.contrib.auth',
@@ -184,8 +178,4 @@ LOGGING = {
     },
 }
 
-from settings_local import *
-
-if 'EXTRA_APPS' in globals():
-    INSTALLED_APPS += globals()['EXTRA_APPS']
 

@@ -1,8 +1,7 @@
-import os
+
+from default_settings import *
 
 DEBUG = True
-
-PROJ_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 DATABASES = {
     'default': {
@@ -18,14 +17,6 @@ DATABASES = {
 HANSARD_CACHE_DIR = os.path.join(PROJ_ROOT, 'hansard-cache')
 SITE_URL='http://openparliament.ca'
 
-# Language code for this installation.
-# MUST BE either 'en' or 'fr'
-LANGUAGE_CODE = 'en'
-
-# Currently unused
-# RECAPTCHA_PUBLIC_KEY = '<your public key>'
-# RECAPTCHA_PRIVATE_KEY = '<your private key>'
-
 CACHE_BACKEND = 'dummy://'
 CACHE_MIDDLEWARE_SECONDS = 60 * 60 * 3
 
@@ -37,8 +28,7 @@ HAYSTACK_SOLR_URL = 'http://127.0.0.1:8983/solr'
 # data is added.
 PARLIAMENT_AUTOUPDATE_SEARCH_INDEXES = False
 
-TWITTER_USERNAME = ''
-TWITTER_PASSWORD = ''
+TWITTER_USERNAME = 'openparlca'
 TWITTER_LIST_NAME = 'mps'
 
 PARLIAMENT_WORDCLOUD_COMMAND = ('/usr/bin/java', '-jar' ,"/path/to/ibm-word-cloud.jar",  '-c', os.path.join(PROJ_ROOT, '..', 'config', 'wordcloud.conf'), '-w', '800')
