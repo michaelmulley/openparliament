@@ -17,6 +17,8 @@ HAYSTACK_SITECONF = 'parliament.search_sites'
 CACHE_MIDDLEWARE_KEY_PREFIX = 'parl'
 CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
+# Set to True to disable functionality where user-provided data is saved
+PARLIAMENT_DB_READONLY = False
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name

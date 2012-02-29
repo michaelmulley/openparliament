@@ -1,17 +1,14 @@
-import base64
-import urllib
-
-from django.template import Context, loader, RequestContext
-from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
+from django.template import loader, RequestContext
+from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404
 from django import forms
 from django.conf import settings
 from django.core import urlresolvers
-from django.core.mail import send_mail
+from django.core.mail import send_mail, mail_admins
 
 from parliament.alerts.models import PoliticianAlert
-from parliament.core.forms import Form
 from parliament.core.models import Politician
+from parliament.core.views import disable_on_readonly_db
 
 class PoliticianAlertForm(forms.ModelForm):
     
@@ -22,6 +19,7 @@ class PoliticianAlertForm(forms.ModelForm):
             'politician': forms.widgets.HiddenInput,
         }
 
+@disable_on_readonly_db
 def signup(request):
     if 'politician' not in request.REQUEST:
         raise Http404
@@ -69,6 +67,7 @@ def signup(request):
     t = loader.get_template("alerts/signup.html")
     return HttpResponse(t.render(c))
     
+@disable_on_readonly_db
 def activate(request, alert_id, key):
     
     alert = get_object_or_404(PoliticianAlert, pk=alert_id)
@@ -89,7 +88,7 @@ def activate(request, alert_id, key):
     })
     t = loader.get_template("alerts/activate.html")
     return HttpResponse(t.render(c))
-    
+
 def unsubscribe(request, alert_id, key):
     alert = get_object_or_404(PoliticianAlert, pk=alert_id)
     
@@ -100,6 +99,8 @@ def unsubscribe(request, alert_id, key):
         key_error = False
         alert.active = False
         alert.save()
+        if settings.PARLIAMENT_DB_READONLY:
+            mail_admins("Unsubscribe request", alert_id)
         
     c = RequestContext(request, {
         'pol': alert.politician,

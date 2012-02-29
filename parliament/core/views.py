@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.markup.templatetags.markup import markdown
 from django.contrib.syndication.views import Feed
 from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
@@ -27,6 +28,20 @@ def closed(request, message=None):
     resp = flatpage_response(request, 'closedparliament.ca', message)
     resp.status_code = 503
     return resp
+
+@never_cache
+def db_readonly(request):
+    title = "Temporarily unavailable"
+    message = """We're currently running on our backup database, and this particular functionality is down.
+        It should be back up soon. Sorry for the inconvenience!"""
+    resp = flatpage_response(request, title, message)
+    resp.status_code = 503
+    return resp
+
+def disable_on_readonly_db(view):
+    if settings.PARLIAMENT_DB_READONLY:
+        return db_readonly
+    return view
     
 def flatpage_response(request, title, message):
     t = loader.get_template("flatpages/default.html")
