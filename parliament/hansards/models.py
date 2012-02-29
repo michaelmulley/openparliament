@@ -21,10 +21,10 @@ from parliament.activity import utils as activity
 import logging
 logger = logging.getLogger(__name__)
 
-class HansardManager(models.Manager):
+class DebateManager(models.Manager):
 
     def get_query_set(self):
-        return super(HansardManager, self).get_query_set().filter(document_type=Document.DEBATE)
+        return super(DebateManager, self).get_query_set().filter(document_type=Document.DEBATE)
 
 class EvidenceManager(models.Manager):
 
@@ -66,7 +66,7 @@ class Document(models.Model):
     multilingual = models.BooleanField("Content parsed in both languages?", default=False)
 
     objects = models.Manager()
-    hansards = HansardManager()
+    debates = DebateManager()
     evidence = EvidenceManager()
     without_statements = NoStatementManager()
     

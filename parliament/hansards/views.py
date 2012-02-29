@@ -14,7 +14,7 @@ from parliament.core.utils import get_twitter_share_url
 from parliament.hansards.models import Document, Statement
 
 def _get_hansard(year, month, day):
-    return get_object_or_404(Document.hansards,
+    return get_object_or_404(Document.debates,
         date=datetime.date(int(year), int(month), int(day)))
 
 def hansard(request, year, month, day, slug=None):
@@ -153,7 +153,7 @@ def document_cache(request, document_id, language):
 
 def index(request):
     return generic.date_based.archive_index(request,
-        queryset=Document.hansards.all(),
+        queryset=Document.debates.all(),
         date_field='date',
         num_latest=17,
         template_name="hansards/hansard_archive.html",
@@ -161,7 +161,7 @@ def index(request):
 
 def by_year(request, year):
     return generic.date_based.archive_year(request,
-        queryset=Document.hansards.all().order_by('date'),
+        queryset=Document.debates.all().order_by('date'),
         date_field='date',
         year=year,
         make_object_list=True,
@@ -170,7 +170,7 @@ def by_year(request, year):
 
 def by_month(request, year, month):
     return generic.date_based.archive_month(request,
-        queryset=Document.hansards.all().order_by('date'),
+        queryset=Document.debates.all().order_by('date'),
         date_field='date',
         year=year,
         month=month,

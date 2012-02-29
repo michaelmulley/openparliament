@@ -10,9 +10,9 @@ def hansard_redirect(request, hansard_id=None, hansard_date=None, sequence=None,
         raise Http404
 
     if hansard_id:
-        doc = get_object_or_404(Document.hansards, pk=hansard_id)
+        doc = get_object_or_404(Document.debates, pk=hansard_id)
     else:
-        doc = get_object_or_404(Document.hansards, date=datetime.date(*[int(x) for x in hansard_date.split('-')]))
+        doc = get_object_or_404(Document.debates, date=datetime.date(*[int(x) for x in hansard_date.split('-')]))
 
     url = doc.get_absolute_url(pretty=True)
 
