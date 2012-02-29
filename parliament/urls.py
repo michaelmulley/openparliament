@@ -9,7 +9,6 @@ from parliament.core.views import SiteNewsFeed
 urlpatterns = patterns('',
     (r'^search/', include('parliament.search.urls')),
     (r'^debates/', include('parliament.hansards.urls')),
-    (r'^hansards/', include('parliament.hansards.legacy_urls')),
     url(r'^documents/(?P<document_id>\d+)/$', 'parliament.hansards.views.document_redirect', name='document_redirect'),
     url(r'^documents/(?P<document_id>\d+)/(?P<slug>[a-zA-Z0-9-]+)/$', 'parliament.hansards.views.document_redirect', name='document_redirect'),
     (r'^politicians/', include('parliament.politicians.urls')),
@@ -21,6 +20,7 @@ urlpatterns = patterns('',
     (r'^$', 'parliament.core.views.home'),
     (r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
     url(r'^sitenews/rss/$', SiteNewsFeed(), name='sitenews_feed'),
+    (r'', include('parliament.legacy_urls')),
 )
 
 if settings.DEBUG:

@@ -77,7 +77,7 @@ MIDDLEWARE_CLASSES = (
     #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    #'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
 )
@@ -120,7 +120,6 @@ INSTALLED_APPS = [
 
 THUMBNAIL_SUBDIR = '_thumbs'
 THUMBNAIL_PROCESSORS = (
-    # Default processors
     'sorl.thumbnail.processors.colorspace',
     'sorl.thumbnail.processors.autocrop',
     'parliament.core.thumbnail.crop_first',
@@ -131,6 +130,16 @@ THUMBNAIL_PROCESSORS = (
 SOUTH_TESTS_MIGRATE = False
 TEST_RUNNER = 'parliament.core.test_utils.TestSuiteRunner'
 TEST_APP_PREFIX = 'parliament'
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.contrib.messages.context_processors.messages",
+    "django.core.context_processors.request",
+)
 
 LOGGING = {
     'version': 1,

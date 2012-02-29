@@ -13,20 +13,12 @@ from django.views.decorators.vary import vary_on_headers
 from parliament.core.utils import get_twitter_share_url
 from parliament.hansards.models import Document, Statement
 
-def _get_hansard(hansard_id, hansard_date):
-    if hansard_id:
-        return get_object_or_404(Document.hansards, pk=hansard_id)
-    elif hansard_date:
-        try:
-            return Document.hansards.get(date=datetime.date(*[int(x) for x in hansard_date.split('-')]))
-        except Exception:
-            raise Http404
-    else:
-        raise Exception("hansard() requires an ID or date")
+def _get_hansard(year, month, day):
+    return get_object_or_404(Document.hansards,
+        date=datetime.date(int(year), int(month), int(day)))
 
-def hansard(request, hansard_id=None, hansard_date=None, slug=None):
-    hansard = _get_hansard(hansard_id, hansard_date)
-    return document_view(request, hansard, slug=slug)
+def hansard(request, year, month, day, slug=None):
+    return document_view(request, _get_hansard(year, month, day), slug=slug)
 
 def document_redirect(request, document_id, slug=None):
     try:
@@ -61,7 +53,7 @@ def document_view(request, document, meeting=None, slug=None):
             page = int(highlight_statement/per_page) + 1
         else:
             page = int(request.GET.get('page', '1'))
-    except ValueError, IndexError:
+    except (ValueError, IndexError):
         page = 1
 
     # If page request (9999) is out of range, deliver last page of results.
@@ -121,12 +113,15 @@ def statement_twitter(request, hansard_id, sequence):
         get_twitter_share_url(statement.get_absolute_url(), description)
     )
     
-def statement_permalink(request, sequence, hansard_id=None, hansard_date=None):
+def statement_permalink(request, slug, year, month, day):
     """A page displaying only a single statement. Used as a non-JS permalink."""
     #TODO: Work with evidence
     
-    hansard = _get_hansard(hansard_id, hansard_date)
-    statement = get_object_or_404(Statement, document=hansard, sequence=sequence)
+    doc = _get_hansard(year, month, day)
+    if slug.isdigit():
+        statement = get_object_or_404(Statement, document=doc, sequence=slug)
+    else:
+        statement = get_object_or_404(Statement, document=doc, slug=slug)
     
     if statement.politician:
         who = statement.politician.name
@@ -142,8 +137,9 @@ def statement_permalink(request, sequence, hansard_id=None, hansard_date=None):
         'who': who,
         'page': {'object_list': [statement]},
         'statement': statement,
-        'hansard': hansard,
+        'hansard': doc,
         'statements_full_date': True,
+        'statement_url': statement.get_absolute_url(pretty=True),
         #'statements_context_link': True
     })
     return HttpResponse(t.render(c))
@@ -169,5 +165,15 @@ def by_year(request, year):
         date_field='date',
         year=year,
         make_object_list=True,
+        template_name="hansards/hansard_archive_year.html",
+        extra_context={'title': 'Debates from %s' % year})
+
+def by_month(request, year, month):
+    return generic.date_based.archive_month(request,
+        queryset=Document.hansards.all().order_by('date'),
+        date_field='date',
+        year=year,
+        month=month,
+        month_format="%m",
         template_name="hansards/hansard_archive_year.html",
         extra_context={'title': 'Debates from %s' % year})

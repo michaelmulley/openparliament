@@ -7,12 +7,14 @@
 <p>When Parliament is in session, every word spoken by a member is faithfully transcribed, and published in a document called a <a href="http://en.wikipedia.org/wiki/Hansard">Hansard</a>. We have the Hansards of the House of Commons dating back to 1994. Browse through them below, or search via the box above.</p>
 </div>
 {% if latest %}{# hack to evaluate latest #}{% endif %}
-{% with latest.0 as hansard %}{% with hansard.get_absolute_url as hurl %}
+{% with latest.0 as hansard %}
 <div class="clear"></div><div class="context"><h2>{{ hansard.date|date:"F jS" }}</h2></div>
 <div class="focus"><ul class="tile clearafter">
-{% for topic in hansard.topics_with_qp %}<li class="four oneline overflowtip"><a href="{% url debate hansard_date=hansard.date sequence=topic.1 %}#hl">{{ topic.0 }}</a></li>{% endfor %}
+{% with hansard.get_absolute_url as latest_url %}
+	{% for topic in hansard.topics_with_qp %}<li class="four oneline overflowtip"><a href="{{ latest_url }}{{ topic.1 }}/#hl">{{ topic.0 }}</a></li>{% endfor %}
+{% endwith %}
 </ul></div>
-{% endwith %}{% endwith %}
+{% endwith %}
 <div class="clear"></div><div class="context"><h2>Recent</h2></div>
 <div class="focus">
 <ul class="tile clearafter">{% for hansard in latest %}

@@ -79,14 +79,12 @@ class Document(models.Model):
         else:
             return u"%s evidence for %s (#%s/#%s)" % (
                 self.committeemeeting.committee.short_name, self.date, self.id, self.source_id)
-    
-    @property
-    def url_date(self):
-        return '%s-%s-%s' % (self.date.year, self.date.month, self.date.day)
         
     def get_absolute_url(self, pretty=False):
         if self.document_type == self.DEBATE:
-            return urlresolvers.reverse('debate', kwargs={'hansard_date': self.url_date})
+            return urlresolvers.reverse('debate', kwargs={
+                'year': self.date.year, 'month': self.date.month, 'day': self.date.day
+            })
         elif self.document_type == self.EVIDENCE:
             if pretty:
                 return self.committeemeeting.get_absolute_url(pretty=True)
@@ -304,14 +302,11 @@ class Statement(models.Model):
     def date(self):
         return datetime.date(self.time.year, self.time.month, self.time.day)
     
-    @memoize_property
-    @models.permalink
-    def get_absolute_url(self):
-        return ('document_redirect', [], {'document_id': self.document_id, 'slug': (self.slug if self.slug else self.sequence)})
-        #return ('hansard_statement_bydate', [], {
-        #    'statement_seq': self.sequence,
-        #    'hansard_date': '%s-%s-%s' % (self.time.year, self.time.month, self.time.day),
-        #})
+    def get_absolute_url(self, pretty=False):
+        slug = (self.slug if self.slug else self.sequence)
+        if pretty:
+            return self.document.get_absolute_url(pretty=True) + slug + '/'
+        return urlresolvers.reverse('document_redirect', kwargs={'document_id': self.document_id, 'slug': slug})
     
     def __unicode__ (self):
         return u"%s speaking about %s around %s" % (self.who, self.topic, self.time)
