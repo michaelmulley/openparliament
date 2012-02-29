@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
-from django.contrib import admin, databrowse
+from django.contrib import admin
 admin.autodiscover()
 
 from parliament.core.sitemap import sitemaps
@@ -25,7 +25,6 @@ urlpatterns = patterns('',
 
 if settings.DEBUG:
     urlpatterns += patterns('',
-        (r'^databrowse/(.*)', databrowse.site.root),
         (r'^admin/', include(admin.site.urls)),
         (r'^static/(?P<path>.*)$', 'django.views.static.serve',
                 {'document_root': settings.MEDIA_ROOT}),

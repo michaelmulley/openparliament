@@ -1,4 +1,4 @@
-from django.contrib import admin, databrowse
+from django.contrib import admin
 
 from parliament.hansards.models import *
 
@@ -8,6 +8,3 @@ class DocumentOptions(admin.ModelAdmin):
     
 admin.site.register(Document, DocumentOptions)
 admin.site.register(Statement)
-
-databrowse.site.register(Statement)
-databrowse.site.register(Document)
