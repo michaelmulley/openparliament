@@ -1,6 +1,6 @@
 import os
 
-DEBUG = False
+DEBUG = True
 
 ADMINS = [
     ('Michael Mulley', 'michael@michaelmulley.com'),
@@ -37,18 +37,27 @@ USE_L10N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = PROJ_ROOT + '/static/'
-
+MEDIA_ROOT = os.path.join(PROJ_ROOT, 'media/')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = '/static/'
+MEDIA_URL = '/media/'
 
-DJANGO_STATIC = True
-DJANGO_STATIC_SAVE_PREFIX = MEDIA_ROOT + 'cacheable/'
-DJANGO_STATIC_NAME_PREFIX = 'cacheable/'
-DJANGO_STATIC_MEDIA_URL = MEDIA_URL
+STATICFILES_DIRS = [os.path.join(PROJ_ROOT, 'static')]
+STATIC_ROOT = os.path.join(PROJ_ROOT, '..', 'collected_static')
+STATIC_URL = '/static/'
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+]
+
+COMPRESS_CSS_FILTERS = [
+    'compressor.filters.css_default.CssAbsoluteFilter'
+]
+COMPRESS_OFFLINE = True
 
 # URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
 # trailing slash.
@@ -96,11 +105,12 @@ INSTALLED_APPS = [
     'django.contrib.markup',
     'django.contrib.flatpages',
     'django.contrib.sitemaps',
+    'django.contrib.staticfiles',
     'django_extensions',
     'haystack',
     'south',
     'sorl.thumbnail',
-    'django_static',
+    'compressor',
     'parliament.core',
     'parliament.hansards',
     'parliament.elections',

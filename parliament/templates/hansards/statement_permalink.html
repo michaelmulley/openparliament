@@ -1,5 +1,5 @@
 {% extends "hansards/base.html" %}
-{% load django_static %}
+{% load compress %}
 {% block breadcrumbs %}<a href="{% url parliament.hansards.views.index %}">Debates</a> <a href="{% url parliament.hansards.views.by_year year=hansard.date.year %}">{{ hansard.date.year }}</a> <a href="{{ statement_url }}">{{ hansard.date|date:"F jS, Y" }}</a> Statement by {{ who }}{% endblock %}
 {% block content %}
 <div class="focus"><p>In the House of Commons on {{ hansard.date|date:"F jS, Y" }}. <a href="{{ statement_url }}">See this statement in context</a>.</p></div><div class="clear"></div>
@@ -9,4 +9,8 @@
 <div class="focus">
 <p><a href="{{ statement_url }}">See context</a> to find out what was said next.</p></div>
 {% endblock content %}
-{% block headextra %}<script type="text/javascript" src="{% staticfile "js/pagination.js" %}"></script>{% endblock %}
+{% block headextra %}
+	{% compress js %}
+		<script type="text/javascript" src="{{ STATIC_URL }}js/pagination.js"></script>
+	{% endcompress %}
+{% endblock %}

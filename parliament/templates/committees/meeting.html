@@ -1,9 +1,12 @@
 {% extends "committees/base.html" %}
-{% load thumbnail django_static %}
+{% load thumbnail compress %}
 {% block pagetitle %}{{ commitee.short_name }} Committee on {{ meeting.date|date:"N jS, Y" }}{% endblock %}
 {% block pageheading %}{{ committee.short_name }} Committee on {{ meeting.date|date:"N jS, Y" }}{% endblock %}
 {% block breadcrumbs %}<a href="{% url parliament.committees.views.committee_list %}">Committees</a> <a href="{{ committee.get_absolute_url }}">{{ commitee }}</a> <a href="#">{{ meeting.session }}</a> #{{ meeting.number }}{% endblock %}
-{% block headextra %}<script type="text/javascript" src="{% staticfile "js/pagination.js" %}"></script>
+{% block headextra %}
+	{% compress js %}
+	<script type="text/javascript" src="{{ STATIC_URL }}js/pagination.js"></script>
+	{% endcompress %}
 {% if highlight_statement or highlight_statement == 0%}<link rel="canonical" href="{{ highlight_statement.get_absolute_url }}only/">{% endif %}
 
 <script type="text/javascript">

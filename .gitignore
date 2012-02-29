@@ -3,6 +3,7 @@
 *.gz
 *~
 *.tmproj
+.idea/
 .DS_Store
 models.dot
 polpics/
@@ -11,4 +12,5 @@ local/
 settings.py
 pip-log.txt
 logs/
-cacheable/
+media/
+collected_static/
