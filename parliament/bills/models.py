@@ -1,14 +1,16 @@
-import urllib, urllib2, re
 import datetime
 from collections import defaultdict
+import re
 
+from django.core import urlresolvers
 from django.db import models
-from BeautifulSoup import BeautifulSoup
 
 from parliament.core.models import Session, InternalXref, ElectedMember, Politician, Party
 from parliament.activity import utils as activity
 from parliament.core.utils import memoize_property
 
+import logging
+logger = logging.getLogger(__name__)
 
 CALLBACK_URL = 'http://www2.parl.gc.ca/HousePublications/GetWebOptionsCallBack.aspx?SourceSystem=PRISM&ResourceType=Document&ResourceID=%d&language=1&DisplayMode=2'
 BILL_VOTES_URL = 'http://www2.parl.gc.ca/Housebills/BillVotes.aspx?Language=E&Parl=%s&Ses=%s&Bill=%s'
@@ -37,10 +39,16 @@ class BillManager(models.Manager):
         if BillInSession.objects.filter(legisinfo_id=int(legisinfo_id)).exists():
             raise Bill.MultipleObjectsReturned(
                 "There's already a bill with LEGISinfo id %s" % legisinfo_id)
-        bill = self.create(number=number)
-        BillInSession.objects.create(bill=bill, session=session,
-                legisinfo_id=int(legisinfo_id))
-        return bill
+        try:
+            bill = Bill.objects.get(number=number, sessions=session)
+            logger.error("Potential duplicate LEGISinfo ID: %s in %s exists, but trying to create with ID %s" %
+                (number, session, legisinfo_id))
+            return bill
+        except Bill.DoesNotExist:
+            bill = self.create(number=number)
+            BillInSession.objects.create(bill=bill, session=session,
+                    legisinfo_id=int(legisinfo_id))
+            return bill
 
 class Bill(models.Model):
     
@@ -77,9 +85,12 @@ class Bill(models.Model):
     def __unicode__(self):
         return "%s - %s" % (self.number, self.name)
         
-    @models.permalink
     def get_absolute_url(self):
-        return ('parliament.bills.views.bill_pk_redirect', [self.id])
+        return self.url_for_session(self.session)
+
+    def url_for_session(self, session):
+        return urlresolvers.reverse('parliament.bills.views.bill', kwargs={
+            'session_id': session.id, 'bill_number': self.number})
         
     def get_legisinfo_url(self, lang='E'):
         return LEGISINFO_BILL_URL % {
