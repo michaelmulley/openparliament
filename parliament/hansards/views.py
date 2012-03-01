@@ -7,7 +7,7 @@ from django.conf import settings
 from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.shortcuts import get_object_or_404
 from django.template import loader, RequestContext
-from django.views import generic
+from django.views.generic.dates import (ArchiveIndexView, YearArchiveView, MonthArchiveView)
 from django.views.decorators.vary import vary_on_headers
 
 from parliament.core.utils import get_twitter_share_url
@@ -151,29 +151,33 @@ def document_cache(request, document_id, language):
     xmlfile.close()
     return resp
 
-def index(request):
-    return generic.date_based.archive_index(request,
-        queryset=Document.debates.all(),
-        date_field='date',
-        num_latest=17,
-        template_name="hansards/hansard_archive.html",
-        extra_context={'title': 'The Debates of the House of Commons'})
+class TitleAdder(object):
 
-def by_year(request, year):
-    return generic.date_based.archive_year(request,
-        queryset=Document.debates.all().order_by('date'),
-        date_field='date',
-        year=year,
-        make_object_list=True,
-        template_name="hansards/hansard_archive_year.html",
-        extra_context={'title': 'Debates from %s' % year})
+    def get_context_data(self, **kwargs):
+        context = super(TitleAdder, self).get_context_data(**kwargs)
+        context.update(title=self.page_title)
+        return context
 
-def by_month(request, year, month):
-    return generic.date_based.archive_month(request,
-        queryset=Document.debates.all().order_by('date'),
-        date_field='date',
-        year=year,
-        month=month,
-        month_format="%m",
-        template_name="hansards/hansard_archive_year.html",
-        extra_context={'title': 'Debates from %s' % year})
+class DebateIndexView(TitleAdder, ArchiveIndexView):
+    queryset = Document.debates.all()
+    date_field = 'date'
+    template_name = "hansards/hansard_archive.html"
+    page_title='The Debates of the House of Commons'
+index = DebateIndexView.as_view()
+
+class DebateYearArchive(TitleAdder, YearArchiveView):
+    queryset = Document.debates.all().order_by('date')
+    date_field = 'date'
+    make_object_list = True
+    template_name = "hansards/hansard_archive_year.html"
+    page_title = lambda self: 'Debates from %s' % self.get_year()
+by_year = DebateYearArchive.as_view()
+
+class DebateMonthArchive(TitleAdder, MonthArchiveView):
+    queryset = Document.debates.all().order_by('date')
+    date_field = 'date'
+    make_object_list = True
+    month_format = "%m"
+    template_name = "hansards/hansard_archive_year.html"
+    page_title = lambda self: 'Debates from %s' % self.get_year()
+by_month = DebateMonthArchive.as_view()
