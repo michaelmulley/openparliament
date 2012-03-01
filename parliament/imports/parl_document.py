@@ -89,7 +89,7 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
                     return text
                 bill = Bill.objects.create_temporary_bill(legisinfo_id=hocid,
                     number=match.group(0), session=document.session)
-            url = bill.get_absolute_url()
+            url = bill.url_for_session(document.session)
             title = bill.name
             s._related_bills.add(bill)
         elif link_type == 'vote':
