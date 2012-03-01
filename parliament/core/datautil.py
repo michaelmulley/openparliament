@@ -5,26 +5,15 @@ Production code should NOT import from this file."""
 import sys, re, urllib, urllib2, os, csv
 from collections import defaultdict
 import urlparse
-import itertools
-from operator import itemgetter
-from heapq import nlargest
 
 from django.db import transaction, models
 from django.db.models import Count
 from django.core.files import File
 from django.conf import settings
-from django.template.defaultfilters import slugify
-from BeautifulSoup import BeautifulSoup
 
-from parliament.imports import hans
-from parliament.core import parsetools, text_utils
 from parliament.core.models import *
-from parliament.hansards.models import Hansard, HansardCache, Statement
+from parliament.hansards.models import Statement
 from parliament.elections.models import Election, Candidacy
-
-def update_hansards():
-    hansards_from_calendar()
-    parse_all_hansards()
 
 def load_pol_pic(pol):
     print "#%d: %s" % (pol.id, pol)
@@ -67,26 +56,6 @@ def delete_invalid_pol_urls():
             print "REMOVING %s " % site
             print e
             pol.politicianinfo_set.filter(schema='web_site').delete()
-
-
-def parse_all_hansards(): 
-    parsed = []
-    for hansard in Hansard.objects.all().annotate(scount=Count('statement')).exclude(scount__gt=0).order_by('date').iterator():
-        try:
-            print "Trying %d %s... " % (hansard.id, hansard)
-            hans.parseAndSave(hansard)
-            print "SUCCESS for %s" % hansard
-            parsed.append(hansard)
-        except Exception, e:
-            print "******* FAILURE **********"
-            print "ERROR: %s" % e
-            print "EXCEPTION TYPE: %s" % e.__class__
-            cache = HansardCache.objects.get(hansard=hansard.id)
-            print "HANSARD %d: %s" % (cache.hansard.id, cache.hansard)
-            print "FILE: %s" % cache.filename
-            print "URL: %s" % cache.hansard.url
-    return parsed
-        
         
 def export_words(outfile, queryset=None):
     if queryset is None:
