@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block navlinks_labs %}class="selected"{% endblock %}
+{% block breadcrumbs %}{{ block.super }}Labs{% endblock %}
+{% block pagetitle %}{{ flatpage.title }}{% endblock %}
+{% block pageheading %}{{ flatpage.title }}{% endblock %}
+
+{% block content %}
+{{ flatpage.content|safe }}
+
+{% endblock %}
