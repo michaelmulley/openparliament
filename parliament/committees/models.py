@@ -51,6 +51,9 @@ class CommitteeInSession(models.Model):
     session = models.ForeignKey(Session)
     committee = models.ForeignKey(Committee)
     acronym = models.CharField(max_length=5, db_index=True)
+
+    def __unicode__(self):
+        return u"%s (%s) in %s" % (self.committee, self.acronym, self.session_id)
         
 class CommitteeActivity(models.Model):
     
