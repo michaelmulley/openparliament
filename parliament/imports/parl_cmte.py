@@ -23,7 +23,7 @@ def import_committee_list(session=None):
         #print namestring
         match = re.search(r'^(.+) \(([A-Z0-9]{3,5})\)$', namestring)
         (name, acronym) = match.groups()
-        committee, created = Committee.objects.get_or_create(name=name, parent=parent)
+        committee, created = Committee.objects.get_or_create(name=name.strip(), parent=parent)
         CommitteeInSession.objects.get_or_create(
             committee=committee, session=session, acronym=acronym)
         return committee
