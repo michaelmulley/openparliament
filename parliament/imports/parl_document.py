@@ -153,7 +153,7 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
     if len(statements) != len(pdoc_fr.statements):
         logger.info("French and English statement counts don't match for %r" % document)
 
-    _r_paragraphs = re.compile(ur'<p .+?</p>')
+    _r_paragraphs = re.compile(ur'<p[^>]* data-HoCid=.+?</p>')
     _r_paragraph_id = re.compile(ur'<p[^>]* data-HoCid="(?P<id>\d+)"')
     fr_paragraphs = dict()
 

@@ -13,7 +13,7 @@
 	{% with statement.get_absolute_url as statementurl %}
 		<div class="statement{% if forloop.first %} first{% endif %}{% if highlight_statement == statement %} highlighted{% endif %}"
 			 {% if highlight_statement == statement %}id="hl"{% else %}id="s{{ statement.sequence }}"{% endif %}
-			 data-url="{{ statementurl }}" data-francais="{{ statement.content_fr }}">
+			 data-url="{{ statementurl }}"{% if statement.content_fr %} data-francais="{{ statement.content_fr }}"{% endif %}>
 			<div class="context clearafter">
 				<noscript><p><a href="{{ statementurl }}only/">Permalink</a></p></noscript>
 				{% if statement.who %}
