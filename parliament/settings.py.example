@@ -17,7 +17,12 @@ DATABASES = {
 HANSARD_CACHE_DIR = os.path.join(PROJ_ROOT, 'hansard-cache')
 SITE_URL='http://openparliament.ca'
 
-CACHE_BACKEND = 'dummy://'
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+    }
+}
+
 CACHE_MIDDLEWARE_SECONDS = 60 * 60 * 3
 
 # For search to work, you need to have a running instance of Apache Solr
