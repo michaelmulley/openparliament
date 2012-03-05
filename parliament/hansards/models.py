@@ -80,15 +80,13 @@ class Document(models.Model):
             return u"%s evidence for %s (#%s/#%s)" % (
                 self.committeemeeting.committee.short_name, self.date, self.id, self.source_id)
         
-    def get_absolute_url(self, pretty=False):
+    def get_absolute_url(self):
         if self.document_type == self.DEBATE:
             return urlresolvers.reverse('debate', kwargs={
                 'year': self.date.year, 'month': self.date.month, 'day': self.date.day
             })
         elif self.document_type == self.EVIDENCE:
-            if pretty:
-                return self.committeemeeting.get_absolute_url(pretty=True)
-            return urlresolvers.reverse('document_redirect', kwargs={'document_id': self.id})
+            return self.committeemeeting.get_absolute_url()
 
     @property
     def url(self):
@@ -254,6 +252,7 @@ class Statement(models.Model):
     source_id = models.CharField(max_length=15, blank=True)
 
     slug = models.SlugField(max_length=100, blank=True)
+    urlcache = models.CharField(max_length=200, blank=True)
 
     h1 = models.CharField(max_length=300, blank=True)
     h2 = models.CharField(max_length=300, blank=True)
@@ -262,7 +261,7 @@ class Statement(models.Model):
     member = models.ForeignKey(ElectedMember, blank=True, null=True)
     politician = models.ForeignKey(Politician, blank=True, null=True) # a shortcut -- should == member.politician
     who = models.CharField(max_length=300, blank=True)
-    who_hocid = models.PositiveIntegerField(blank=True, null=True)
+    who_hocid = models.PositiveIntegerField(blank=True, null=True, db_index=True)
     who_context = models.CharField(max_length=300, blank=True)
 
     content_en = models.TextField()
@@ -296,18 +295,24 @@ class Statement(models.Model):
             self.procedural = True
         self.content_en = self.content_en.replace('\n', '').replace('</p>', '</p>\n').strip()
         self.content_fr = self.content_fr.replace('\n', '').replace('</p>', '</p>\n').strip()
+        if not self.urlcache:
+            self.generate_url()
         super(Statement, self).save(*args, **kwargs)
             
     @property
     def date(self):
         return datetime.date(self.time.year, self.time.month, self.time.day)
     
-    def get_absolute_url(self, pretty=False):
-        slug = (self.slug if self.slug else self.sequence)
-        if pretty:
-            return self.document.get_absolute_url(pretty=True) + slug + '/'
-        return urlresolvers.reverse('document_redirect', kwargs={'document_id': self.document_id, 'slug': slug})
-    
+    def generate_url(self):
+        self.urlcache = "%s%s/" % (
+            self.document.get_absolute_url(),
+            (self.slug if self.slug else self.sequence))
+
+    def get_absolute_url(self):
+        if not self.urlcache:
+            self.generate_url()
+        return self.urlcache
+
     def __unicode__ (self):
         return u"%s speaking about %s around %s" % (self.who, self.topic, self.time)
 

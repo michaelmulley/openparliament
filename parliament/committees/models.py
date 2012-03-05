@@ -112,7 +112,7 @@ class CommitteeMeeting(models.Model):
         return english_list(map(lambda a: a.name_en, activities))
 
     @models.permalink
-    def get_absolute_url(self, pretty=False):
+    def get_absolute_url(self, pretty=True):
         slug = self.committee.slug if pretty else self.committee_id
         return ('committee_meeting', [],
             {'session_id': self.session_id, 'committee_slug': slug,
