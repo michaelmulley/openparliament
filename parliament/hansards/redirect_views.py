@@ -14,7 +14,7 @@ def hansard_redirect(request, hansard_id=None, hansard_date=None, sequence=None,
     else:
         doc = get_object_or_404(Document.debates, date=datetime.date(*[int(x) for x in hansard_date.split('-')]))
 
-    url = doc.get_absolute_url(pretty=True)
+    url = doc.get_absolute_url()
 
     if sequence:
         try:

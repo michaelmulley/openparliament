@@ -27,7 +27,7 @@ def document_redirect(request, document_id, slug=None):
             pk=document_id)
     except Document.DoesNotExist:
         raise Http404
-    url = document.get_absolute_url(pretty=True)
+    url = document.get_absolute_url()
     if slug:
         url += "%s/" % slug
     return HttpResponsePermanentRedirect(url)
@@ -92,7 +92,7 @@ def document_view(request, document, meeting=None, slug=None):
         ctx.update({
             'meeting': meeting,
             'committee': meeting.committee,
-            'pagination_url': meeting.get_absolute_url(pretty=True),
+            'pagination_url': meeting.get_absolute_url(),
         })
     return HttpResponse(t.render(RequestContext(request, ctx)))
     
@@ -139,7 +139,7 @@ def statement_permalink(request, slug, year, month, day):
         'statement': statement,
         'hansard': doc,
         'statements_full_date': True,
-        'statement_url': statement.get_absolute_url(pretty=True),
+        'statement_url': statement.get_absolute_url(),
         #'statements_context_link': True
     })
     return HttpResponse(t.render(c))
