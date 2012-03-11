@@ -52,7 +52,8 @@ def search(request):
         }
         ctx = {
             'query': query,
-            'pagenum': pagenum
+            'pagenum': pagenum,
+            'rows': PER_PAGE
         }
         
         for opt in ALLOWABLE_OPTIONS:

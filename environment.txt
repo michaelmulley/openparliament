@@ -19,9 +19,10 @@ twitter>=1.5
 httplib2==0.6.0
 django-piston==0.2.3
 django-tastypie==0.9.10
-slimmer==0.1.30
-git+git://github.com/rhymeswithcycle/django-static.git#egg=django-static
+django-compressor==1.1.2
+>>>>>>> committees
 freebase
 lxml
 #recaptcha-client==1.0.5
+-e git+git://github.com/rhymeswithcycle/alpheus.git#egg=alpheus
 

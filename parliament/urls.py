@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import *
 from django.conf import settings
-from django.contrib import admin, databrowse
+from django.contrib import admin
 admin.autodiscover()
 
 from parliament.core.sitemap import sitemaps
@@ -8,20 +8,23 @@ from parliament.core.views import SiteNewsFeed
 
 urlpatterns = patterns('',
     (r'^search/', include('parliament.search.urls')),
-    (r'^hansards/', include('parliament.hansards.urls')),
+    (r'^debates/', include('parliament.hansards.urls')),
+    url(r'^documents/(?P<document_id>\d+)/$', 'parliament.hansards.views.document_redirect', name='document_redirect'),
+    url(r'^documents/(?P<document_id>\d+)/(?P<slug>[a-zA-Z0-9-]+)/$', 'parliament.hansards.views.document_redirect', name='document_redirect'),
     (r'^politicians/', include('parliament.politicians.urls')),
     (r'^bills/', include('parliament.bills.urls')),
     (r'^alerts/', include('parliament.alerts.urls')),
+    (r'^committees/', include('parliament.committees.urls')),
     #url(r'^about/$', 'django.views.generic.simple.direct_to_template', {'template': 'about/about.html'}, name='about'),
     (r'^api/', include('parliament.api.urls')),
     (r'^$', 'parliament.core.views.home'),
     (r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
     url(r'^sitenews/rss/$', SiteNewsFeed(), name='sitenews_feed'),
+    (r'', include('parliament.legacy_urls')),
 )
 
 if settings.DEBUG:
     urlpatterns += patterns('',
-        (r'^databrowse/(.*)', databrowse.site.root),
         (r'^admin/', include(admin.site.urls)),
         (r'^static/(?P<path>.*)$', 'django.views.static.serve',
                 {'document_root': settings.MEDIA_ROOT}),

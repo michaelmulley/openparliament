@@ -1,0 +1,1 @@
+<span class="tag activity_committee">Spoke at the {{ obj.committee.short_name }} committee</span> on <a href="{{ obj.url }}">{% with obj.meeting.activities_summary as activities %}{% if activities %}{{ activities|truncatewords:12 }}{% else %}{{ obj.meeting.date|date:"l, F jS" }}{% endif %}{% endwith %}</a> <span class="excerpt">{{ obj.text|truncatewords:26 }}</span>

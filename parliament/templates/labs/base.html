@@ -1,0 +1,53 @@
+{% load compress %}<!DOCTYPE html>
+<html version="HTML+RDFa 1.1">
+<head>
+<title>{% block pagetitle %}{% endblock %} | openparliament.ca labs</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<link rel="icon" type="image/png" href="{{ STATIC_URL }}images/favicon.png">
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+{% compress js %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/openparliament.js"></script>
+{% endcompress %}
+{% if not debug %}
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-10168543-3']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+{% endif %}
+<style type="text/css">
+body {
+    margin: 0;
+    padding: 0;
+    font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+}
+
+#labsbrand {
+    background-color: black;
+    width: 100%;
+    font-size: 12px;
+    /* font-family: Georgia; */
+    color: #AAAAAA;
+    text-indent: 5px;
+    padding: 1px 0;
+}
+#labsbrand a {
+    color: #19b3fb;
+}
+</style>
+{% block headextra %}
+{% endblock %}
+</head>
+<body class="{% block bodyclass %}{% endblock %}">
+<div id="labsbrand">A highly scientific project from <a href="http://openparliament.ca/">openparliament.ca</a> labs</div>
+{% block content %}
+{% endblock content %}
+</body></html>

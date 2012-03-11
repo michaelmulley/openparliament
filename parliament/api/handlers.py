@@ -3,7 +3,7 @@ from piston.resource import Resource
 from piston.utils import rc, throttle
 
 from parliament.core.models import Politician
-from parliament.hansards.models import Hansard
+from parliament.hansards.models import Document
 from django.core import urlresolvers
 
 class HansardHandler(BaseHandler):
@@ -12,8 +12,8 @@ class HansardHandler(BaseHandler):
     @throttle(3, 60)
     def read(self, request, hansard_id):
         try:
-            hansard = Hansard.objects.get(pk=hansard_id)
-        except Hansard.DoesNotExist:
+            hansard = Document.objects.get(pk=hansard_id)
+        except Document.DoesNotExist:
             return rc.NOT_FOUND
         return hansard.serializable()
         
@@ -26,7 +26,7 @@ class HansardListHandler(BaseHandler):
         return urlresolvers.reverse('parliament.api.handlers.hansard_resource', kwargs={'hansard_id': instance.id})
         
     def read(self, request):
-        return Hansard.objects.all()
+        return Document.objects.all()
         
 class PoliticianHandler(BaseHandler):
     allowed_methods = ('GET',)

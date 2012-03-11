@@ -1,4 +1,4 @@
-from django.contrib import admin, databrowse
+from django.contrib import admin
 
 from parliament.core.models import *
 
@@ -52,9 +52,3 @@ admin.site.register(InternalXref, InternalXrefOptions)
 admin.site.register(PoliticianInfo, PoliticianInfoOptions)
 admin.site.register(SiteNews, SiteNewsOptions)
 
-databrowse.site.register(ElectedMember)
-databrowse.site.register(Riding)
-databrowse.site.register(Session)
-databrowse.site.register(Politician)
-databrowse.site.register(PoliticianInfo)
-databrowse.site.register(Party)

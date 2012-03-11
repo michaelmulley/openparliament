@@ -1,11 +1,10 @@
-# Django settings for parliament project.
 import os
 
-DEBUG = False
+DEBUG = True
 
-ADMINS = (
+ADMINS = [
     ('Michael Mulley', 'michael@michaelmulley.com'),
-)
+]
 
 MANAGERS = ADMINS
 
@@ -22,16 +21,11 @@ PARLIAMENT_DB_READONLY = False
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
-# although not all choices may be available on all operating systems.
-# On Unix systems, a value of None will cause Django to use the same
-# timezone as the operating system.
-# If running in a Windows environment this must be set to the same as your
-# system time zone.
 TIME_ZONE = 'America/Montreal'
 
-# Language code for this installation. All choices can be found here:
-# http://www.i18nguy.com/unicode/language-identifiers.html
-LANGUAGE_CODE = 'en-us'
+# Language code for this installation.
+# MUST BE either 'en' or 'fr'
+LANGUAGE_CODE = 'en'
 
 SITE_ID = 1
 
@@ -45,23 +39,27 @@ USE_L10N = True
 
 # Absolute path to the directory that holds media.
 # Example: "/home/media/media.lawrence.com/"
-MEDIA_ROOT = PROJ_ROOT + '/static/'
-
+MEDIA_ROOT = os.path.join(PROJ_ROOT, 'media/')
 
 # URL that handles the media served from MEDIA_ROOT. Make sure to use a
 # trailing slash if there is a path component (optional in other cases).
 # Examples: "http://media.lawrence.com", "http://example.com/media/"
-MEDIA_URL = '/static/'
+MEDIA_URL = '/media/'
 
-DJANGO_STATIC = True
-DJANGO_STATIC_SAVE_PREFIX = MEDIA_ROOT + 'cacheable/'
-DJANGO_STATIC_NAME_PREFIX = 'cacheable/'
-DJANGO_STATIC_MEDIA_URL = MEDIA_URL
+STATICFILES_DIRS = [os.path.join(PROJ_ROOT, 'static')]
+STATIC_ROOT = os.path.join(PROJ_ROOT, '..', 'collected_static')
+STATIC_URL = '/static/'
 
-# URL prefix for admin media -- CSS, JavaScript and images. Make sure to use a
-# trailing slash.
-# Examples: "http://foo.com/media/", "/media/".
-ADMIN_MEDIA_PREFIX = '/static/admin/'
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+]
+
+COMPRESS_CSS_FILTERS = [
+    'compressor.filters.css_default.CssAbsoluteFilter'
+]
+COMPRESS_OFFLINE = True
 
 APPEND_SLASH = False
 
@@ -72,26 +70,26 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE_CLASSES = [
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    #'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
-)
+]
 
 ROOT_URLCONF = 'parliament.urls'
 
-TEMPLATE_DIRS = (
+TEMPLATE_DIRS = [
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     PROJ_ROOT + "/templates",
-)
+]
 
 INSTALLED_APPS = [
     'django.contrib.auth',
@@ -102,27 +100,26 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.humanize',
     'django.contrib.markup',
-    'django.contrib.databrowse',
     'django.contrib.flatpages',
     'django.contrib.sitemaps',
+    'django.contrib.staticfiles',
     'django_extensions',
     'haystack',
     'south',
     'sorl.thumbnail',
-    'django_static',
+    'compressor',
     'parliament.core',
     'parliament.hansards',
     'parliament.elections',
-    'parliament.financials',
     'parliament.bills',
     'parliament.politicians',
     'parliament.activity',
     'parliament.alerts',
+    'parliament.committees',
 ]
 
 THUMBNAIL_SUBDIR = '_thumbs'
 THUMBNAIL_PROCESSORS = (
-    # Default processors
     'sorl.thumbnail.processors.colorspace',
     'sorl.thumbnail.processors.autocrop',
     'parliament.core.thumbnail.crop_first',
@@ -133,6 +130,16 @@ THUMBNAIL_PROCESSORS = (
 SOUTH_TESTS_MIGRATE = False
 TEST_RUNNER = 'parliament.core.test_utils.TestSuiteRunner'
 TEST_APP_PREFIX = 'parliament'
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.contrib.auth.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.static",
+    "django.contrib.messages.context_processors.messages",
+    "django.core.context_processors.request",
+)
 
 LOGGING = {
     'version': 1,
@@ -177,8 +184,4 @@ LOGGING = {
     },
 }
 
-from settings_local import *
-
-if 'EXTRA_APPS' in globals():
-    INSTALLED_APPS += globals()['EXTRA_APPS']
 

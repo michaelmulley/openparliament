@@ -18,8 +18,11 @@ def _parse_date(d):
     return datetime.date(*[int(x) for x in d[:10].split('-')])
 
 def _get_previous_session(session):
-    return Session.objects.filter(start__lt=session.start)\
-        .order_by('-start')[0] # yes, this will raise an exception if there's no older session on record
+    try:
+        return Session.objects.filter(start__lt=session.start)\
+            .order_by('-start')[0]
+    except IndexError:
+        return None
 
 @transaction.commit_on_success
 def import_bills(session):
@@ -124,7 +127,7 @@ def _import_bill(lbill, session, previous_session=None):
     _update(bill, 'short_title_en', lbill.xpath('ShortTitle/Title[@language="en"]')[0].text)
     _update(bill, 'short_title_fr', lbill.xpath('ShortTitle/Title[@language="fr"]')[0].text)
 
-    if not bis.sponsor_politician and bill.number[0] == 'C':
+    if not bis.sponsor_politician and bill.number[0] == 'C' and lbill.xpath('SponsorAffiliation/@id'):
         # We don't deal with Senate sponsors yet
         pol_id = int(lbill.xpath('SponsorAffiliation/@id')[0])
         bis.sponsor_politician = Politician.objects.get_by_parl_id(pol_id)
@@ -165,11 +168,11 @@ def _import_bill(lbill, session, previous_session=None):
 
     if getattr(bill, '_changed', False):
         bill.save()
-        if getattr(bill, '_newbill', False) and not session.end:
-            bill.save_sponsor_activity()
     if getattr(bis, '_changed', False):
         bis.bill = bis.bill # bizarrely, the django orm makes you do this
         bis.save()
+    if getattr(bill, '_newbill', False) and not session.end:
+        bill.save_sponsor_activity()
 
     return bill
             

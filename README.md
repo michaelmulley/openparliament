@@ -3,14 +3,14 @@ A site that scrapes and republishes information on Canada's House of Commons.
 License
 =======
 
-Code is released under the AGPLv3 (see below). However, any site you create
+Code is released under the GPLv3 (see below). However, any site you create
 using this code cannot use the openparliament.ca name or logo, except as
 acknowledgement.
 
-Copyright (C) 2011 Michael Mulley (michaelmulley.com)
+Copyright (C) 2012 Michael Mulley (michaelmulley.com)
 
 This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU Affero General Public License as published by
+it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 3 of the License, or
 (at your option) any later version.
 
@@ -25,7 +25,7 @@ Installation
 This guide briefly covers a local development install. These instructions
 aren't suitable for a live, online instance.
 
-You need Python 2.6 or higher. If you want search to work, you'll need Solr 1.4.
+You need Python 2.6 or 2.7. If you want search to work, you'll need Solr 3.5+.
 
 Environment setup
 --------------------
@@ -45,7 +45,7 @@ Save the SQLite database as `parliament.sqlite`, in the main project directory (
 Settings
 -----------
 
-Copy `settings_local.py.template` to `settings_local.py`. Customize it as necessary (though it should work out of the box).
+Copy `settings.py.example` to `settings.py`. Customize it as necessary (though it should work out of the box).
 
 Run `python manage.py migrate` to ensure the database schema is up-to-date.
 

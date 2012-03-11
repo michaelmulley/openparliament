@@ -14,7 +14,9 @@
         a name or postal code above. See what your representatives are <a href="{% url parliament.hansards.views.index %}">saying</a>, and what <a href="{% url parliament.bills.views.index %}">laws</a> they’re proposing. Poke around.</p></div>
         <div class="clear"></div><div class="context"><h2>What they’re talking about</h2></div>
         <div class="focus"><p>The latest House transcript is from <strong>{{ latest_hansard.date|date:"F jS"}}</strong>{% if latest_hansard.wordoftheday %}, when the <span class="tip tipunderline" title="Most frequently spoken word, excluding a fixed list of extra-boring words (like 'the', or 'government').">word of the day</span> was {% if latest_hansard.wordcloud %}<a href="{{ latest_hansard.wordcloud.url }}" rel="lightbox">{{ latest_hansard.wordoftheday }}</a>{% else %}{{ latest_hansard.wordoftheday}}{% endif %}{% endif %}. These are the topics that were discussed.</p><div class="spacer"></div><ul class="tile clearafter">
-        {% for topic in latest_hansard.topics_with_qp %}<li class="four oneline overflowtip"><a href="{% url parliament.hansards.views.hansard hansard_id=latest_hansard.id statement_seq=topic.1 %}#hl">{{ topic.0 }}</a></li>{% endfor %}
+        	{% with latest_hansard.get_absolute_url as latest_hansard_url %}
+				{% for topic in latest_hansard.topics_with_qp %}<li class="four oneline overflowtip"><a href="{{ latest_hansard_url }}{{ topic.1 }}/#hl">{{ topic.0 }}</a></li>{% endfor %}
+			{% endwith %}
         </ul><div class="clear"></div></div>
 {% if votes %}<div class="clear"><div class="context"><h2>Recent votes</h2></div>
 <div class="focus"><ul class="tile">{% for vote in votes %}<li class="six twoline overflowtip"><a href="{{ vote.get_absolute_url }}">#{{ vote.number }}</a> <span class="tag voteresult_{{ vote.result }}">{{ vote.get_result_display }}</span> {% if vote.bill %}<a href="{{ vote.bill.get_absolute_url }}">{{ vote.bill.number }}</a> {% endif %}{{ vote.description }}</li>{% endfor %}</ul><div class="clear"></div></div>{% endif %}

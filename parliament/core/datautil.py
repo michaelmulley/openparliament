@@ -5,18 +5,12 @@ Production code should NOT import from this file."""
 import sys, re, urllib, urllib2, os, csv
 from collections import defaultdict
 import urlparse
-import itertools
-from operator import itemgetter
-from heapq import nlargest
 
 from django.db import transaction, models
 from django.db.models import Count
 from django.core.files import File
 from django.conf import settings
-from django.template.defaultfilters import slugify
-from BeautifulSoup import BeautifulSoup
 
-from parliament.core import parsetools, text_utils
 from parliament.core.models import *
 from parliament.hansards.models import Statement
 from parliament.elections.models import Election, Candidacy

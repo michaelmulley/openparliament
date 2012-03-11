@@ -1,4 +1,5 @@
 import datetime
+from hashlib import sha1
 
 from django.conf import settings
 from django.template import Context, loader, RequestContext
@@ -12,6 +13,8 @@ def save_activity(obj, politician, date, guid=None, variety=None):
         variety = obj.__class__.__name__.lower()
     if not guid:
         guid = variety + str(obj.id)
+    if len(guid) > 50:
+        guid = sha1(guid).hexdigest()
     if Activity.objects.filter(guid=guid).exists():
         return False
     t = loader.get_template("activity/%s.html" % variety.lower())
@@ -29,6 +32,7 @@ ACTIVITY_MAX = {
     'membervote': 5,
     'statement': 8,
     'billsponsor': 7,
+    'committee': 8,
 } 
 def iter_recent(queryset):
     activity_counts = ACTIVITY_MAX.copy()

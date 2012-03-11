@@ -21,5 +21,9 @@ class Activity(models.Model):
         
     def payload_wrapped(self):
         return u'<p class="activity_item" data-id="%s">%s</p>' % (self.pk, self.payload)
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super(Activity, self).save(*args, **kwargs)
         
         

@@ -1,13 +1,18 @@
-{% load django_static %}<!DOCTYPE html>
+{% load compress %}<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>{% block pagetitle %}{% if pagetitle %}{{ pagetitle }}{% else %}{{ title }}{% endif %}{% endblock pagetitle %} | openparliament.ca</title>
-<link rel="icon" type="image/png" href="{{ MEDIA_URL }}images/favicon.png">
-<link rel="stylesheet" type="text/css" href="{% slimfile "css/openparliament.css" %}">
+<link rel="icon" type="image/png" href="{{ STATIC_URL }}images/favicon.png">
+{% compress css %}
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/openparliament.css">
+{% endcompress %}
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
-<script type="text/javascript">!window.jQuery && document.write(unescape('%3Cscript src="{{ MEDIA_URL }}js/jquery-1.4.2.min.js"%3E%3C/script%3E'))</script>
-<script type="text/javascript" src="{% staticfile "js/openparliament.js" %}"></script>
+<script type="text/javascript">!window.jQuery && document.write(unescape('%3Cscript src="{{ STATIC_URL }}js/jquery-1.4.2.min.js"%3E%3C/script%3E'))</script>
+
+{% compress js %}
+<script type="text/javascript" src="{{ STATIC_URL }}js/openparliament.js"></script>
+{% endcompress %}
 {% block headextra %}{% endblock %}
 <script type="text/javascript">
 
@@ -25,8 +30,8 @@
 </script>
 </head>
 <body class="{% block bodyclass %}{% endblock %}">
-<div id="navbarbg"></div><div id="navbar"><a href="/"><img src="{% staticfile "images/logotype_bar.png" %}" alt="openparliament.ca"></a>
-    <ul id="navlinks"><li {% block navlinks_mps %}{% endblock %}><a href="{% url parliament.politicians.views.current_mps %}">MPs</a></li><li {% block navlinks_bills %}{% endblock %}><a href="{% url parliament.bills.views.index %}">Bills</a></li><li {% block navlinks_debates %}{% endblock %}><a href="{% url parliament.hansards.views.index %}">Debates</a></li><li {% block navlinks_about %}{% endblock %}><a href="/about/">About</a></li><li {% block navlinks_labs %}{% endblock %}><a href="/labs/">Labs</a></li></ul>
+<div id="navbarbg"></div><div id="navbar"><a href="/"><img src="{{ STATIC_URL }}images/logotype_bar.png" alt="openparliament.ca"></a>
+    <ul id="navlinks"><li {% block navlinks_mps %}{% endblock %}><a href="{% url parliament.politicians.views.current_mps %}">MPs</a></li><li {% block navlinks_bills %}{% endblock %}><a href="{% url parliament.bills.views.index %}">Bills</a></li><li {% block navlinks_debates %}{% endblock %}><a href="{% url parliament.hansards.views.index %}">Debates</a></li><li {% block navlinks_committees %}{% endblock %}><a href="{% url parliament.committees.views.committee_list %}">Committees</a></li><li {% block navlinks_about %}{% endblock %}><a href="/about/">About</a></li><li {% block navlinks_labs %}{% endblock %}><a href="/labs/">Labs</a></li></ul>
     <div id="breadcrumbs">{% block breadcrumbs_all %}<a href="/">Home</a> {% block breadcrumbs %}{% endblock breadcrumbs %}{% endblock breadcrumbs_all %}</div>
     <form action="{% url search %}" method="GET" id="nav_searchform"><div><input type="text" class="tip" title="By postal code, name, or keyword." id="nav_searchbox" name="q"><a id="nav_searchbutton"></a></div></form>
     </div>
@@ -39,9 +44,9 @@
 <div id="footer">{% block footer %}<p><a href="/about/">Only somewhat copyright</a> {% now "Y" %}. <strong>Not a government site.</strong> {% block footerextra %}{% endblock %}<br>Questions, suggestions, complaints, epic poetry? <a class="maillink">E-mail</a>, or our <a href="http://openparliament.uservoice.com/" class="feedback">feedback forum</a>.</p>{% endblock footer %}</div>
 <!--[if IE 6]>
 <script type="text/javascript">var IE6UPDATE_OPTIONS = {
-    icons_path: "{{ MEDIA_URL }}ie6update/images/"
+    icons_path: "{{ STATIC_URL }}ie6update/images/"
 };</script>
-<script type="text/javascript" src="{{ MEDIA_URL }}ie6update/ie6update.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}ie6update/ie6update.js"></script>
 <![endif]-->
 {% comment %}<script type="text/javascript">
   function _loadUserVoice() {

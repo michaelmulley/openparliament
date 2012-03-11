@@ -1,0 +1,18 @@
+{% extends "committees/base.html" %}
+{% block breadcrumbs %}<a href="{% url committee_list %}">Committees</a> {{ committee.name }}{% endblock %}
+{% block content %}
+    <div class="context"><h2>Meetings</h2></div>
+    <div class="focus">
+        <ul class="tile">{% for meeting in meetings %}
+            <li class="three online overflowtip{% if not meeting.evidence_id %} no_evidence{% endif %}">
+                <a href="{% url committee_meeting committee_slug=committee.slug,session_id=meeting.session_id,number=meeting.number %}">{{ meeting.date|date:"N j" }}</a>
+            </li>{% endfor %}
+        </ul>
+        <div class="clear"></div></div>
+    <div class="clear"></div>
+    <style type="text/css">
+    .no_evidence a {
+        color: #777777;
+    }
+    </style>
+{% endblock %}

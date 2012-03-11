@@ -5,13 +5,15 @@ from django.conf import settings
 
 from parliament.politicians import twit
 from parliament.politicians import googlenews as gnews
-from parliament.imports import parlvotes, legisinfo, hans
+from parliament.imports import parlvotes, legisinfo, parl_document, parl_cmte
 from parliament.core.models import Politician, Session
-from django.core.mail import mail_admins
-from parliament.hansards.models import Hansard
+from parliament.hansards.models import Document
 from parliament.activity import utils as activityutils
 from parliament.alerts import utils as alertutils
 from parliament.activity.models import Activity
+
+import logging
+logger = logging.getLogger(__name__)
 
 @transaction.commit_on_success
 def twitter():
@@ -38,25 +40,42 @@ def prune_activities():
     for pol in Politician.objects.current():
         activityutils.prune(Activity.public.filter(politician=pol))
     return True
+
+def committee_evidence():
+    for document in Document.evidence\
+      .annotate(scount=models.Count('statement'))\
+      .exclude(scount__gt=0).exclude(skip_parsing=True).order_by('date').iterator():
+        print document
+        parl_document.import_document(document, interactive=False)
+        if document.statement_set.all().count():
+            document.save_activity()
+    
+def committees(sess=None):
+    if sess is None:
+        sess = Session.objects.current()
+    parl_cmte.import_committee_list(session=sess)
+    parl_cmte.import_committee_documents(sess)
     
 @transaction.commit_on_success
 def hansards_load():
-    hans.hansards_from_calendar()
+    parl_document.fetch_latest_debates()
     return True
         
 @transaction.commit_manually
 def hansards_parse():
-    for hansard in Hansard.objects.all().annotate(scount=models.Count('statement')).exclude(scount__gt=0).order_by('date').iterator():
+    for hansard in Document.objects.filter(document_type=Document.DEBATE)\
+      .annotate(scount=models.Count('statement'))\
+      .exclude(scount__gt=0).exclude(skip_parsing=True).order_by('date').iterator():
         try:
-            hans.parseAndSave(hansard)
+            parl_document.import_document(hansard, interactive=False)
         except Exception, e:
             transaction.rollback()
-            mail_admins("Hansard parse failure on #%s" % hansard.id, repr(e))
+            logger.error("Hansard parse failure on #%s: %r" % (hansard.id, e))
             continue
         else:
             transaction.commit()
         # now reload the Hansard to get the date
-        hansard = Hansard.objects.get(pk=hansard.id)
+        hansard = Document.objects.get(pk=hansard.id)
         try:
             hansard.save_activity()
         except Exception, e:
@@ -64,7 +83,7 @@ def hansards_parse():
             raise e
         else:
             transaction.commit()
-        if getattr(settings, 'PARLIAMENT_SEND_EMAIL', True):
+        if getattr(settings, 'PARLIAMENT_SEND_EMAIL', False):
             alertutils.alerts_for_hansard(hansard)
     transaction.commit()
             
@@ -73,7 +92,8 @@ def hansards():
     hansards_parse()
     
 def wordcloud():
-    h = Hansard.objects.all()[0]
+    # FIXME
+    h = Document.objects.filter(document_type=Document.DEBATE)[0]
     h.get_wordoftheday()
     if not h.wordcloud:
         h.generate_wordcloud()

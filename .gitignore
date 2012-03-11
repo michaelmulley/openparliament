@@ -3,12 +3,14 @@
 *.gz
 *~
 *.tmproj
+.idea/
 .DS_Store
 models.dot
 polpics/
 autoimg/
 local/
-settings_local.py
+settings.py
 pip-log.txt
 logs/
-cacheable/
+media/
+collected_static/

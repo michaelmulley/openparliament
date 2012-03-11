@@ -1,1 +1,0 @@
-{% autoescape off %}{{ object.name }} {% for nam in object.alternate_names %}{{ nam }} {% endfor %} {{ object.latest_member.party.name }}{{ object.latest_member.party.short_name }} {{ object.latest_member.party.name }} {{ object.latest_member.riding }}{% endautoescape %}

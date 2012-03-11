@@ -1,5 +1,10 @@
-"""Import contribution data from Elections Canada."""
+"""This is a half-finished module to import Elections Canada
+contribution data.
 
+It and parliament.financials were written in summer 2009
+and haven't been touched since. Not that they're not worthwhile--they're
+just looking for a home, and parents.
+"""
 import urllib, urllib2
 from xml.etree.ElementTree import ElementTree
 import re, datetime
