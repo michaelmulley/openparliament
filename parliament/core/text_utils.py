@@ -29,7 +29,7 @@ STOPWORDS = frozenset(["i", "me", "my", "myself", "we", "our", "ours", "ourselve
 "government", "house", 'committee', 'would', 'speaker', 'motion', 'mr', 'mrs', 'ms', 'member', 'minister', 'canada', 'members',
 'time', 'prime', 'one', 'parliament', 'us', 'bill', 'act', 'like', 'canadians', 'people', 'said', 'want', 'could', 'issue',
 'today', 'hon', 'order', 'party', 'canadian', 'think', 'also', 'new', 'get', 'many', 'say', 'look', 'country', 'legislation',
-'law', 'department', 'two', 'one', 'day', 'days', ])
+'law', 'department', 'two', 'one', 'day', 'days', 'madam', 'must', ])
             
 class WordCounter(dict):
     
