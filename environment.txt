@@ -20,7 +20,6 @@ httplib2==0.6.0
 django-piston==0.2.3
 django-tastypie==0.9.10
 django-compressor==1.1.2
->>>>>>> committees
 freebase
 lxml
 #recaptcha-client==1.0.5
