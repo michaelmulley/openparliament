@@ -31,7 +31,7 @@ def closed(request, message=None):
     return resp
 
 @never_cache
-def db_readonly(request):
+def db_readonly(request, *args, **kwargs):
     title = "Temporarily unavailable"
     message = """We're currently running on our backup database, and this particular functionality is down.
         It should be back up soon. Sorry for the inconvenience!"""
