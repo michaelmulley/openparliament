@@ -63,60 +63,6 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
 
     statements = []
 
-    def _process_related_links(content):
-        return re.sub(r'<a class="related_link (\w+)" ([^>]+)>(.+?)</a>', _process_related_link, content)
-
-    def _process_related_link(match):
-        (link_type, tagattrs, text) = match.groups()
-        params = dict([(m.group(1), m.group(2)) for m in re.finditer(r'data-([\w-]+)="([^"]+)"', tagattrs)])
-        hocid = int(params['HoCid'])
-        if link_type == 'politician':
-            try:
-                pol = Politician.objects.get_by_parl_id(hocid)
-            except Politician.DoesNotExist:
-                logger.error("Could not resolve related politician #%s, %r" % (hocid, text))
-                return text
-            url = pol.get_absolute_url()
-            title = pol.name
-            s._related_pols.add(pol)
-        elif link_type == 'legislation':
-            try:
-                bill = Bill.objects.get_by_legisinfo_id(hocid)
-            except Bill.DoesNotExist:
-                match = re.search(r'\b[CS]\-\d+[A-E]?\b', text)
-                if not match:
-                    logger.error("Invalid bill link %s" % text)
-                    return text
-                bill = Bill.objects.create_temporary_bill(legisinfo_id=hocid,
-                    number=match.group(0), session=document.session)
-            url = bill.url_for_session(document.session)
-            title = bill.name
-            s._related_bills.add(bill)
-        elif link_type == 'vote':
-            try:
-                vote = VoteQuestion.objects.get(session=document.session,
-                    number=int(params['number']))
-                url = vote.get_absolute_url()
-                title = vote.description
-                s._related_vote = vote
-            except VoteQuestion.DoesNotExist:
-                # We'll just operate on faith that the vote will soon
-                # be created
-                url = urlresolvers.reverse('parliament.bills.views.vote',
-                    kwargs={'session_id': document.session_id, 'number': params['number']})
-                title = None
-        else:
-            raise Exception("Unknown link type %s" % link_type)
-
-        attrs = {
-            'href': url,
-            'data-HoCid': hocid
-        }
-        if title:
-            attrs['title'] = title
-        return _build_tag(u'a', attrs) + text + u'</a>'
-            
-
     for pstate in pdoc_en.statements:
         s = Statement(
             document=document,
@@ -146,7 +92,7 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
 
         s._related_pols = set()
         s._related_bills = set()
-        s.content_en = _process_related_links(s.content_en)
+        s.content_en = _process_related_links(s.content_en, s)
 
         statements.append(s)
 
@@ -173,7 +119,8 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
 
     for st in statements:
         st.content_fr = _process_related_links(
-            _r_paragraphs.sub(_substitute_french_content, st.content_en)
+            _r_paragraphs.sub(_substitute_french_content, st.content_en),
+            st
         )
     document.multilingual = True
 
@@ -259,6 +206,61 @@ def _align_sequences(new_statements, old_statements):
                 mappings.append((old.sequence, choice.slug))
 
     return mappings
+
+def _process_related_links(content, statement):
+    return re.sub(r'<a class="related_link (\w+)" ([^>]+)>(.+?)</a>',
+        lambda m: _process_related_link(m, statement),
+        content)
+
+def _process_related_link(match, statement):
+    (link_type, tagattrs, text) = match.groups()
+    params = dict([(m.group(1), m.group(2)) for m in re.finditer(r'data-([\w-]+)="([^"]+)"', tagattrs)])
+    hocid = int(params['HoCid'])
+    if link_type == 'politician':
+        try:
+            pol = Politician.objects.get_by_parl_id(hocid)
+        except Politician.DoesNotExist:
+            logger.error("Could not resolve related politician #%s, %r" % (hocid, text))
+            return text
+        url = pol.get_absolute_url()
+        title = pol.name
+        statement._related_pols.add(pol)
+    elif link_type == 'legislation':
+        try:
+            bill = Bill.objects.get_by_legisinfo_id(hocid)
+        except Bill.DoesNotExist:
+            match = re.search(r'\b[CS]\-\d+[A-E]?\b', text)
+            if not match:
+                logger.error("Invalid bill link %s" % text)
+                return text
+            bill = Bill.objects.create_temporary_bill(legisinfo_id=hocid,
+                number=match.group(0), session=statement.document.session)
+        url = bill.url_for_session(statement.document.session)
+        title = bill.name
+        statement._related_bills.add(bill)
+    elif link_type == 'vote':
+        try:
+            vote = VoteQuestion.objects.get(session=statement.document.session,
+                number=int(params['number']))
+            url = vote.get_absolute_url()
+            title = vote.description
+            statement._related_vote = vote
+        except VoteQuestion.DoesNotExist:
+            # We'll just operate on faith that the vote will soon
+            # be created
+            url = urlresolvers.reverse('parliament.bills.views.vote',
+                kwargs={'session_id': statement.document.session_id, 'number': params['number']})
+            title = None
+    else:
+        raise Exception("Unknown link type %s" % link_type)
+
+    attrs = {
+        'href': url,
+        'data-HoCid': hocid
+    }
+    if title:
+        attrs['title'] = title
+    return _build_tag(u'a', attrs) + text + u'</a>'
 
 def _build_tag(name, attrs):
     return u'<%s%s>' % (
