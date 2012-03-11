@@ -31,7 +31,13 @@
 </head>
 <body class="{% block bodyclass %}{% endblock %}">
 <div id="navbarbg"></div><div id="navbar"><a href="/"><img src="{{ STATIC_URL }}images/logotype_bar.png" alt="openparliament.ca"></a>
-    <ul id="navlinks"><li {% block navlinks_mps %}{% endblock %}><a href="{% url parliament.politicians.views.current_mps %}">MPs</a></li><li {% block navlinks_bills %}{% endblock %}><a href="{% url parliament.bills.views.index %}">Bills</a></li><li {% block navlinks_debates %}{% endblock %}><a href="{% url parliament.hansards.views.index %}">Debates</a></li><li {% block navlinks_committees %}{% endblock %}><a href="{% url parliament.committees.views.committee_list %}">Committees</a></li><li {% block navlinks_about %}{% endblock %}><a href="/about/">About</a></li><li {% block navlinks_labs %}{% endblock %}><a href="/labs/">Labs</a></li></ul>
+    <ul id="navlinks">
+		<li {% block navlinks_mps %}{% endblock %}><a href="{% url parliament.politicians.views.current_mps %}">MPs</a></li>
+		<li {% block navlinks_bills %}{% endblock %}><a href="{% url parliament.bills.views.index %}">Bills</a></li>
+		<li {% block navlinks_debates %}{% endblock %}><a href="{% url parliament.hansards.views.index %}">Debates</a></li>
+{#		<li {% block navlinks_committees %}{% endblock %}><a href="{% url parliament.committees.views.committee_list %}">Committees</a></li>#}
+		<li {% block navlinks_about %}{% endblock %}><a href="/about/">About</a></li>
+		<li {% block navlinks_labs %}{% endblock %}><a href="/labs/">Labs</a></li></ul>
     <div id="breadcrumbs">{% block breadcrumbs_all %}<a href="/">Home</a> {% block breadcrumbs %}{% endblock breadcrumbs %}{% endblock breadcrumbs_all %}</div>
     <form action="{% url search %}" method="GET" id="nav_searchform"><div><input type="text" class="tip" title="By postal code, name, or keyword." id="nav_searchbox" name="q"><a id="nav_searchbutton"></a></div></form>
     </div>

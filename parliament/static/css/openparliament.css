@@ -37,7 +37,7 @@ div.focus.pageheader{margin-bottom:0;}
 /* SITE NAVIGATION */
 #breadcrumbs{width:515px;color:#555555;position:absolute;left:10px;top:65px;font-size:14px;font-weight:bold;}
 #breadcrumbs a{background:transparent url('../images/breadglyph.png') no-repeat right;padding-right:13px;font-weight:normal;}
-#navlinks{font-weight:bold;position:absolute;font-size:15px;top:24px;left:368px;list-style-type:none;margin:0;padding:0;letter-spacing: 0.1px;}
+#navlinks{font-weight:bold;position:absolute;font-size:15px;top:24px;left:415px;list-style-type:none;margin:0;padding:0;letter-spacing: 0.1px;}
 #navlinks li{padding:0;float:left;margin-right:10px;}
 #navlinks li a{color:#CCCCCC;}
 #navlinks li.selected a{color:#FFC757;}
