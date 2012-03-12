@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-12 19:27-0400\n"
+"POT-Creation-Date: 2012-03-12 19:35-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -438,4 +438,48 @@ msgstr ""
 
 #: core/templatetags/ours.py:95
 msgid "More than three months ago"
+msgstr ""
+
+#: templates/404.html:4
+msgid "Page Not Found"
+msgstr ""
+
+#: templates/404.html:5
+msgid "No go"
+msgstr ""
+
+#: templates/404.html:8
+msgid "Lost. So very, very lost."
+msgstr ""
+
+#: templates/404.html:11
+msgid ""
+"Looks like the page you're looking \n"
+"    for doesn't, or no longer, exists. Use the links and search box above "
+"to\n"
+"    find your way back to the comfortable, extant part of\n"
+"    the site."
+msgstr ""
+
+#: templates/500.html:4
+msgid "Server Error"
+msgstr ""
+
+#: templates/500.html:5
+msgid "Oh dear!"
+msgstr ""
+
+#: templates/500.html:8
+msgid "Blinking lights, shooting flames"
+msgstr ""
+
+#: templates/500.html:11
+msgid ""
+"There was a software error on our\n"
+"    server, and this page couldn't be generated. The error has been logged,\n"
+"    which&mdash;fingers crossed!&mdash;means it should be fixed soon "
+"enough.\n"
+"    In the meantime, try using the links and search box above to get back "
+"to\n"
+"    less erroneous pages. (Sorry!)"
 msgstr ""
