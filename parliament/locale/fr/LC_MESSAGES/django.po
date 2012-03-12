@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-26 15:36-0500\n"
+"POT-Creation-Date: 2012-03-12 19:27-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -180,4 +180,262 @@ msgstr ""
 #: bills/views.py:224
 #, python-format
 msgid "%(name)s (%(party)s%(date)s)"
+msgstr ""
+
+#: core/fields.py:13
+msgid ""
+"That didn't match the displayed words. Sorry: we know this can be "
+"frustrating."
+msgstr ""
+
+#: core/models.py:43
+#, python-format
+msgid "%(schema)s: %(text)s %(int)s for %(target)s"
+msgstr ""
+
+#: core/models.py:62
+#, python-format
+msgid "More than one party matched %s"
+msgstr ""
+
+#: core/models.py:77
+msgid "Parties"
+msgstr ""
+
+#: core/models.py:113
+#, python-format
+msgid "Name %s already points to a different party"
+msgstr ""
+
+#: core/models.py:125
+msgid "Given name"
+msgstr ""
+
+#: core/models.py:126
+msgid "Family name"
+msgstr ""
+
+#: core/models.py:229
+msgid "Election not implemented yet in Politician get_by_name"
+msgstr ""
+
+#: core/models.py:256
+#, python-format
+msgid ""
+"DATA ERROR: There appear to be two politicians with the same last name "
+"elected to the same riding from the same session... %(lastname)s %(session)s "
+"%(riding)s"
+msgstr ""
+
+#: core/models.py:273
+#, python-format
+msgid "Could not find politician named %s"
+msgstr ""
+
+#: core/models.py:286
+#, python-format
+msgid "Looking up parlinfo ID %s"
+msgstr ""
+
+#: core/models.py:323
+msgid "Couldn't open "
+msgstr ""
+
+#: core/models.py:331
+#, python-format
+msgid "Invalid page for parlid %s"
+msgstr ""
+
+#: core/models.py:354
+#, python-format
+msgid "Couldn't find riding %s"
+msgstr ""
+
+#: core/models.py:377
+msgid "Male"
+msgstr ""
+
+#: core/models.py:378
+msgid "Female"
+msgstr ""
+
+#: core/models.py:462
+#, python-format
+msgid "ParlID %d already in use"
+msgstr ""
+
+#: core/models.py:697
+msgid "Alberta"
+msgstr ""
+
+#: core/models.py:698
+msgid "B.C."
+msgstr ""
+
+#: core/models.py:699
+msgid "Saskatchewan"
+msgstr ""
+
+#: core/models.py:700
+msgid "Manitoba"
+msgstr ""
+
+#: core/models.py:701
+msgid "Ontario"
+msgstr ""
+
+#: core/models.py:702
+msgid "Québec"
+msgstr ""
+
+#: core/models.py:703
+msgid "New Brunswick"
+msgstr ""
+
+#: core/models.py:704
+msgid "Nova Scotia"
+msgstr ""
+
+#: core/models.py:705
+msgid "P.E.I."
+msgstr ""
+
+#: core/models.py:706
+msgid "Newfoundland & Labrador"
+msgstr ""
+
+#: core/models.py:707
+msgid "Yukon"
+msgstr ""
+
+#: core/models.py:708
+msgid "Northwest Territories"
+msgstr ""
+
+#: core/models.py:709
+msgid "Nunavut"
+msgstr ""
+
+#: core/models.py:755
+msgid "Provide either a date or a session to get_by_pol."
+msgstr ""
+
+#: core/models.py:769
+#, python-format
+msgid "No elected member for %(poli)s, session %(sess)s"
+msgstr ""
+
+#: core/models.py:790
+#, python-format
+msgid ""
+"%(poli)s (%(party)s) was the member from %(riding)s from %(start)s to %(end)s"
+msgstr ""
+
+#: core/models.py:799
+#, python-format
+msgid "%(poli)s (%(party)s) is the member from %(riding)s (since %(start)s)"
+msgstr ""
+
+#: core/views.py:29
+msgid "We're currently down for planned maintenance. We'll be back soon."
+msgstr ""
+
+#: core/views.py:49
+msgid "openparliament.ca: Site news"
+msgstr ""
+
+#: core/views.py:51
+msgid "Announcements about the openparliament.ca site"
+msgstr ""
+
+#: core/templatetags/ours.py:21
+msgid "She"
+msgstr ""
+
+#: core/templatetags/ours.py:23
+msgid "He"
+msgstr ""
+
+#: core/templatetags/ours.py:25
+msgid "He/she"
+msgstr ""
+
+#: core/templatetags/ours.py:31 core/templatetags/ours.py:41
+msgid "Her"
+msgstr ""
+
+#: core/templatetags/ours.py:33
+msgid "His"
+msgstr ""
+
+#: core/templatetags/ours.py:35
+msgid "Their"
+msgstr ""
+
+#: core/templatetags/ours.py:43
+msgid "Him"
+msgstr ""
+
+#: core/templatetags/ours.py:45
+msgid "Them"
+msgstr ""
+
+#: core/templatetags/ours.py:51
+msgid "Mr."
+msgstr ""
+
+#: core/templatetags/ours.py:53
+msgid "Ms."
+msgstr ""
+
+#: core/templatetags/ours.py:55
+msgid "Mr./Ms."
+msgstr ""
+
+#: core/templatetags/ours.py:73
+msgid "Today"
+msgstr ""
+
+#: core/templatetags/ours.py:75
+msgid "Yesterday"
+msgstr ""
+
+#: core/templatetags/ours.py:77
+msgid "Two days ago"
+msgstr ""
+
+#: core/templatetags/ours.py:79
+msgid "Three days ago"
+msgstr ""
+
+#: core/templatetags/ours.py:81
+msgid "This week"
+msgstr ""
+
+#: core/templatetags/ours.py:83
+msgid "A week ago"
+msgstr ""
+
+#: core/templatetags/ours.py:85
+msgid "Two weeks ago"
+msgstr ""
+
+#: core/templatetags/ours.py:87
+msgid "Three weeks ago"
+msgstr ""
+
+#: core/templatetags/ours.py:89
+msgid "A month ago"
+msgstr ""
+
+#: core/templatetags/ours.py:91
+msgid "Two months ago"
+msgstr ""
+
+#: core/templatetags/ours.py:93
+msgid "Three months ago"
+msgstr ""
+
+#: core/templatetags/ours.py:95
+msgid "More than three months ago"
 msgstr ""
