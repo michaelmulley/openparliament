@@ -1,19 +1,14 @@
 import datetime
 import re
-import urllib
 
-from django.contrib.markup.templatetags.markup import markdown
 from django.contrib.syndication.views import Feed
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
-from django.utils.http import urlquote
+from django.http import HttpResponse, Http404, HttpResponsePermanentRedirect
 from django.shortcuts import get_object_or_404
-from django.template import Context, loader, RequestContext
+from django.template import loader, RequestContext
 from django.views.decorators.vary import vary_on_headers
 from django.views.generic.list_detail import object_list
-
-from BeautifulSoup import BeautifulSoup
 
 from parliament.activity.models import Activity
 from parliament.activity import utils as activity
@@ -137,7 +132,7 @@ class PoliticianStatementFeed(Feed):
         return statement.get_absolute_url()
         
     def item_description(self, statement):
-        return markdown(statement.text)
+        return statement.content_en
         
     def item_pubdate(self, statement):
         return statement.time
