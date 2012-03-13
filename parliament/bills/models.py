@@ -136,7 +136,12 @@ class Bill(models.Model):
         try:
             return self.sessions.all().order_by('-start')[0]
         except (IndexError, ValueError):
-            return None
+            return getattr(self, '_session', None)
+
+    def set_temporary_session(self, session):
+        """To deal with tricky save logic, saves a session to the object for cases
+        when self.sessions.all() won't get exist in the DB."""
+        self._session = session
         
     session = property(get_session)
 

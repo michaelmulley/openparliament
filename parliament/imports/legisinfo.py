@@ -87,8 +87,8 @@ def _import_bill(lbill, session, previous_session=None):
         previous_session = _get_previous_session(session)
 
     lbillnumber = lbill.xpath('BillNumber')[0]
-    billnumber = lbillnumber.get('prefix') + '-' + lbillnumber.get('number')\
-    + lbillnumber.get('suffix', '')
+    billnumber = (lbillnumber.get('prefix') + '-' + lbillnumber.get('number')
+        + lbillnumber.get('suffix', ''))
     try:
         bill = Bill.objects.get(number=billnumber, sessions=session)
         bis = bill.billinsession_set.get(session=session)
@@ -97,6 +97,7 @@ def _import_bill(lbill, session, previous_session=None):
         bis = BillInSession(bill=bill, session=session)
         bill._changed = True
         bis._changed = True
+        bill.set_temporary_session(session)
 
     _update(bill, 'name', lbill.xpath('BillTitle/Title[@language="en"]')[0].text)
 
