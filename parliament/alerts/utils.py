@@ -15,7 +15,7 @@ def alerts_for_hansard(hansard):
     
     statements = defaultdict(list)
     topics = defaultdict(list)
-    for statement in hansard.statement_set.filter(speaker=False):
+    for statement in hansard.statement_set.filter(procedural=False):
         pol_id = statement.politician_id
         if pol_id in alert_set:
             statements[pol_id].append(statement)
