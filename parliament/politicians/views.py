@@ -1,6 +1,7 @@
 import datetime
 import re
 
+from django.conf import settings
 from django.contrib.syndication.views import Feed
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
@@ -13,6 +14,7 @@ from django.views.generic.list_detail import object_list
 from parliament.activity.models import Activity
 from parliament.activity import utils as activity
 from parliament.core.models import Politician, ElectedMember
+from parliament.core.utils import feed_wrapper
 from parliament.hansards.models import Statement
     
 def current_mps(request):
@@ -107,10 +109,11 @@ def hide_activity(request):
     activity.active = False
     activity.save()
     return HttpResponse('OK')
-    
+
 class PoliticianStatementFeed(Feed):
     
     def get_object(self, request, pol_id):
+        self.language = request.GET.get('language', settings.LANGUAGE_CODE)
         return get_object_or_404(Politician, pk=pol_id)
     
     def title(self, pol):
@@ -132,14 +135,17 @@ class PoliticianStatementFeed(Feed):
         return statement.get_absolute_url()
         
     def item_description(self, statement):
-        return statement.content_en
+        return statement.text_html(language=self.language)
         
     def item_pubdate(self, statement):
         return statement.time
+
+politician_statement_feed = feed_wrapper(PoliticianStatementFeed)
         
 r_title = re.compile(r'<span class="tag.+?>(.+?)</span>')
 r_link = re.compile(r'<a [^>]*?href="(.+?)"')
 r_excerpt = re.compile(r'<span class="excerpt">')
+
 class PoliticianActivityFeed(Feed):
 
     def get_object(self, request, pol_id):

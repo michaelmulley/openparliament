@@ -139,3 +139,13 @@ class ActiveManager(models.Manager):
 
     def get_query_set(self):
         return super(ActiveManager, self).get_query_set().filter(active=True)
+
+def feed_wrapper(feed_class):
+    """Decorator that ensures django.contrib.syndication.Feed objects are created for
+    each request, not reused over several requests. This means feed classes can safely
+    store request-specific attributes on self."""
+    def call_feed(request, *args, **kwargs):
+        feed_instance = feed_class()
+        feed_instance.request = request
+        return feed_instance(request, *args, **kwargs)
+    return call_feed
