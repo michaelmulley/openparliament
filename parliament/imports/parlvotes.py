@@ -49,11 +49,13 @@ def import_votes(session=None):
         else:
             raise Exception("Couldn't process vote result %s in %s" % (decision, votelisturl))
         if vote.find('RelatedBill') is not None:
+            billnumber = vote.find('RelatedBill').attrib['number']
             try:
-                votequestion.bill = Bill.objects.get(sessions=session, number=vote.find('RelatedBill').attrib['number'])
+                votequestion.bill = Bill.objects.get(sessions=session, number=billnumber)
             except Bill.DoesNotExist:
-                print "ERROR: Could not find bill for vote %s" % votenumber
-        
+                votequestion.bill = Bill.objects.create_temporary_bill(session=session, number=billnumber)
+                logger.warning("Temporary bill %s created for vote %s" % (billnumber, votenumber))
+
         # Now get the detailed results
         votedetailurl = VOTEDETAIL_URL % {'parliamentnum' : session.parliamentnum,
                 'sessnum': session.sessnum,
