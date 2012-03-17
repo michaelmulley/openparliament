@@ -1,3 +1,5 @@
+import datetime
+
 from django.conf import settings
 from django.contrib.markup.templatetags.markup import markdown
 from django.contrib.syndication.views import Feed
@@ -16,7 +18,8 @@ def home(request):
     t = loader.get_template("home.html")
     c = RequestContext(request, {
         'latest_hansard': Document.debates.all()[0],
-        'sitenews': SiteNews.objects.filter(active=True)[:6],
+        'sitenews': SiteNews.objects.filter(active=True,
+            date_gte=datetime.datetime.now() + datetime.timedelta(days=60))[:6],
         'votes': VoteQuestion.objects.filter(session=Session.objects.current())\
             .select_related('bill')[:6],
     })
