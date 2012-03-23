@@ -2,7 +2,7 @@
 # pip can install these libraries automatically by reading this file:
 # pip install -r environment.txt
 BeautifulSoup>=3.2.0
-Django==1.3
+Django==1.4
 Markdown==2.0.3
 PIL>=1.1.6
 South==0.7.2
