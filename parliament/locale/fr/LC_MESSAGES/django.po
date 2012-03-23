@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-23 15:30-0400\n"
+"POT-Creation-Date: 2012-03-23 15:38-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -468,6 +468,13 @@ msgstr ""
 #, python-format
 msgid ""
 "%(candidate)s (%(party)s) was a candidate in %(riding)s in the %(election)s"
+msgstr ""
+
+#: financials/models.py:61
+#, python-format
+msgid ""
+"%(contributor)s contributed %(amount)s to %(candidate)s (%(party)s) on "
+"%(date)s"
 msgstr ""
 
 #: templates/404.html:4
