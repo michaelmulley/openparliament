@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-12 19:35-0400\n"
+"POT-Creation-Date: 2012-03-23 15:30-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,11 +18,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1)\n"
 
-#: settings.py:38
+#: default_settings.py:34
 msgid "English"
 msgstr ""
 
-#: settings.py:39
+#: default_settings.py:35
 msgid "Français"
 msgstr ""
 
@@ -49,76 +49,76 @@ msgstr ""
 msgid "Your alerts for %s from openparliament.ca"
 msgstr ""
 
-#: alerts/views.py:64
+#: alerts/views.py:60
 #, python-format
 msgid "Confirmation required: E-mail alerts about %s"
 msgstr ""
 
-#: alerts/views.py:79 alerts/views.py:97 alerts/views.py:117
+#: alerts/views.py:75 alerts/views.py:94 alerts/views.py:115
 #, python-format
 msgid "E-mail alerts for %s"
 msgstr ""
 
-#: bills/models.py:71
+#: bills/models.py:77
 msgid "House"
 msgstr ""
 
-#: bills/models.py:72
+#: bills/models.py:78
 msgid "Senate"
 msgstr ""
 
-#: bills/models.py:89
+#: bills/models.py:95
 msgid "The parl.gc.ca document ID of the latest version of the bill's text"
 msgstr ""
 
-#: bills/models.py:176
+#: bills/models.py:182
 #, python-format
 msgid "%(bill)s in session %(id)s"
 msgstr ""
 
-#: bills/models.py:183
+#: bills/models.py:189
 msgid "Passed"
 msgstr ""
 
-#: bills/models.py:184
+#: bills/models.py:190
 msgid "Failed"
 msgstr ""
 
-#: bills/models.py:185
+#: bills/models.py:191
 msgid "Tie"
 msgstr ""
 
-#: bills/models.py:201
+#: bills/models.py:209
 #, python-format
 msgid "Vote #%(number)s on %(date)s"
 msgstr ""
 
-#: bills/models.py:274
+#: bills/models.py:282
 msgid "Yes"
 msgstr ""
 
-#: bills/models.py:275
+#: bills/models.py:283
 msgid "No"
 msgstr ""
 
-#: bills/models.py:276
+#: bills/models.py:284
 msgid "Paired"
 msgstr ""
 
-#: bills/models.py:277
+#: bills/models.py:285
 msgid "Didn't vote"
 msgstr ""
 
-#: bills/models.py:289
+#: bills/models.py:297
 #, python-format
 msgid "%(politician)s voted %(vote)s on %(question)s"
 msgstr ""
 
-#: bills/models.py:303
+#: bills/models.py:311
 msgid "Free vote"
 msgstr ""
 
-#: bills/models.py:316
+#: bills/models.py:324
 #, python-format
 msgid "%(party)s voted %(vote)s on %(question)s"
 msgstr ""
@@ -336,15 +336,15 @@ msgstr ""
 msgid "%(poli)s (%(party)s) is the member from %(riding)s (since %(start)s)"
 msgstr ""
 
-#: core/views.py:29
+#: core/views.py:31
 msgid "We're currently down for planned maintenance. We'll be back soon."
 msgstr ""
 
-#: core/views.py:49
+#: core/views.py:68
 msgid "openparliament.ca: Site news"
 msgstr ""
 
-#: core/views.py:51
+#: core/views.py:70
 msgid "Announcements about the openparliament.ca site"
 msgstr ""
 
@@ -438,6 +438,36 @@ msgstr ""
 
 #: core/templatetags/ours.py:95
 msgid "More than three months ago"
+msgstr ""
+
+#: elections/models.py:22
+#, python-format
+msgid "Byelection of %s"
+msgstr ""
+
+#: elections/models.py:24
+#, python-format
+msgid "General election of %s"
+msgstr ""
+
+#: elections/models.py:95
+#, python-format
+msgid "Please enter Politician ID for %(fullname)r (%(riding)r)"
+msgstr ""
+
+#: elections/models.py:106
+#, python-format
+msgid "Could not disambiguate among existing candidates for %s"
+msgstr ""
+
+#: elections/models.py:149
+msgid "Candidacies"
+msgstr ""
+
+#: elections/models.py:178
+#, python-format
+msgid ""
+"%(candidate)s (%(party)s) was a candidate in %(riding)s in the %(election)s"
 msgstr ""
 
 #: templates/404.html:4

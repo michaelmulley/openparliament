@@ -1,4 +1,4 @@
-# coding: utf8
+# coding: utf-8
 """Parse the Hansards of the House of Commons.
 
 This module is organized like so:
