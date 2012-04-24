@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import os
 
 DEBUG = True
@@ -23,9 +24,18 @@ PARLIAMENT_DB_READONLY = False
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 TIME_ZONE = 'America/Montreal'
 
-# Language code for this installation.
-# MUST BE either 'en' or 'fr'
+# Language code for this installation. All choices can be found here:
+# http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en'
+
+_ = lambda s: s
+
+LANGUAGES = (
+    ('en', _(u'English')),
+    ('fr', _(u'Français'))
+)
+
+DEFAULT_CHARSET = 'utf-8'
 
 SITE_ID = 1
 
@@ -85,7 +95,8 @@ MIDDLEWARE_CLASSES = [
 ROOT_URLCONF = 'parliament.urls'
 
 TEMPLATE_DIRS = [
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
+    # Put strings here, like "/home/html/django_templates"
+    # or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
     PROJ_ROOT + "/templates",
@@ -153,12 +164,12 @@ LOGGING = {
     },
     'handlers': {
         'null': {
-            'level':'DEBUG',
-            'class':'django.utils.log.NullHandler',
+            'level': 'DEBUG',
+            'class': 'django.utils.log.NullHandler',
         },
-        'console':{
-            'level':'DEBUG',
-            'class':'logging.StreamHandler',
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
             'formatter': 'simple'
         },
         'mail_admins': {
@@ -168,9 +179,9 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers':['null'],
+            'handlers': ['null'],
             'propagate': True,
-            'level':'INFO',
+            'level': 'INFO',
         },
         'django.request': {
             'handlers': ['mail_admins'],
@@ -183,5 +194,3 @@ LOGGING = {
         }
     },
 }
-
-

@@ -15,25 +15,31 @@ from parliament.activity.models import Activity
 import logging
 logger = logging.getLogger(__name__)
 
+
 @transaction.commit_on_success
 def twitter():
     twit.save_tweets()
     return True
-    
+
+
 def twitter_ids():
     from parliament.imports import politwitter
     politwitter.import_twitter_ids()
-    
+
+
 def googlenews():
     for pol in Politician.objects.current():
         gnews.save_politician_news(pol)
         #time.sleep(1)
-        
+
+
 def votes():
     parlvotes.import_votes()
-    
+
+
 def bills():
     legisinfo.import_bills(Session.objects.current())
+
 
 @transaction.commit_on_success
 def prune_activities():
@@ -41,31 +47,37 @@ def prune_activities():
         activityutils.prune(Activity.public.filter(politician=pol))
     return True
 
+
 def committee_evidence():
     for document in Document.evidence\
       .annotate(scount=models.Count('statement'))\
-      .exclude(scount__gt=0).exclude(skip_parsing=True).order_by('date').iterator():
+      .exclude(scount__gt=0).exclude(skip_parsing=True)\
+      .order_by('date').iterator():
         print document
         parl_document.import_document(document, interactive=False)
         if document.statement_set.all().count():
             document.save_activity()
-    
+
+
 def committees(sess=None):
     if sess is None:
         sess = Session.objects.current()
     parl_cmte.import_committee_list(session=sess)
     parl_cmte.import_committee_documents(sess)
-    
+
+
 @transaction.commit_on_success
 def hansards_load():
     parl_document.fetch_latest_debates()
     return True
-        
+
+
 @transaction.commit_manually
 def hansards_parse():
     for hansard in Document.objects.filter(document_type=Document.DEBATE)\
       .annotate(scount=models.Count('statement'))\
-      .exclude(scount__gt=0).exclude(skip_parsing=True).order_by('date').iterator():
+      .exclude(scount__gt=0).exclude(skip_parsing=True)\
+      .order_by('date').iterator():
         try:
             parl_document.import_document(hansard, interactive=False)
         except Exception, e:
@@ -86,11 +98,13 @@ def hansards_parse():
         if getattr(settings, 'PARLIAMENT_SEND_EMAIL', False):
             alertutils.alerts_for_hansard(hansard)
     transaction.commit()
-            
+
+
 def hansards():
     hansards_load()
     hansards_parse()
-    
+
+
 def wordcloud():
     # FIXME
     h = Document.objects.filter(document_type=Document.DEBATE)[0]

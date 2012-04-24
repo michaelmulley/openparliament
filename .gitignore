@@ -14,3 +14,5 @@ pip-log.txt
 logs/
 media/
 collected_static/
+cacheable/
+parliament.sqlite

@@ -1,0 +1,821 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-04-24 16:18-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1)\n"
+
+#: default_settings.py:34
+msgid "English"
+msgstr ""
+
+#: default_settings.py:35
+msgid "Français"
+msgstr ""
+
+#: activity/models.py:22
+msgid "Activities"
+msgstr ""
+
+#: alerts/models.py:14
+msgid "Your e-mail"
+msgstr ""
+
+#: alerts/models.py:38
+#, python-format
+msgid "%(email)s for %(politician)s (%(active)s)"
+msgstr ""
+
+#: alerts/utils.py:38
+#, python-format
+msgid "%(politician)s spoke about %(topics)s in the House"
+msgstr ""
+
+#: alerts/utils.py:72
+#, python-format
+msgid "Your alerts for %s from openparliament.ca"
+msgstr ""
+
+#: alerts/views.py:61
+#, python-format
+msgid "Confirmation required: E-mail alerts about %s"
+msgstr ""
+
+#: alerts/views.py:76 alerts/views.py:95 alerts/views.py:116
+#, python-format
+msgid "E-mail alerts for %s"
+msgstr ""
+
+#: bills/models.py:78
+msgid "House"
+msgstr ""
+
+#: bills/models.py:79
+msgid "Senate"
+msgstr ""
+
+#: bills/models.py:96
+msgid "The parl.gc.ca document ID of the latest version of the bill's text"
+msgstr ""
+
+#: bills/models.py:183
+#, python-format
+msgid "%(bill)s in session %(id)s"
+msgstr ""
+
+#: bills/models.py:190
+msgid "Passed"
+msgstr ""
+
+#: bills/models.py:191
+msgid "Failed"
+msgstr ""
+
+#: bills/models.py:192
+msgid "Tie"
+msgstr ""
+
+#: bills/models.py:210
+#, python-format
+msgid "Vote #%(number)s on %(date)s"
+msgstr ""
+
+#: bills/models.py:283
+msgid "Yes"
+msgstr ""
+
+#: bills/models.py:284
+msgid "No"
+msgstr ""
+
+#: bills/models.py:285
+msgid "Paired"
+msgstr ""
+
+#: bills/models.py:286
+msgid "Didn't vote"
+msgstr ""
+
+#: bills/models.py:298
+#, python-format
+msgid "%(politician)s voted %(vote)s on %(question)s"
+msgstr ""
+
+#: bills/models.py:312
+msgid "Free vote"
+msgstr ""
+
+#: bills/models.py:325
+#, python-format
+msgid "%(party)s voted %(vote)s on %(question)s"
+msgstr ""
+
+#: bills/views.py:61 bills/views.py:191
+#, python-format
+msgid "Bill %s"
+msgstr ""
+
+#: bills/views.py:62
+msgid " (Historical)"
+msgstr ""
+
+#: bills/views.py:87
+msgid "Bills & Votes"
+msgstr ""
+
+#: bills/views.py:105
+#, python-format
+msgid "Bills for the %s"
+msgstr ""
+
+#: bills/views.py:118
+#, python-format
+msgid "Votes for the %s"
+msgstr ""
+
+#: bills/views.py:162
+msgid "Bills in the House of Commons"
+msgstr ""
+
+#: bills/views.py:163
+msgid "New bills introduced to the House, from openparliament.ca."
+msgstr ""
+
+#: bills/views.py:172
+#, python-format
+msgid "Bill %(number)s (%(private)s)"
+msgstr ""
+
+#: bills/views.py:174
+msgid "Private member's"
+msgstr ""
+
+#: bills/views.py:175
+msgid "Government"
+msgstr ""
+
+#: bills/views.py:197
+#, python-format
+msgid "From openparliament.ca, speeches about Bill %(number)s, %(name)s"
+msgstr ""
+
+#: bills/views.py:219
+#, python-format
+msgid "Vote #%(number)s (%(result)s)"
+msgstr ""
+
+#: bills/views.py:224
+#, python-format
+msgid "%(name)s (%(party)s%(date)s)"
+msgstr ""
+
+#: committees/models.py:64
+#, python-format
+msgid "%(committee)s (%(acronym)s) in %(session_id)s"
+msgstr ""
+
+#: committees/models.py:113
+#, python-format
+msgid "%(committee)s on %(date)s"
+msgstr ""
+
+#: committees/models.py:162
+#, python-format
+msgid "%(committee)s report #%(number)s"
+msgstr ""
+
+#: committees/views.py:18
+msgid "House Committees"
+msgstr ""
+
+#: committees/views.py:57
+msgid "No evidence"
+msgstr ""
+
+#: core/fields.py:13
+msgid ""
+"That didn't match the displayed words. Sorry: we know this can be "
+"frustrating."
+msgstr ""
+
+#: core/models.py:43
+#, python-format
+msgid "%(schema)s: %(text)s %(int)s for %(target)s"
+msgstr ""
+
+#: core/models.py:62
+#, python-format
+msgid "More than one party matched %s"
+msgstr ""
+
+#: core/models.py:77
+msgid "Parties"
+msgstr ""
+
+#: core/models.py:113
+#, python-format
+msgid "Name %s already points to a different party"
+msgstr ""
+
+#: core/models.py:125
+msgid "Given name"
+msgstr ""
+
+#: core/models.py:126
+msgid "Family name"
+msgstr ""
+
+#: core/models.py:229
+msgid "Election not implemented yet in Politician get_by_name"
+msgstr ""
+
+#: core/models.py:256
+#, python-format
+msgid ""
+"DATA ERROR: There appear to be two politicians with the same last name "
+"elected to the same riding from the same session... %(lastname)s %(session)s "
+"%(riding)s"
+msgstr ""
+
+#: core/models.py:273
+#, python-format
+msgid "Could not find politician named %s"
+msgstr ""
+
+#: core/models.py:286
+#, python-format
+msgid "Looking up parlinfo ID %s"
+msgstr ""
+
+#: core/models.py:323
+msgid "Couldn't open "
+msgstr ""
+
+#: core/models.py:331
+#, python-format
+msgid "Invalid page for parlid %s"
+msgstr ""
+
+#: core/models.py:354
+#, python-format
+msgid "Couldn't find riding %s"
+msgstr ""
+
+#: core/models.py:377
+msgid "Male"
+msgstr ""
+
+#: core/models.py:378
+msgid "Female"
+msgstr ""
+
+#: core/models.py:462
+#, python-format
+msgid "ParlID %d already in use"
+msgstr ""
+
+#: core/models.py:697
+msgid "Alberta"
+msgstr ""
+
+#: core/models.py:698
+msgid "B.C."
+msgstr ""
+
+#: core/models.py:699
+msgid "Saskatchewan"
+msgstr ""
+
+#: core/models.py:700
+msgid "Manitoba"
+msgstr ""
+
+#: core/models.py:701
+msgid "Ontario"
+msgstr ""
+
+#: core/models.py:702
+msgid "Québec"
+msgstr ""
+
+#: core/models.py:703
+msgid "New Brunswick"
+msgstr ""
+
+#: core/models.py:704
+msgid "Nova Scotia"
+msgstr ""
+
+#: core/models.py:705
+msgid "P.E.I."
+msgstr ""
+
+#: core/models.py:706
+msgid "Newfoundland & Labrador"
+msgstr ""
+
+#: core/models.py:707
+msgid "Yukon"
+msgstr ""
+
+#: core/models.py:708
+msgid "Northwest Territories"
+msgstr ""
+
+#: core/models.py:709
+msgid "Nunavut"
+msgstr ""
+
+#: core/models.py:755
+msgid "Provide either a date or a session to get_by_pol."
+msgstr ""
+
+#: core/models.py:769
+#, python-format
+msgid "No elected member for %(poli)s, session %(sess)s"
+msgstr ""
+
+#: core/models.py:790
+#, python-format
+msgid ""
+"%(poli)s (%(party)s) was the member from %(riding)s from %(start)s to %(end)s"
+msgstr ""
+
+#: core/models.py:799
+#, python-format
+msgid "%(poli)s (%(party)s) is the member from %(riding)s (since %(start)s)"
+msgstr ""
+
+#: core/views.py:31
+msgid "We're currently down for planned maintenance. We'll be back soon."
+msgstr ""
+
+#: core/views.py:68
+msgid "openparliament.ca: Site news"
+msgstr ""
+
+#: core/views.py:70
+msgid "Announcements about the openparliament.ca site"
+msgstr ""
+
+#: core/templatetags/ours.py:21
+msgid "She"
+msgstr ""
+
+#: core/templatetags/ours.py:23
+msgid "He"
+msgstr ""
+
+#: core/templatetags/ours.py:25
+msgid "He/she"
+msgstr ""
+
+#: core/templatetags/ours.py:31 core/templatetags/ours.py:41
+msgid "Her"
+msgstr ""
+
+#: core/templatetags/ours.py:33
+msgid "His"
+msgstr ""
+
+#: core/templatetags/ours.py:35
+msgid "Their"
+msgstr ""
+
+#: core/templatetags/ours.py:43
+msgid "Him"
+msgstr ""
+
+#: core/templatetags/ours.py:45
+msgid "Them"
+msgstr ""
+
+#: core/templatetags/ours.py:51
+msgid "Mr."
+msgstr ""
+
+#: core/templatetags/ours.py:53
+msgid "Ms."
+msgstr ""
+
+#: core/templatetags/ours.py:55
+msgid "Mr./Ms."
+msgstr ""
+
+#: core/templatetags/ours.py:73
+msgid "Today"
+msgstr ""
+
+#: core/templatetags/ours.py:75
+msgid "Yesterday"
+msgstr ""
+
+#: core/templatetags/ours.py:77
+msgid "Two days ago"
+msgstr ""
+
+#: core/templatetags/ours.py:79
+msgid "Three days ago"
+msgstr ""
+
+#: core/templatetags/ours.py:81
+msgid "This week"
+msgstr ""
+
+#: core/templatetags/ours.py:83
+msgid "A week ago"
+msgstr ""
+
+#: core/templatetags/ours.py:85
+msgid "Two weeks ago"
+msgstr ""
+
+#: core/templatetags/ours.py:87
+msgid "Three weeks ago"
+msgstr ""
+
+#: core/templatetags/ours.py:89
+msgid "A month ago"
+msgstr ""
+
+#: core/templatetags/ours.py:91
+msgid "Two months ago"
+msgstr ""
+
+#: core/templatetags/ours.py:93
+msgid "Three months ago"
+msgstr ""
+
+#: core/templatetags/ours.py:95
+msgid "More than three months ago"
+msgstr ""
+
+#: elections/models.py:22
+#, python-format
+msgid "Byelection of %s"
+msgstr ""
+
+#: elections/models.py:24
+#, python-format
+msgid "General election of %s"
+msgstr ""
+
+#: elections/models.py:95
+#, python-format
+msgid "Please enter Politician ID for %(fullname)r (%(riding)r)"
+msgstr ""
+
+#: elections/models.py:106
+#, python-format
+msgid "Could not disambiguate among existing candidates for %s"
+msgstr ""
+
+#: elections/models.py:149
+msgid "Candidacies"
+msgstr ""
+
+#: elections/models.py:178
+#, python-format
+msgid ""
+"%(candidate)s (%(party)s) was a candidate in %(riding)s in the %(election)s"
+msgstr ""
+
+#: financials/models.py:61
+#, python-format
+msgid ""
+"%(contributor)s contributed %(amount)s to %(candidate)s (%(party)s) on "
+"%(date)s"
+msgstr ""
+
+#: hansards/models.py:57
+msgid "Debate"
+msgstr ""
+
+#: hansards/models.py:58
+msgid "Committee Evidence"
+msgstr ""
+
+#: hansards/models.py:75
+msgid "Has the source data been downloaded?"
+msgstr ""
+
+#: hansards/models.py:78
+msgid "Don't try to parse this, presumably because of errors in the source."
+msgstr ""
+
+#: hansards/models.py:82
+msgid "Display on site?"
+msgstr ""
+
+#: hansards/models.py:84
+msgid "Content parsed in both languages?"
+msgstr ""
+
+#: hansards/models.py:99
+#, python-format
+msgid "Hansard #%(number)s for %(date)s (#%(id)s/#%(source)s)"
+msgstr ""
+
+#: hansards/models.py:108
+#, python-format
+msgid "%(short_name)s evidence for %(date)s (#%(id)s/#%(source)s)"
+msgstr ""
+
+#: hansards/models.py:304
+msgid "Not yet downloaded"
+msgstr ""
+
+#: hansards/models.py:329
+msgid "No XML available before 2006"
+msgstr ""
+
+#: hansards/models.py:371
+msgid "Question"
+msgstr ""
+
+#: hansards/models.py:372
+msgid "Response"
+msgstr ""
+
+#: hansards/models.py:422
+#, python-format
+msgid "%(who)s speaking about %(topic)s around %(time)s"
+msgstr ""
+
+#: hansards/models.py:436
+#, python-format
+msgid "Different en/fr paragraphs in %s"
+msgstr ""
+
+#: hansards/views.py:192
+msgid "The Debates of the House of Commons"
+msgstr ""
+
+#: hansards/views.py:201 hansards/views.py:211
+#, python-format
+msgid "Debates from %s"
+msgstr ""
+
+#: templates/404.html:4
+msgid "Page Not Found"
+msgstr ""
+
+#: templates/404.html:5
+msgid "No go"
+msgstr ""
+
+#: templates/404.html:8
+msgid "Lost. So very, very lost."
+msgstr ""
+
+#: templates/404.html:11
+msgid ""
+"Looks like the page you're looking \n"
+"    for doesn't, or no longer, exists. Use the links and search box above "
+"to\n"
+"    find your way back to the comfortable, extant part of\n"
+"    the site."
+msgstr ""
+
+#: templates/500.html:4
+msgid "Server Error"
+msgstr ""
+
+#: templates/500.html:5
+msgid "Oh dear!"
+msgstr ""
+
+#: templates/500.html:8
+msgid "Blinking lights, shooting flames"
+msgstr ""
+
+#: templates/500.html:11
+msgid ""
+"There was a software error on our\n"
+"    server, and this page couldn't be generated. The error has been logged,\n"
+"    which&mdash;fingers crossed!&mdash;means it should be fixed soon "
+"enough.\n"
+"    In the meantime, try using the links and search box above to get back "
+"to\n"
+"    less erroneous pages. (Sorry!)"
+msgstr ""
+
+#: templates/base.html:45
+msgid "MPs"
+msgstr ""
+
+#: templates/base.html:48
+msgid "Bills"
+msgstr ""
+
+#: templates/base.html:51
+msgid "Debates"
+msgstr ""
+
+#: templates/base.html:54
+msgid "Committees"
+msgstr ""
+
+#: templates/base.html:56
+msgid "About"
+msgstr ""
+
+#: templates/base.html:58
+msgid "Labs"
+msgstr ""
+
+#: templates/base.html:61
+msgid "Home"
+msgstr ""
+
+#: templates/base.html:67
+msgid "By postal code, name, or keyword."
+msgstr ""
+
+#: templates/base.html:88
+msgid "Only somewhat copyright"
+msgstr ""
+
+#: templates/base.html:90
+msgid "Not a government site."
+msgstr ""
+
+#: templates/base.html:92
+msgid "Questions, suggestions, complaints, epic poetry?"
+msgstr ""
+
+#: templates/base.html:93
+msgid ""
+"\n"
+"        <a class=\"maillink\">E-mail</a>, or our\n"
+"        <a href=\"http://openparliament.uservoice.com/\" class=\"feedback"
+"\">\n"
+"          feedback forum</a>.\n"
+"      "
+msgstr ""
+
+#: templates/home.html:5
+msgid "Keeping tabs on Canada’s Parliament"
+msgstr ""
+
+#: templates/home.html:8
+msgid "Keep tabs on Parliament."
+msgstr ""
+
+#: templates/home.html:14
+msgid "Search"
+msgstr ""
+
+#: templates/home.html:20
+msgid "What we’re doing"
+msgstr ""
+
+#: templates/home.html:22
+msgid ""
+"Info on what your representatives are doing in Ottawa \n"
+"        can be hard to find and use. <strong>We’re trying to make it\n"
+"        easy.</strong>"
+msgstr ""
+
+#: templates/home.html:28
+#, python-format
+msgid ""
+"Browse <a href=\"%(mps_url)s\">MPs</a>, or find    \n"
+"        someone quickly by entering a name or postal code above. See what "
+"your \n"
+"        representatives are <a href=\"%(saying_url)s\">saying</a>, and "
+"what \n"
+"        <a href=\"laws_url\">laws</a> they’re proposing. Poke around.\n"
+"      "
+msgstr ""
+
+#: templates/home.html:35
+msgid "What they’re talking about"
+msgstr ""
+
+#: templates/home.html:42
+#, python-format
+msgid ""
+"The latest House transcript is from <strong>%(latest_hansard_date)s</"
+"strong>, when the <span class=\"tip tipunderline\" title=\"Most frequently "
+"spoken word, excluding a fixed list of extra-boring words (like 'the', or "
+"'government').\">word of the day</span> was <a href="
+"\"%(latest_hansard_wordcloud_url)s\" rel=\"lightbox\">"
+"%(latest_hansard_most_frequent_word)s</a>. These are the topics that were "
+"discussed."
+msgstr ""
+
+#: templates/home.html:44
+#, python-format
+msgid ""
+"The latest House transcript is from <strong>%(latest_hansard_date)s</"
+"strong>, when the <span class=\"tip tipunderline\" title=\"Most frequently "
+"spoken word, excluding a fixed list of extra-boring words (like 'the', or "
+"'government').\">word of the day</span> was "
+"%(latest_hansard_most_frequent_word)s. These are the topics that were "
+"discussed."
+msgstr ""
+
+#: templates/home.html:47
+#, python-format
+msgid ""
+"The latest House transcript is from <strong>\n"
+"          %(latest_hansard_date)s</strong>. These are the topics that were\n"
+"          discussed."
+msgstr ""
+
+#: templates/home.html:69
+msgid "Recent votes"
+msgstr ""
+
+#: templates/home.html:88
+msgid "What’s new around here"
+msgstr ""
+
+#: templates/home.html:91
+#, python-format
+msgid ""
+"Subscribe to our <a href=\"%(sitenews_feed_url)s\" class=\"feed\">site news "
+"feed</a>, or follow <a href=\"http://twitter.com/openparlca\">@openparlca</"
+"a> on Twitter."
+msgstr ""
+
+#: templates/home.html:100
+msgid "Enter a postal code, name, or phrase"
+msgstr ""
+
+#: templates/home.html:117
+msgid "To search, enter a postal code, name, or phrase into the text box."
+msgstr ""
+
+#: templates/home.html:122
+msgid ""
+"Info on what your representatives are doing in Ottawa can be hard to find "
+"and use. We're trying to make it easy."
+msgstr ""
+
+#: templates/home.html:123
+msgid "Site news"
+msgstr ""
+
+#: templates/memcached_status.html:3 templates/memcached_status.html.py:4
+msgid "Memcached status"
+msgstr ""
+
+#: templates/memcached_status.html:9
+msgid "memory usage"
+msgstr ""
+
+#: templates/memcached_status.html:11
+msgid "keys in cache"
+msgstr ""
+
+#: templates/memcached_status.html:12
+#, python-format
+msgid ""
+"\n"
+"      %(stats.curr_items)s of %(stats.total_items)s\n"
+"    "
+msgstr ""
+
+#: templates/memcached_status.html:15
+msgid "cache hits"
+msgstr ""
+
+#: templates/memcached_status.html:16
+#, python-format
+msgid ""
+"\n"
+"      %(stats.get_hits)s of %(stats.cmd_get)s\n"
+"    "
+msgstr ""
+
+#: templates/memcached_status.html:20
+msgid "cache traffic"
+msgstr ""
+
+#: templates/memcached_status.html:21
+#, python-format
+msgid ""
+"\n"
+"      %(stats.bytes_read|filesizeformat)s in,\n"
+"      %(stats.bytes_written|filesizeformat)s out\n"
+"    "
+msgstr ""
+
+#: templates/memcached_status.html:25
+msgid "uptime"
+msgstr ""

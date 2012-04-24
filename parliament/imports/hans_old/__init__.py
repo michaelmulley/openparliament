@@ -1,14 +1,5 @@
-# coding: utf8
-"""This module parses the Hansards of the House from HTML
-
-There are two parsers, for two different HTML formats (1994-2006, 2006-).
-
-However, XML is now available for the 2006-present documents, and
-the (better) parser for that is in parl_document.py and the
-alpheus module.
-
-In other words, this module is historical and unmaintained. Interfaces
-with the outside world are probably broken.
+# coding: utf-8
+"""Parse the Hansards of the House of Commons.
 
 This module is organized like so:
 __init__.py - utility functions, simple parse interface

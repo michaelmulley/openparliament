@@ -1,5 +1,15 @@
 {% extends "base.html" %}
-{% block pagetitle %}Page Not Found{% endblock %}
-{% block pageheading %}No go{% endblock %}
-{% block breadcrumbs %}{{ block.super }}Lost. So very, very lost.{% endblock %}
-{% block content %}<div class="focus"><p>Looks like the page you're looking for doesn't, or no longer, exists. Use the links and search box above to find your way back to the comfortable, extant part of the site.</p></div>{% endblock %}
+{% load i18n %}
+
+{% block pagetitle %}{% trans 'Page Not Found' %}{% endblock %}
+{% block pageheading %}{% trans 'No go' %}{% endblock %}
+{% block breadcrumbs %}
+    {{ block.super }}
+    {% trans 'Lost. So very, very lost.' %}
+{% endblock %}
+{% block content %}
+    <div class="focus"><p>{% blocktrans %}Looks like the page you're looking 
+    for doesn't, or no longer, exists. Use the links and search box above to
+    find your way back to the comfortable, extant part of
+    the site.{% endblocktrans %}</p></div>
+{% endblock %}

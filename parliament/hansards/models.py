@@ -1,8 +1,10 @@
 #coding: utf-8
 
-import gzip, os, re
-from collections import defaultdict
+import os
+import re
+import gzip
 import datetime
+from collections import defaultdict
 
 from django.db import models
 from django.conf import settings
@@ -11,6 +13,7 @@ from django.core.files.base import ContentFile
 from django.template.defaultfilters import slugify
 from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
+from django.utils.translation import ugettext as _
 
 from parliament.core.models import Session, ElectedMember, Politician
 from parliament.bills.models import Bill
@@ -21,15 +24,20 @@ from parliament.activity import utils as activity
 import logging
 logger = logging.getLogger(__name__)
 
+
 class DebateManager(models.Manager):
 
     def get_query_set(self):
-        return super(DebateManager, self).get_query_set().filter(document_type=Document.DEBATE)
+        return super(DebateManager, self).get_query_set()\
+            .filter(document_type=Document.DEBATE)
+
 
 class EvidenceManager(models.Manager):
 
     def get_query_set(self):
-        return super(EvidenceManager, self).get_query_set().filter(document_type=Document.EVIDENCE)
+        return super(EvidenceManager, self).get_query_set()\
+            .filter(document_type=Document.EVIDENCE)
+
 
 class NoStatementManager(models.Manager):
     """Manager restricts to Documents that haven't had statements parsed."""
@@ -39,61 +47,93 @@ class NoStatementManager(models.Manager):
             .annotate(scount=models.Count('statement'))\
             .exclude(scount__gt=0)
 
+
 class Document(models.Model):
-    
+
     DEBATE = 'D'
     EVIDENCE = 'E'
-    
+
     document_type = models.CharField(max_length=1, db_index=True, choices=(
-        ('D', 'Debate'),
-        ('E', 'Committee Evidence'),
+        ('D', _('Debate')),
+        ('E', _('Committee Evidence')),
     ))
     date = models.DateField(blank=True, null=True)
-    number = models.CharField(max_length=6, blank=True) # there exist 'numbers' with letters
+
+    # there exist 'numbers' with letters
+    number = models.CharField(max_length=6, blank=True)
+
     session = models.ForeignKey(Session)
-    
     source_id = models.IntegerField(unique=True, db_index=True)
-    
     most_frequent_word = models.CharField(max_length=20, blank=True)
-    wordcloud = models.ImageField(upload_to='autoimg/wordcloud', blank=True, null=True)
+    wordcloud = models.ImageField(
+        upload_to='autoimg/wordcloud',
+        blank=True,
+        null=True
+    )
 
     downloaded = models.BooleanField(default=False,
-        help_text="Has the source data been downloaded?")
-    skip_parsing = models.BooleanField(default=False,
-        help_text="Don't try to parse this, presumably because of errors in the source.")
+        help_text=_("Has the source data been downloaded?"))
+    skip_parsing = models.BooleanField(
+        default=False,
+        help_text=_("Don't try to parse this, " \
+            "presumably because of errors in the source.")
+    )
 
-    public = models.BooleanField("Display on site?", default=False)
-    multilingual = models.BooleanField("Content parsed in both languages?", default=False)
+    public = models.BooleanField(_("Display on site?"), default=False)
+    multilingual = models.BooleanField(
+        _("Content parsed in both languages?"),
+        default=False
+    )
 
     objects = models.Manager()
     debates = DebateManager()
     evidence = EvidenceManager()
     without_statements = NoStatementManager()
-    
+
     class Meta:
         ordering = ('-date',)
-    
-    def __unicode__ (self):
+
+    def __unicode__(self):
         if self.document_type == self.DEBATE:
-            return u"Hansard #%s for %s (#%s/#%s)" % (self.number, self.date, self.id, self.source_id)
+            return _(
+                u"Hansard #%(number)s for %(date)s (#%(id)s/#%(source)s)"
+            ) % {
+                number: self.number,
+                date: self.date,
+                id: self.id,
+                source: self.source_id
+            }
         else:
-            return u"%s evidence for %s (#%s/#%s)" % (
-                self.committeemeeting.committee.short_name, self.date, self.id, self.source_id)
-        
+            return _(
+                u"%(short_name)s evidence for %(date)s (#%(id)s/#%(source)s)"
+            ) % {
+                short_name: self.committeemeeting.committee.short_name,
+                date: self.date,
+                id: self.id,
+                source: self.source_id
+            }
+
     def get_absolute_url(self):
         if self.document_type == self.DEBATE:
-            return urlresolvers.reverse('debate', kwargs={
-                'year': self.date.year, 'month': self.date.month, 'day': self.date.day
-            })
+            return urlresolvers.reverse(
+                'debate',
+                kwargs={
+                    'year': self.date.year,
+                    'month': self.date.month,
+                    'day': self.date.day
+                }
+            )
         elif self.document_type == self.EVIDENCE:
             return self.committeemeeting.get_absolute_url()
 
     @property
     def url(self):
-        return "http://www.parl.gc.ca/HousePublications/Publication.aspx?DocId=%s&Language=%s&Mode=1" % (
-                self.source_id, settings.LANGUAGE_CODE[0].upper()
+        return "http://www.parl.gc.ca/HousePublications/Publication.aspx" \
+            "?DocId=%s&Language=%s&Mode=1" % (
+                self.source_id,
+                settings.LANGUAGE_CODE[0].upper()
         )
-        
+
     def _topics(self, l):
         topics = []
         last_topic = ''
@@ -102,17 +142,20 @@ class Document(models.Model):
                 last_topic = statement[0]
                 topics.append((statement[0], statement[1]))
         return topics
-        
+
     def topics(self):
-        """Returns a tuple with (topic, statement slug) for every topic mentioned."""
+        """Returns a tuple with (topic, statement slug)
+        for every topic mentioned."""
         return self._topics(self.statement_set.all().values_list('h2', 'slug'))
-        
+
     def headings(self):
-        """Returns a tuple with (heading, statement slug) for every heading mentioned."""
+        """Returns a tuple with (heading, statement slug)
+        for every heading mentioned."""
         return self._topics(self.statement_set.all().values_list('h1', 'slug'))
-    
+
     def topics_with_qp(self):
-        """Returns the same as topics(), but with a link to Question Period at the start of the list."""
+        """Returns the same as topics(),
+        but with a link to Question Period at the start of the list."""
         statements = self.statement_set.all().values_list('h2', 'slug', 'h1')
         topics = self._topics(statements)
         qp_seq = None
@@ -129,15 +172,18 @@ class Document(models.Model):
 
     def outside_speakers(self):
         speakers = {}
-        for val in self.statement_set.filter(politician__isnull=True, who_hocid__isnull=False)\
-          .values_list('who', 'who_context'):
+        for val in self.statement_set.filter(
+            politician__isnull=True,
+            who_hocid__isnull=False
+        ).values_list('who', 'who_context'):
             who = parsetools.r_parens.sub('', val[0])
-            who = re.sub('^\s*\S+\s+', '', who).strip() # strip honorific
+            who = re.sub('^\s*\S+\s+', '', who).strip()  # strip honorific
             speakers[who] = val[1]
         return speakers
-    
+
     def save_activity(self):
-        statements = self.statement_set.filter(procedural=False).select_related('member', 'politician')
+        statements = self.statement_set.filter(procedural=False)\
+            .select_related('member', 'politician')
         politicians = set([s.politician for s in statements if s.politician])
         for pol in politicians:
             topics = {}
@@ -145,33 +191,51 @@ class Document(models.Model):
             for statement in filter(lambda s: s.politician == pol, statements):
                 wordcount += statement.wordcount
                 if statement.topic in topics:
-                    # If our statement is longer than the previous statement on this topic,
-                    # use its text for the excerpt.
-                    if len(statement.text_plain()) > len(topics[statement.topic][1]):
+                    # If our statement is longer than the previous statement on
+                    # this topic, use its text for the excerpt.
+                    if len(statement.text_plain()) > \
+                        len(topics[statement.topic][1]):
                         topics[statement.topic][1] = statement.text_plain()
-                        topics[statement.topic][2] = statement.get_absolute_url()
+                        topics[statement.topic][2] = \
+                            statement.get_absolute_url()
                 else:
-                    topics[statement.topic] = [statement.slug, statement.text_plain(), statement.get_absolute_url()]
+                    topics[statement.topic] = [
+                        statement.slug,
+                        statement.text_plain(),
+                        statement.get_absolute_url()
+                    ]
             for topic in topics:
                 if self.document_type == Document.DEBATE:
-                    activity.save_activity({
-                        'topic': topic,
-                        'url': topics[topic][2],
-                        'text': topics[topic][1],
-                    }, politician=pol, date=self.date, guid='statement_%s' % topics[topic][2], variety='statement')
+                    activity.save_activity(
+                        {
+                            'topic': topic,
+                            'url': topics[topic][2],
+                            'text': topics[topic][1],
+                        },
+                        politician=pol,
+                        date=self.date,
+                        guid='statement_%s' % topics[topic][2],
+                        variety='statement'
+                    )
                 elif self.document_type == Document.EVIDENCE:
                     assert len(topics) == 1
                     if wordcount < 80:
                         continue
                     (seq, text, url) = topics.values()[0]
-                    activity.save_activity({
-                        'meeting': self.committeemeeting,
-                        'committee': self.committeemeeting.committee,
-                        'text': text,
-                        'url': url,
-                        'wordcount': wordcount,
-                    }, politician=pol, date=self.date, guid='cmte_%s' % url, variety='committee')
-                
+                    activity.save_activity(
+                        {
+                            'meeting': self.committeemeeting,
+                            'committee': self.committeemeeting.committee,
+                            'text': text,
+                            'url': url,
+                            'wordcount': wordcount,
+                        },
+                        politician=pol,
+                        date=self.date,
+                        guid='cmte_%s' % url,
+                        variety='committee'
+                    )
+
     def serializable(self):
         return {
             'date': self.date,
@@ -183,19 +247,35 @@ class Document(models.Model):
             'statements': [s.serializable()
                 for s in self.statement_set.all()
                     .order_by('sequence')
-                    .select_related('member__politician', 'member__party', 'member__riding')]
+                    .select_related(
+                        'member__politician',
+                        'member__party',
+                        'member__riding'
+                    )
+            ]
         }
-        
+
     def get_wordoftheday(self):
         if not self.most_frequent_word:
-            self.most_frequent_word = text_utils.most_frequent_word(self.statement_set.filter(procedural=False))
+            self.most_frequent_word = text_utils.most_frequent_word(
+                self.statement_set.filter(procedural=False)
+            )
             if self.most_frequent_word:
                 self.save()
         return self.most_frequent_word
-        
+
     def generate_wordcloud(self):
-        image = text_utils.statements_to_cloud_by_party(self.statement_set.filter(procedural=False))
-        self.wordcloud.save("%s-%s.png" % (self.source_id, settings.LANGUAGE_CODE), ContentFile(image), save=True)
+        image = text_utils.statements_to_cloud_by_party(
+            self.statement_set.filter(procedural=False)
+        )
+        self.wordcloud.save(
+            "%s-%s.png" % (
+                self.source_id,
+                settings.LANGUAGE_CODE
+            ),
+            ContentFile(image),
+            save=True
+        )
         self.save()
 
     def get_filename(self, language):
@@ -208,7 +288,11 @@ class Document(models.Model):
         if hasattr(settings, 'HANSARD_CACHE_DIR'):
             return os.path.join(settings.HANSARD_CACHE_DIR, filename)
         else:
-            return os.path.join(settings.MEDIA_ROOT, 'document_cache', filename)
+            return os.path.join(
+                settings.MEDIA_ROOT,
+                'document_cache',
+                filename
+            )
 
     def _save_file(self, path, content):
         out = gzip.open(path, 'wb')
@@ -217,7 +301,7 @@ class Document(models.Model):
 
     def get_cached_xml(self, language):
         if not self.downloaded:
-            raise Exception("Not yet downloaded")
+            raise Exception(_("Not yet downloaded"))
         return gzip.open(self.get_filepath(language), 'rb')
 
     def delete_downloaded(self):
@@ -230,14 +314,19 @@ class Document(models.Model):
 
     def _fetch_xml(self, language):
         import urllib2
-        return urllib2.urlopen('http://www.parl.gc.ca/HousePublications/Publication.aspx?DocId=%s&Language=%s&Mode=1&xml=true'
-        % (self.source_id, language[0].upper())).read()
+        return urllib2.urlopen(
+            'http://www.parl.gc.ca/HousePublications/Publication.aspx' \
+            '?DocId=%s&Language=%s&Mode=1&xml=true' % (
+                self.source_id,
+                language[0].upper()
+            )
+        ).read()
 
     def download(self):
         if self.downloaded:
             return True
         if self.date and self.date.year < 2006:
-            raise Exception("No XML available before 2006")
+            raise Exception(_("No XML available before 2006"))
         langs = ('en', 'fr')
         paths = [self.get_filepath(l) for l in langs]
         if not all((os.path.exists(p) for p in paths)):
@@ -245,6 +334,7 @@ class Document(models.Model):
                 self._save_file(path, self._fetch_xml(lang))
         self.downloaded = True
         self.save()
+
 
 class Statement(models.Model):
     document = models.ForeignKey(Document)
@@ -259,9 +349,16 @@ class Statement(models.Model):
     h3 = models.CharField(max_length=300, blank=True)
 
     member = models.ForeignKey(ElectedMember, blank=True, null=True)
-    politician = models.ForeignKey(Politician, blank=True, null=True) # a shortcut -- should == member.politician
+
+    # a shortcut -- should == member.politician
+    politician = models.ForeignKey(Politician, blank=True, null=True)
+
     who = models.CharField(max_length=300, blank=True)
-    who_hocid = models.PositiveIntegerField(blank=True, null=True, db_index=True)
+    who_hocid = models.PositiveIntegerField(
+        blank=True,
+        null=True,
+        db_index=True
+    )
     who_context = models.CharField(max_length=300, blank=True)
 
     content_en = models.TextField()
@@ -271,38 +368,46 @@ class Statement(models.Model):
 
     procedural = models.BooleanField(default=False, db_index=True)
     written_question = models.CharField(max_length=1, blank=True, choices=(
-        ('Q', 'Question'),
-        ('R', 'Response')
+        ('Q', _('Question')),
+        ('R', _('Response'))
     ))
     statement_type = models.CharField(max_length=35, blank=True)
-    
+
     bills = models.ManyToManyField(Bill, blank=True)
-    mentioned_politicians = models.ManyToManyField(Politician, blank=True, related_name='statements_with_mentions')
-        
+    mentioned_politicians = models.ManyToManyField(
+        Politician,
+        blank=True,
+        related_name='statements_with_mentions'
+    )
+
     class Meta:
         ordering = ('sequence',)
         unique_together = (
             ('document', 'slug')
         )
-        
+
     def save(self, *args, **kwargs):
         if not self.wordcount:
             self.wordcount = parsetools.countWords(self.text_plain())
         if ((not self.procedural) and self.wordcount <= 300
-            and ( (parsetools.r_notamember.search(self.who) and re.search(r'(Speaker|Chair|président)', self.who))
+            and ((parsetools.r_notamember.search(self.who)
+            and re.search(r'(Speaker|Chair|président)', self.who))
             or (not self.who))):
-            # Some form of routine, procedural statement (e.g. somethng short by the speaker)
+            # Some form of routine, procedural statement
+            # (e.g. somethng short by the speaker)
             self.procedural = True
-        self.content_en = self.content_en.replace('\n', '').replace('</p>', '</p>\n').strip()
-        self.content_fr = self.content_fr.replace('\n', '').replace('</p>', '</p>\n').strip()
+        self.content_en = self.content_en.replace('\n', '')\
+            .replace('</p>', '</p>\n').strip()
+        self.content_fr = self.content_fr.replace('\n', '')\
+            .replace('</p>', '</p>\n').strip()
         if not self.urlcache:
             self.generate_url()
         super(Statement, self).save(*args, **kwargs)
-            
+
     @property
     def date(self):
         return datetime.date(self.time.year, self.time.month, self.time.day)
-    
+
     def generate_url(self):
         self.urlcache = "%s%s/" % (
             self.document.get_absolute_url(),
@@ -313,8 +418,12 @@ class Statement(models.Model):
             self.generate_url()
         return self.urlcache
 
-    def __unicode__ (self):
-        return u"%s speaking about %s around %s" % (self.who, self.topic, self.time)
+    def __unicode__(self):
+        return _(u"%(who)s speaking about %(topic)s around %(time)s") % {
+            who: self.who,
+            topic: self.topic,
+            time: self.time
+        }
 
     @property
     @memoize_property
@@ -323,18 +432,18 @@ class Statement(models.Model):
             return self.content_en
         el, fl = self.content_en.split('\n'), self.content_fr.split('\n')
         if len(el) != len(fl):
-            logger.error("Different en/fr paragraphs in %s" % self.get_absolute_url())
+            logger.error(
+                _("Different en/fr paragraphs in %s") % self.get_absolute_url()
+            )
             return self.content_en
         r = []
         for e, f in zip(el, fl):
             idx = e.find('data-originallang="')
-            if idx and e[idx+19:idx+21] == 'fr':
+            if idx and e[idx + 19:idx + 21] == 'fr':
                 r.append(f)
             else:
                 r.append(e)
         return u"\n".join(r)
-
-            
 
     def text_html(self, language=settings.LANGUAGE_CODE):
         return mark_safe(getattr(self, 'content_' + language))
@@ -354,7 +463,7 @@ class Statement(models.Model):
     @property
     def topic(self):
         return self.h2
-        
+
     def serializable(self):
         v = {
             'url': self.get_absolute_url(),
@@ -374,9 +483,9 @@ class Statement(models.Model):
                 'riding': unicode(self.member.riding),
             }
         return v
-    
+
     @property
-    @memoize_property    
+    @memoize_property
     def name_info(self):
         info = {
             'post': None,
@@ -386,7 +495,10 @@ class Statement(models.Model):
             info['display_name'] = parsetools.r_mister.sub('', self.who)
             if self.who_context:
                 if self.who_context in self.who:
-                    info['display_name'] = parsetools.r_parens.sub('', info['display_name'])
+                    info['display_name'] = parsetools.r_parens.sub(
+                        '',
+                        info['display_name']
+                    )
                     info['post'] = self.who_context
                 else:
                     info['post_reminder'] = self.who_context
@@ -395,10 +507,13 @@ class Statement(models.Model):
             if self.member.politician.name in self.who:
                 info['display_name'] = re.sub(r'\(.+\)', '', self.who)
             info['named'] = False
-        elif not '(' in self.who or not parsetools.r_politicalpost.search(self.who):
+        elif not '(' in self.who or not parsetools.r_politicalpost.search(
+            self.who
+        ):
             info['display_name'] = self.member.politician.name
         else:
-            info['post'] = re.search(r'\((.+)\)', self.who).group(1).split(',')[0]
+            info['post'] = re.search(r'\((.+)\)', self.who)\
+                .group(1).split(',')[0]
             info['display_name'] = self.member.politician.name
         return info
 
@@ -418,6 +533,7 @@ class Statement(models.Model):
             return ''
         return self.document.committeemeeting.committee.short_name
 
+
 class OldSequenceMapping(models.Model):
     document = models.ForeignKey(Document)
     sequence = models.PositiveIntegerField()
@@ -429,5 +545,7 @@ class OldSequenceMapping(models.Model):
         )
 
     def __unicode__(self):
-        return u"%s -> %s" % (self.sequence, self.slug)
-            
+        return u"%s -> %s" % (
+            self.sequence,
+            self.slug
+        )
