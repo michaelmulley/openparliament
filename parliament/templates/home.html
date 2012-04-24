@@ -1,34 +1,97 @@
 {% extends "base.html" %}
-{% load markup %}
+{% load markup i18n %}
 
-{% block pagetitle %}Keeping tabs on Canada’s Parliament{% endblock %}
+{% block pagetitle %}
+  {% trans "Keeping tabs on Canada’s Parliament" %}
+{% endblock %}
 {% block breadcrumbs_all %}{% endblock %}
-{% block pageheading %}Keep tabs on Parliament.{% endblock %}
+{% block pageheading %}{% trans "Keep tabs on Parliament." %}{% endblock %}
 {% block content %}
-<div class="focus">
-    <form action="/search/" id="home_searchform" method="GET"><div><input type="text" id="home_searchbox" name="q"><input type="submit" value="Search" class="button" id="searchbutton"></div></form></div>
-    <div class="clear"></div><div class="context"><h2>What we’re doing</h2></div>
     <div class="focus">
-    <p>Info on what your representatives are doing in Ottawa can be hard to find and use. <strong>We’re trying to make it easy.</strong></p>
-    <p>Browse <a href="{% url parliament.politicians.views.current_mps %}">MPs</a>, or find someone quickly by entering
-        a name or postal code above. See what your representatives are <a href="{% url parliament.hansards.views.index %}">saying</a>, and what <a href="{% url parliament.bills.views.index %}">laws</a> they’re proposing. Poke around.</p></div>
-        <div class="clear"></div><div class="context"><h2>What they’re talking about</h2></div>
-        <div class="focus"><p>The latest House transcript is from <strong>{{ latest_hansard.date|date:"F jS"}}</strong>{% if latest_hansard.most_frequent_word %}, when the <span class="tip tipunderline" title="Most frequently spoken word, excluding a fixed list of extra-boring words (like 'the', or 'government').">word of the day</span> was {% if latest_hansard.wordcloud %}<a href="{{ latest_hansard.wordcloud.url }}" rel="lightbox">{{ latest_hansard.most_frequent_word }}</a>{% else %}{{ latest_hansard.most_frequent_word}}{% endif %}{% endif %}. These are the topics that were discussed.</p><div class="spacer"></div><ul class="tile clearafter">
-        	{% with latest_hansard.get_absolute_url as latest_hansard_url %}
-				{% for topic in latest_hansard.topics_with_qp %}<li class="four oneline overflowtip"><a href="{{ latest_hansard_url }}{{ topic.1 }}/#hl">{{ topic.0 }}</a></li>{% endfor %}
-			{% endwith %}
-        </ul><div class="clear"></div></div>
-{% if votes %}<div class="clear"><div class="context"><h2>Recent votes</h2></div>
-<div class="focus"><ul class="tile">{% for vote in votes %}<li class="six twoline overflowtip"><a href="{{ vote.get_absolute_url }}">#{{ vote.number }}</a> <span class="tag voteresult_{{ vote.result }}">{{ vote.get_result_display }}</span> {% if vote.bill %}<a href="{{ vote.bill.get_absolute_url }}">{{ vote.bill.number }}</a> {% endif %}{{ vote.description }}</li>{% endfor %}</ul><div class="clear"></div></div>{% endif %}
-<div class="clear"></div><div class="context"><h2>What’s new around here</h2></div>
-<div class="focus" style="position: relative"><p>Subscribe to our <a href="{% url sitenews_feed %}" class="feed">site news feed</a>, or follow <a href="http://twitter.com/openparlca">@openparlca</a> on Twitter.</p><iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fopenparliament.ca%2F&amp;layout=button_count&amp;show_faces=false&amp;width=120&amp;action=like&amp;font&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:120px; height:21px; position: absolute; right: 30px;top: 0;" allowTransparency="true"></iframe>{% for item in sitenews %}
+      <form action="/search/" id="home_searchform" method="GET"><div><input type="text" id="home_searchbox" name="q"><input type="submit" value="{% trans 'Search' %}" class="button" id="searchbutton"></div></form>
+    </div>
+    <div class="clear"></div>
+    <div class="context"><h2>{% trans "What we’re doing" %}</h2></div>
+    <div class="focus">
+      <p>{% blocktrans %}Info on what your representatives are doing in Ottawa 
+        can be hard to find and use. <strong>We’re trying to make it
+        easy.</strong>{% endblocktrans %}</p>
+      {% url parliament.politicians.views.current_mps as mps_url %}
+      {% url parliament.hansards.views.index as saying_url %}
+      {% url parliament.bills.views.index as laws_url %}
+      <p>{% blocktrans %}Browse <a href="{{ mps_url }}">MPs</a>, or find    
+        someone quickly by entering a name or postal code above. See what your 
+        representatives are <a href="{{ saying_url }}">saying</a>, and what 
+        <a href="laws_url">laws</a> they’re proposing. Poke around.
+      {% endblocktrans %}</p>
+    </div>
+    <div class="clear"></div>
+    <div class="context"><h2>{% trans "What they’re talking about" %}</h2></div>
+
+    <div class="focus">
+      {% with latest_hansard.date|date:"F jS" as latest_hansard_date %}
+      <p>
+        {% if latest_hansard.most_frequent_word %}
+          {% if latest_hansard.wordcloud %}
+            {% blocktrans with latest_hansard.wordcloud.url as latest_hansard_wordcloud_url and latest_hansard.most_frequent_word as latest_hansard_most_frequent_word %}The latest House transcript is from <strong>{{ latest_hansard_date }}</strong>, when the <span class="tip tipunderline" title="Most frequently spoken word, excluding a fixed list of extra-boring words (like 'the', or 'government').">word of the day</span> was <a href="{{ latest_hansard_wordcloud_url }}" rel="lightbox">{{ latest_hansard_most_frequent_word }}</a>. These are the topics that were discussed.{% endblocktrans %}
+          {% else %}
+            {% blocktrans with latest_hansard.most_frequent_word as latest_hansard_most_frequent_word %}The latest House transcript is from <strong>{{ latest_hansard_date }}</strong>, when the <span class="tip tipunderline" title="Most frequently spoken word, excluding a fixed list of extra-boring words (like 'the', or 'government').">word of the day</span> was {{ latest_hansard_most_frequent_word }}. These are the topics that were discussed.{% endblocktrans %}
+          {% endif %}
+        {% else %}
+          {% blocktrans %}The latest House transcript is from <strong>
+          {{ latest_hansard_date }}</strong>. These are the topics that were
+          discussed.{% endblocktrans %}
+        {% endif %}
+      </p>
+      {% endwith %}
+      <div class="spacer"></div>
+      <ul class="tile clearafter">
+        {% with latest_hansard.get_absolute_url as latest_hansard_url %}
+				{% for topic in latest_hansard.topics_with_qp %}
+          <li class="four oneline overflowtip">
+            <a href="{{ latest_hansard_url }}{{ topic.1 }}/#hl">
+              {{ topic.0 }}</a>
+          </li>
+        {% endfor %}
+			  {% endwith %}
+      </ul>
+      <div class="clear"></div>
+    </div>
+
+{% if votes %}
+<div class="clear">
+<div class="context"><h2>{% trans "Recent votes" %}</h2></div>
+<div class="focus">
+  <ul class="tile">
+    {% for vote in votes %}
+      <li class="six twoline overflowtip">
+        <a href="{{ vote.get_absolute_url }}">#{{ vote.number }}</a>
+        <span class="tag voteresult_{{ vote.result }}">
+          {{ vote.get_result_display }}</span>
+        {% if vote.bill %}
+          <a href="{{ vote.bill.get_absolute_url }}">{{ vote.bill.number }}</a>
+        {% endif %}
+        {{ vote.description }}
+      </li>
+    {% endfor %}
+  </ul>
+  <div class="clear"></div>
+</div>
+{% endif %}
+<div class="clear"></div>
+<div class="context"><h2>{% trans "What’s new around here" %}</h2></div>
+<div class="focus" style="position: relative">
+  {% url sitenews_feed as sitenews_feed_url %}
+  <p>{% blocktrans %}Subscribe to our <a href="{{ sitenews_feed_url }}" class="feed">site news feed</a>, or follow <a href="http://twitter.com/openparlca">@openparlca</a> on Twitter.{% endblocktrans %}</p>
+  <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fopenparliament.ca%2F&amp;layout=button_count&amp;show_faces=false&amp;width=120&amp;action=like&amp;font&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:120px; height:21px; position: absolute; right: 30px;top: 0;" allowTransparency="true"></iframe>{% for item in sitenews %}
+
 <h3 id="n{{ item.id }}">{{ item.title }} <span class="heading_context">{{ item.date|date:"F jS"}}</span></h3>
 {{ item.text|markdown }}{% endfor %}</div>
 {% endblock %}
 {% block headextra %}
 <script type="text/javascript">
 $(function() {
-   var search_prompt = "Enter a postal code, name, or phrase";
+   var search_prompt = "{% trans 'Enter a postal code, name, or phrase' %}";
    var $searchbox = $('#home_searchbox');
    $searchbox.val(search_prompt); 
    $searchbox.bind('focus', function() {
@@ -45,11 +108,11 @@ $(function() {
    $('#home_searchform').bind('submit', function (e) {
        if ($searchbox.val() == search_prompt) {
            e.preventDefault();
-           alert('To search, enter a postal code, name, or phrase into the text box.');
+           alert('{% blocktrans %}To search, enter a postal code, name, or phrase into the text box.{% endblocktrans %}');
        }
    });
 });
 </script>
-<meta name="description" content="Info on what your representatives are doing in Ottawa can be hard to find and use. We're trying to make it easy.">
-<link rel="alternate" type="application/rss+xml" title="openparliament.ca: Site news" href="{% url sitenews_feed %}">
+<meta name="description" content="{% blocktrans %}Info on what your representatives are doing in Ottawa can be hard to find and use. We're trying to make it easy.{% endblocktrans %}">
+<link rel="alternate" type="application/rss+xml" title="openparliament.ca: {% trans 'Site news' %}" href="{% url sitenews_feed %}">
 {% endblock %}

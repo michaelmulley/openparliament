@@ -1,59 +1,92 @@
-{% load compress %}<!DOCTYPE html>
-<html lang="en">
+{% load compress i18n %}<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
 <head>
+
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>{% block pagetitle %}{% if pagetitle %}{{ pagetitle }}{% else %}{{ title }}{% endif %}{% endblock pagetitle %} | openparliament.ca</title>
-<link rel="icon" type="image/png" href="{{ STATIC_URL }}images/favicon.png">
-{% compress css %}
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/openparliament.css">
-{% endcompress %}
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
-<script type="text/javascript">!window.jQuery && document.write(unescape('%3Cscript src="{{ STATIC_URL }}js/jquery-1.4.2.min.js"%3E%3C/script%3E'))</script>
 
-{% compress js %}
-<script type="text/javascript" src="{{ STATIC_URL }}js/openparliament.js"></script>
-{% endcompress %}
-{% block headextra %}{% endblock %}
-<script type="text/javascript">
+    <link rel="icon" type="image/png" href="{{ STATIC_URL }}images/favicon.png">
+    {% compress css %}
+      <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/openparliament.css">
+    {% endcompress %}
 
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-10168543-3']);
-  _gaq.push(['_trackPageview']);
-  _gaq.push(['_trackPageLoadTime']);
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.3/jquery.min.js"></script>
+    <script type="text/javascript">!window.jQuery && document.write(unescape('%3Cscript src="{{ STATIC_URL }}js/jquery-1.4.2.min.js"%3E%3C/script%3E'))
+    </script>
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
+    {% compress js %}
+      <script type="text/javascript" src="{{ STATIC_URL }}js/openparliament.js"></script>
+    {% endcompress %}
 
-</script>
+    {% block headextra %}{% endblock %}
+
+    <script type="text/javascript">
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-10168543-3']);
+      _gaq.push(['_trackPageview']);
+      _gaq.push(['_trackPageLoadTime']);
+
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
+
 </head>
 <body class="{% block bodyclass %}{% endblock %}">
-<div id="navbarbg"></div><div id="navbar"><a href="/"><img src="{{ STATIC_URL }}images/logotype_bar.png" alt="openparliament.ca"></a>
-    <ul id="navlinks">
-		<li {% block navlinks_mps %}{% endblock %}><a href="{% url parliament.politicians.views.current_mps %}">MPs</a></li>
-		<li {% block navlinks_bills %}{% endblock %}><a href="{% url parliament.bills.views.index %}">Bills</a></li>
-		<li {% block navlinks_debates %}{% endblock %}><a href="{% url parliament.hansards.views.index %}">Debates</a></li>
-{#		<li {% block navlinks_committees %}{% endblock %}><a href="{% url parliament.committees.views.committee_list %}">Committees</a></li>#}
-		<li {% block navlinks_about %}{% endblock %}><a href="/about/">About</a></li>
-		<li {% block navlinks_labs %}{% endblock %}><a href="/labs/">Labs</a></li></ul>
-    <div id="breadcrumbs">{% block breadcrumbs_all %}<a href="/">Home</a> {% block breadcrumbs %}{% endblock breadcrumbs %}{% endblock breadcrumbs_all %}</div>
-    <form action="{% url search %}" method="GET" id="nav_searchform"><div><input type="text" class="tip" title="By postal code, name, or keyword." id="nav_searchbox" name="q"><a id="nav_searchbutton"></a></div></form>
-    </div>
-<div id="content_wrap"><div id="content" class="{% block contentclass %}{% endblock %}">
-{% block pageheading_override %}<div class="focus pageheader"><h1>{% block pageheading %}{{ title }}{% endblock pageheading %}</h1></div>{% endblock pageheading_override %}
-{% block content %}
 
-{% endblock content %}
-</div><div class="clear"></div></div>
-<div id="footer">{% block footer %}<p><a href="/about/">Only somewhat copyright</a> {% now "Y" %}. <strong>Not a government site.</strong> {% block footerextra %}{% endblock %}<br>Questions, suggestions, complaints, epic poetry? <a class="maillink">E-mail</a>, or our <a href="http://openparliament.uservoice.com/" class="feedback">feedback forum</a>.</p>{% endblock footer %}</div>
+<div id="navbarbg"></div>
+<div id="navbar"><a href="/"><img src="{{ STATIC_URL }}images/logotype_bar.png" alt="openparliament.ca"></a><ul id="navlinks"><li {% block navlinks_mps %}{% endblock %}><a href="{% url parliament.politicians.views.current_mps %}">{% trans "MPs" %}</a></li><li {% block navlinks_bills %}{% endblock %}><a href="{% url parliament.bills.views.index %}">{% trans "Bills" %}</a></li><li {% block navlinks_debates %}{% endblock %}><a href="{% url parliament.hansards.views.index %}">{% trans "Debates" %}</a></li>{# <li {% block navlinks_committees %}{% endblock %}><a href="{% url parliament.committees.views.committee_list %}">{% trans "Committees" %}</a></li> #}<li {% block navlinks_about %}{% endblock %}><a href="/about/">{% trans "About" %}</a></li><li {% block navlinks_labs %}{% endblock %}><a href="/labs/">{% trans "Labs" %}</a></li></ul>
+    <div id="breadcrumbs">
+      {% block breadcrumbs_all %}<a href="/">{% trans "Home" %}</a>
+        {% block breadcrumbs %}{% endblock breadcrumbs %}
+      {% endblock breadcrumbs_all %}
+    </div>
+    <form action="{% url search %}" method="GET" id="nav_searchform">
+      <div><input type="text" class="tip" id="nav_searchbox" name="q"
+          title="{% trans 'By postal code, name, or keyword.' %}">
+        <a id="nav_searchbutton"></a>
+      </div>
+    </form>
+</div>
+
+<div id="content_wrap">
+  <div id="content" class="{% block contentclass %}{% endblock %}">
+  {% block pageheading_override %}
+    <div class="focus pageheader">
+      <h1>{% block pageheading %}{{ title }}{% endblock pageheading %}</h1>
+    </div>
+  {% endblock pageheading_override %}
+  {% block content %}{% endblock content %}
+  </div>
+  <div class="clear"></div>
+</div>
+
+<div id="footer">
+  {% block footer %}
+    <p>
+      <a href="/about/">{% trans "Only somewhat copyright" %}</a>
+      {% now "Y" %}.
+      <strong>{% trans "Not a government site." %}</strong>
+      {% block footerextra %}{% endblock %}
+      <br>{% trans "Questions, suggestions, complaints, epic poetry?" %}
+      {% blocktrans %}
+        <a class="maillink">E-mail</a>, or our
+        <a href="http://openparliament.uservoice.com/" class="feedback">
+          feedback forum</a>.
+      {% endblocktrans %}
+    </p>
+  {% endblock footer %}
+</div>
+
 <!--[if IE 6]>
 <script type="text/javascript">var IE6UPDATE_OPTIONS = {
     icons_path: "{{ STATIC_URL }}ie6update/images/"
 };</script>
 <script type="text/javascript" src="{{ STATIC_URL }}ie6update/ie6update.js"></script>
 <![endif]-->
+
 {% comment %}<script type="text/javascript">
   function _loadUserVoice() {
     var s = document.createElement('script');
@@ -63,5 +96,6 @@
   _loadSuper = window.onload;
   window.onload = (typeof window.onload != 'function') ? _loadUserVoice : function() { _loadSuper(); _loadUserVoice(); };
 </script>{% endcomment %}
+
 </body>
 </html>

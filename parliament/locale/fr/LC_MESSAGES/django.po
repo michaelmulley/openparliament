@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-24 14:54-0400\n"
+"POT-Creation-Date: 2012-04-24 16:18-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -49,76 +49,76 @@ msgstr ""
 msgid "Your alerts for %s from openparliament.ca"
 msgstr ""
 
-#: alerts/views.py:60
+#: alerts/views.py:61
 #, python-format
 msgid "Confirmation required: E-mail alerts about %s"
 msgstr ""
 
-#: alerts/views.py:75 alerts/views.py:94 alerts/views.py:115
+#: alerts/views.py:76 alerts/views.py:95 alerts/views.py:116
 #, python-format
 msgid "E-mail alerts for %s"
 msgstr ""
 
-#: bills/models.py:77
+#: bills/models.py:78
 msgid "House"
 msgstr ""
 
-#: bills/models.py:78
+#: bills/models.py:79
 msgid "Senate"
 msgstr ""
 
-#: bills/models.py:95
+#: bills/models.py:96
 msgid "The parl.gc.ca document ID of the latest version of the bill's text"
 msgstr ""
 
-#: bills/models.py:182
+#: bills/models.py:183
 #, python-format
 msgid "%(bill)s in session %(id)s"
 msgstr ""
 
-#: bills/models.py:189
+#: bills/models.py:190
 msgid "Passed"
 msgstr ""
 
-#: bills/models.py:190
+#: bills/models.py:191
 msgid "Failed"
 msgstr ""
 
-#: bills/models.py:191
+#: bills/models.py:192
 msgid "Tie"
 msgstr ""
 
-#: bills/models.py:209
+#: bills/models.py:210
 #, python-format
 msgid "Vote #%(number)s on %(date)s"
 msgstr ""
 
-#: bills/models.py:282
+#: bills/models.py:283
 msgid "Yes"
 msgstr ""
 
-#: bills/models.py:283
+#: bills/models.py:284
 msgid "No"
 msgstr ""
 
-#: bills/models.py:284
+#: bills/models.py:285
 msgid "Paired"
 msgstr ""
 
-#: bills/models.py:285
+#: bills/models.py:286
 msgid "Didn't vote"
 msgstr ""
 
-#: bills/models.py:297
+#: bills/models.py:298
 #, python-format
 msgid "%(politician)s voted %(vote)s on %(question)s"
 msgstr ""
 
-#: bills/models.py:311
+#: bills/models.py:312
 msgid "Free vote"
 msgstr ""
 
-#: bills/models.py:324
+#: bills/models.py:325
 #, python-format
 msgid "%(party)s voted %(vote)s on %(question)s"
 msgstr ""
@@ -611,4 +611,211 @@ msgid ""
 "    In the meantime, try using the links and search box above to get back "
 "to\n"
 "    less erroneous pages. (Sorry!)"
+msgstr ""
+
+#: templates/base.html:45
+msgid "MPs"
+msgstr ""
+
+#: templates/base.html:48
+msgid "Bills"
+msgstr ""
+
+#: templates/base.html:51
+msgid "Debates"
+msgstr ""
+
+#: templates/base.html:54
+msgid "Committees"
+msgstr ""
+
+#: templates/base.html:56
+msgid "About"
+msgstr ""
+
+#: templates/base.html:58
+msgid "Labs"
+msgstr ""
+
+#: templates/base.html:61
+msgid "Home"
+msgstr ""
+
+#: templates/base.html:67
+msgid "By postal code, name, or keyword."
+msgstr ""
+
+#: templates/base.html:88
+msgid "Only somewhat copyright"
+msgstr ""
+
+#: templates/base.html:90
+msgid "Not a government site."
+msgstr ""
+
+#: templates/base.html:92
+msgid "Questions, suggestions, complaints, epic poetry?"
+msgstr ""
+
+#: templates/base.html:93
+msgid ""
+"\n"
+"        <a class=\"maillink\">E-mail</a>, or our\n"
+"        <a href=\"http://openparliament.uservoice.com/\" class=\"feedback"
+"\">\n"
+"          feedback forum</a>.\n"
+"      "
+msgstr ""
+
+#: templates/home.html:5
+msgid "Keeping tabs on Canada’s Parliament"
+msgstr ""
+
+#: templates/home.html:8
+msgid "Keep tabs on Parliament."
+msgstr ""
+
+#: templates/home.html:14
+msgid "Search"
+msgstr ""
+
+#: templates/home.html:20
+msgid "What we’re doing"
+msgstr ""
+
+#: templates/home.html:22
+msgid ""
+"Info on what your representatives are doing in Ottawa \n"
+"        can be hard to find and use. <strong>We’re trying to make it\n"
+"        easy.</strong>"
+msgstr ""
+
+#: templates/home.html:28
+#, python-format
+msgid ""
+"Browse <a href=\"%(mps_url)s\">MPs</a>, or find    \n"
+"        someone quickly by entering a name or postal code above. See what "
+"your \n"
+"        representatives are <a href=\"%(saying_url)s\">saying</a>, and "
+"what \n"
+"        <a href=\"laws_url\">laws</a> they’re proposing. Poke around.\n"
+"      "
+msgstr ""
+
+#: templates/home.html:35
+msgid "What they’re talking about"
+msgstr ""
+
+#: templates/home.html:42
+#, python-format
+msgid ""
+"The latest House transcript is from <strong>%(latest_hansard_date)s</"
+"strong>, when the <span class=\"tip tipunderline\" title=\"Most frequently "
+"spoken word, excluding a fixed list of extra-boring words (like 'the', or "
+"'government').\">word of the day</span> was <a href="
+"\"%(latest_hansard_wordcloud_url)s\" rel=\"lightbox\">"
+"%(latest_hansard_most_frequent_word)s</a>. These are the topics that were "
+"discussed."
+msgstr ""
+
+#: templates/home.html:44
+#, python-format
+msgid ""
+"The latest House transcript is from <strong>%(latest_hansard_date)s</"
+"strong>, when the <span class=\"tip tipunderline\" title=\"Most frequently "
+"spoken word, excluding a fixed list of extra-boring words (like 'the', or "
+"'government').\">word of the day</span> was "
+"%(latest_hansard_most_frequent_word)s. These are the topics that were "
+"discussed."
+msgstr ""
+
+#: templates/home.html:47
+#, python-format
+msgid ""
+"The latest House transcript is from <strong>\n"
+"          %(latest_hansard_date)s</strong>. These are the topics that were\n"
+"          discussed."
+msgstr ""
+
+#: templates/home.html:69
+msgid "Recent votes"
+msgstr ""
+
+#: templates/home.html:88
+msgid "What’s new around here"
+msgstr ""
+
+#: templates/home.html:91
+#, python-format
+msgid ""
+"Subscribe to our <a href=\"%(sitenews_feed_url)s\" class=\"feed\">site news "
+"feed</a>, or follow <a href=\"http://twitter.com/openparlca\">@openparlca</"
+"a> on Twitter."
+msgstr ""
+
+#: templates/home.html:100
+msgid "Enter a postal code, name, or phrase"
+msgstr ""
+
+#: templates/home.html:117
+msgid "To search, enter a postal code, name, or phrase into the text box."
+msgstr ""
+
+#: templates/home.html:122
+msgid ""
+"Info on what your representatives are doing in Ottawa can be hard to find "
+"and use. We're trying to make it easy."
+msgstr ""
+
+#: templates/home.html:123
+msgid "Site news"
+msgstr ""
+
+#: templates/memcached_status.html:3 templates/memcached_status.html.py:4
+msgid "Memcached status"
+msgstr ""
+
+#: templates/memcached_status.html:9
+msgid "memory usage"
+msgstr ""
+
+#: templates/memcached_status.html:11
+msgid "keys in cache"
+msgstr ""
+
+#: templates/memcached_status.html:12
+#, python-format
+msgid ""
+"\n"
+"      %(stats.curr_items)s of %(stats.total_items)s\n"
+"    "
+msgstr ""
+
+#: templates/memcached_status.html:15
+msgid "cache hits"
+msgstr ""
+
+#: templates/memcached_status.html:16
+#, python-format
+msgid ""
+"\n"
+"      %(stats.get_hits)s of %(stats.cmd_get)s\n"
+"    "
+msgstr ""
+
+#: templates/memcached_status.html:20
+msgid "cache traffic"
+msgstr ""
+
+#: templates/memcached_status.html:21
+#, python-format
+msgid ""
+"\n"
+"      %(stats.bytes_read|filesizeformat)s in,\n"
+"      %(stats.bytes_written|filesizeformat)s out\n"
+"    "
+msgstr ""
+
+#: templates/memcached_status.html:25
+msgid "uptime"
 msgstr ""
