@@ -1,30 +1,39 @@
 import datetime
 import json
-import urllib, urllib2
+import urllib
+import urllib2
 
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.conf import settings
-from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
+from django.http import HttpResponse, Http404, \
+    HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.shortcuts import get_object_or_404
 from django.template import loader, RequestContext
-from django.views.generic.dates import (ArchiveIndexView, YearArchiveView, MonthArchiveView)
+from django.views.generic.dates import (
+    ArchiveIndexView, YearArchiveView, MonthArchiveView
+)
 from django.views.decorators.vary import vary_on_headers
+from django.utils.translation import ugettext as _
 
 from parliament.core.utils import get_twitter_share_url
 from parliament.hansards.models import Document, Statement
+
 
 def _get_hansard(year, month, day):
     return get_object_or_404(Document.debates,
         date=datetime.date(int(year), int(month), int(day)))
 
+
 def hansard(request, year, month, day, slug=None):
     return document_view(request, _get_hansard(year, month, day), slug=slug)
+
 
 def document_redirect(request, document_id, slug=None):
     try:
         document = Document.objects.select_related(
-            'committeemeeting', 'committeemeeting__committee').get(
-            pk=document_id)
+            'committeemeeting',
+            'committeemeeting__committee'
+        ).get(pk=document_id)
     except Document.DoesNotExist:
         raise Http404
     url = document.get_absolute_url()
@@ -32,15 +41,20 @@ def document_redirect(request, document_id, slug=None):
         url += "%s/" % slug
     return HttpResponsePermanentRedirect(url)
 
+
 @vary_on_headers('X-Requested-With')
 def document_view(request, document, meeting=None, slug=None):
 
     per_page = 15
     if 'singlepage' in request.GET:
         per_page = 1500
-    
+
     statement_qs = Statement.objects.filter(document=document)\
-        .select_related('member__politician', 'member__riding', 'member__party')
+        .select_related(
+            'member__politician',
+            'member__riding',
+            'member__party'
+        )
     paginator = Paginator(statement_qs, per_page)
 
     highlight_statement = None
@@ -49,8 +63,9 @@ def document_view(request, document, meeting=None, slug=None):
             if slug.isdigit():
                 highlight_statement = int(slug)
             else:
-                highlight_statement = statement_qs.filter(slug=slug).values_list('sequence', flat=True)[0]
-            page = int(highlight_statement/per_page) + 1
+                highlight_statement = statement_qs.filter(slug=slug)\
+                    .values_list('sequence', flat=True)[0]
+            page = int(highlight_statement / per_page) + 1
         else:
             page = int(request.GET.get('page', '1'))
     except (ValueError, IndexError):
@@ -61,14 +76,16 @@ def document_view(request, document, meeting=None, slug=None):
         statements = paginator.page(page)
     except (EmptyPage, InvalidPage):
         statements = paginator.page(paginator.num_pages)
-    
+
     if highlight_statement is not None:
         try:
             highlight_statement = filter(
-                    lambda s: s.sequence == highlight_statement, statements.object_list)[0]
+                lambda s: s.sequence == highlight_statement,
+                statements.object_list
+            )[0]
         except IndexError:
             raise Http404
-        
+
     if request.is_ajax():
         t = loader.get_template("hansards/statement_page.inc")
     else:
@@ -95,40 +112,47 @@ def document_view(request, document, meeting=None, slug=None):
             'pagination_url': meeting.get_absolute_url(),
         })
     return HttpResponse(t.render(RequestContext(request, ctx)))
-    
+
+
 def statement_twitter(request, hansard_id, sequence):
-    """Redirects to a Twitter page, prepopulated with sharing info for a particular statement."""
+    """Redirects to a Twitter page, prepopulated with sharing info
+    for a particular statement."""
     try:
-        statement = Statement.objects.get(document=hansard_id, sequence=sequence)
+        statement = Statement.objects.get(
+            document=hansard_id,
+            sequence=sequence
+        )
     except Statement.DoesNotExist:
         raise Http404
-        
+
     if statement.politician:
         description = statement.politician.name
     else:
         description = statement.who
     description += ' on ' + statement.topic
-    
+
     return HttpResponseRedirect(
         get_twitter_share_url(statement.get_absolute_url(), description)
     )
-    
+
+
 def statement_permalink(request, slug, year, month, day):
-    """A page displaying only a single statement. Used as a non-JS permalink."""
+    """A page displaying only a single statement.
+    Used as a non-JS permalink."""
     #TODO: Work with evidence
-    
+
     doc = _get_hansard(year, month, day)
     if slug.isdigit():
         statement = get_object_or_404(Statement, document=doc, sequence=slug)
     else:
         statement = get_object_or_404(Statement, document=doc, slug=slug)
-    
+
     if statement.politician:
         who = statement.politician.name
     else:
         who = statement.who
     title = who
-    
+
     if statement.topic:
         title += u' on %s' % statement.topic
     t = loader.get_template("hansards/statement_permalink.html")
@@ -143,13 +167,15 @@ def statement_permalink(request, slug, year, month, day):
         #'statements_context_link': True
     })
     return HttpResponse(t.render(c))
-    
+
+
 def document_cache(request, document_id, language):
     document = get_object_or_404(Document, pk=document_id)
     xmlfile = document.get_cached_xml(language)
     resp = HttpResponse(xmlfile.read(), content_type="text/xml")
     xmlfile.close()
     return resp
+
 
 class TitleAdder(object):
 
@@ -158,20 +184,23 @@ class TitleAdder(object):
         context.update(title=self.page_title)
         return context
 
+
 class DebateIndexView(TitleAdder, ArchiveIndexView):
     queryset = Document.debates.all()
     date_field = 'date'
     template_name = "hansards/hansard_archive.html"
-    page_title='The Debates of the House of Commons'
+    page_title = _('The Debates of the House of Commons')
 index = DebateIndexView.as_view()
+
 
 class DebateYearArchive(TitleAdder, YearArchiveView):
     queryset = Document.debates.all().order_by('date')
     date_field = 'date'
     make_object_list = True
     template_name = "hansards/hansard_archive_year.html"
-    page_title = lambda self: 'Debates from %s' % self.get_year()
+    page_title = lambda self: _('Debates from %s') % self.get_year()
 by_year = DebateYearArchive.as_view()
+
 
 class DebateMonthArchive(TitleAdder, MonthArchiveView):
     queryset = Document.debates.all().order_by('date')
@@ -179,5 +208,5 @@ class DebateMonthArchive(TitleAdder, MonthArchiveView):
     make_object_list = True
     month_format = "%m"
     template_name = "hansards/hansard_archive_year.html"
-    page_title = lambda self: 'Debates from %s' % self.get_year()
+    page_title = lambda self: _('Debates from %s') % self.get_year()
 by_month = DebateMonthArchive.as_view()

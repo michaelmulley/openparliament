@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-03-23 16:09-0400\n"
+"POT-Creation-Date: 2012-04-24 14:54-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -498,6 +498,75 @@ msgstr ""
 msgid ""
 "%(contributor)s contributed %(amount)s to %(candidate)s (%(party)s) on "
 "%(date)s"
+msgstr ""
+
+#: hansards/models.py:57
+msgid "Debate"
+msgstr ""
+
+#: hansards/models.py:58
+msgid "Committee Evidence"
+msgstr ""
+
+#: hansards/models.py:75
+msgid "Has the source data been downloaded?"
+msgstr ""
+
+#: hansards/models.py:78
+msgid "Don't try to parse this, presumably because of errors in the source."
+msgstr ""
+
+#: hansards/models.py:82
+msgid "Display on site?"
+msgstr ""
+
+#: hansards/models.py:84
+msgid "Content parsed in both languages?"
+msgstr ""
+
+#: hansards/models.py:99
+#, python-format
+msgid "Hansard #%(number)s for %(date)s (#%(id)s/#%(source)s)"
+msgstr ""
+
+#: hansards/models.py:108
+#, python-format
+msgid "%(short_name)s evidence for %(date)s (#%(id)s/#%(source)s)"
+msgstr ""
+
+#: hansards/models.py:304
+msgid "Not yet downloaded"
+msgstr ""
+
+#: hansards/models.py:329
+msgid "No XML available before 2006"
+msgstr ""
+
+#: hansards/models.py:371
+msgid "Question"
+msgstr ""
+
+#: hansards/models.py:372
+msgid "Response"
+msgstr ""
+
+#: hansards/models.py:422
+#, python-format
+msgid "%(who)s speaking about %(topic)s around %(time)s"
+msgstr ""
+
+#: hansards/models.py:436
+#, python-format
+msgid "Different en/fr paragraphs in %s"
+msgstr ""
+
+#: hansards/views.py:192
+msgid "The Debates of the House of Commons"
+msgstr ""
+
+#: hansards/views.py:201 hansards/views.py:211
+#, python-format
+msgid "Debates from %s"
 msgstr ""
 
 #: templates/404.html:4
