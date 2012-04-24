@@ -20,6 +20,7 @@ class PoliticianAlertForm(forms.ModelForm):
             'politician': forms.widgets.HiddenInput,
         }
 
+
 @disable_on_readonly_db
 def signup(request):
     if 'politician' not in request.REQUEST:

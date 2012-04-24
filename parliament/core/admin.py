@@ -71,4 +71,3 @@ admin.site.register(Party, PartyOptions)
 admin.site.register(InternalXref, InternalXrefOptions)
 admin.site.register(PoliticianInfo, PoliticianInfoOptions)
 admin.site.register(SiteNews, SiteNewsOptions)
-

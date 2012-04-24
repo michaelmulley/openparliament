@@ -56,7 +56,8 @@ class BillManager(models.Manager):
                 "There's already a bill with LEGISinfo id %s" % legisinfo_id)
         try:
             bill = Bill.objects.get(number=number, sessions=session)
-            logger.error("Potential duplicate LEGISinfo ID: %s in %s exists, but trying to create with ID %s" %
+            logger.error("Potential duplicate LEGISinfo ID: " \
+                "%s in %s exists, but trying to create with ID %s" %
                 (number, session, legisinfo_id))
             return bill
         except Bill.DoesNotExist:
