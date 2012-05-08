@@ -9,7 +9,6 @@ from django.http import HttpResponse, Http404, HttpResponsePermanentRedirect
 from django.shortcuts import get_object_or_404
 from django.template import loader, RequestContext
 from django.views.decorators.vary import vary_on_headers
-from django.views.generic.list_detail import object_list
 
 from parliament.activity.models import Activity
 from parliament.activity import utils as activity
@@ -18,10 +17,13 @@ from parliament.core.utils import feed_wrapper
 from parliament.hansards.models import Statement
     
 def current_mps(request):
-    return object_list(request,
-        queryset=ElectedMember.objects.current().order_by('riding__province', 'politician__name_family').select_related('politician', 'riding', 'party'),
-        template_name='politicians/electedmember_list.html',
-        extra_context={'title': 'Current Members of Parliament'})
+    t = loader.get_template('politicians/electedmember_list.html')
+    c = RequestContext(request, {
+        'object_list': ElectedMember.objects.current().order_by(
+            'riding__province', 'politician__name_family').select_related('politician', 'riding', 'party'),
+        'title': 'Current Members of Parliament'
+    })
+    return HttpResponse(t.render(c))
         
 def former_mps(request):
     former_members = ElectedMember.objects.exclude(end_date__isnull=True)\

@@ -8,7 +8,6 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpRespons
 from django.shortcuts import get_object_or_404
 from django.template import Context, loader, RequestContext
 from django.template.defaultfilters import date as format_date
-from django.views.generic.list_detail import object_list, object_detail
 from django.views.decorators.vary import vary_on_headers
 
 from parliament.bills.models import Bill, VoteQuestion, MemberVote
@@ -57,32 +56,41 @@ def index(request):
     bills = Bill.objects.filter(sessions=sessions[0])
     votes = VoteQuestion.objects.select_related('bill').filter(session=sessions[0])[:6]
 
-    return object_list(request,
-        queryset=bills,
-        extra_context={
-            'session_list': sessions,
-            'votes': votes,
-            'session': sessions[0],
-            'title': 'Bills & Votes'},
-        template_name='bills/index.html')
+    t = loader.get_template('bills/index.html')
+    c = RequestContext(request, {
+        'object_list': bills,
+        'session_list': sessions,
+        'votes': votes,
+        'session': sessions[0],
+        'title': 'Bills & Votes'
+    })
+
+    return HttpResponse(t.render(c))
         
 def bills_for_session(request, session_id):
     session = get_object_or_404(Session, pk=session_id)
     bills = Bill.objects.filter(sessions=session)
     votes = VoteQuestion.objects.select_related('bill').filter(session=session)[:6]
 
-    return object_list(request,
-        queryset=bills,
-        extra_context={
-            'session': session,
-            'votes': votes,
-            'title': 'Bills for the %s' % session})
+    t = loader.get_template('bills/bill_list.html')
+    c = RequestContext(request, {
+        'object_list': bills,
+        'session': session,
+        'votes': votes,
+        'title': 'Bills for the %s' % session
+    })
+    return HttpResponse(t.render(c))
         
 def votes_for_session(request, session_id):
     session = get_object_or_404(Session, pk=session_id)
-    return object_list(request,
-        queryset=VoteQuestion.objects.select_related(depth=1).filter(session=session),
-        extra_context={'session': session, 'title': 'Votes for the %s' % session})
+
+    t = loader.get_template('bills/votequestion_list.html')
+    c = RequestContext(request, {
+        'object_list': VoteQuestion.objects.select_related(depth=1).filter(session=session),
+        'session': session,
+        'title': 'Votes for the %s' % session
+    })
+    return HttpResponse(t.render(c))
         
 def vote_pk_redirect(request, vote_id):
     vote = get_object_or_404(VoteQuestion, pk=vote_id)
@@ -105,9 +113,6 @@ def vote(request, session_id, number):
     })
     t = loader.get_template("bills/votequestion_detail.html")
     return HttpResponse(t.render(c))
-    
-def all_bills(request):
-    return object_list(request, queryset=Bill.objects.all())
     
 class BillListFeed(Feed):
     title = 'Bills in the House of Commons'
