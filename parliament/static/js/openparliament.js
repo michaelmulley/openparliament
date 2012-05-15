@@ -133,10 +133,14 @@ $(function() {
                 }
             }).bind(offEvent, function() { $marginalia.hide(); });
         }
-    }
+    };
     
     $('.standard_form input, .standard_form textarea').marginalia('focus', 'blur',
         function($obj) { return $obj.attr('data-helptext');});
+
+    $('[data-marginalia]').marginalia('mouseenter', 'mouseleave', function($obj) {
+        return $obj.attr('data-marginalia');
+    });
     
     $('a.maillink').attr('href', rot13('znvygb:zvpunry@zvpunryzhyyrl.pbz'));
     

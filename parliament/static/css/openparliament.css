@@ -56,9 +56,10 @@ div.focus.pageheader{margin-bottom:0;}
 /* COMMON ELEMENTS */
 ul.tile{list-style-type:none;margin:0 0 10px 0;padding:0;}
 .tile li{margin-right:20px;margin-bottom:10px;float:left;}
-.twoline,.oneline{overflow:hidden;}
+.twoline,.oneline,.threeline{overflow:hidden;}
 .twoline{height:40px;}
 .oneline{height:20px;}
+.threeline{height:60px;}
 #tooltip{position:absolute;z-index:3000;border:1px solid #111;background-color:#f9f7cd;padding:5px;max-width:350px;}
 #tooltip h3,#tooltip div{margin:0;font-size:12px;color:#222222;font-weight:normal;}
 .winner{font-weight:bold;}

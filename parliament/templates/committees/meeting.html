@@ -9,14 +9,6 @@
 	{% endcompress %}
 {% if highlight_statement or highlight_statement == 0%}<link rel="canonical" href="{{ highlight_statement.get_absolute_url }}only/">{% endif %}
 
-<script type="text/javascript">
-$(function() {
-    $('strong[data-marginalia]').marginalia('mouseenter', 'mouseleave', function($obj) {
-        return $obj.attr('data-marginalia');
-    });
-});
-</script>
-
 {% endblock %}
 {% block content %}
 <div class="focus"><p>Evidence of meeting #{{ meeting.number }} for <a href="{{ committee.get_absolute_url }}">{{ committee.name }}</a> in the {{ meeting.session }}. (The <a href="{{ document.url }}">original version</a> is on Parliament's site.) The <span class="tip tipunderline" title="Most frequently spoken word, excluding a fixed list of extra-boring words (like 'the', or 'government').">winning word</span> was {% if document.wordcloud %}<a href="{{ document.wordcloud.url }}" rel="lightbox">{{ document.get_wordoftheday }}</a>{% else %}<strong>{{ document.get_wordoftheday}}</strong>{% endif %}.</p></div>
@@ -26,10 +18,20 @@ $(function() {
 <div class="focus"><ul class="tile">{% for activity in meeting.activities_list %}<li class="six twoline overflowtip"><a href="{{ activity.get_absolute_url }}">{{ activity }}</a></li>{% endfor %}</ul><div class="clear"></div></div>
 {% endif %}
 
-<div class="clear"></div><div class="context"><h2>Speaking today</h2></div>
-<div class="focus"><ul class="tile">{% for pol in document.politicians %}<li class="four oneline overflowtip"><a href="{{ pol.get_absolute_url }}">{{ pol.name }}</a></li>{% endfor %}
-    {% for witness in document.outside_speakers.items %}<li class="four oneline overflowtip"><strong data-marginalia="{{ witness.1 }}">{{ witness.0 }}</strong></li>{% endfor %}
-    </ul></div><div class="clear"></div>
+<div class="clear"></div>
+<div class="context"><h2>MPs speaking</h2></div>
+<div class="focus">
+	<ul class="tile">
+		{% for speaker_name, speaker_info in document.mp_speaker_summary.items %}<li class="four oneline overflowtip"><a href="{{ document.get_absolute_url }}{{ speaker_info.slug }}/" data-marginalia="{{ speaker_info.description }}">{{ speaker_name }}</a></li>{% endfor %}
+	</ul>
+</div><div class="clear"></div>
+
+<div class="context"><h2>Also speaking</h2></div>
+<div class="focus">
+	<ul class="tile">
+		{% for speaker_name, speaker_info in document.outside_speaker_summary.items %}<li class="six threeline overflowtip"><a href="{{ document.get_absolute_url }}{{ speaker_info.slug }}/">{{ speaker_name }}</a> &nbsp;{{ speaker_info.description }}</li>{% endfor %}
+	</ul>
+</div>
 
 <div id="paginated">
 

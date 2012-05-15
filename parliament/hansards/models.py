@@ -9,6 +9,7 @@ from django.conf import settings
 from django.core import urlresolvers
 from django.core.files.base import ContentFile
 from django.template.defaultfilters import slugify
+from django.utils.datastructures import SortedDict
 from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
 
@@ -80,6 +81,7 @@ class Document(models.Model):
             return u"%s evidence for %s (#%s/#%s)" % (
                 self.committeemeeting.committee.short_name, self.date, self.id, self.source_id)
         
+    @memoize_property
     def get_absolute_url(self):
         if self.document_type == self.DEBATE:
             return urlresolvers.reverse('debate', kwargs={
@@ -124,17 +126,49 @@ class Document(models.Model):
             topics.insert(0, ('Question Period', qp_seq))
         return topics
 
-    def politicians(self):
-        return Politician.objects.filter(statement__document=self).distinct()
+    @memoize_property
+    def speaker_summary(self):
+        """Returns a sorted dictionary (in order of appearance) summarizing the people
+        speaking in this document.
 
-    def outside_speakers(self):
-        speakers = {}
-        for val in self.statement_set.filter(politician__isnull=True, who_hocid__isnull=False)\
-          .values_list('who', 'who_context'):
-            who = parsetools.r_parens.sub('', val[0])
-            who = re.sub('^\s*\S+\s+', '', who).strip() # strip honorific
-            speakers[who] = val[1]
+        Keys are names, suitable for displays. Values are dicts with keys:
+            slug: Slug of first statement by the person
+            politician: Boolean -- is this an MP?
+            description: Short title or affiliation
+        """
+        ids_seen = set()
+        speakers = SortedDict()
+        for st in self.statement_set.filter(who_hocid__isnull=False).values(
+                'who', 'who_context', 'slug', 'politician__name', 'who_hocid'):
+            if st['who_hocid'] in ids_seen:
+                continue
+            ids_seen.add(st['who_hocid'])
+            if st['politician__name']:
+                who = st['politician__name']
+            else:
+                who = parsetools.r_parens.sub('', st['who'])
+                who = re.sub('^\s*\S+\s+', '', who).strip() # strip honorific
+            if who not in speakers:
+                info = {
+                    'slug': st['slug'],
+                    'politician': bool(st['politician__name'])
+                }
+                if st['who_context']:
+                    info['description'] = st['who_context']
+                speakers[who] = info
         return speakers
+
+    def outside_speaker_summary(self):
+        """Same as speaker_summary, but only non-MPs."""
+        return SortedDict(
+            [(k, v) for k, v in self.speaker_summary().items() if not v['politician']]
+        )
+
+    def mp_speaker_summary(self):
+        """Same as speaker_summary, but only MPs."""
+        return SortedDict(
+            [(k, v) for k, v in self.speaker_summary().items() if v['politician']]
+        )
     
     def save_activity(self):
         statements = self.statement_set.filter(procedural=False).select_related('member', 'politician')
