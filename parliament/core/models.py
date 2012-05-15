@@ -8,6 +8,7 @@ import re
 import urllib, urllib2
 
 from django.conf import settings
+from django.core.cache import cache
 from django.db import models
 from django.template.defaultfilters import slugify
 
@@ -213,15 +214,19 @@ class PoliticianManager(models.Manager):
             info = PoliticianInfo.sr_objects.get(schema='parl_id', value=unicode(parlid))
             return info.politician
         except PoliticianInfo.DoesNotExist:
+            invalid_ID_cache_key = 'invalid-pol-parl-id-%s' % parlid
+            if cache.get(invalid_ID_cache_key):
+                raise Politician.DoesNotExist("ID %s cached as invalid" % parlid)
             if not lookOnline:
                 return None # FIXME inconsistent behaviour: when should we return None vs. exception?
             #print "Unknown parlid %d... " % parlid,
             try:
                 soup = BeautifulSoup(urllib2.urlopen(POL_LOOKUP_URL % parlid))
             except urllib2.HTTPError:
+                cache.set(invalid_ID_cache_key, True, 300)
                 raise Politician.DoesNotExist("Couldn't open " + (POL_LOOKUP_URL % parlid))
             if soup.find('table', id='MasterPage_BodyContent_PageContent_PageContent_pnlError'):
-                #print "Error page for parlid %d" % parlid
+                cache.set(invalid_ID_cache_key, True, 300)
                 raise Politician.DoesNotExist("Invalid page for parlid %s" % parlid)
             polname = soup.find('span', id='MasterPage_MasterPage_BodyContent_PageContent_Content_TombstoneContent_TombstoneContent_ucHeaderMP_lblMPNameData').string
             polriding = soup.find('a', id='MasterPage_MasterPage_BodyContent_PageContent_Content_TombstoneContent_TombstoneContent_ucHeaderMP_hlConstituencyProfile').string
