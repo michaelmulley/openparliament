@@ -9,7 +9,8 @@ from BeautifulSoup import BeautifulSoup
 import lxml.html
 
 from parliament.committees.models import (Committee, CommitteeMeeting,
-    CommitteeActivity, CommitteeReport, CommitteeInSession)
+    CommitteeActivity, CommitteeActivityInSession,
+    CommitteeReport, CommitteeInSession)
 from parliament.core.models import Session
 from parliament.hansards.models import Document
 
@@ -129,16 +130,65 @@ def import_committee_meetings(committee, session):
         
         for study_link in mtg_row.cssselect('.MeetingStudyActivity a'):
             name = study_link.text.strip()
-            try:
-                stac = CommitteeActivity.objects.get(committee=committee, name_en=name)
-            except CommitteeActivity.DoesNotExist:
-                stac = CommitteeActivity(committee=committee, name_en=name)
-                stac.study = bool('STUDY' in study_link.get('title'))
-                stac.source_id = int(re.search(r'Stac=(\d+)', study_link.get('href')).group(1))
-                stac.save()
-            meeting.activities.add(stac)
+            study = get_activity_by_url(study_link.get('href'))
+            meeting.activities.add(study)
     
     return True
+
+COMMITTEE_ACTIVITY_URL = 'http://www.parl.gc.ca/CommitteeBusiness/StudyActivityHome.aspx?Stac=%(activity_id)d&Language=%(language)s&Parl=%(parliamentnum)d&Ses=%(sessnum)d'
+def get_activity_by_url(activity_url):
+    activity_id = int(re.search(r'Stac=(\d+)', activity_url).group(1))
+    session = Session.objects.get_from_parl_url(activity_url)
+    try:
+        return CommitteeActivityInSession.objects.get(source_id=activity_id).activity
+    except CommitteeActivityInSession.DoesNotExist:
+        pass
+
+    activity = CommitteeActivity()
+
+    url = COMMITTEE_ACTIVITY_URL % {
+        'activity_id': activity_id,
+        'language': 'E',
+        'parliamentnum': session.parliamentnum,
+        'sessnum': session.sessnum
+    }
+    root = lxml.html.parse(urllib2.urlopen(url)).getroot()
+
+    acronym = re.search(r'\(([A-Z][A-Z0-9]{3})\)', root.cssselect('div.HeaderTitle span')[0].text).group(1)
+
+    activity.committee = CommitteeInSession.objects.get(acronym=acronym, session=session).committee
+
+    activity_type = root.cssselect('span.StacTitlePrefix')[0]
+    activity.study = 'Study' in activity_type.text
+    activity.name_en = activity_type.tail.strip()
+
+    # See if this already exists for another session
+    try:
+        activity = CommitteeActivity.objects.get(
+            committee=activity.committee,
+            study=activity.study,
+            name_en=activity.name_en
+        )
+    except CommitteeActivity.DoesNotExist:
+        # Get the French name
+        url = COMMITTEE_ACTIVITY_URL % {
+            'activity_id': activity_id,
+            'language': 'F',
+            'parliamentnum': session.parliamentnum,
+            'sessnum': session.sessnum
+        }
+        root = lxml.html.parse(urllib2.urlopen(url)).getroot()
+        activity_type = root.cssselect('span.StacTitlePrefix')[0]
+        activity.name_fr = activity_type.tail.strip()
+
+        activity.save()
+
+    CommitteeActivityInSession.objects.create(
+        session=session,
+        activity=activity,
+        source_id=activity_id
+    )
+    return activity
 
 COMMITTEE_REPORT_URL = 'http://www2.parl.gc.ca/CommitteeBusiness/ReportsResponses.aspx?Cmte=%(acronym)s&Language=E&Mode=1&Parl=%(parliamentnum)d&Ses=%(sessnum)d'
 @transaction.commit_on_success

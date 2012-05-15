@@ -6,7 +6,7 @@ from parliament.core.models import Session
 from parliament.core.parsetools import slugify
 from parliament.core.templatetags.ours import english_list
 from parliament.core.utils import memoize_property
-from parliament.hansards.models import Document
+from parliament.hansards.models import Document, url_from_docid
 
 class Committee(models.Model):
     
@@ -52,14 +52,18 @@ class CommitteeInSession(models.Model):
     committee = models.ForeignKey(Committee)
     acronym = models.CharField(max_length=5, db_index=True)
 
+    class Meta:
+        unique_together = [
+            ('session', 'committee')
+        ]
+
     def __unicode__(self):
         return u"%s (%s) in %s" % (self.committee, self.acronym, self.session_id)
-        
+
 class CommitteeActivity(models.Model):
     
     committee = models.ForeignKey(Committee)
-    source_id = models.IntegerField()
-    
+
     name_en = models.CharField(max_length=500)
     name_fr = models.CharField(max_length=500)
     
@@ -68,15 +72,42 @@ class CommitteeActivity(models.Model):
     def __unicode__(self):
         return self.name_en
 
+    @models.permalink
     def get_absolute_url(self):
-        return 'FIXME'
-        
+        return ('committee_activity', [], {'activity_id': self.id})
+
+    def get_source_url(self):
+        return self.committeeactivityinsession_set.order_by('-session__start')[0].get_source_url()
+
+    @property
+    def type(self):
+        return 'Study' if self.study else 'Activity'
+
     class Meta:
         verbose_name_plural = 'Committee activities'
+
+class CommitteeActivityInSession(models.Model):
+
+    activity = models.ForeignKey(CommitteeActivity)
+    session = models.ForeignKey(Session)
+    source_id = models.IntegerField(unique=True)
+
+    def get_source_url(self):
+        return 'http://www.parl.gc.ca/CommitteeBusiness/StudyActivityHome.aspx?Stac=%(source_id)d&Parl=%(parliamentnum)d&Ses=%(sessnum)d' % {
+            'source_id': self.source_id,
+            'parliamentnum': self.session.parliamentnum,
+            'sessnum': self.session.sessnum
+        }
+
+
+class Meta:
+        unique_together = [
+            ('activity', 'session')
+        ]
         
 class CommitteeMeeting(models.Model):
     
-    date = models.DateField()
+    date = models.DateField(db_index=True)
     start_time = models.TimeField()
     end_time = models.TimeField(blank=True, null=True)
     
@@ -94,6 +125,11 @@ class CommitteeMeeting(models.Model):
     televised = models.BooleanField(default=False)
     
     activities = models.ManyToManyField(CommitteeActivity)
+
+    class Meta:
+        unique_together = [
+            ('session', 'committee', 'number')
+        ]
     
     def __unicode__(self):
         return u"%s on %s" % (self.committee.short_name, self.date)
@@ -117,6 +153,10 @@ class CommitteeMeeting(models.Model):
         return ('committee_meeting', [],
             {'session_id': self.session_id, 'committee_slug': slug,
              'number': self.number})
+
+    @property
+    def minutes_url(self):
+        return url_from_docid(self.minutes) if self.minutes else ''
 
 
 class CommitteeReport(models.Model):

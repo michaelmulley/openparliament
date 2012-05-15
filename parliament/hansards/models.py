@@ -40,6 +40,11 @@ class NoStatementManager(models.Manager):
             .annotate(scount=models.Count('statement'))\
             .exclude(scount__gt=0)
 
+def url_from_docid(docid):
+    return "http://www.parl.gc.ca/HousePublications/Publication.aspx?DocId=%s&Language=%s&Mode=1" % (
+        docid, settings.LANGUAGE_CODE[0].upper()
+    )
+
 class Document(models.Model):
     
     DEBATE = 'D'
@@ -92,9 +97,7 @@ class Document(models.Model):
 
     @property
     def url(self):
-        return "http://www.parl.gc.ca/HousePublications/Publication.aspx?DocId=%s&Language=%s&Mode=1" % (
-                self.source_id, settings.LANGUAGE_CODE[0].upper()
-        )
+        return url_from_docid(self.source_id)
         
     def _topics(self, l):
         topics = []

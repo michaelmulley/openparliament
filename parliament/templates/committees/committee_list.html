@@ -11,7 +11,7 @@
 <div class="context"><h2>Recent studies</h2></div>
 <div class="focus">
 	<ul class="tile">
-		{% for study in recent_studies %}<li class="six twoline overflowtip">{{ study }}</li>{% endfor %}
+		{% for study in recent_studies %}<li class="six twoline overflowtip"><a href="{{ study.get_absolute_url }}">{{ study }}</a></li>{% endfor %}
 	</ul>
 </div>
 {% endblock %}

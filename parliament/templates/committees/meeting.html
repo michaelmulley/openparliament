@@ -11,7 +11,7 @@
 
 {% endblock %}
 {% block content %}
-<div class="focus"><p>Evidence of meeting #{{ meeting.number }} for <a href="{{ committee.get_absolute_url }}">{{ committee.name }}</a> in the {{ meeting.session }}. (The <a href="{{ document.url }}">original version</a> is on Parliament's site.) The <span class="tip tipunderline" title="Most frequently spoken word, excluding a fixed list of extra-boring words (like 'the', or 'government').">winning word</span> was {% if document.wordcloud %}<a href="{{ document.wordcloud.url }}" rel="lightbox">{{ document.get_wordoftheday }}</a>{% else %}<strong>{{ document.get_wordoftheday}}</strong>{% endif %}.</p></div>
+<div class="focus"><p>Evidence of meeting #{{ meeting.number }} for <a href="{{ committee.get_absolute_url }}">{{ committee.name }}</a> in the {{ meeting.session }}. (The <a href="{{ document.url }}">original version</a> is on Parliament&rsquo;s site{% if meeting.minutes_url %}, as are the <a href="{{ meeting.minutes_url }}">minutes</a>{% endif %}.) The <span class="tip tipunderline" title="Most frequently spoken word, excluding a fixed list of extra-boring words (like 'the', or 'government').">winning word</span> was {% if document.wordcloud %}<a href="{{ document.wordcloud.url }}" rel="lightbox">{{ document.get_wordoftheday }}</a>{% else %}<strong>{{ document.get_wordoftheday}}</strong>{% endif %}.</p></div>
 
 {% if meeting.activities_list %}
 <div class="clear"></div><div class="context"><h2>On the agenda</h2></div>

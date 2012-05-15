@@ -457,7 +457,23 @@ class SessionManager(models.Manager):
     def get_by_date(self, date):
         return self.filter(models.Q(end__isnull=True) | models.Q(end__gte=date))\
             .get(start__lte=date)
-        
+
+    def get_from_string(self, string):
+        """Given a string like '41st Parliament, 1st Session, returns the session."""
+        match = re.search(r'^(\d\d)\D+(\d)\D', string)
+        if not match:
+            raise ValueError(u"Could not find parl/session in %s" % string)
+        pk = match.group(1) + '-' + match.group(2)
+        return self.get_query_set().get(pk=pk)
+
+    def get_from_parl_url(self, url):
+        """Given a parl.gc.ca URL with Parl= and Ses= query-string parameters,
+        return the session."""
+        parlnum = re.search(r'Parl=(\d\d)', url).group(1)
+        sessnum = re.search(r'Ses=(\d)', url).group(1)
+        pk = parlnum + '-' + sessnum
+        return self.get_query_set().get(pk=pk)
+
 class Session(models.Model):
     "A session of Parliament."
     
