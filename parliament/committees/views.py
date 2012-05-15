@@ -28,13 +28,45 @@ def committee_id_redirect(request, committee_id):
 def committee(request, slug):
     cmte = get_object_or_404(Committee, slug=slug)
 
+    recent_meetings = list(CommitteeMeeting.objects.filter(committee=cmte).order_by('-date')[:20])
+    recent_studies = CommitteeActivity.objects.filter(
+        study=True,
+        committeemeeting__in=recent_meetings
+    ).distinct()
+
+    oldest_year = CommitteeMeeting.objects.order_by('date')[0].date.year
+    newest_year = recent_meetings[0].date.year
+    meeting_years = reversed(range(oldest_year, newest_year+1))
+
     t = loader.get_template("committees/committee_detail.html")
     c = RequestContext(request, {
-        'title': cmte.name,
+        'title': cmte.name + u' Committee',
         'committee': cmte,
-        'meetings': cmte.committeemeeting_set.order_by('-date')
+        'meetings': recent_meetings,
+        'recent_studies': recent_studies,
+        'archive_years': meeting_years
     })
     return HttpResponse(t.render(c))
+
+def committee_year_archive(request, slug, year):
+    cmte = get_object_or_404(Committee, slug=slug)
+    year = int(year)
+
+    meetings = list(
+        CommitteeMeeting.objects.filter(committee=cmte, date__year=year).order_by('date')
+    )
+    studies = CommitteeActivity.objects.filter(
+        study=True,
+        committeemeeting__in=meetings
+    ).distinct()
+
+    return render(request, "committees/committee_year_archive.html", {
+        'title': u"%s Committee in %s" % (cmte, year),
+        'committee': cmte,
+        'meetings': meetings,
+        'studies': studies,
+        'year': year
+    })
     
 def activity(request, committee_id, activity_id):
     pass

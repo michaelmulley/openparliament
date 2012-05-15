@@ -2,7 +2,7 @@
 {% load thumbnail compress %}
 {% block pagetitle %}{{ commitee.short_name }} Committee on {{ meeting.date|date:"N jS, Y" }}{% endblock %}
 {% block pageheading %}{{ committee.short_name }} Committee on {{ meeting.date|date:"N jS, Y" }}{% endblock %}
-{% block breadcrumbs %}<a href="{% url parliament.committees.views.committee_list %}">Committees</a> <a href="{{ committee.get_absolute_url }}">{{ commitee }}</a> <a href="#">{{ meeting.session }}</a> #{{ meeting.number }}{% endblock %}
+{% block breadcrumbs %}<a href="{% url parliament.committees.views.committee_list %}">Committees</a> <a href="{{ committee.get_absolute_url }}">{{ committee }}</a> <a href="#">{{ meeting.session }}</a> #{{ meeting.number }}{% endblock %}
 {% block headextra %}
 	{% compress js %}
 	<script type="text/javascript" src="{{ STATIC_URL }}js/pagination.js"></script>
@@ -19,7 +19,7 @@ $(function() {
 
 {% endblock %}
 {% block content %}
-<div class="focus"><p>Evidence of meeting #{{ meeting.number }} for <a href="{{ committee.get_absolute_url }}">{{ committee.name }}</a> in the {{ meeting.session }}. (The <a href="{{ document.url }}">original version</a> is on Parliament's site.) The <span class="tip tipunderline" title="Most frequently spoken word, excluding a fixed list of extra-boring words (like 'the', or 'government').">word of the day</span> was {% if document.wordcloud %}<a href="{{ document.wordcloud.url }}" rel="lightbox">{{ document.get_wordoftheday }}</a>{% else %}<strong>{{ document.get_wordoftheday}}</strong>{% endif %}.</p></div>
+<div class="focus"><p>Evidence of meeting #{{ meeting.number }} for <a href="{{ committee.get_absolute_url }}">{{ committee.name }}</a> in the {{ meeting.session }}. (The <a href="{{ document.url }}">original version</a> is on Parliament's site.) The <span class="tip tipunderline" title="Most frequently spoken word, excluding a fixed list of extra-boring words (like 'the', or 'government').">winning word</span> was {% if document.wordcloud %}<a href="{{ document.wordcloud.url }}" rel="lightbox">{{ document.get_wordoftheday }}</a>{% else %}<strong>{{ document.get_wordoftheday}}</strong>{% endif %}.</p></div>
 
 {% if meeting.activities_list %}
 <div class="clear"></div><div class="context"><h2>On the agenda</h2></div>
