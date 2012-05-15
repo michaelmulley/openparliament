@@ -7,4 +7,11 @@
         <li class="six oneline overflowtip"><a href="{{ committee.get_absolute_url }}">{{ committee.name }}</a></li>{% endfor %}
     </ul>
 </div>
+
+<div class="context"><h2>Recent studies</h2></div>
+<div class="focus">
+	<ul class="tile">
+		{% for study in recent_studies %}<li class="six twoline overflowtip">{{ study }}</li>{% endfor %}
+	</ul>
+</div>
 {% endblock %}
