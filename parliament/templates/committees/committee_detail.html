@@ -1,5 +1,5 @@
 {% extends "committees/base.html" %}
-{% block breadcrumbs %}<a href="{% url committee_list %}">Committees</a> {{ committee.name }}{% endblock %}
+{% block breadcrumbs %}<a href="{% url committee_list %}">Committees</a> {{ committee.short_name }}{% endblock %}
 {% block content %}
     <div class="context"><h2>Meetings</h2></div>
     <div class="focus">
@@ -19,9 +19,4 @@
 			{% for year in archive_years %}<li class="three oneline"><a href="{% url committee_year_archive slug=committee.slug,year=year %}">{{ year }}</a></li>{% endfor %}
 		</ul>
 	</div><div class="clear"></div>
-    <style type="text/css">
-    .no_evidence a {
-        color: #777777;
-    }
-    </style>
 {% endblock %}

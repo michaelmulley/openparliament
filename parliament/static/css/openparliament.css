@@ -179,6 +179,9 @@ div.headshot span{display: block;position: relative;font-size: 10px;color: #8888
 p.share_link{font-weight:bold;}
 p.share_link input{width:300px;padding-left:5px;}
 
+/* COMMITTEES */
+.committees .no_evidence a { color: #777777; }
+
 /* BUTTONS */
 .button{padding:5px 10px;display:inline;background:#2c6da0 url('../images/css_button_bg.png') repeat-x bottom;border:none;color:#fff;cursor:pointer;font-weight:bold;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;font-size:15px;}
 .button:hover{background-position:0 -35px;}
