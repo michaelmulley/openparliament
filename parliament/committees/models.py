@@ -11,6 +11,14 @@ from parliament.core.templatetags.ours import english_list
 from parliament.core.utils import memoize_property
 from parliament.hansards.models import Document, url_from_docid
 
+class CommitteeManager(models.Manager):
+
+    def get_by_acronym(self, acronym, session):
+        try:
+            return CommitteeInSession.objects.get(acronym=acronym, session=session).committee
+        except CommitteeInSession.DoesNotExist:
+            raise Committee.DoesNotExist()
+
 class Committee(models.Model):
     
     name = models.TextField()
@@ -19,6 +27,8 @@ class Committee(models.Model):
     parent = models.ForeignKey('self', related_name='subcommittees',
         blank=True, null=True)
     sessions = models.ManyToManyField(Session, through='CommitteeInSession')
+
+    objects = CommitteeManager()
     
     class Meta:
         ordering = ['name']
@@ -57,7 +67,8 @@ class CommitteeInSession(models.Model):
 
     class Meta:
         unique_together = [
-            ('session', 'committee')
+            ('session', 'committee'),
+            ('session', 'acronym'),
         ]
 
     def __unicode__(self):
@@ -102,8 +113,7 @@ class CommitteeActivityInSession(models.Model):
             'sessnum': self.session.sessnum
         }
 
-
-class Meta:
+    class Meta:
         unique_together = [
             ('activity', 'session')
         ]

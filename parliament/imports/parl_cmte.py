@@ -27,12 +27,15 @@ def import_committee_list(session=None):
         #print namestring
         match = re.search(r'^(.+) \(([A-Z0-9]{3,5})\)$', namestring)
         (name, acronym) = match.groups()
-        committee, created = Committee.objects.get_or_create(name=name.strip(), parent=parent)
-        if created:
-            logger.warning(u"Creating committee: %s, %s" % (committee.name, committee.slug))
-        CommitteeInSession.objects.get_or_create(
-            committee=committee, session=session, acronym=acronym)
-        return committee
+        try:
+            return Committee.objects.get_by_acronym(acronym, session)
+        except Committee.DoesNotExist:
+            committee, created = Committee.objects.get_or_create(name=name.strip(), parent=parent)
+            if created:
+                logger.warning(u"Creating committee: %s, %s" % (committee.name, committee.slug))
+            CommitteeInSession.objects.get_or_create(
+                committee=committee, session=session, acronym=acronym)
+            return committee
     
     soup = BeautifulSoup(urllib2.urlopen(COMMITTEE_LIST_URL %
         (session.parliamentnum, session.sessnum)))
