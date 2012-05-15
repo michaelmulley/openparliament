@@ -1,3 +1,5 @@
+import datetime
+
 from django.http import HttpResponse, HttpResponsePermanentRedirect
 from django.shortcuts import get_object_or_404, render
 from django.template import loader, RequestContext
@@ -38,13 +40,19 @@ def committee(request, slug):
     newest_year = recent_meetings[0].date.year
     meeting_years = reversed(range(oldest_year, newest_year+1))
 
+    title = cmte.name
+    if not cmte.parent:
+        title += u' Committee'
+
     t = loader.get_template("committees/committee_detail.html")
     c = RequestContext(request, {
-        'title': cmte.name + u' Committee',
+        'title': title,
         'committee': cmte,
         'meetings': recent_meetings,
         'recent_studies': recent_studies,
-        'archive_years': meeting_years
+        'archive_years': meeting_years,
+        'subcommittees': Committee.objects.filter(parent=cmte, sessions=Session.objects.current()),
+        'include_year': newest_year != datetime.date.today().year
     })
     return HttpResponse(t.render(c))
 
