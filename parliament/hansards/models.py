@@ -43,7 +43,7 @@ class NoStatementManager(models.Manager):
 def url_from_docid(docid):
     return "http://www.parl.gc.ca/HousePublications/Publication.aspx?DocId=%s&Language=%s&Mode=1" % (
         docid, settings.LANGUAGE_CODE[0].upper()
-    )
+    ) if docid else None
 
 class Document(models.Model):
     

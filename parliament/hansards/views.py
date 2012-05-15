@@ -75,7 +75,7 @@ def document_view(request, document, meeting=None, slug=None):
         if document.document_type == Document.DEBATE:
             t = loader.get_template("hansards/hansard_detail.html")
         elif document.document_type == Document.EVIDENCE:
-            t = loader.get_template("committees/meeting.html")
+            t = loader.get_template("committees/meeting_evidence.html")
 
     ctx = {
         'document': document,

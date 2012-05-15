@@ -1,42 +1,22 @@
 {% extends "committees/base.html" %}
-{% load thumbnail compress %}
 {% block pagetitle %}{{ commitee.short_name }} Committee on {{ meeting.date|date:"N jS, Y" }}{% endblock %}
 {% block pageheading %}{{ committee.short_name }} Committee on {{ meeting.date|date:"N jS, Y" }}{% endblock %}
 {% block breadcrumbs %}<a href="{% url parliament.committees.views.committee_list %}">Committees</a> <a href="{{ committee.get_absolute_url }}">{{ committee.short_name }}</a> <a href="{% url committee_year_archive slug=committee.slug,year=meeting.date.year %}">{{ meeting.date.year }}</a> {{ meeting.date|date:"N j" }}{% endblock %}
-{% block headextra %}
-	{% compress js %}
-	<script type="text/javascript" src="{{ STATIC_URL }}js/pagination.js"></script>
-	{% endcompress %}
-{% if highlight_statement or highlight_statement == 0%}<link rel="canonical" href="{{ highlight_statement.get_absolute_url }}only/">{% endif %}
 
-{% endblock %}
 {% block content %}
-<div class="focus"><p>Evidence of meeting #{{ meeting.number }} for <a href="{{ committee.get_absolute_url }}">{{ committee.name }}</a> in the {{ meeting.session }}. (The <a href="{{ document.url }}">original version</a> is on Parliament&rsquo;s site{% if meeting.minutes_url %}, as are the <a href="{{ meeting.minutes_url }}">minutes</a>{% endif %}.) The <span class="tip tipunderline" title="Most frequently spoken word, excluding a fixed list of extra-boring words (like 'the', or 'government').">winning word</span> was {% if document.wordcloud %}<a href="{{ document.wordcloud.url }}" rel="lightbox">{{ document.get_wordoftheday }}</a>{% else %}<strong>{{ document.get_wordoftheday}}</strong>{% endif %}.</p></div>
-
-{% if meeting.activities_list %}
-<div class="clear"></div><div class="context"><h2>On the agenda</h2></div>
-<div class="focus"><ul class="tile">{% for activity in meeting.activities_list %}<li class="six twoline overflowtip"><a href="{{ activity.get_absolute_url }}">{{ activity }}</a></li>{% endfor %}</ul><div class="clear"></div></div>
-{% endif %}
-
-<div class="clear"></div>
-<div class="context"><h2>MPs speaking</h2></div>
 <div class="focus">
-	<ul class="tile">
-		{% for speaker_name, speaker_info in document.mp_speaker_summary.items %}<li class="four oneline overflowtip"><a href="{{ document.get_absolute_url }}{{ speaker_info.slug }}/" data-marginalia="{{ speaker_info.description }}">{{ speaker_name }}</a></li>{% endfor %}
-	</ul>
+	<p>This is meeting #{{ meeting.number }} for <a href="{{ committee.get_absolute_url }}">{{ committee.name }}</a> in the {{ meeting.session }}.</p>
+	<p>The transcript is not {% if not meeting.in_camera %}yet{% endif %} available{% if meeting.minutes_url %}, though the <a href="{{ meeting.minutes_url }}">minutes</a> are (on Parliament&rsquo;s site){% endif %}.
+	{% if meeting.in_camera %}That&rsquo;s because the meeting {% if meeting.future %}is scheduled to be{% else %}was{% endif %} held <em>in camera</em>&mdash;that is, the majority of the members chose to <strong>exclude the public</strong> from the meeting.
+	{% else %}{% if meeting.future %}That&rsquo;s because it <strong>hasn&rsquo;t happened yet</strong>. The meeting&rsquo;s scheduled for {{ meeting.start_time }} on {{ meeting.date|date:"N jS" }}. {% if meeting.notice_url %}You can read the <a href="{{ meeting.notice_url }}">meeting notice</a> on Parliament&rsquo;s site.{% endif %}
+		{% else %}It can take ten days for transcripts to be published.{% endif %}
+	{% endif %}
+	</p>
+	{% if meeting.webcast %}<p>A <a href="{{ meeting.webcast_url }}" target="_blank">recording</a> is available from Parliament.</p>{% endif %}
 </div><div class="clear"></div>
 
-<div class="context"><h2>Also speaking</h2></div>
-<div class="focus">
-	<ul class="tile">
-		{% for speaker_name, speaker_info in document.outside_speaker_summary.items %}<li class="six threeline overflowtip"><a href="{{ document.get_absolute_url }}{{ speaker_info.slug }}/">{{ speaker_name }}</a> &nbsp;{{ speaker_info.description }}</li>{% endfor %}
-	</ul>
-</div>
-
-<div id="paginated">
-
-{% include "hansards/statement_page.inc" %}
-
-</div>
+{% if meeting.activities_list %}
+	<div class="clear"></div><div class="context"><h2>On the agenda</h2></div>
+	<div class="focus"><ul class="tile">{% for activity in meeting.activities_list %}<li class="six twoline overflowtip"><a href="{{ activity.get_absolute_url }}">{{ activity }}</a></li>{% endfor %}</ul><div class="clear"></div></div>
+{% endif %}
 {% endblock %}
-{% block footer %}<p>View this document on a <a href="?singlepage=1">single page</a>.</p>{{ block.super }}{% endblock footer %}

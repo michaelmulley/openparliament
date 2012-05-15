@@ -1,5 +1,8 @@
+import datetime
 import random
 import string
+
+from django.conf import settings
 from django.db import models
 
 from parliament.core.models import Session
@@ -156,8 +159,29 @@ class CommitteeMeeting(models.Model):
 
     @property
     def minutes_url(self):
-        return url_from_docid(self.minutes) if self.minutes else ''
+        return url_from_docid(self.minutes)
 
+    @property
+    def notice_url(self):
+        return url_from_docid(self.notice)
+
+    @property
+    def webcast_url(self):
+        return 'http://www.parl.gc.ca/CommitteeBusiness/CommitteeMeetings.aspx?Cmte=%(acronym)s&Mode=1&ControlCallback=pvuWebcast&Parl=%(parliamentnum)d&Ses=%(sessnum)d&Organization=%(acronym)s&MeetingNumber=%(meeting_number)d&Language=%(language)s&NoJavaScript=true' % {
+            'acronym': self.committee.get_acronym(self.session),
+            'parliamentnum': self.session.parliamentnum,
+            'sessnum': self.session.sessnum,
+            'meeting_number': self.number,
+            'language': settings.LANGUAGE_CODE[0].upper()
+        } if self.webcast else None
+
+    @property
+    def datetime(self):
+        return datetime.datetime.combine(self.date, self.start_time)
+
+    @property
+    def future(self):
+        return self.datetime > datetime.datetime.now()
 
 class CommitteeReport(models.Model):
     

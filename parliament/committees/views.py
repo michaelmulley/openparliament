@@ -86,7 +86,10 @@ def committee_meeting(request, committee_slug, session_id, number, slug=None):
     if document:
         return document_view(request, document, meeting=meeting, slug=slug)
     else:
-        return HttpResponse("No evidence")
+        return render(request, "committees/meeting.html", {
+            'meeting': meeting,
+            'committee': meeting.committee
+        })
 
 
 
