@@ -17,9 +17,9 @@
 </div>
 <div class="clear"></div><div class="context"><h2>Result</h2></div>
 <div class="focus"><ul class="tile">
-<li class="four{% if vote.result == 'Y' %} winner{% endif %}"><span class="tag voteresult_Y">Yes</span> {{ vote.yea_total }}</li>
-<li class="four{% if vote.result == 'N' %} winner{% endif %}"><span class="tag voteresult_N">No</span> {{ vote.nay_total }}</li>
-<li class="four"><span class="tag voteresult_P tip" title="Paired means &quot;I would vote with my party. But instead I'll vote neither yea nor nay. It's part of a deal to balance out the missing vote of an absent member from an opposing party&mdash;the member I'm 'paired' with.&quot;"><span class="tipunderline">Paired</span></span> {{ vote.paired_total }}</li>
+<li class="four oneline{% if vote.result == 'Y' %} winner{% endif %}"><span class="tag voteresult_Y">Yes</span> {{ vote.yea_total }}</li>
+<li class="four oneline{% if vote.result == 'N' %} winner{% endif %}"><span class="tag voteresult_N">No</span> {{ vote.nay_total }}</li>
+<li class="four oneline">{% if vote.paired_total %}<span class="tag voteresult_P tip" title="Paired means &quot;I would vote with my party. But instead I'll vote neither yea nor nay. It's part of a deal to balance out the missing vote of an absent member from an opposing party&mdash;the member I'm 'paired' with.&quot;"><span class="tipunderline">Paired</span></span> {{ vote.paired_total }}{% endif %} </li>
 
 <li class="four">{% for party in parties_y %}<span class="tag partytag_{{ party.slug|lower }}">{{ party.short_name }}</span> {% endfor %}</li>
 <li class="four">{% for party in parties_n %}<span class="tag partytag_{{ party.slug|lower }}">{{ party.short_name }}</span> {% endfor %}</li>
