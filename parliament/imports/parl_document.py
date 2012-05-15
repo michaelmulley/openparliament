@@ -74,6 +74,10 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
         s.h2 = pstate.meta.get('h2', '')
         s.h3 = pstate.meta.get('h3', '')
 
+        if s.h3 and not s.h2:
+            s.h2 = s.h3
+            s.h3 = ''
+
         s.who = pstate.meta.get('person_attribution', '')
         s.who_hocid = int(pstate.meta['person_id']) if pstate.meta.get('person_id') else None
         s.who_context = pstate.meta.get('person_context', '')

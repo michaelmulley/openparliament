@@ -1,4 +1,5 @@
 import datetime
+import logging
 import re
 import time
 import urllib2
@@ -14,6 +15,8 @@ from parliament.committees.models import (Committee, CommitteeMeeting,
 from parliament.core.models import Session
 from parliament.hansards.models import Document
 
+logger = logging.getLogger(__name__)
+
 COMMITTEE_LIST_URL = 'http://www2.parl.gc.ca/CommitteeBusiness/CommitteeList.aspx?Language=E&Parl=%d&Ses=%d&Mode=2'
 @transaction.commit_on_success
 def import_committee_list(session=None):
@@ -25,6 +28,8 @@ def import_committee_list(session=None):
         match = re.search(r'^(.+) \(([A-Z0-9]{3,5})\)$', namestring)
         (name, acronym) = match.groups()
         committee, created = Committee.objects.get_or_create(name=name.strip(), parent=parent)
+        if created:
+            logger.warning(u"Creating committee: %s, %s" % (committee.name, committee.slug))
         CommitteeInSession.objects.get_or_create(
             committee=committee, session=session, acronym=acronym)
         return committee
