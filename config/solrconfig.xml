@@ -708,6 +708,7 @@
 		<str name="pf">
 			searchtext boosted^3
 		</str>
+		<str name="q.alt">*:*</str>
 		<str name="fl">id, django_ct, django_id, province, politician, politician_id, url, number, topic, date, party, session, committee</str>
 		<str name="bf">recip(ms(NOW/HOUR,date),3.16e-11,1,1)^1.5</str>
 		<str name="mm">75%</str>

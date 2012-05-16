@@ -9,17 +9,19 @@ class StatementIndex(SearchIndex):
     searchtext = indexes.CharField(stored=False, use_template=True)
     date = indexes.DateTimeField(model_attr='time')
     politician = indexes.CharField(use_template=True)
-    politician_id = indexes.IntegerField(model_attr='member__politician_id', null=True)
+    politician_id = indexes.CharField(model_attr='member__politician__identifier', null=True)
+    who_hocid = indexes.IntegerField(model_attr='who_hocid', null=True)
     party = indexes.CharField(model_attr='member__party__short_name', null=True)
     province = indexes.CharField(model_attr='member__riding__province', null=True)
     topic = indexes.CharField(model_attr='topic')
     url = indexes.CharField(model_attr='get_absolute_url', indexed=False)
     committee = indexes.CharField(model_attr='committee_name')
+    committee_slug = indexes.CharField(model_attr='committee_slug')
     
     def get_queryset(self):
-        return Statement.objects.all().select_related(
+        return Statement.objects.all().prefetch_related(
             'member__politician', 'member__party', 'member__riding', 'document',
             'document__committeemeeting__committee'
-        )
+        ).order_by('-date')
 
 site.register(Statement, StatementIndex)

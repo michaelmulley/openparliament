@@ -332,6 +332,10 @@ class Politician(Person):
         if self.slug:
             return 'parliament.politicians.views.politician', [], {'pol_slug': self.slug}
         return ('parliament.politicians.views.politician', [], {'pol_id': self.id})
+
+    @property
+    def identifier(self):
+        return self.slug if self.slug else self.id
         
     # temporary, hackish, for stupid api framework
     @property

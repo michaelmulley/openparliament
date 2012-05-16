@@ -540,7 +540,7 @@
 
 	<field name="province" type="string" indexed="true" stored="true" multiValued="false" />
 
-	<field name="politician" type="string" indexed="true" stored="true" multiValued="false" />
+	<field name="politician" type="string" indexed="false" stored="true" multiValued="false" />
 
 	<field name="url" type="string" indexed="false" stored="true" multiValued="false" />
 
@@ -550,7 +550,8 @@
 
 	<field name="boosted" type="text_en" indexed="true" stored="false" multiValued="false" />
 
-	<field name="politician_id" type="long" indexed="true" stored="true" multiValued="false" />
+	<field name="politician_id" type="string" indexed="true" stored="true" multiValued="false" />
+	<field name="who_hocid" type="long" indexed="true" stored="true" multiValued="false" />
 
 	<field name="number" type="string" indexed="false" stored="true" multiValued="false" />
 
@@ -562,7 +563,8 @@
 
 	<field name="party" type="string" indexed="true" stored="true" multiValued="false" />
 
-	<field name="committee" type="string" indexed="true" stored="true" multiValued="false" />
+	<field name="committee" type="string" indexed="false" stored="true" multiValued="false" />
+	<field name="committee_slug" type="string" indexed="true" stored="false" multiValued="false" />
 
 </fields>
 

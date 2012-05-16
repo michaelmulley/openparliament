@@ -455,6 +455,12 @@ class Statement(models.Model):
             return ''
         return self.document.committeemeeting.committee.short_name
 
+    @property
+    def committee_slug(self):
+        if self.document.document_type != Document.EVIDENCE:
+            return ''
+        return self.document.committeemeeting.committee.slug
+
 class OldSequenceMapping(models.Model):
     document = models.ForeignKey(Document)
     sequence = models.PositiveIntegerField()
