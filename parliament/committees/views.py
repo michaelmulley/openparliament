@@ -3,6 +3,7 @@ import datetime
 from django.http import HttpResponse, HttpResponsePermanentRedirect
 from django.shortcuts import get_object_or_404, render
 from django.template import loader, RequestContext
+from django.core.serializers.json import simplejson as json
 
 from parliament.committees.models import Committee, CommitteeMeeting, CommitteeActivity
 from parliament.core.models import Session
@@ -11,6 +12,12 @@ from parliament.hansards.views import document_view
 def committee_list(request):
     committees = Committee.objects.filter(sessions=Session.objects.current(),
         parent__isnull=True)
+
+    if request.GET.get('format') == 'json':
+        # This is a one-off hack, to later be replaced by nicer general-purpose JSON code
+        resp = HttpResponse(mimetype='application/json')
+        json.dump(list(committees.order_by('name').values('name', 'slug')), resp)
+        return resp
 
     recent_meetings = CommitteeMeeting.objects.order_by('-date')[:50]
     recent_studies = CommitteeActivity.objects.filter(

@@ -8,6 +8,8 @@
 {% compress css %}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/openparliament.css">
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/icons.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/visualsearch.css">
+
 {% endcompress %}
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 <script type="text/javascript">!window.jQuery && document.write(unescape('%3Cscript src="{{ STATIC_URL }}js/libs/jquery.min.js"%3E%3C/script%3E'))</script>
@@ -44,7 +46,7 @@
 		<li {% block navlinks_about %}{% endblock %}><a href="/about/">About</a></li>
 		<li {% block navlinks_labs %}{% endblock %}><a href="/labs/">Labs</a></li></ul>
     <div id="breadcrumbs">{% block breadcrumbs_all %}<a href="/">Home</a> {% block breadcrumbs %}{% endblock breadcrumbs %}{% endblock breadcrumbs_all %}</div>
-    <form action="{% url search %}" method="GET" id="nav_searchform"><div><input type="text" class="tip" title="By postal code, name, or keyword." id="nav_searchbox" name="q"><a id="nav_searchbutton"></a></div></form>
+    {% block navbar_search %}<form action="{% url search %}" method="GET" id="nav_searchform"><div><input type="text" class="tip" title="By postal code, name, or keyword." id="nav_searchbox" name="q"><a id="nav_searchbutton"></a></div></form>{% endblock navbar_search %}
     </div>
 <div id="content_wrap"><div id="content" class="{% block contentclass %}{% endblock %}">
 {% block pageheading_override %}<div class="focus pageheader"><h1>{% block pageheading %}{{ title }}{% endblock pageheading %}</h1></div>{% endblock pageheading_override %}

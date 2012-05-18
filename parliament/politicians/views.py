@@ -1,4 +1,5 @@
 import datetime
+import itertools
 import re
 
 from django.conf import settings
@@ -15,7 +16,8 @@ from parliament.activity import utils as activity
 from parliament.core.models import Politician, ElectedMember
 from parliament.core.utils import feed_wrapper
 from parliament.hansards.models import Statement, Document
-    
+from parliament.utils.views import JSONView
+
 def current_mps(request):
     t = loader.get_template('politicians/electedmember_list.html')
     c = RequestContext(request, {
@@ -112,6 +114,23 @@ def hide_activity(request):
     activity.active = False
     activity.save()
     return HttpResponse('OK')
+
+class PoliticianAutocompleteView(JSONView):
+
+    politician_list = Politician.objects.elected().values(
+        'name', 'name_family', 'slug', 'id').order_by('name_family')
+
+    def get(self, request):
+
+        q = request.GET.get('q', '').lower()
+
+        results = (
+            {'value': p['slug'] if p['slug'] else p['id'], 'label': p['name']}
+            for p in self.politician_list
+            if p['name'].lower().startswith(q) or p['name_family'].lower().startswith(q)
+        )
+        return list(itertools.islice(results, 15))
+politician_autocomplete = PoliticianAutocompleteView.as_view()
 
 class PoliticianStatementFeed(Feed):
     

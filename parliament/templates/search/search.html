@@ -1,28 +1,55 @@
 {% extends "base.html" %}
 {% load thumbnail compress %}
-{% block breadcrumbs %}{{ block.super }} <a href="{% url parliament.search.views.search %}">Search</a> {{ query }}{% endblock %}
+{% block breadcrumbs %}{{ block.super }}Search{% endblock %}
 {% block pagetitle %}Search: {{ query }}{% endblock %}
 {% block pageheading_override %}{% endblock %}
 {% block content %}
 <div class="focus">
-    <form method="get" action="."><div>
-        <input type="text" id="page_searchbox" name="q" value="{{ query }}"><input type="submit" class="button" id="searchbutton" value="Search">
-    </div></form>
-    {% if results.hits > 5 %}<p class="search_options">{% if 'date' in sort %}<a href="?q={{ query|urlencode }}">Sort by relevance</a>{% else %}Sorted by relevance{% endif %} | {% if 'date' in sort %}Sorted{% else %}Sort{% endif %} by date: {% if 'desc' in sort %}newest first{% else %}<a href="?q={{ query|urlencode }}&amp;sort=date+desc">newest first</a>{% endif %} / {% if 'asc' in sort %}oldest first{% else %}<a href="?q={{ query|urlencode }}&amp;sort=date+asc">oldest first</a>{% endif %}</p>{% endif %}
+	<noscript>
+		<form method="get" action="."><div>
+			<input type="text" id="page_searchbox" name="q" value="{{ query }}"><input type="submit" class="button" id="searchbutton" value="Search">
+		</div></form>
+	</noscript>
+	<div id="visual_search"></div>
+		<p class="search_options">Filter by <a data-add-facet="MP" href="#">MP</a>, <a data-add-facet="Party" href="#">party</a>, <a data-add-facet="Committee" href="#">committee</a>, <a data-add-facet="Province" href="#">province</a>, <a data-add-facet="Year" href="#">year</a>, or <a data-add-facet="Type" href="#">result type</a>.<br>{% if 'date' in sort %}<a href="?q={{ query|urlencode }}">Sort by relevance</a>{% else %}Sorted by relevance{% endif %} | {% if 'date' in sort %}Sorted{% else %}Sort{% endif %} by date: {% if 'desc' in sort %}newest first{% else %}<a href="?q={{ query|urlencode }}&amp;sort=date+desc">newest first</a>{% endif %} / {% if 'asc' in sort %}oldest first{% else %}<a href="?q={{ query|urlencode }}&amp;sort=date+asc">oldest first</a>{% endif %}</p>
     </div>
-        {% if not results.hits %}
-       {% if query %}<div class="focus">
-        <h3>No results found.</h3></div>{% endif %}
-        {% else %}
+    {% if not results.hits %}
+		<div id="paginated">
+       {% if query %}<div class="focus"><h3>No results found.</h3></div>{% endif %}
+		</div>
+	{% else %}
         <div id="paginated">
 {% include "search/search_results.inc" %}
         </div>
-        {% endif %}
+	{% endif %}
 {% endblock %}
 {% block headextra %}
 	{% compress js %}
 		<script type="text/javascript" src="{{ STATIC_URL }}js/pagination.js"></script>
 	{% endcompress %}
+	{% include "search/visualsearch-jsdeps.html.inc" %}
+	<script type="text/javascript">
+	$(function() {
+		var visualSearch = VS.init({
+			container: $('#visual_search'),
+			query: "{{ query|escapejs }}",
+			callbacks: {
+				facetMatches: OP.VSfacetMatches,
+				valueMatches: OP.VSvalueMatches,
+				search: function(query, searchCollection) {
+					$('#paginated').load('/search/?' + $.param({q: query}));
+					$('#paginated').find('.pagination').addClass('loading');
+				}
+			}
+		});
+		
+		$('a[data-add-facet]').click(function(e) {
+			e.preventDefault();
+			visualSearch.searchBox.addFacet($(this).attr('data-add-facet'));
+		});
+	});
+	</script>
 {% if results.hits %}<link rel="alternate" type="application/rss+xml" title="Watch new results for &quot;{{ query }}&quot;" href="{% url search_feed %}?q={{ query|urlencode }}">{% endif %}
 {% endblock headextra %}
 {% block bodyclass %}search{% endblock %}
+{% block navbar_search %}{# Suppress top-of-the-page search box #}{% endblock %}

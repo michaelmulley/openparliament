@@ -23,6 +23,15 @@ PER_PAGE = getattr(settings, 'SEARCH_RESULTS_PER_PAGE', 10)
 ALLOWABLE_OPTIONS = {
     'sort': ['score desc', 'date asc', 'date desc'],
 }
+ALLOWABLE_FILTERS = {
+    'Party': 'party',
+    'Province': 'province',
+    'Person': 'politician_id',
+    'MP': 'politician_id',
+    'Witness': 'who_hocid',
+    'Committee': 'committee_slug',
+    'Year': 'date'
+}
 solr = pysolr.Solr(settings.HAYSTACK_SOLR_URL)
 
 @vary_on_headers('X-Requested-With')
@@ -55,13 +64,42 @@ def search(request):
             'pagenum': pagenum,
             'rows': PER_PAGE
         }
+
+        # Extract filters from query
+        filters = []
+        def extract_filter(match):
+            filter_name = ALLOWABLE_FILTERS[match.group(1)]
+            filter_value = match.group(2)
+
+            if filter_name == 'date':
+                year = filter_value
+                filter_value = '[{0}-01-01T00:01:01.000Z TO {0}-12-31T23:59:59:00.000Z]'.format(year)
+
+            filters.append(u'%s:%s' % (filter_name, filter_value))
+            return ''
+        bare_query = re.sub(r'(%s): "([^"]+)"' % '|'.join(ALLOWABLE_FILTERS),
+            extract_filter, query)
+        bare_query = re.sub(r'\s\s+', ' ', bare_query).strip()
+        if filters and not bare_query:
+            bare_query = '*:*'
+
+        if filters:
+            searchparams['fq'] = filters
+
+        # facet options
+        # searchparams.update({
+        #   'facet.range': 'date',
+        #   'facet': 'true',
+        #   'facet.range.start': '1994-01-01T00:00:00.000Z',
+        #   'facet.range.end': 'NOW',
+        #   'facet.range.gap': '+1YEAR',
         
         for opt in ALLOWABLE_OPTIONS:
             if opt in request.GET and request.GET[opt] in ALLOWABLE_OPTIONS[opt]:
                 searchparams[opt] = request.GET[opt] 
                 ctx[opt] = request.GET[opt]
         
-        results = autohighlight(solr.search(query, **searchparams))
+        results = autohighlight(solr.search(bare_query, **searchparams))
         ctx['results'] = results
         ctx['page'] = SearchPaginator(results, pagenum, PER_PAGE, request.GET)
     else:

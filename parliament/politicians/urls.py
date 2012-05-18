@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import *
 from parliament.politicians.views import PoliticianActivityFeed
 
 urlpatterns = patterns('parliament.politicians.views',
@@ -6,6 +6,7 @@ urlpatterns = patterns('parliament.politicians.views',
     url(r'^(?P<pol_id>\d+)/rss/activity/$', PoliticianActivityFeed(), name="politician_activity_feed"),
     (r'^$', 'current_mps'),
     (r'^former/$', 'former_mps'),
+    (r'^autocomplete/$', 'politician_autocomplete'),
     (r'^(?P<pol_slug>[a-z-]+)/$', 'politician'),
     (r'^(?P<pol_id>\d+)/$', 'politician'),
     (r'^(?P<pol_slug>[a-z-]+)/contact/$', 'contact'),
