@@ -8,10 +8,12 @@
 	{% include "committees/meeting_list.html.inc" %}
 </div><div class="clear"></div>
 
+{% if studies %}
 <div class="context"><h2>Studies</h2></div>
 <div class="focus">
 	<ul class="tile">
 		{% for study in studies %}<li class="six twoline overflowtip"><a href="{{ study.get_absolute_url }}">{{ study }}</a></li>{% endfor %}
 	</ul>
 </div><div class="clear"></div>
+{% endif %}
 {% endblock %}
