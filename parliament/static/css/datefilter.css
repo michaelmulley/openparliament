@@ -1,0 +1,12 @@
+.searchdatefilter .label-min {
+    float: left;
+}
+.searchdatefilter .label-max {
+    float: right;
+}
+.searchdatefilter .slider {
+    clear: both;
+}
+.searchdatefilter .tools_wrap {
+    height: 30px;
+}

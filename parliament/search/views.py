@@ -19,10 +19,11 @@ from parliament.core.views import closed, flatpage_response
 from parliament.hansards.models import Statement
 from parliament.search.utils import autohighlight, SearchPaginator
 
-PER_PAGE = getattr(settings, 'SEARCH_RESULTS_PER_PAGE', 10)
+PER_PAGE = getattr(settings, 'SEARCH_RESULTS_PER_PAGE', 15)
 ALLOWABLE_OPTIONS = {
     'sort': ['score desc', 'date asc', 'date desc'],
 }
+
 ALLOWABLE_FILTERS = {
     'Party': 'party',
     'Province': 'province',
@@ -30,7 +31,7 @@ ALLOWABLE_FILTERS = {
     'MP': 'politician_id',
     'Witness': 'who_hocid',
     'Committee': 'committee_slug',
-    'Year': 'date'
+    'Date': 'date'
 }
 solr = pysolr.Solr(settings.HAYSTACK_SOLR_URL)
 
@@ -57,12 +58,12 @@ def search(request):
         startfrom = (pagenum - 1) * PER_PAGE
         
         searchparams = {
-            'start' : startfrom
+            'start' : startfrom,
+            'rows': PER_PAGE
         }
         ctx = {
             'query': query,
             'pagenum': pagenum,
-            'rows': PER_PAGE
         }
 
         # Extract filters from query
@@ -72,8 +73,16 @@ def search(request):
             filter_value = match.group(2)
 
             if filter_name == 'date':
-                year = filter_value
-                filter_value = '[{0}-01-01T00:01:01.000Z TO {0}-12-31T23:59:59:00.000Z]'.format(year)
+                match = re.search(r'^(\d{4})-(\d\d?) to (\d{4})-(\d\d?)', filter_value)
+                print match
+                if not match:
+                    return ''
+                (fromyear, frommonth, toyear, tomonth) = [int(x) for x in match.groups()]
+                tomonth += 1
+                if tomonth == 13:
+                    tomonth = 1
+                    toyear += 1
+                filter_value = '[{0:02}-{1:02}-01T00:01:01.000Z TO {2:02}-{3:02}-01T00:01:01.000Z]'.format(fromyear, frommonth, toyear, tomonth)
 
             filters.append(u'%s:%s' % (filter_name, filter_value))
             return ''
@@ -86,20 +95,38 @@ def search(request):
         if filters:
             searchparams['fq'] = filters
 
-        # facet options
-        # searchparams.update({
-        #   'facet.range': 'date',
-        #   'facet': 'true',
-        #   'facet.range.start': '1994-01-01T00:00:00.000Z',
-        #   'facet.range.end': 'NOW',
-        #   'facet.range.gap': '+1YEAR',
-        
+        searchparams.update({
+           'facet.range': 'date',
+           'facet': 'true',
+           'facet.range.start': '1994-01-01T00:00:00.000Z',
+           'facet.range.end': 'NOW',
+           'facet.range.gap': '+1YEAR',
+       })
+
         for opt in ALLOWABLE_OPTIONS:
             if opt in request.GET and request.GET[opt] in ALLOWABLE_OPTIONS[opt]:
                 searchparams[opt] = request.GET[opt] 
                 ctx[opt] = request.GET[opt]
+
+        committees_only = bool([f for f in filters if f.startswith('committee_slug')])
         
         results = autohighlight(solr.search(bare_query, **searchparams))
+
+        facet_results = results.facets['facet_ranges']['date']['counts']
+        date_counts = [
+            (int(facet_results[i][:4]), facet_results[i+1])
+            for i in range(0, len(facet_results), 2)
+        ]
+
+        if committees_only:
+            # If we're searching only committees, we by definition won't have
+            # results before 1994, so let's take them off of the graph.
+            date_counts = filter(lambda c: c[0] >= 2006, date_counts)
+
+        ctx['chart_years'] = [c[0] for c in date_counts]
+        ctx['chart_values'] = [c[1] for c in date_counts]
+        ctx['chart'] = 'http://chart.apis.google.com/chart?chs=770x85&cht=ls&chd=t:%s&chm=B,e6f2fa,0,0,0&chds=a' % ','.join(
+            str(c[1]) for c in date_counts)
         ctx['results'] = results
         ctx['page'] = SearchPaginator(results, pagenum, PER_PAGE, request.GET)
     else:

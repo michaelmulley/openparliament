@@ -167,7 +167,7 @@ div.headshot span{display: block;position: relative;font-size: 10px;color: #8888
 .result.statement{border:none;padding-top:5px;}
 #page_searchbox{width:400px;font-size:15px;padding:4px;}
 #searchbutton{margin-left:12px;}
-.search_options{font-weight: bold; margin-top: 5px;}
+p.search_options{margin: 5px 0; width: 770px; max-width: 770px; text-align: center;}
 
 /* HOME */
 #home_searchbox{width:400px;font-size:15px;padding:4px;color: #555555;}

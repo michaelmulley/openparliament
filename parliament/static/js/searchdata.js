@@ -4,7 +4,7 @@
 
     OP.VSfacetMatches = function(callback) {
         callback([
-            'MP', 'Person', 'Party', 'Committee', 'Year', 'Province', 'Type'
+            'MP', 'Person', 'Party', 'Committee', 'Province', 'Type'
         ]);
     };
 
@@ -64,7 +64,8 @@
                 break;
             case 'Type':
                 callback([
-                    'Speech',
+                    'Speech (House debate)',
+                    'Speech (Committee meeting)',
                     'Bill'
                 ]);
                 break;

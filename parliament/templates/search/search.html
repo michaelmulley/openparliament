@@ -4,14 +4,14 @@
 {% block pagetitle %}Search: {{ query }}{% endblock %}
 {% block pageheading_override %}{% endblock %}
 {% block content %}
-<div class="focus">
+<div class="focus" id="main_search_controls">
 	<noscript>
 		<form method="get" action="."><div>
 			<input type="text" id="page_searchbox" name="q" value="{{ query }}"><input type="submit" class="button" id="searchbutton" value="Search">
 		</div></form>
 	</noscript>
 	<div id="visual_search"></div>
-		<p class="search_options">Filter by <a data-add-facet="MP" href="#">MP</a>, <a data-add-facet="Party" href="#">party</a>, <a data-add-facet="Committee" href="#">committee</a>, <a data-add-facet="Province" href="#">province</a>, <a data-add-facet="Year" href="#">year</a>, or <a data-add-facet="Type" href="#">result type</a>.<br>{% if 'date' in sort %}<a href="?q={{ query|urlencode }}">Sort by relevance</a>{% else %}Sorted by relevance{% endif %} | {% if 'date' in sort %}Sorted{% else %}Sort{% endif %} by date: {% if 'desc' in sort %}newest first{% else %}<a href="?q={{ query|urlencode }}&amp;sort=date+desc">newest first</a>{% endif %} / {% if 'asc' in sort %}oldest first{% else %}<a href="?q={{ query|urlencode }}&amp;sort=date+asc">oldest first</a>{% endif %}</p>
+	<p class="search_options">Refine by <a data-add-facet="MP" href="#">MP</a>, <a data-add-facet="Party" href="#">party</a>, <a data-add-facet="Committee" href="#">committee</a>, <a data-add-facet="Province" href="#">province</a>, or <a data-add-facet="Type" href="#">result type</a>.</p>
     </div>
     {% if not results.hits %}
 		<div id="paginated">
@@ -27,29 +27,71 @@
 	{% compress js %}
 		<script type="text/javascript" src="{{ STATIC_URL }}js/pagination.js"></script>
 	{% endcompress %}
+
+	{% compress css %}
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/visualsearch.css">
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery-ui-aristo.css">
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/datefilter.css">
+
+	{% endcompress %}
 	{% include "search/visualsearch-jsdeps.html.inc" %}
 	<script type="text/javascript">
 	$(function() {
+		var triggerSearch = function(query) {
+			$('#paginated').load('/search/?' + $.param({q: query}));
+			$('#paginated').find('.pagination').addClass('loading');
+		};
 		var visualSearch = VS.init({
 			container: $('#visual_search'),
 			query: "{{ query|escapejs }}",
 			callbacks: {
 				facetMatches: OP.VSfacetMatches,
 				valueMatches: OP.VSvalueMatches,
-				search: function(query, searchCollection) {
-					$('#paginated').load('/search/?' + $.param({q: query}));
-					$('#paginated').find('.pagination').addClass('loading');
-				}
+				search: triggerSearch
 			}
 		});
-		
+
 		$('a[data-add-facet]').click(function(e) {
 			e.preventDefault();
 			visualSearch.searchBox.addFacet($(this).attr('data-add-facet'));
 		});
+
+		var dateFilter = new OP.SearchDateFilter();
+		$('#main_search_controls').append(dateFilter.$el);
+		dateFilter.bind('sliderChange', function(sliderValues, fullRange) {
+			var textVal = sliderValues[0].toString() + '-01 to ' + sliderValues[1].toString() + '-12';
+			var dateFacet = visualSearch.searchQuery.detect(function (f) {
+				return f.get('category') === 'Date';
+			});
+			if (fullRange) {
+				if (dateFacet) {
+					visualSearch.searchQuery.remove(dateFacet);
+					visualSearch.searchBox.renderFacets();
+				}
+			}
+			else {
+				if (dateFacet) {
+					dateFacet.set('value', textVal);
+				}
+				else {
+					visualSearch.searchBox.addFacet('Date', textVal);
+				}
+			}
+		});
+		dateFilter.bind('sliderChangeCompleted', function() {
+			triggerSearch(visualSearch.searchQuery.serialize());
+		});
+
+		$(document).bind('op_search_results_loaded', function() {
+			var $searchHeader = $('.search_header');
+			if (!$searchHeader.length) { dateFilter.setValues([0], [0]);}
+			var chart_years = _.map($searchHeader.attr('data-years').split(','), function(y) { return parseInt(y, 10)});
+			var chart_values = _.map($searchHeader.attr('data-values').split(','), function(y) { return parseInt(y, 10)});
+			dateFilter.setValues(chart_years, chart_values);
+		});
+
 	});
 	</script>
-{% if results.hits %}<link rel="alternate" type="application/rss+xml" title="Watch new results for &quot;{{ query }}&quot;" href="{% url search_feed %}?q={{ query|urlencode }}">{% endif %}
 {% endblock headextra %}
 {% block bodyclass %}search{% endblock %}
 {% block navbar_search %}{# Suppress top-of-the-page search box #}{% endblock %}
