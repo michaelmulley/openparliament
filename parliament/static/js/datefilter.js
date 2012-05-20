@@ -2,6 +2,10 @@
     var dateFilterTemplate = _.template(
         '<div class="searchdatefilter" style="display:none">' +
             '<div class="chart" style="width: <%= width %>px; height: <%= chartHeight %>px;">' +
+                '<div class="hover-label" style="display:none; height: <%= chartHeight %>px;">' +
+                    '<div class="highlight"></div>' +
+                    '<div class="label"><span class="date"></span><br><span class="value"></span><br><span class="note"></span></div>' +
+                '</div>' +
             '</div>' +
             '<div class="tools_wrap"><div class="tools" style="display:none">' +
                 '<div class="label-min"></div><div class="label-max"></div>' +
@@ -20,7 +24,16 @@
         });
         _.extend(this, opts);
 
+        var self = this;
+
         this.$el = $(dateFilterTemplate(this));
+
+        var $chart = this.$el.find('.chart');
+        $chart.mousemove(function(e) {
+            self.updateChartLabel(e.pageX - $chart.offset().left);
+        }).mouseleave(function(e) {
+            self.$el.find('.hover-label').hide();
+        });
 
         var $tools = this.$el.find('.tools');
         this.$el.hover(
@@ -60,6 +73,11 @@
             }
             xvals.push(this.width);
 
+            var segmentInterval = Math.round((this.width / (this.values.length - 1)) / 2);
+            this.xSegments = _.map(xvals, function(v) { return v - segmentInterval; });
+            this.xSegments[0] = 0
+            this.xSegments.push(xvals[xvals.length-1]);
+
             this.$el.show();
 
             this.$el.find('.label-min').text(this.dates[0].toString());
@@ -71,7 +89,7 @@
                 var canvas = document.createElement('canvas');
                 canvas.width = this.width;
                 canvas.height = this.chartHeight;
-                this.$el.find('.chart').append(canvas);
+                this.$el.find('.chart').prepend(canvas);
                 if (window.G_vmlCanvasManager) {
                     // Initialize IE 7-8 canvas shim
                     window.G_vmlCanvasManager.initElement(canvas);
@@ -98,6 +116,36 @@
             ctx.fill();
             ctx.closePath();
 
+        },
+
+        updateChartLabel: function(xCoord) {
+            if (!this.xSegments) { return; }
+            for (var i = this.xSegments.length - 2; i >= 0; i--) {
+                if (xCoord >= this.xSegments[i]) {
+                    break;
+                }
+            }
+
+            var segmentRange = [this.xSegments[i], this.xSegments[i+1]];
+            var date = this.dates[i];
+            var dateCount = this.values[i];
+            var dateCountLabel
+            if (dateCount === 1) {
+                dateCountLabel = 'One result';
+            }
+            else if (dateCount === 0) {
+                dateCountLabel = 'No results';
+            }
+            else {
+                dateCountLabel = dateCount + ' results'
+            }
+
+            this.$el.find('.hover-label .label .date').text(date);
+            this.$el.find('.hover-label .label .value').text(dateCountLabel);
+            this.$el.find('.hover-label').css({
+                left: segmentRange[0],
+                width: segmentRange[1] - segmentRange[0]
+            }).show();
         },
 
         setSlider: function() {

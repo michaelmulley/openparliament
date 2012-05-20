@@ -10,3 +10,36 @@
 .searchdatefilter .tools_wrap {
     height: 30px;
 }
+
+.searchdatefilter .chart {
+    position: relative;
+}
+.searchdatefilter .hover-label {
+    position: absolute;
+    top: 0;
+}
+.searchdatefilter .hover-label .highlight {
+    background-color: #888888;
+    width: 100%;
+    height: 100%;
+    -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
+    filter: alpha(opacity=20);
+    opacity: 0.2;
+}
+
+.searchdatefilter .hover-label .label {
+    width: 150px;
+    position: absolute;
+    top: 20px;
+    left: -155px;
+    text-align: right;
+    font-style: italic;
+    color: #777777;
+    font-size: 80%;
+}
+
+.searchdatefilter .hover-label .label span {
+    background-color: white;
+    background-color: rgba(255,255,255,0.6);
+
+}
