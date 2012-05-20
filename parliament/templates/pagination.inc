@@ -4,7 +4,11 @@
         {% endif %}
 
         <span>
-            Page {{ page.number }} of {{ page.paginator.num_pages }}
+            {% if pagination_show_result_counts %}
+				Results {{ page.start_index }}&#8211;{{ page.end_index }} of {{ page.hits }}
+			{% else %}
+				Page {{ page.number }} of {{ page.paginator.num_pages }}
+			{% endif %}
         </span>
 
         {% if page.has_next %}
