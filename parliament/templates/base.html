@@ -10,10 +10,13 @@
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/icons.css">
 {% endcompress %}
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-<script type="text/javascript">!window.jQuery && document.write(unescape('%3Cscript src="{{ STATIC_URL }}js/jquery.min.js"%3E%3C/script%3E'))</script>
+<script type="text/javascript">!window.jQuery && document.write(unescape('%3Cscript src="{{ STATIC_URL }}js/libs/jquery.min.js"%3E%3C/script%3E'))</script>
 
 {% compress js %}
-<script type="text/javascript" src="{{ STATIC_URL }}js/openparliament.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.bbq.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.slimbox.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.tooltip.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/core.js"></script>
 {% endcompress %}
 {% block headextra %}{% endblock %}
 <script type="text/javascript">
