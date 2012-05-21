@@ -1,4 +1,6 @@
 (function() {
+    var APmonths = ['Jan.', 'Feb.', 'March', 'April', 'May', 'June', 'July', 'Aug.', 'Sept.', 'Oct.', 'Nov.', 'Dec.'];
+
     var dateFilterTemplate = _.template(
         '<div class="searchdatefilter" style="display:none">' +
             '<div class="chart" style="width: <%= width %>px; height: <%= chartHeight %>px;">' +
@@ -20,7 +22,15 @@
             chartHeight: 85,
             strokeStyle: '#ff9900',
             fillStyle: '#e6f2fa',
-            lineWidth: 3.5
+            lineWidth: 3.5,
+            valueToDate: function(v) {
+                return Math.floor(v/12) + '-' + (v % 12 < 9 ? '0' : '') + ((v % 12) + 1);
+            },
+            valueToLabel: function(v) {
+                return APmonths[v % 12] + ' ' + Math.floor(v/12);
+            },
+            currentYear: new Date().getFullYear(),
+            currentMonth: new Date().getMonth()
         });
         _.extend(this, opts);
 
@@ -33,6 +43,11 @@
             self.updateChartLabel(e.pageX - $chart.offset().left);
         }).mouseleave(function(e) {
             self.$el.find('.hover-label').hide();
+        });
+
+        this.$el.find('.hover-label .highlight').click(function(e) {
+            var year = parseInt(self.$el.find('.hover-label .date').text(), 10);
+            self.setSliderValues([year * 12, (year * 12) + 11], true);
         });
 
         var $tools = this.$el.find('.tools');
@@ -71,17 +86,23 @@
             var yvals = _.map(this.values, function(v) {
                 return self.chartHeight - Math.round((v - ymin) * scaler);
             });
-            var xvals = [];
-            var i;
-            for (i = 0; i < (this.values.length - 1); i++) {
-                xvals.push(Math.floor(i * (this.width / (this.values.length - 1))));
+
+            this.xSegments = [0];
+            for (i = 1; i < (this.values.length); i++) {
+                this.xSegments.push(this.xSegments[i-1] + 12);
+            }
+            this.xSegments.push(this.xSegments[this.xSegments.length-1] + this.currentMonth + 1);
+            var xScaler = this.width / this.xSegments[this.xSegments.length-1];
+            this.xSegments = _.map(this.xSegments, function(x) {
+                return Math.round(x * xScaler)
+            });
+
+            xvals = [0];
+            for (i = 1; i < (this.values.length - 1); i++) {
+                xvals.push(this.xSegments[i] +
+                    Math.round((this.xSegments[i+1] - this.xSegments[i]) / 2));
             }
             xvals.push(this.width);
-
-            var segmentInterval = Math.round((this.width / (this.values.length - 1)) / 2);
-            this.xSegments = _.map(xvals, function(v) { return v - segmentInterval; });
-            this.xSegments[0] = 0
-            this.xSegments.push(xvals[xvals.length-1]);
 
             this.$el.show();
 
@@ -157,9 +178,11 @@
         setSlider: function() {
             var $slider = this.$el.find('.slider');
 
+            var maxPossDate = (this.currentYear * 12) + this.currentMonth;
+
             var opts = {
-                min: this.dates[0],
-                max: this.dates[this.dates.length-1],
+                min: this.dates[0] * 12,
+                max: _.min([(this.dates[this.dates.length-1] * 12) + 11, maxPossDate]),
                 range: true
             };
             opts.values = [opts.min, opts.max];
@@ -173,7 +196,7 @@
                         self.sliderValues = sv.slice(0);
                         var fullRange = (sv[0] === opts.min && sv[1] === opts.max);
                         self.updateSliderLabels(sv);
-                        self.trigger('sliderChange', sv, fullRange)
+                        self.trigger('sliderChange', _.map(sv, self.valueToDate), fullRange)
                     }
                 };
                 opts.start = function (e, ui) {
@@ -183,7 +206,7 @@
                     if (!self.slideStartValues
                             || ui.values[0] !== self.slideStartValues[0]
                             || ui.values[1] !== self.slideStartValues[0]) {
-                        self.trigger('sliderChangeCompleted', ui.values);
+                        self.trigger('sliderChangeCompleted', _.map(ui.values, self.valueToDate));
                     }
                     self.updateSliderLabels(ui.values);
                 };
@@ -213,22 +236,42 @@
             var $right = this.$el.find('.tools .label.right');
 
             $left.position({
-                my: "left top",
+                my: "right top",
                 at: "center bottom",
                 of: this.$el.find('.ui-slider-handle')[0]
-            }).find('span').text(values[0]);
+            }).find('span').text(this.valueToLabel(values[0]));
 
             if (values[0] === values[1]) {
                 $right.hide();
             }
             else {
                 $right.position({
-                    my: "right top",
+                    my: "left top",
                     at: "center bottom",
                     of: this.$el.find('.ui-slider-handle')[1]
-                }).show().find('span').text(values[1]);
+                }).show().find('span').text(this.valueToLabel(values[1]));
             }
 
+        },
+
+        setSliderValues: function(values, triggerEvent) {
+            if (!this.sliderInit) { return; }
+            var $slider = this.$el.find('.slider');
+            var limits = [$slider.slider('option', 'min'), $slider.slider('option', 'max')];
+            if (values) {
+                values = [_.max([values[0], limits[0]]), _.min([values[1], limits[1]])];
+            }
+            else {
+                values = limits;
+            }
+            $slider.slider('option', {values: values});
+            this.sliderValues = values;
+            this.updateSliderLabels(values);
+            if (triggerEvent) {
+                var formatted = _.map(values, this.valueToDate);
+                this.trigger('sliderChange', formatted);
+                this.trigger('sliderChangeCompleted', formatted);
+            }
         }
 
     });

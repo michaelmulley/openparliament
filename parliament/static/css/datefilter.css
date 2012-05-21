@@ -20,6 +20,7 @@
     font-size: 85%;
     font-style: italic;
     color: #222222;
+    white-space: nowrap;
 }
 
 .searchdatefilter .chart {
@@ -36,6 +37,7 @@
     -ms-filter:"progid:DXImageTransform.Microsoft.Alpha(Opacity=20)";
     filter: alpha(opacity=20);
     opacity: 0.2;
+    cursor: pointer;
 }
 
 .searchdatefilter .hover-label .label {

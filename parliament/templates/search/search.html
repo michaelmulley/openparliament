@@ -37,8 +37,7 @@
 	<script type="text/javascript">
 	$(function() {
 		var triggerSearch = function(query) {
-			$('#paginated').load('/search/?' + $.param({q: query}));
-			$('#paginated').find('.pagination').addClass('loading');
+			History.pushState(null, null, '/search/?' + $.param({q: query}));
 		};
 		var visualSearch = VS.init({
 			container: $('#visual_search'),
@@ -57,8 +56,8 @@
 
 		var dateFilter = new OP.SearchDateFilter();
 		$('#main_search_controls').append(dateFilter.$el);
-		dateFilter.bind('sliderChange', function(sliderValues, fullRange) {
-			var textVal = sliderValues[0].toString() + '-01 to ' + sliderValues[1].toString() + '-12';
+		dateFilter.bind('sliderChange', function(values, fullRange) {
+			var textVal = values[0] + ' to ' + values[1];
 			var dateFacet = visualSearch.searchQuery.detect(function (f) {
 				return f.get('category') === 'Date';
 			});
@@ -83,10 +82,33 @@
 
 		$(document).bind('op_search_results_loaded', function() {
 			var $searchHeader = $('.search_header');
-			if (!$searchHeader.length) { dateFilter.setValues([0], [0]);}
+			if (!$searchHeader.length) { return dateFilter.setValues([0], [0]);}
 			var chart_years = _.map($searchHeader.attr('data-years').split(','), function(y) { return parseInt(y, 10)});
 			var chart_values = _.map($searchHeader.attr('data-values').split(','), function(y) { return parseInt(y, 10)});
 			dateFilter.setValues(chart_years, chart_values);
+
+			var dateFacet = visualSearch.searchQuery.detect(function (f) {
+				return f.get('category') === 'Date';
+			});
+			if (dateFacet) {
+				var sliderValues = _.map(dateFacet.get('value').split(' to '), function(d) {
+					d = d.split('-');
+					return parseInt(d[0], 10) * 12 + parseInt(d[1], 10) - 1;
+				});
+				dateFilter.setSliderValues(sliderValues);
+			}
+			else {
+				dateFilter.setSliderValues();
+			}
+		});
+
+		$(window).bind('statechange', function() {
+			var url = History.getState().url;
+			var query = OP.utils.getQueryParam('q', url);
+			if (query && url.indexOf('/search/?') !== -1) {
+				visualSearch.searchBox.value(query);
+			}
+
 		});
 
 	});
