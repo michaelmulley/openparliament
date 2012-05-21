@@ -1,7 +1,7 @@
 {% if page %}
 	<div class="focus">
-	<div class="search_header" data-years="{{ chart_years|join:"," }}" data-values="{{ chart_values|join:"," }}">
-		{% if page.paginator.count > 5 %}<div class="sort_options" style="float: right">{% if 'date' in sort %}<a href="?q={{ query|urlencode }}">Sort by relevance</a>{% else %}Sorted by relevance{% endif %} | {% if 'date' in sort %}Sorted{% else %}Sort{% endif %} by date: {% if 'desc' in sort %}newest first{% else %}<a href="?q={{ query|urlencode }}&amp;sort=date+desc">newest first</a>{% endif %} / {% if 'asc' in sort %}oldest first{% else %}<a href="?q={{ query|urlencode }}&amp;sort=date+asc">oldest first</a>{% endif %}</div>{% endif %}
+	<div class="search_header" data-years="{{ chart_years|join:"," }}" data-values="{{ chart_values|join:"," }}" data-sort="{{ sort }}">
+		{% if page.paginator.count > 5 %}<div class="sort_options" style="float: right">{% if 'date' in sort %}<a href="?q={{ query|urlencode }}" data-sort="">Sort by relevance</a>{% else %}Sorted by relevance{% endif %} | {% if 'date' in sort %}Sorted{% else %}Sort{% endif %} by date: {% if 'desc' in sort %}newest first{% else %}<a href="?q={{ query|urlencode }}&amp;sort=date+desc" data-sort="date desc">newest first</a>{% endif %} / {% if 'asc' in sort %}oldest first{% else %}<a href="?q={{ query|urlencode }}&amp;sort=date+asc" data-sort="date asc">oldest first</a>{% endif %}</div>{% endif %}
 		<div class="result_summary" style="float: left">{% if page.paginator.count == 0%}<h2>No results found</h2>{% elif page.paginator.count == 1 %}The lone result{% else %}Results <strong>{{ page.start_index }}</strong>-<strong>{{ page.end_index }}</strong> of <strong>{{ page.paginator.count }}</strong>{% endif %}</div>
 	</div>
 	</div>
