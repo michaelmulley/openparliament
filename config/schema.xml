@@ -535,7 +535,7 @@
 
 	<field name="id" type="string" indexed="true" stored="true" required="true" />
 
-	<field name="django_ct" type="string" indexed="false"  stored="true"  multiValued="false" />
+	<field name="django_ct" type="string" indexed="true"  stored="true"  multiValued="false" />
 	<field name="django_id" type="string" indexed="false"  stored="true"  multiValued="false" />
 
 	<field name="province" type="string" indexed="true" stored="true" multiValued="false" />
