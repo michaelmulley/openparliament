@@ -24,7 +24,7 @@
 {% if pm.grouper %}<div class="focus"><p>Private members' bills are introduced by MPs who are not cabinet ministers&mdash;opposition members, or sometimes government backbenchers. They rarely become law.</p></div>{% endif %}
 <div class="clear"></div><div class="context"><h2>{% if pm.grouper %}Private members' bills{% else %}Government bills{% endif %}</h2></div><div class="focus">
     <ul class="tile">
-    {% for bill in pm.list %}<li class="twoline six overflowtip"><a href="{% url parliament.bills.views.bill session_id=session.id bill_number=bill.number %}">{{ bill.number }}</a> {% if bill.law %}<span class="tag bill_law">Law</span> {% endif %}{{ bill.name|strip_act }}</li>{% endfor %}
+    {% for bill in pm.list %}{% if bill.number_only != 1 %}<li class="twoline six overflowtip"><a href="{% url parliament.bills.views.bill session_id=session.id bill_number=bill.number %}">{{ bill.number }}</a> {% if bill.law %}<span class="tag bill_law">Law</span> {% endif %}{{ bill.name|strip_act }}</li>{% endif %}{% endfor %}
     </ul><div class="clear"></div>
 </div>
 {% endfor %}
