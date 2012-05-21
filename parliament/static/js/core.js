@@ -1,6 +1,8 @@
 OP = {};
 
-function rot13 (t){
+OP.utils = {
+
+    rot13: function (t){
         return t.replace(/[a-z0-9]/ig, function(chr) {
             var cc = chr.charCodeAt(0);
             if (cc >= 65 && cc <= 90) cc = 65 + ((cc - 52) % 26);
@@ -8,19 +10,37 @@ function rot13 (t){
             else if (cc >= 48 && cc <= 57) cc = 48 + ((cc - 43) % 10);
             return String.fromCharCode(cc);
         });
-}
-function openparlShareWindow(url) {
-    var width = 550;
-    var height = 450;
-    var left = Math.round((screen.width / 2) - (width / 2));
-    var top = 0;
-    if (screen.height > height) {
-        top = Math.round((screen.height / 2) - (height / 2));
+    },
+
+    openShareWindow: function(url) {
+        var width = 550;
+        var height = 450;
+        var left = Math.round((screen.width / 2) - (width / 2));
+        var top = 0;
+        if (screen.height > height) {
+            top = Math.round((screen.height / 2) - (height / 2));
+        }
+        window.open(url, "openparliament_share", "width=" + width +
+            ",height=" + height + ",left=" + left, ",top=" + top +
+            "personalbar=no,toolbar=no,scrollbars=yes,location=yes,resizable=yes");
+    },
+
+    getQueryParam: function(name, qs) {
+
+        if (!qs) {
+            qs = window.location.search;
+        }
+        else {
+            qs = '?' + qs.split('?')[1];
+        }
+
+        var match = RegExp('[?&]' + name + '=([^&]*)')
+            .exec(qs);
+
+        return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+
     }
-    window.open(url, "openparliament_share", "width=" + width +
-       ",height=" + height + ",left=" + left, ",top=" + top +
-       "personalbar=no,toolbar=no,scrollbars=yes,location=yes,resizable=yes");
-}
+};
 $(function() {
     $('body').addClass('js');
 
@@ -90,7 +110,7 @@ $(function() {
         return $obj.attr('data-marginalia');
     });
     
-    $('a.maillink').attr('href', rot13('znvygb:zvpunry@zvpunryzhyyrl.pbz'));
+    $('a.maillink').attr('href', OP.utils.rot13('znvygb:zvpunry@zvpunryzhyyrl.pbz'));
     
     $('a[href$="#hl"]').each(function () {
         this.href = this.href.substring(0, this.href.length - 3);
@@ -103,9 +123,5 @@ $(function() {
       lang: 'en',
       showTab: false
     };
-    /* $('.feedback').click(function(e) {
-        e.preventDefault();
-        UserVoice.Popin.show(uservoiceOptions);
-    }); */
-   
+
 });

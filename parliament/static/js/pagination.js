@@ -27,40 +27,40 @@ $(function() {
     $('.pagelink').live('click', function(e) {
         e.preventDefault();
         var $pagelink = $(this);
-        $.bbq.pushState($.deparam.querystring(this.href));
-        showPaginated = $pagelink.hasClass('show_paginated_div');
-        if (showPaginated) {
-            $(this).html('Loading...')
+        History.pushState(null, null, this.href);
+        if ($pagelink.hasClass('show_paginated_div')) {
+            $(this).html('Loading...');
         }
         $paginated.find('.pagination').addClass('loading');
     });
-    
-    $(window).bind('hashchange', function(e) {
-        if (e.fragment && e.fragment != 'hl' && e.fragment.substr(0, 1) != 's') {
-            $paginated.find('.pagination').addClass('loading');
-            $paginated.load('?' + e.fragment, '', function() {
-                var scrollDown = Boolean($(document).scrollTop() > $paginated.offset().top);
-                if ($paginated.is(':hidden')) {
-                    $('.show_paginated_div').hide()
-                    $('#paginated_wrapped').show();
-                    scrollDown = true;
-                }
-                if ($('.statement_browser').length) {
-                    addMoreLinks();
-                }
-                $('.related_link').tooltip({delay: 200, showURL: false});
-                if (scrollDown) { 
-                    $('html,body').animate({scrollTop: $paginated.offset().top - 15});
-                }
-                showPaginated = false;
-            });
-        }
+
+    $(window).bind('statechange', function(e) {
+        var newStateURL = History.getState().url;
+        $paginated.find('.pagination').addClass('loading');
+        $paginated.load(newStateURL, '', function() {
+            $paginated.css({opacity: 1.0});
+            var scrollDown = Boolean($(document).scrollTop() > $paginated.offset().top);
+            if ($paginated.is(':hidden')) {
+                $('.show_paginated_div').hide()
+                $('#paginated_wrapped').show();
+                scrollDown = true;
+            }
+            if ($('.statement_browser').length) {
+                addMoreLinks();
+            }
+            $('.related_link').tooltip({delay: 200, showURL: false});
+            if (scrollDown) {
+                $('html,body').animate({scrollTop: $paginated.offset().top - 15});
+            }
+        }).css({opacity: 0.6});
     });
-    
-    if (location.hash) {
-        $(window).trigger('hashchange');
+
+    var hash = History.getHash();
+    if (hash && (hash.indexOf('/') !== -1 || hash.indexOf('?') !== -1)) {
+//        $(window).trigger('statechange')
+        window.location.assign(History.getState().url);
     }
-    
+
     /* STATEMENT SHARING BUTTONS */
     
     if (!$('body').hasClass('search')) {
@@ -105,18 +105,17 @@ $(function() {
             }
         });
         $('#share_facebook').click(function() {
-            openparlShareWindow('http://facebook.com/sharer.php?'
+            OP.utils.openShareWindow('http://facebook.com/sharer.php?'
                 + $.param({'u': currentStatementURL(),
                 't': currentStatementDescription()}));
         });
         $('#share_twitter').click(function() {
-            openparlShareWindow('http://twitter.com/share?'
+            OP.utils.openShareWindow('http://twitter.com/share?'
                 + $.param({'url': currentStatementURL(),
                 'via': 'openparlca',
                 'related': 'openparlca:openparliament.ca',
                 'text': currentStatementDescription()
                 }));
-            // window.open(currentStatementURL() + 'twitter/');
         });
     }
 });

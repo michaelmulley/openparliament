@@ -16,11 +16,13 @@
 <script type="text/javascript">!window.jQuery && document.write(unescape('%3Cscript src="{{ STATIC_URL }}js/libs/jquery.min.js"%3E%3C/script%3E'))</script>
 
 {% compress js %}
-<script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.bbq.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.slimbox.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.tooltip.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/placeholder-polyfill.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/libs/history.js"></script>
+
 <script type="text/javascript" src="{{ STATIC_URL }}js/core.js"></script>
+
 {% endcompress %}
 {% block headextra %}{% endblock %}
 <script type="text/javascript">
