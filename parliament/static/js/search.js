@@ -34,7 +34,9 @@
                 visualSearch.searchBox.addFacet($(this).attr('data-add-facet'));
             });
 
-            var dateFilter = new OP.SearchDateFilter();
+            var dateFilter = new OP.SearchDateFilter({
+                discontinuityNote: "Our committee data starts in 2006, so there's often a spike here."
+            });
             $('#main_search_controls').append(dateFilter.$el);
             dateFilter.bind('sliderChange', function(values, fullRange) {
                 var textVal = values[0] + ' to ' + values[1];
@@ -65,6 +67,7 @@
                 if (!$searchHeader.length) { return dateFilter.setValues([0], [0]);}
                 var chart_years = _.map($searchHeader.attr('data-years').split(','), function(y) { return parseInt(y, 10)});
                 var chart_values = _.map($searchHeader.attr('data-values').split(','), function(y) { return parseInt(y, 10)});
+                dateFilter.discontinuity = parseInt($searchHeader.attr('data-discontinuity'), 10);
                 dateFilter.setValues(chart_years, chart_values);
 
                 var dateFacet = visualSearch.searchQuery.detect(function (f) {

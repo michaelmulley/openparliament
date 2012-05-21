@@ -30,7 +30,7 @@
                 return APmonths[v % 12] + ' ' + Math.floor(v/12);
             },
             currentYear: new Date().getFullYear(),
-            currentMonth: new Date().getMonth()
+            currentMonth: new Date().getMonth(),
         });
         _.extend(this, opts);
 
@@ -139,6 +139,28 @@
             ctx.fill();
             ctx.closePath();
 
+            if (this.discontinuity) {
+                var idx = _.indexOf(this.dates, this.discontinuity);
+                if (idx !== -1) {
+                    var discx = this.xSegments[idx];
+                    ctx.beginPath();
+                    ctx.lineWidth = 0.5;
+                    ctx.strokeStyle = '#888888'
+                    ctx.moveTo(discx, 0);
+                    for (var y = 0; y < this.chartHeight; y++) {
+                        if (y % 6 < 4) {
+                            ctx.moveTo(discx, y);
+                        }
+                        else {
+                            ctx.lineTo(discx, y);
+                        }
+                    }
+                    ctx.stroke();
+                    ctx.closePath();
+
+                }
+            }
+
         },
 
         updateChartLabel: function(xCoord) {
@@ -169,6 +191,9 @@
 
             this.$el.find('.hover-label .label .date').text(date);
             this.$el.find('.hover-label .label .value').text(dateCountLabel);
+            this.$el.find('.hover-label .label .note').text(
+                date === this.discontinuity ? this.discontinuityNote : ''
+            );
             this.$el.find('.hover-label').css({
                 left: segmentRange[0],
                 width: segmentRange[1] - segmentRange[0]

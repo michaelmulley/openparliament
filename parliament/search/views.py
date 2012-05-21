@@ -105,7 +105,12 @@ def search(request):
             'facet.range.end': 'NOW',
             'facet.range.gap': '+1YEAR',
         }
+
         committees_only = 'committee_slug' in filter_types
+        committees_maybe = True
+        if committees_maybe and not committees_only:
+            ctx['discontinuity'] = 2006
+
         if committees_only:
             facet_opts['facet.range.start'] = '2006-01-01T00:00:00.000Z'
         else:

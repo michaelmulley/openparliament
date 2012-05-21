@@ -41,10 +41,10 @@
 }
 
 .searchdatefilter .hover-label .label {
-    width: 150px;
+    width: 180px;
     position: absolute;
-    top: 20px;
-    left: -155px;
+    top: 10px;
+    left: -185px;
     text-align: right;
     font-style: italic;
     color: #777777;
@@ -54,5 +54,7 @@
 .searchdatefilter .hover-label .label span {
     background-color: white;
     background-color: rgba(255,255,255,0.6);
-
+}
+.searchdatefilter .hover-label span.note {
+    font-size: 90%;
 }
