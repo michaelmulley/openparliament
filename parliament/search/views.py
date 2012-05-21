@@ -33,7 +33,8 @@ ALLOWABLE_FILTERS = {
     'MP': 'politician_id',
     'Witness': 'who_hocid',
     'Committee': 'committee_slug',
-    'Date': 'date'
+    'Date': 'date',
+    'Type': 'type'
 }
 solr = pysolr.Solr(settings.HAYSTACK_SOLR_URL)
 
@@ -77,7 +78,6 @@ def search(request):
 
             if filter_name == 'date':
                 match = re.search(r'^(\d{4})-(\d\d?) to (\d{4})-(\d\d?)', filter_value)
-                print match
                 if not match:
                     return ''
                 (fromyear, frommonth, toyear, tomonth) = [int(x) for x in match.groups()]
@@ -86,6 +86,16 @@ def search(request):
                     tomonth = 1
                     toyear += 1
                 filter_value = '[{0:02}-{1:02}-01T00:01:01.000Z TO {2:02}-{3:02}-01T00:01:01.000Z]'.format(fromyear, frommonth, toyear, tomonth)
+            if filter_name == 'type':
+                filter_name = 'django_ct'
+                if filter_value == 'debate':
+                    filter_value = 'hansards.statement'
+                    filters.append('committee_slug:""')
+                elif filter_value == 'committee':
+                    filter_value = 'hansards.statement'
+                    filters.append('-committee_slug:""')
+                elif filter_value == 'bill':
+                    filter_value = 'bills.bill'
 
             filter_types.add(filter_name)
             filters.append(u'%s:%s' % (filter_name, filter_value))
@@ -106,8 +116,8 @@ def search(request):
             'facet.range.gap': '+1YEAR',
         }
 
-        committees_only = 'committee_slug' in filter_types
-        committees_maybe = True
+        committees_only = 'committee_slug' in filter_types or '-committee_slug:""' in filters
+        committees_maybe = 'django_ct' not in filter_types or committees_only
         if committees_maybe and not committees_only:
             ctx['discontinuity'] = 2006
 

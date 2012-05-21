@@ -66,9 +66,9 @@
                 break;
             case 'Type':
                 callback([
-                    'Speech (House debate)',
-                    'Speech (Committee meeting)',
-                    'Bill'
+                    {label: 'Speech (House debate)', value: 'debate'},
+                    {label: 'Speech (Committee meeting)', value: 'committee'},
+                    {label: 'Bill', value: 'bill'}
                 ]);
                 break;
         }
