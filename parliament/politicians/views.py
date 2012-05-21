@@ -117,15 +117,16 @@ def hide_activity(request):
 
 class PoliticianAutocompleteView(JSONView):
 
-    politician_list = Politician.objects.elected().values(
-        'name', 'name_family', 'slug', 'id').order_by('name_family')
-
     def get(self, request):
 
         q = request.GET.get('q', '').lower()
 
+        if not hasattr(self, 'politician_list'):
+            self.politician_list = list(Politician.objects.elected().values(
+                'name', 'name_family', 'slug', 'id').order_by('name_family'))
+
         results = (
-            {'value': p['slug'] if p['slug'] else p['id'], 'label': p['name']}
+            {'value': p['slug'] if p['slug'] else unicode(p['id']), 'label': p['name']}
             for p in self.politician_list
             if p['name'].lower().startswith(q) or p['name_family'].lower().startswith(q)
         )
