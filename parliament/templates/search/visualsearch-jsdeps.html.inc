@@ -17,6 +17,7 @@
 
 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/visualsearch.js"></script>
 
+<script type="text/javascript" src="{{ STATIC_URL }}js/search.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/searchdata.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/datefilter.js"></script>
 {% endcompress %}

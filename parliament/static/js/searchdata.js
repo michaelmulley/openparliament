@@ -2,13 +2,15 @@
 
     var accache = {};
 
-    OP.VSfacetMatches = function(callback) {
+    if (!OP.search) { OP.search = {};}
+
+    OP.search.VSfacetMatches = function(callback) {
         callback([
             'MP', 'Person', 'Party', 'Committee', 'Province', 'Type'
         ]);
     };
 
-    OP.VSvalueMatches = function(facet, searchTerm, callback) {
+    OP.search.VSvalueMatches = function(facet, searchTerm, callback) {
         switch (facet) {
             case 'Year':
                 callback([
