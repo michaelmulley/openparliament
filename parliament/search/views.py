@@ -1,10 +1,12 @@
 #coding: utf-8
 
+from hashlib import md5
 import re
 import urllib
 
 from django.conf import settings
 from django.contrib.syndication.views import Feed
+from django.core.cache import cache
 from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.template import Context, loader, RequestContext
 from django.utils.safestring import mark_safe
@@ -68,6 +70,7 @@ def search(request):
 
         # Extract filters from query
         filters = []
+        filter_types = set()
         def extract_filter(match):
             filter_name = ALLOWABLE_FILTERS[match.group(1)]
             filter_value = match.group(2)
@@ -84,6 +87,7 @@ def search(request):
                     toyear += 1
                 filter_value = '[{0:02}-{1:02}-01T00:01:01.000Z TO {2:02}-{3:02}-01T00:01:01.000Z]'.format(fromyear, frommonth, toyear, tomonth)
 
+            filter_types.add(filter_name)
             filters.append(u'%s:%s' % (filter_name, filter_value))
             return ''
         bare_query = re.sub(r'(%s): "([^"]+)"' % '|'.join(ALLOWABLE_FILTERS),
@@ -95,24 +99,33 @@ def search(request):
         if filters:
             searchparams['fq'] = filters
 
-        searchparams.update({
-           'facet.range': 'date',
-           'facet': 'true',
-           'facet.range.start': '1994-01-01T00:00:00.000Z',
-           'facet.range.end': 'NOW',
-           'facet.range.gap': '+1YEAR',
-       })
+        facet_opts = {
+            'facet.range': 'date',
+            'facet': 'true',
+            'facet.range.end': 'NOW',
+            'facet.range.gap': '+1YEAR',
+        }
+        committees_only = 'committee_slug' in filter_types
+        if committees_only:
+            facet_opts['facet.range.start'] = '2006-01-01T00:00:00.000Z'
+        else:
+            facet_opts['facet.range.start'] = '1994-01-01T00:00:00.000Z'
+
+        if 'date' not in filter_types:
+            searchparams.update(facet_opts)
 
         for opt in ALLOWABLE_OPTIONS:
             if opt in request.GET and request.GET[opt] in ALLOWABLE_OPTIONS[opt]:
                 searchparams[opt] = request.GET[opt] 
                 ctx[opt] = request.GET[opt]
 
-        committees_only = bool([f for f in filters if f.startswith('committee_slug')])
-        
         results = autohighlight(solr.search(bare_query, **searchparams))
 
-        facet_results = results.facets['facet_ranges']['date']['counts']
+        if results.facets:
+            facet_results = results.facets['facet_ranges']['date']['counts']
+        else:
+            facet_results = _get_facets(bare_query, searchparams, facet_opts)
+
         date_counts = [
             (int(facet_results[i][:4]), facet_results[i+1])
             for i in range(0, len(facet_results), 2)
@@ -125,8 +138,6 @@ def search(request):
 
         ctx['chart_years'] = [c[0] for c in date_counts]
         ctx['chart_values'] = [c[1] for c in date_counts]
-        ctx['chart'] = 'http://chart.apis.google.com/chart?chs=770x85&cht=ls&chd=t:%s&chm=B,e6f2fa,0,0,0&chds=a' % ','.join(
-            str(c[1]) for c in date_counts)
         ctx['results'] = results
         ctx['page'] = SearchPaginator(results, pagenum, PER_PAGE, request.GET)
     else:
@@ -140,6 +151,27 @@ def search(request):
     else:
         t = loader.get_template("search/search.html")
     return HttpResponse(t.render(c))
+
+def _get_facets(query, orig_searchparams, facet_opts):
+    params = dict(orig_searchparams)
+    if params.get('fq'):
+        # Remove date filter
+        params['fq'] = filter(lambda f: not f.startswith('date:'), params['fq'])
+
+    params.update(facet_opts)
+
+    cache_key = 'facets-' + md5(
+        query.encode('utf-8') + repr(params)
+    ).hexdigest()
+    cache_result = cache.get(cache_key)
+    if cache_result:
+        return cache_result
+
+    params.update(rows=0)
+
+    result = solr.search(query, **params).facets['facet_ranges']['date']['counts']
+    cache.set(cache_key, result, 60 * 60 * 2)
+    return result
     
 r_postcode = re.compile(r'^\s*([A-Z][0-9][A-Z])\s*([0-9][A-Z][0-9])\s*$')
 def try_postcode_first(request):
