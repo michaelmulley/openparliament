@@ -107,19 +107,20 @@ def _import_bill(lbill, session, previous_session=None):
         # older Bill object.
         bill._newbill = True
         try:
-            mergebill = Bill.objects.get(sessions=previous_session,
-                                         number=bill.number,
-                                         name__iexact=bill.name)
+            if previous_session:
+                mergebill = Bill.objects.get(sessions=previous_session,
+                                             number=bill.number,
+                                             name__iexact=bill.name)
 
-            if bill.id:
-                # If the new bill has already been saved, let's not try
-                # to merge automatically
-                logger.error("Bill %s may need to be merged. IDs: %s %s" %
-                             (bill.number, bill.id, mergebill.id))
-            else:
-                logger.warning("Merging bill %s" % bill.number)
-                bill = mergebill
-                bis.bill = bill
+                if bill.id:
+                    # If the new bill has already been saved, let's not try
+                    # to merge automatically
+                    logger.error("Bill %s may need to be merged. IDs: %s %s" %
+                                 (bill.number, bill.id, mergebill.id))
+                else:
+                    logger.warning("Merging bill %s" % bill.number)
+                    bill = mergebill
+                    bis.bill = bill
         except Bill.DoesNotExist:
             # Nothing to merge
             pass
@@ -131,7 +132,10 @@ def _import_bill(lbill, session, previous_session=None):
     if not bis.sponsor_politician and bill.number[0] == 'C' and lbill.xpath('SponsorAffiliation/@id'):
         # We don't deal with Senate sponsors yet
         pol_id = int(lbill.xpath('SponsorAffiliation/@id')[0])
-        bis.sponsor_politician = Politician.objects.get_by_parl_id(pol_id)
+        try:
+            bis.sponsor_politician = Politician.objects.get_by_parl_id(pol_id)
+        except Politician.DoesNotExist:
+            logger.error("Couldn't find sponsor politician for bill %s, pol ID %s" % (bill.number, pol_id))
         bis._changed = True
         try:
             bis.sponsor_member = ElectedMember.objects.get_by_pol(politician=bis.sponsor_politician,

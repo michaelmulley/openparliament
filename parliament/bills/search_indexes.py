@@ -14,12 +14,6 @@ class BillIndex(SearchIndex):
     date = indexes.DateField(model_attr='introduced', null=True)
     session = indexes.CharField(model_attr='session', indexed=False, null=True)
 
-    def prepare_date(self, obj):
-        if self.prepared_data.get('date'):
-            return self.prepared_data['date']
-
-        return obj.added
-
     def prepare_session(self, obj):
         if self.prepared_data.get('session'):
             return self.prepared_data['session']

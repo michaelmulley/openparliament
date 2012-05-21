@@ -190,6 +190,13 @@ def _merge_pols(good, bad):
             seen.add((xref.int_value, xref.text_value))
     bad.delete()
 
+    pi_seen = set()
+    for pi in good.politicianinfo_set.all():
+        val = (pi.schema, pi.value)
+        if val in pi_seen:
+            pi.delete()
+        pi_seen.add(val)
+
 #REFORM = (Party.objects.get(pk=25), Party.objects.get(pk=1), Party.objects.get(pk=28), Party.objects.get(pk=26))
 
 def merge_by_party(parties):
