@@ -40,7 +40,7 @@
 
 </script>
 </head>
-<body class="{% block bodyclass %}{% endblock %}">
+<body class="nojs {% block bodyclass %}{% endblock %}">
 <div id="navbarbg"></div><div id="navbar"><a href="/"><img src="{{ STATIC_URL }}images/logotype_bar.png" alt="openparliament.ca"></a>
     <ul id="navlinks">
 		<li {% block navlinks_mps %}{% endblock %}><a href="{% url parliament.politicians.views.current_mps %}">MPs</a></li>

@@ -42,7 +42,7 @@ OP.utils = {
     }
 };
 $(function() {
-    $('body').addClass('js');
+    $('body').removeClass('nojs').addClass('js');
 
     // SEARCH BUTTONS
     var searchbox_default = 'Search';

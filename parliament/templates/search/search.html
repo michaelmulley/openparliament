@@ -7,11 +7,11 @@
 <div class="focus" id="main_search_controls">
 	<noscript>
 		<form method="get" action="."><div>
-			<input type="text" id="page_searchbox" name="q" value="{{ query }}"><input type="submit" class="button" id="searchbutton" value="Search">
+			<input type="text" id="page_searchbox" name="q" value="{{ query }}"><input type="submit" class="btn" id="searchbutton" value="Search">
 		</div></form>
 	</noscript>
 	<div id="visual_search"></div>
-	<p class="search_options">Refine by <a data-add-facet="MP" href="#">MP</a>, <a data-add-facet="Party" href="#">party</a>, <a data-add-facet="Committee" href="#">committee</a>, <a data-add-facet="Province" href="#">province</a>, or <a data-add-facet="Type" href="#">result type</a>.</p>
+	<p class="search_options jsonly">Refine by <a data-add-facet="MP" href="#">MP</a>, <a data-add-facet="Party" href="#">party</a>, <a data-add-facet="Committee" href="#">committee</a>, <a data-add-facet="Province" href="#">province</a>, or <a data-add-facet="Type" href="#">result type</a>.</p>
     </div>
     {% if not results.hits %}
 		<div id="paginated">

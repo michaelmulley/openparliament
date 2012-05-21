@@ -7,6 +7,7 @@ h3{margin:0 0 10px 0;font-weight:bold;color:#522D07;font-size: 17px;}
 a{color:#1A59C7;text-decoration:none;font-weight:bold;outline:none;}
 a:hover{text-decoration:underline;color:#1A59C7;}
 img {border: 0;}
+body.nojs .jsonly { display: none;}
 
 /* LAYOUT */ 
 #content{width:960px;margin-left:auto;margin-right:auto;padding-top:15px;position:relative;}
@@ -175,9 +176,9 @@ div.headshot span{display: block;position: relative;font-size: 10px;color: #8888
 p.search_options{margin: 5px 0; width: 770px; max-width: 770px; text-align: center;}
 
 /* HOME */
-#home_searchform .VS-search { width: 400px; float: left;}
+#home_searchform .VS-search { width: 450px; float: left;}
 #home_searchbutton { float: left; position: relative; top: 1px; margin-left: 10px;}
-.js #home_searchbutton { display: none;}
+/*.js #home_searchbutton { display: none;}*/
 .heading_context{padding-left: 3px; color: #666666; font-weight: normal; font-weight: 300;}
 
 /* STATEMENT SHARING TOOLS */
