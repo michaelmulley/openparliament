@@ -7,10 +7,10 @@
                     '<div class="label"><span class="date"></span><br><span class="value"></span><br><span class="note"></span></div>' +
                 '</div>' +
             '</div>' +
-            '<div class="tools_wrap"><div class="tools" style="display:none">' +
-                '<div class="label-min"></div><div class="label-max"></div>' +
+            '<div class="tools">' +
+                '<div class="label left"><span></span></div><div class="label right"><span></span></div>' +
                 '<div class="slider"></div>' +
-            '</div></div>' +
+            '</div>' +
         '</div>');
 
     OP.SearchDateFilter = function(opts) {
@@ -36,9 +36,14 @@
         });
 
         var $tools = this.$el.find('.tools');
+        $tools.css({opacity: 0.4});
         this.$el.hover(
-            function(e) { $tools.show(); },
-            function(e) { $tools.hide(); }
+            function(e) { $tools.animate({
+                opacity: 1.0
+            }); },
+            function(e) { $tools.animate({
+                opacity: 0.4
+            }); }
         );
 
     };
@@ -79,9 +84,6 @@
             this.xSegments.push(xvals[xvals.length-1]);
 
             this.$el.show();
-
-            this.$el.find('.label-min').text(this.dates[0].toString());
-            this.$el.find('.label-max').text(this.dates[this.dates.length-1].toString());
 
             if (!this.canvasContext) {
                 // Initialize the canvas. We do it in this slightly laborious way
@@ -126,10 +128,14 @@
                 }
             }
 
+            if (i < 0) {
+                return;
+            }
+
             var segmentRange = [this.xSegments[i], this.xSegments[i+1]];
             var date = this.dates[i];
             var dateCount = this.values[i];
-            var dateCountLabel
+            var dateCountLabel;
             if (dateCount === 1) {
                 dateCountLabel = 'One result';
             }
@@ -166,6 +172,7 @@
                     if (!self.sliderValues || sv[0] !== self.sliderValues[0] || sv[1] !== self.sliderValues[1]) {
                         self.sliderValues = sv.slice(0);
                         var fullRange = (sv[0] === opts.min && sv[1] === opts.max);
+                        self.updateSliderLabels(sv);
                         self.trigger('sliderChange', sv, fullRange)
                     }
                 };
@@ -178,6 +185,7 @@
                             || ui.values[1] !== self.slideStartValues[0]) {
                         self.trigger('sliderChangeCompleted', ui.values);
                     }
+                    self.updateSliderLabels(ui.values);
                 };
                 $slider.slider(opts);
             }
@@ -197,6 +205,30 @@
                 }
                 $slider.slider('option', opts);
             }
+            this.updateSliderLabels(opts.values)
+        },
+
+        updateSliderLabels: function(values) {
+            var $left = this.$el.find('.tools .label.left');
+            var $right = this.$el.find('.tools .label.right');
+
+            $left.position({
+                my: "left top",
+                at: "center bottom",
+                of: this.$el.find('.ui-slider-handle')[0]
+            }).find('span').text(values[0]);
+
+            if (values[0] === values[1]) {
+                $right.hide();
+            }
+            else {
+                $right.position({
+                    my: "right top",
+                    at: "center bottom",
+                    of: this.$el.find('.ui-slider-handle')[1]
+                }).show().find('span').text(values[1]);
+            }
+
         }
 
     });

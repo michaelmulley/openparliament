@@ -1,14 +1,25 @@
-.searchdatefilter .label-min {
-    float: left;
-}
-.searchdatefilter .label-max {
-    float: right;
-}
 .searchdatefilter .slider {
     clear: both;
 }
-.searchdatefilter .tools_wrap {
+
+.searchdatefilter .tools {
+    margin-top: 10px;
+    height: 20px;
+}
+
+.searchdatefilter .tools .label {
+    position: absolute;
     height: 30px;
+}
+.searchdatefilter .tools .label.right {
+    text-align: right;
+}
+
+.searchdatefilter .tools .label span {
+    background-color: yellow;
+    font-size: 85%;
+    font-style: italic;
+    color: #222222;
 }
 
 .searchdatefilter .chart {
