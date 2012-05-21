@@ -57,10 +57,10 @@ $(function() {
                 $(this).attr('title', $(this).text());       
             }
         });
-    }    
+    };
     $('.overflowtip').overflowtip().tooltip({delay: 150});
     $('.tip, .related_link').tooltip({delay: 100, showURL: false});
-    
+
     // MARGINALIA
     var $content = $('#content');
     var contentOffset = $content.offset();

@@ -45,9 +45,7 @@ div.focus.pageheader{margin-bottom:0;}
 #navbarbg{width:100%;position:absolute;left:0;top:0;height:16px;background-color:#7d450b;border-top:40px solid #095609;border-bottom:24px solid white;}
 #navbar{position:relative;margin-left:auto;margin-right:auto;width:960px;height:80px;}
 #navbar img{position:absolute;left:6px;}
-#nav_searchbox{position:absolute;right:10px;font-size:15px;top:20px;width:195px;font-family:Arial, sans-serif;border-radius:5px;padding:2px 24px 2px 4px;border:2px inset #F0F0F0;color: #555555;height: 19px;}
-#nav_searchbox.active {color: black;}
-#nav_searchbutton{position:absolute;background-image:url('../images/searchbutton.png');width:19px;height:19px;cursor:pointer;right:15px;top:24px;}
+#nav_searchform .VS-search { width: 195px; position: absolute; right: 0px; top: 16px; }
 #footer{clear:both;width:100%;height:60px;padding-top:10px;}
 #footer p{margin-left:auto;margin-right:auto;width:520px;text-align:center;font-size:11px;color:#777777;}
 #footer a{color:#777777;font-weight:normal;text-decoration:underline;}
@@ -88,6 +86,13 @@ td.standard_form{width:520px;}
 .standard_form input[type=text]:hover,.standard_form textarea:hover{background-color:white;}
 #marginalia{width:155px;padding:5px;background-color:#f9f7cd;border:1px dotted #666;color:#444;position:absolute;left: 0;}
 .infobox{max-width: 650px;background-color: #f9f7cd;border: 1px dotted #666;color: #222;padding: 15px;margin-bottom: 10px;}
+
+.VS-search.fake-VS input {
+    width: 100%;
+}
+.VS-search.fake-VS .VS-search-inner {
+    margin-left: 25px;
+}
 
 /* PAGINATION */
 .pagination{text-align:center;width:640px;}
@@ -170,8 +175,9 @@ div.headshot span{display: block;position: relative;font-size: 10px;color: #8888
 p.search_options{margin: 5px 0; width: 770px; max-width: 770px; text-align: center;}
 
 /* HOME */
-#home_searchbox{width:400px;font-size:15px;padding:4px;color: #555555;}
-#home_searchbox.active{color: black;}
+#home_searchform .VS-search { width: 400px; float: left;}
+#home_searchbutton { float: left; position: relative; top: 1px; margin-left: 10px;}
+.js #home_searchbutton { display: none;}
 .heading_context{padding-left: 3px; color: #666666; font-weight: normal; font-weight: 300;}
 
 /* STATEMENT SHARING TOOLS */
@@ -183,11 +189,6 @@ p.share_link input{width:300px;padding-left:5px;}
 
 /* COMMITTEES */
 .committees .no_evidence a { color: #777777; }
-
-/* BUTTONS */
-.button{padding:5px 10px;display:inline;background:#2c6da0 url('../images/css_button_bg.png') repeat-x bottom;border:none;color:#fff;cursor:pointer;font-weight:bold;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px;font-size:15px;}
-.button:hover{background-position:0 -35px;}
-.button:active{background-position:0 top;position:relative;top:1px;padding:6px 10px 4px;background-position:0 top;}
 
 /* SLIMBOX */
 #lbOverlay{position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background-color:#000;cursor:pointer;}

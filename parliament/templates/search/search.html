@@ -29,11 +29,10 @@
 	{% endcompress %}
 
 	{% compress css %}
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/visualsearch.css">
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery-ui-aristo.css">
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/datefilter.css">
-
 	{% endcompress %}
+
 	{% include "search/visualsearch-jsdeps.html.inc" %}
 	<script type="text/javascript">
 	$(function() {

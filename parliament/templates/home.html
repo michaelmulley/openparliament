@@ -6,7 +6,11 @@
 {% block pageheading %}Keep tabs on Parliament.{% endblock %}
 {% block content %}
 <div class="focus">
-    <form action="/search/" id="home_searchform" method="GET"><div><input type="text" id="home_searchbox" name="q"><input type="submit" value="Search" class="button" id="searchbutton"></div></form></div>
+    <form action="/search/" id="home_searchform" method="GET">
+		{% include "search/searchbox.inc" with placeholder="Enter a postal code, name, or phrase" %}
+		<input type="submit" value="Search" class="btn btn-success" id="home_searchbutton">
+	</form>
+</div>
     <div class="clear"></div><div class="context"><h2>What we’re doing</h2></div>
     <div class="focus">
     <p>Info on what your representatives are doing in Ottawa can be hard to find and use. <strong>We’re trying to make it easy.</strong></p>
@@ -18,7 +22,7 @@
 				{% for topic in latest_hansard.topics_with_qp %}<li class="four oneline overflowtip"><a href="{{ latest_hansard_url }}{{ topic.1 }}/#hl">{{ topic.0 }}</a></li>{% endfor %}
 			{% endwith %}
         </ul><div class="clear"></div></div>
-{% if votes %}<div class="clear"><div class="context"><h2>Recent votes</h2></div>
+{% if votes %}<div class="clear"></div><div class="context"><h2>Recent votes</h2></div>
 <div class="focus"><ul class="tile">{% for vote in votes %}<li class="six twoline overflowtip"><a href="{{ vote.get_absolute_url }}">#{{ vote.number }}</a> <span class="tag voteresult_{{ vote.result }}">{{ vote.get_result_display }}</span> {% if vote.bill %}<a href="{{ vote.bill.get_absolute_url }}">{{ vote.bill.number }}</a> {% endif %}{{ vote.description }}</li>{% endfor %}</ul><div class="clear"></div></div>{% endif %}
 
 {% if sitenews %}
@@ -31,25 +35,8 @@
 {% block headextra %}
 <script type="text/javascript">
 $(function() {
-   var search_prompt = "Enter a postal code, name, or phrase";
-   var $searchbox = $('#home_searchbox');
-   $searchbox.val(search_prompt); 
-   $searchbox.bind('focus', function() {
-       $searchbox.addClass('active'); 
-       if (this.value == search_prompt) {
-           this.value = '';
-       }
-   }).bind('blur', function () {
-       $searchbox.removeClass('active');
-       if (this.value == '') {
-           this.value = search_prompt;
-       }
-   });
-   $('#home_searchform').bind('submit', function (e) {
-       if ($searchbox.val() == search_prompt) {
-           e.preventDefault();
-           alert('To search, enter a postal code, name, or phrase into the text box.');
-       }
+   $('#home_searchform input').bind('focus', function() {
+	   $('#home_searchbutton').show();
    });
 });
 </script>
