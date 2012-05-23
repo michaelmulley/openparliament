@@ -86,7 +86,8 @@ def search(request):
                     tomonth = 1
                     toyear += 1
                 filter_value = '[{0:02}-{1:02}-01T00:01:01.000Z TO {2:02}-{3:02}-01T00:01:01.000Z]'.format(fromyear, frommonth, toyear, tomonth)
-            if filter_name == 'type':
+
+            elif filter_name == 'type':
                 filter_name = 'django_ct'
                 if filter_value == 'debate':
                     filter_value = 'hansards.statement'
@@ -98,7 +99,7 @@ def search(request):
                     filter_value = 'bills.bill'
 
             filter_types.add(filter_name)
-            filters.append(u'%s:%s' % (filter_name, filter_value))
+            filters.append(u'{!tag=f%s}%s:%s' % (filter_name, filter_name, filter_value))
             return ''
         bare_query = re.sub(r'(%s): "([^"]+)"' % '|'.join(ALLOWABLE_FILTERS),
             extract_filter, query)
@@ -110,7 +111,7 @@ def search(request):
             searchparams['fq'] = filters
 
         facet_opts = {
-            'facet.range': 'date',
+            'facet.range': '{!ex=fdate}date',
             'facet': 'true',
             'facet.range.end': 'NOW',
             'facet.range.gap': '+1YEAR',
@@ -126,8 +127,7 @@ def search(request):
         else:
             facet_opts['facet.range.start'] = '1994-01-01T00:00:00.000Z'
 
-        if 'date' not in filter_types:
-            searchparams.update(facet_opts)
+        searchparams.update(facet_opts)
 
         for opt in ALLOWABLE_OPTIONS:
             if opt in request.GET and request.GET[opt] in ALLOWABLE_OPTIONS[opt]:
@@ -136,11 +136,7 @@ def search(request):
 
         results = autohighlight(solr.search(bare_query, **searchparams))
 
-        if results.facets:
-            facet_results = results.facets['facet_ranges']['date']['counts']
-        else:
-            facet_results = _get_facets(bare_query, searchparams, facet_opts)
-
+        facet_results = results.facets['facet_ranges']['date']['counts']
         date_counts = [
             (int(facet_results[i][:4]), facet_results[i+1])
             for i in range(0, len(facet_results), 2)
@@ -166,27 +162,6 @@ def search(request):
     else:
         t = loader.get_template("search/search.html")
     return HttpResponse(t.render(c))
-
-def _get_facets(query, orig_searchparams, facet_opts):
-    params = dict(orig_searchparams)
-    if params.get('fq'):
-        # Remove date filter
-        params['fq'] = filter(lambda f: not f.startswith('date:'), params['fq'])
-
-    params.update(facet_opts)
-
-    cache_key = 'facets-' + md5(
-        query.encode('utf-8') + repr(params)
-    ).hexdigest()
-    cache_result = cache.get(cache_key)
-    if cache_result:
-        return cache_result
-
-    params.update(rows=0)
-
-    result = solr.search(query, **params).facets['facet_ranges']['date']['counts']
-    cache.set(cache_key, result, 60 * 60 * 2)
-    return result
     
 r_postcode = re.compile(r'^\s*([A-Z][0-9][A-Z])\s*([0-9][A-Z][0-9])\s*$')
 def try_postcode_first(request):
