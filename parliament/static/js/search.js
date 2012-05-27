@@ -14,7 +14,8 @@
             if (currentSort) {
                 params.sort = currentSort;
             }
-            History.pushState(null, null, '/search/?' + $.param(params));
+            var url = '/search/?' + $.param(params);
+            History.pushState(null, null, url);
         },
 
         getQuery: function() {
@@ -48,9 +49,7 @@
                 var existingFacet = OP.search.findFacet(facetName);
                 if (existingFacet) {
                     if (value) {
-                        console.log('setting');
                         existingFacet.set('value', value);
-                        console.log(existingFacet);
                     }
                     else {
                         visualSearch.searchQuery.remove(existingFacet);
