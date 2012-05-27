@@ -1,0 +1,45 @@
+.facetwidget .facetgroup {
+    margin-bottom: 20px;
+    opacity: 0.8;
+}
+.facetwidget .facetgroup:hover {
+    opacity: 1.0;
+}
+
+.facetwidget .item {
+    position: relative;
+    padding: 1px 0 1px 2px;
+    margin-bottom: 5px;
+}
+
+.facetwidget .collapsed {
+    display: none;
+}
+.facetwidget .nocollapse .collapsed {
+    display: block;
+}
+.facetwidget .nocollapse .show-more {
+    display: none;
+}
+
+.facetwidget .label {
+    position: relative;
+}
+
+.facetwidget .barbg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+}
+.barbg {
+    background-color: #f2f59a;
+}
+
+.facetwidget em {
+    color: #999999;
+    font-style: normal;
+    font-size: 90%;
+    margin-left: 2px;
+    float: right;
+}

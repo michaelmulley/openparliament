@@ -6,7 +6,7 @@
 
     OP.search.VSfacetMatches = function(callback) {
         callback([
-            'MP', 'Person', 'Party', 'Committee', 'Province', 'Type'
+            'MP', 'Party', 'Committee', 'Province', 'Type'
         ]);
     };
 
@@ -20,7 +20,7 @@
                 ], {preserveOrder: true});
                 break;
             case 'MP':
-            case 'Person':
+//            case 'Person':
                 $.getJSON('/politicians/autocomplete/?' + $.param({q: searchTerm}), function (data) {
                     callback(data.content);
                 });
@@ -72,5 +72,21 @@
                 ]);
                 break;
         }
+    };
+
+    OP.PROVINCES = {
+        BC: 'B.C.',
+        AB: 'Alberta',
+        MB: 'Manitoba',
+        SK: 'Saskatchewan',
+        ON: 'Ontario',
+        QC: 'Qu\u00e9bec',
+        NB: 'New Brunswick',
+        PE: 'P.E.I.',
+        NS: 'Nova Scotia',
+        NL: 'Newfoundland',
+        NT: 'N.W.T.',
+        YT: 'Yukon',
+        NU: 'Nunavut'
     };
 })();

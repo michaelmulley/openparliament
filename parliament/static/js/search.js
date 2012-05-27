@@ -7,7 +7,10 @@
     OP.search = {
 
         triggerSearch: function(query) {
-            var params = { q: query};
+            if (_.isUndefined(query)) {
+                query = OP.search.getQuery();
+            }
+            var params = { q: query };
             if (currentSort) {
                 params.sort = currentSort;
             }
@@ -18,7 +21,15 @@
             return visualSearch.searchQuery.serialize()
         },
 
+        findFacet: function(name) {
+            return visualSearch.searchQuery.detect(function (f) {
+                return f.get('category') === name;
+            });
+        },
+
         init: function(initialQuery) {
+
+            /* Initialize VisualSearch widget */
             visualSearch = VS.init({
                 container: $('#visual_search'),
                 query: initialQuery,
@@ -29,15 +40,40 @@
                 }
             });
 
-            $('a[data-add-facet]').click(function(e) {
+            /* Hook up facet-editing links */
+            $('#main_search_controls, #search_leftbar').delegate('a[data-add-facet]', 'click', function(e) {
                 e.preventDefault();
-                visualSearch.searchBox.addFacet($(this).attr('data-add-facet'));
+                var value = $(this).attr('data-facet-value');
+                var facetName = $(this).attr('data-add-facet');
+                var existingFacet = OP.search.findFacet(facetName);
+                if (existingFacet) {
+                    if (value) {
+                        console.log('setting');
+                        existingFacet.set('value', value);
+                        console.log(existingFacet);
+                    }
+                    else {
+                        visualSearch.searchQuery.remove(existingFacet);
+                        visualSearch.searchBox.addFacet(facetName);
+                    }
+                }
+                else {
+                    visualSearch.searchBox.addFacet(facetName, value);
+                }
+                if (value) {
+                    OP.search.triggerSearch();
+                }
             });
 
+            /* Initialize facet widget */
+            var facetWidget = new OP.FacetWidget();
+            $('#search_leftbar').append(facetWidget.$el);
+
+            /* Initialize date widget */
             var dateFilter = new OP.SearchDateFilter({
                 discontinuityNote: "Our committee data starts in 2006, so there's often a spike here."
             });
-            $('#main_search_controls').append(dateFilter.$el);
+            $('#search_content').prepend(dateFilter.$el);
             dateFilter.bind('sliderChange', function(values, fullRange) {
                 var textVal = values[0] + ' to ' + values[1];
                 var dateFacet = visualSearch.searchQuery.detect(function (f) {
@@ -59,10 +95,17 @@
                 }
             });
             dateFilter.bind('sliderChangeCompleted', function() {
-                OP.search.triggerSearch(OP.search.getQuery());
+                OP.search.triggerSearch();
             });
 
-            $(document).bind('op_search_results_loaded', function() {
+            /* Event on result loading */
+            $(document).bind('op_search_results_loaded', function(e, data) {
+
+                if (data && data.facets) {
+                    facetWidget.setValues(data.facets);
+                }
+
+                /* Set values in date widget */
                 var $searchHeader = $('.search_header');
                 if (!$searchHeader.length) { return dateFilter.setValues([0], [0]);}
                 var chart_years = _.map($searchHeader.attr('data-years').split(','), function(y) { return parseInt(y, 10)});
@@ -85,8 +128,10 @@
                 }
 
                 currentSort = $searchHeader.attr('data-sort');
+
             });
 
+            /* Update search box on back button */
             $(window).bind('statechange', function() {
                 var url = History.getState().url;
                 var query = OP.utils.getQueryParam('q', url);
@@ -96,6 +141,7 @@
 
             });
 
+            /* Sort links */
             $('#content').delegate('.sort_options a', 'click', function(e) {
                 e.preventDefault();
                 currentSort = $(this).attr('data-sort');

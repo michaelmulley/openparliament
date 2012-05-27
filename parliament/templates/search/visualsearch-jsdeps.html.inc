@@ -20,4 +20,5 @@
 <script type="text/javascript" src="{{ STATIC_URL }}js/search.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/searchdata.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/datefilter.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/facets.js"></script>
 {% endcompress %}

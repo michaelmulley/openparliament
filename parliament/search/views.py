@@ -29,7 +29,7 @@ ALLOWABLE_OPTIONS = {
 ALLOWABLE_FILTERS = {
     'Party': 'party',
     'Province': 'province',
-    'Person': 'politician_id',
+    'Person': 'politician',
     'MP': 'politician_id',
     'Witness': 'who_hocid',
     'Committee': 'committee_slug',
@@ -98,6 +98,9 @@ def search(request):
                 elif filter_value == 'bill':
                     filter_value = 'bills.bill'
 
+            if ' ' in filter_value and filter_name != 'date':
+                filter_value = u'"%s"' % filter_value
+
             filter_types.add(filter_name)
             filters.append(u'{!tag=f%s}%s:%s' % (filter_name, filter_name, filter_value))
             return ''
@@ -116,6 +119,20 @@ def search(request):
             'facet.range.end': 'NOW',
             'facet.range.gap': '+1YEAR',
         }
+
+        facet_opts.update({
+            'facet.limit': 13,
+            'f.province.facet.mincount': 1,
+            'f.party.facet.mincount': 1,
+            'f.politician.facet.mincount': 1,
+            'facet.field': [
+                '{!ex=fpolitician_id}politician',
+                '{!ex=fprovince}province',
+                '{!ex=fparty}party'
+            ],
+            'f.province.facet.method': 'enum',
+            'f.party.facet.method': 'enum'
+        })
 
         committees_only = 'committee_slug' in filter_types or '-committee_slug:""' in filters
         committees_maybe = 'django_ct' not in filter_types or committees_only
@@ -136,21 +153,25 @@ def search(request):
 
         results = autohighlight(solr.search(bare_query, **searchparams))
 
-        facet_results = results.facets['facet_ranges']['date']['counts']
-        date_counts = [
-            (int(facet_results[i][:4]), facet_results[i+1])
-            for i in range(0, len(facet_results), 2)
-        ]
+        date_counts = []
+        if 'facet_ranges' in results.facets:
+            datefacets = results.facets['facet_ranges']['date']['counts']
+            date_counts = [
+                (int(datefacets[i][:4]), datefacets[i+1])
+                for i in range(0, len(datefacets), 2)
+            ]
 
         if committees_only:
             # If we're searching only committees, we by definition won't have
             # results before 1994, so let's take them off of the graph.
             date_counts = filter(lambda c: c[0] >= 2006, date_counts)
-
-        ctx['chart_years'] = [c[0] for c in date_counts]
-        ctx['chart_values'] = [c[1] for c in date_counts]
-        ctx['results'] = results
-        ctx['page'] = SearchPaginator(results, pagenum, PER_PAGE, request.GET)
+        ctx.update(
+            chart_years = [c[0] for c in date_counts],
+            chart_values = [c[1] for c in date_counts],
+            facet_fields = results.facets.get('facet_fields'),
+            results = results,
+            page = SearchPaginator(results, pagenum, PER_PAGE, request.GET)
+        )
     else:
         ctx = {
             'query' : '',

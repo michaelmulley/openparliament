@@ -12,7 +12,9 @@
 	</noscript>
 	<div id="visual_search"></div>
 	<p class="search_options jsonly">Refine by <a data-add-facet="MP" href="#">MP</a>, <a data-add-facet="Party" href="#">party</a>, <a data-add-facet="Committee" href="#">committee</a>, <a data-add-facet="Province" href="#">province</a>, or <a data-add-facet="Type" href="#">result type</a>.</p>
-    </div>
+</div><div class="clear"></div>
+<div class="context" id="search_leftbar"></div>
+<div class="focus" id="search_content">
     {% if not results.hits %}
 		<div id="paginated">
        {% if query %}<div class="focus"><h3>No results found.</h3></div>{% endif %}
@@ -22,15 +24,13 @@
 {% include "search/search_results.inc" %}
         </div>
 	{% endif %}
+</div>
 {% endblock %}
 {% block headextra %}
-	{% compress js %}
-		<script type="text/javascript" src="{{ STATIC_URL }}js/pagination.js"></script>
-	{% endcompress %}
-
 	{% compress css %}
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery-ui-aristo.css">
 	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/datefilter.css">
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/facets.css">
 	{% endcompress %}
 
 	{% include "search/visualsearch-jsdeps.html.inc" %}

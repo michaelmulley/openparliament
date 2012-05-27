@@ -5,6 +5,7 @@ h1{font-size:32px;font-weight:bold;color:#222222;margin:0 0 20px 0;padding:0;lin
 h2{font-size:24px;font-weight:normal;font-weight:300;margin:0 0 10px 0;color:#522D07;line-height:30px;}
 h3{margin:0 0 10px 0;font-weight:bold;color:#522D07;font-size: 17px;}
 a{color:#1A59C7;text-decoration:none;font-weight:bold;outline:none;}
+a.quiet{font-weight:normal;}
 a:hover{text-decoration:underline;color:#1A59C7;}
 img {border: 0;}
 body.nojs .jsonly { display: none;}
@@ -25,6 +26,7 @@ div.focus{float:right;width:770px;margin-bottom:20px;}
 div.focus.pageheader{margin-bottom:0;}
 .clear{clear:both;}
 .clearafter:after{visibility:hidden;display:block;font-size:0;content:" ";clear:both;height:0;}
+.two{width:100px;}
 .three{width:160px;}
 .four{width:220px;}
 .five{width:280px;}
@@ -166,14 +168,17 @@ div.headshot span{display: block;position: relative;font-size: 10px;color: #8888
 #activity .excerpt{display:block;border-left:1px dotted #AAAAAA;margin-left:2em;padding-left:1em;font-style:italic;margin-top:5px;}
 
 /* SEARCH */
-.result .highlighted,.result em{background-color:yellow;font-style:normal;}
-.result.statement .context,.result.statement .focus{min-height:0;}
-.result.statement .focus{margin-bottom:5px;}
-.result.statement .focus p {max-width: 640px;}
-.result.statement{border:none;padding-top:5px;}
+.search .search_header { padding-bottom: 30px; }
+.search .result {margin-bottom: 5px; padding-top: 5px;}
+.search .result .highlighted,.result em{background-color:yellow;font-style:normal;}
+.search .result div.focus {float: left; width: 620px; margin: 0;}
+.search .result div.focus p {max-width: 620px;}
+.search .result div.context {float: right; text-align: right; color: #555; font-size: 11px; padding-top: 2px; width: 140px;}
+.search .result div.context p {margin-right: 0;}
 #page_searchbox{width:400px;font-size:15px;padding:4px;}
 #searchbutton{margin-left:12px;}
-p.search_options{margin: 5px 0; width: 770px; max-width: 770px; text-align: center;}
+p.search_options{margin: 5px 0; width: 770px; max-width: 770px; text-align: center; opacity: 0.8;}
+p.search_options:hover { opacity: 1.0;}
 
 /* HOME */
 #home_searchform .VS-search { width: 450px; float: left;}
