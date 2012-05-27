@@ -9,7 +9,7 @@
         <div class="context">
 			<p>{{ result.date|date:"F jS, Y"}}
 			<br>{% if result.committee %}{{ result.committee }} committee{% else %}House debate{% endif %}</p>
-			<p>{% if result.politician_id %}<a href="{% url politicians.views.politician pol_id=result.politician_id %}" class="pol_name">{{ result.politician }}</a>{% else %}{{ result.politician }}{% endif %}{% if result.party %}<br><span class="tag partytag_{{ result.party|slugify }}">{{ result.party }}</span>{% endif %}</p></div>
+			<p>{% if result.politician_id %}<a href="/politicians/{{ result.politician_id }}/" class="pol_name">{{ result.politician }}</a>{% else %}{{ result.politician }}{% endif %}{% if result.party %}<br><span class="tag partytag_{{ result.party|slugify }}">{{ result.party }}</span>{% endif %}</p></div>
         <div class="focus"><p><a href="{{ result.url }}#hl" class="statement_topic">{% if result.topic %}{{ result.topic }}{% else %}(no topic){% endif %}</a> &nbsp;{{ result.text }}</p></div>
         <div class="clear"></div>
     {% endif %}
