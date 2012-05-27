@@ -168,7 +168,7 @@ def get_activity_by_url(activity_url):
 
     activity_type = root.cssselect('span.StacTitlePrefix')[0]
     activity.study = 'Study' in activity_type.text
-    activity.name_en = activity_type.tail.strip()
+    activity.name_en = activity_type.tail.strip()[:500]
 
     # See if this already exists for another session
     try:
@@ -187,7 +187,7 @@ def get_activity_by_url(activity_url):
         }
         root = lxml.html.parse(urllib2.urlopen(url)).getroot()
         activity_type = root.cssselect('span.StacTitlePrefix')[0]
-        activity.name_fr = activity_type.tail.strip()
+        activity.name_fr = activity_type.tail.strip()[:500]
 
         activity.save()
 

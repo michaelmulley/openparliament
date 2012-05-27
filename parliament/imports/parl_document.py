@@ -92,7 +92,7 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
                 s.politician = Politician.objects.get_by_parl_id(s.who_hocid, session=document.session)
                 s.member = ElectedMember.objects.get_by_pol(s.politician, date=document.date)
             except Politician.DoesNotExist:
-                logger.error("Could not resolve speaking politician ID %s for %r" % (s.who_hocid, s.who))
+                logger.info("Could not resolve speaking politician ID %s for %r" % (s.who_hocid, s.who))
 
         s._related_pols = set()
         s._related_bills = set()
