@@ -1,3 +1,5 @@
+/** PATCHED to properly encode/decode non-ASCII characters **/
+
 /**
  * History.js Core
  * @author Benjamin Arthur Lupton <contact@balupton.com>
@@ -1056,7 +1058,7 @@
 
             // Unescape hash
             while ( true ) {
-                tmp = window.unescape(result);
+                tmp = decodeURIComponent(result);
                 if ( tmp === result ) {
                     break;
                 }
@@ -1171,7 +1173,7 @@
             var result = History.normalizeHash(hash);
 
             // Escape hash
-            result = window.escape(result);
+            result = encodeURIComponent(result);
 
             // IE6 Escape Bug
             if ( !History.bugs.hashEscape ) {
