@@ -5,6 +5,7 @@
 .searchdatefilter .tools {
     margin-top: 10px;
     height: 20px;
+    margin-bottom: 30px;
 }
 
 .searchdatefilter .tools .label {
@@ -16,7 +17,7 @@
 }
 
 .searchdatefilter .tools .label span {
-    background-color: yellow;
+    background-color: #F2F59A;
     font-size: 85%;
     font-style: italic;
     color: #222222;
@@ -53,7 +54,7 @@
 
 .searchdatefilter .hover-label .label span {
     background-color: white;
-    background-color: rgba(255,255,255,0.6);
+    background-color: rgba(255,255,255,0.8);
 }
 .searchdatefilter .hover-label span.note {
     font-size: 90%;

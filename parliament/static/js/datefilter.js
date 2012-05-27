@@ -19,7 +19,7 @@
         opts = opts || {};
         _.defaults(opts, {
             width: 770,
-            chartHeight: 85,
+            chartHeight: 75,
             strokeStyle: '#ff9900',
             fillStyle: '#e6f2fa',
             lineWidth: 3.5,
@@ -53,12 +53,8 @@
         var $tools = this.$el.find('.tools');
         $tools.css({opacity: 0.4});
         this.$el.hover(
-            function(e) { $tools.animate({
-                opacity: 1.0
-            }); },
-            function(e) { $tools.animate({
-                opacity: 0.4
-            }); }
+            function(e) { $tools.fadeTo(200, 1.0); },
+            function(e) { $tools.fadeTo(200, 0.4); }
         );
 
     };
@@ -261,9 +257,10 @@
             var $right = this.$el.find('.tools .label.right');
 
             $left.position({
-                my: "right top",
+                my: ((values[1] - values[0]) < 24) ? "right top" : "left top",
                 at: "center bottom",
-                of: this.$el.find('.ui-slider-handle')[0]
+                of: this.$el.find('.ui-slider-handle')[0],
+                collision: "fit"
             }).find('span').text(this.valueToLabel(values[0]));
 
             if (values[0] === values[1]) {
@@ -273,7 +270,8 @@
                 $right.position({
                     my: "left top",
                     at: "center bottom",
-                    of: this.$el.find('.ui-slider-handle')[1]
+                    of: this.$el.find('.ui-slider-handle')[1],
+                    collision: "fit"
                 }).show().find('span').text(this.valueToLabel(values[1]));
             }
 
