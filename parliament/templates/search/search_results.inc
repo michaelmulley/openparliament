@@ -22,6 +22,7 @@
     {% if result.django_ct == 'bills.bill' %}<div class="context"><p><strong>Legislation</strong></p></div>
         <div class="focus"><p><a href="{{ result.url }}">Bill {{ result.number }}</a> <span class="pol_affil">({{ result.session}})</span></p><p>{{ result.text }}</p></div>{% endif %}</div>
     {% endfor %}
+	<div class="clear"></div>
     {% include "pagination.inc" %}
 {#	</div>#}
 {% endif %}{# endif page #}
