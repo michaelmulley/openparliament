@@ -1,9 +1,6 @@
 {% extends "committees/meeting.html" %}
 {% load thumbnail compress %}
 {% block headextra %}
-	{% compress js %}
-	<script type="text/javascript" src="{{ STATIC_URL }}js/pagination.js"></script>
-	{% endcompress %}
 {{ block.super }}
 {% if highlight_statement or highlight_statement == 0%}<link rel="canonical" href="{{ highlight_statement.get_absolute_url }}only/">{% endif %}
 {% endblock %}

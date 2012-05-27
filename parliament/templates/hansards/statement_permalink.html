@@ -9,8 +9,4 @@
 <div class="focus">
 <p><a href="{{ statement_url }}">See context</a> to find out what was said next.</p></div>
 {% endblock content %}
-{% block headextra %}
-	{% compress js %}
-		<script type="text/javascript" src="{{ STATIC_URL }}js/pagination.js"></script>
-	{% endcompress %}
-{% endblock %}
+

@@ -5,9 +5,6 @@
 <link rel="alternate" type="application/rss+xml" title="{{ pol.name }}: Statements in the House of Commons" href="{% url politician_statement_feed pol_id=pol.id %}">
 <link rel="alternate" type="application/rss+xml" title="{{ pol.name }}: Recent Activity" href="{% url politician_activity_feed pol_id=pol.id %}">
 {% endif %}
-	{% compress js %}
-		<script type="text/javascript" src="{{ STATIC_URL }}js/pagination.js"></script>
-	{% endcompress %}
 	<meta name="description" content="Search through {{ pol.name }}'s recent activity, votes, and speeches in the House.">
 {% endblock headextra %}
 {% block contentclass %}context_4 politician{% endblock %}

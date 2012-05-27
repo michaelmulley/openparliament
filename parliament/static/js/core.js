@@ -39,47 +39,24 @@ OP.utils = {
 
         return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
 
+    },
+
+    slugify: function(s) {
+        return s.toLowerCase().replace(/[^a-z0-9]/, '-');
     }
 };
-$(function() {
-    $('body').removeClass('nojs').addClass('js');
 
-    // SEARCH BUTTONS
-    var searchbox_default = 'Search';
-    $('#nav_searchbox').val(searchbox_default).bind('focus', function() {
-       $(this).addClass('active'); 
-       if (this.value == searchbox_default) {
-           this.value = '';
-       }
-    }).bind('blur', function () {
-       $(this).removeClass('active');
-       if (this.value == '') {
-           this.value = searchbox_default;
-       }
-    });
-    $('#nav_searchform').bind('submit', function(e) {
-        var v = $('#nav_searchbox').val();
-        if (v == searchbox_default || v == "") {
-            e.preventDefault();
-            alert("To search, enter a postal code, name, or phrase into the text box.");
+// TOOLTIPS
+jQuery.fn.overflowtip = function() {
+    return this.each(function() {
+        if (this.clientWidth < this.scrollWidth
+            || (this.clientHeight + 5) < this.scrollHeight) {
+            $(this).attr('title', $(this).text());
         }
     });
-    $('#nav_searchbutton').click(function(e) {
-       e.preventDefault();
-       $('#nav_searchform').submit();
-    });
+};
 
-    // TOOLTIPS
-    jQuery.fn.overflowtip = function() {
-        return this.each(function() {
-            if (this.clientWidth < this.scrollWidth 
-              || (this.clientHeight + 5) < this.scrollHeight) {
-                $(this).attr('title', $(this).text());       
-            }
-        });
-    };
-    $('.overflowtip').overflowtip().tooltip({delay: 150});
-    $('.tip, .related_link').tooltip({delay: 100, showURL: false});
+$(function() {
 
     // MARGINALIA
     var $content = $('#content');
@@ -109,19 +86,30 @@ $(function() {
     $('[data-marginalia]').marginalia('mouseenter', 'mouseleave', function($obj) {
         return $obj.attr('data-marginalia');
     });
-    
-    $('a.maillink').attr('href', OP.utils.rot13('znvygb:zvpunry@zvpunryzhyyrl.pbz'));
-    
-    $('a[href$="#hl"]').each(function () {
-        this.href = this.href.substring(0, this.href.length - 3);
+
+    $('body').removeClass('nojs').addClass('js');
+
+    $('.overflowtip').overflowtip().tooltip({delay: 150});
+
+    // This event is to be triggered on AJAX loads too
+    $(document).bind('contentLoad', function() {
+        $('.tip, .related_link').tooltip({delay: 100, showURL: false});
+
+        $('a.maillink').attr('href', OP.utils.rot13('znvygb:zvpunry@zvpunryzhyyrl.pbz'));
+
+        $('a[href$="#hl"]').each(function () {
+            this.href = this.href.substring(0, this.href.length - 3);
+        });
     });
-    
-    var uservoiceOptions = {
-      key: 'openparliament',
-      host: 'openparliament.uservoice.com', 
-      forum: '52385',
-      lang: 'en',
-      showTab: false
-    };
+
+    $(document).trigger('contentLoad');
+
+//    var uservoiceOptions = {
+//      key: 'openparliament',
+//      host: 'openparliament.uservoice.com',
+//      forum: '52385',
+//      lang: 'en',
+//      showTab: false
+//    };
 
 });

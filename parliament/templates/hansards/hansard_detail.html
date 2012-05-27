@@ -4,9 +4,6 @@
 {% block pageheading %}Debates of {{ hansard.date|date:"N jS, Y" }}{% endblock %}
 {% block breadcrumbs %}<a href="{% url parliament.hansards.views.index %}">Debates</a> <a href="{% url parliament.hansards.views.by_year year=hansard.date.year %}">{{ hansard.date.year }}</a> {{ hansard.date|date:"F jS" }}{% endblock %}
 {% block headextra %}
-	{% compress js %}
-		<script type="text/javascript" src="{{ STATIC_URL }}js/pagination.js"></script>
-	{% endcompress %}
 	{% if highlight_statement or highlight_statement == 0%}
 		<link rel="canonical" href="{{ request.path }}only/">
 	{% endif %}
