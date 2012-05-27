@@ -59,7 +59,8 @@ def committee(request, slug):
         'recent_studies': recent_studies,
         'archive_years': meeting_years,
         'subcommittees': Committee.objects.filter(parent=cmte, sessions=Session.objects.current()),
-        'include_year': newest_year != datetime.date.today().year
+        'include_year': newest_year != datetime.date.today().year,
+        'search_placeholder': u"Search %s transcripts" % cmte.short_name
     })
     return HttpResponse(t.render(c))
 

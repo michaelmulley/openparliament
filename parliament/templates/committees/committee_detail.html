@@ -2,11 +2,15 @@
 {% block breadcrumbs %}<a href="{% url committee_list %}">Committees</a> {{ committee.short_name }}{% endblock %}
 {% block content %}
 
-	{% if committee.parent %}
-		<div class="focus">
-			<p>This is a subcommittee of the <a href="{{ committee.parent.get_absolute_url }}">{{ committee.parent }}</a> committee.</p>
-		</div><div class="clear"></div>
-	{% endif %}
+	<div class="focus">
+		<form action="{% url search %}" method="GET" class="prepender">
+			<input type="hidden" name="prepend" value="Committee: &quot;{{ committee.slug }}&quot;">
+			{% include "search/searchbox.inc" with placeholder=search_placeholder %}
+		</form>
+		{% if committee.parent %}
+			<p style="margin-top: 10px;">This is a subcommittee of the <a href="{{ committee.parent.get_absolute_url }}">{{ committee.parent }}</a> committee.</p>
+		{% endif %}
+	</div><div class="clear"></div>
 
     <div class="context"><h2>Meetings</h2></div>
     <div class="focus">

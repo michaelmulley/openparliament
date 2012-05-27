@@ -82,6 +82,7 @@ def politician(request, pol_id=None, pol_slug=None):
         'statements_politician_view': True,
         'show_statements': show_statements,
         'activities': activity.iter_recent(Activity.public.filter(politician=pol)),
+        'search_placeholder': u"Search %s in Parliament" % pol.name
     })
     if request.is_ajax():
         t = loader.get_template("hansards/statement_page_politician_view.inc")

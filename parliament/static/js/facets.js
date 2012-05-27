@@ -2,11 +2,11 @@
 
     var facetTemplate = _.template(
         "<% for (var ftype = 0; ftype < data.length; ftype++) { if (data[ftype].values.length > 1) { %>" +
-            '<div class="facetgroup"><% for (var row = 0; row < data[ftype].values.length; row++) { %>' +
+            '<div class="facetgroup"><% for (var row = 0; row < data[ftype].values.length; row++) { if (data[ftype].labels[row]) { %>' +
                 '<div class="item<% if (row >= collapseAfter) { print(" collapsed"); } %>">' +
                     '<div class="barbg <%- OP.utils.slugify(data[ftype].values[row]) %>" style="width: <%= Math.round((data[ftype].counts[row]/data[ftype].max) * 100) %>%"></div>' +
                     '<div class="label"><em><%- data[ftype].counts[row] %></em><a href="#" data-add-facet="<%- data[ftype].filterName %>" data-facet-value="<%- data[ftype].values[row] %>"><%- data[ftype].labels[row] %></a></div>' +
-                '</div><% } %>' +
+                '</div><% } } %>' +
             '<% if (data[ftype].values.length > collapseAfter) { %>' +
                 '<div class="item show-more"><div class="label"><a href="#" class="quiet">more <%- data[ftype].pluralName.toLowerCase() %> &rarr;</a></div></div>' +
             '<% } %>' +

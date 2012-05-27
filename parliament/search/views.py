@@ -51,6 +51,8 @@ def search(request):
             return closed(request, message=settings.PARLIAMENT_SEARCH_CLOSED)
             
         query = request.GET['q'].strip()
+        if request.GET.get('prepend'):
+            query = request.GET['prepend'] + u' ' + query
         if 'page' in request.GET:
             try:
                 pagenum = int(request.GET['page'])

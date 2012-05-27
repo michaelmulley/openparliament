@@ -90,6 +90,9 @@ td.standard_form{width:520px;}
 #marginalia{width:155px;padding:5px;background-color:#f9f7cd;border:1px dotted #666;color:#444;position:absolute;left: 0;}
 .infobox{max-width: 650px;background-color: #f9f7cd;border: 1px dotted #666;color: #222;padding: 15px;margin-bottom: 10px;}
 
+.VS-search.fake-VS {
+    max-width: 640px;
+}
 .VS-search.fake-VS input {
     width: 100%;
 }
@@ -166,6 +169,8 @@ div.headshot span{display: block;position: relative;font-size: 10px;color: #8888
 #activity h3{border-bottom:1px dotted #AAAAAA;}
 #activity h3 span{position:relative;top:3px;}
 #activity .excerpt{display:block;border-left:1px dotted #AAAAAA;margin-left:2em;padding-left:1em;font-style:italic;margin-top:5px;}
+#pol_restricted_search{margin: 15px 0;}
+#pol_restricted_search .VS-search {width: 640px;}
 
 /* SEARCH */
 .search .search_header { padding-bottom: 30px; }

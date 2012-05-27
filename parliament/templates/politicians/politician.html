@@ -28,7 +28,15 @@
 <li><a href="./contact/">Contact {{ pol.name_given }}</a></li></ul>
 {% endif %}
 
-{% if info.parl_id %}
+{% if not show_statements %}
+<h3>In Parliament</h3>
+<ul class="bulleted">
+	<li><a href="?page=1">Speeches</a> in House debates</li>
+</ul>
+{% endif %}
+
+
+	{% if info.parl_id %}
 <h3>Elsewhere</h3>
 <ul class="bulleted">
 {% if info.web_site %}<li><a href="{{ info.web_site }}">{{ pol|hisher }} site</a></li>{% endif %}
@@ -54,8 +62,12 @@
 <p><strong>{% if candidate.elected %}Won{% else %}Lost{% endif %}</strong> {{ pol|hisher|lower }} last election, {% if candidate.election.byelection %}a byelection {% endif %}in {{ candidate.election.date|date:"Y" }}, with {{ candidate.votepercent }}% of the vote.</p>
 {% endif %}{% endwith %}
 
+<form id="pol_restricted_search" class="prepender" action="{% url search %}" method="GET">
+<input type="hidden" name="prepend" value="MP: &quot;{{ pol.identifier }}&quot;">
+{% include "search/searchbox.inc" with placeholder=search_placeholder %}
+</form>
+
 {% if not show_statements %}
-<p><a href="?page=1" class="pagelink show_paginated_div">Browse {{ pol|hisher|lower }} statements in the House of Commons</a></p>
 
 <div id="activity">
 {% for activity in activities %}

@@ -91,6 +91,19 @@ $(function() {
 
     $('.overflowtip').overflowtip().tooltip({delay: 150});
 
+    // Search forms: if there's an automatic "prepend" value,
+    // stick it onto the query then get rid of it.
+    $('form.prepender').submit(function(e) {
+        var $prepend = $(this).find('input[name=prepend]');
+        if ($prepend.val()) {
+            var $q = $(this).find('input[name=q]');
+            $q.val($prepend.val() + ' ' + $q.val())
+            $prepend.val('');
+            $prepend.remove();
+        }
+    });
+    $('input[name=q]').val('');
+
     // This event is to be triggered on AJAX loads too
     $(document).bind('contentLoad', function() {
         $('.tip, .related_link').tooltip({delay: 100, showURL: false});
