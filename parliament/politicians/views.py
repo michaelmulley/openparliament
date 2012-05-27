@@ -14,7 +14,7 @@ from parliament.activity.models import Activity
 from parliament.activity import utils as activity
 from parliament.core.models import Politician, ElectedMember
 from parliament.core.utils import feed_wrapper
-from parliament.hansards.models import Statement
+from parliament.hansards.models import Statement, Document
     
 def current_mps(request):
     t = loader.get_template('politicians/electedmember_list.html')
@@ -57,7 +57,8 @@ def politician(request, pol_id=None, pol_slug=None):
     
     if show_statements:
         STATEMENTS_PER_PAGE = 10
-        statements = pol.statement_set.filter(procedural=False).order_by('-time', '-sequence')
+        statements = pol.statement_set.filter(
+            procedural=False, document__document_type=Document.DEBATE).order_by('-time', '-sequence')
         paginator = Paginator(statements, STATEMENTS_PER_PAGE)
         try:
             pagenum = int(request.GET.get('page', '1'))
