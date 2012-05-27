@@ -129,7 +129,8 @@ class PoliticianStatementFeed(Feed):
         return "Statements by %s in the House of Commons, from openparliament.ca." % pol.name
         
     def items(self, pol):
-        return Statement.objects.filter(member__politician=pol).order_by('-time')[:12]
+        return Statement.objects.filter(
+            member__politician=pol, document__document_type=Document.DEBATE).order_by('-time')[:12]
         
     def item_title(self, statement):
         return statement.topic
