@@ -212,7 +212,7 @@ def _align_sequences(new_statements, old_statements):
     return mappings
 
 def _process_related_links(content, statement):
-    return re.sub(r'<a class="related_link (\w+)" ([^>]+)>(.+?)</a>',
+    return re.sub(r'<a class="related_link (\w+)" ([^>]+)>(.*?)</a>',
         lambda m: _process_related_link(m, statement),
         content)
 
