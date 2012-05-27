@@ -62,7 +62,8 @@ def search(request):
         
         searchparams = {
             'start' : startfrom,
-            'rows': PER_PAGE
+            'rows': PER_PAGE,
+            'facet': 'true'
         }
         ctx = {
             'query': query,
@@ -101,8 +102,13 @@ def search(request):
             if ' ' in filter_value and filter_name != 'date':
                 filter_value = u'"%s"' % filter_value
 
+            if filter_name in ['who_hocid', 'politician_id', 'politician']:
+                filter_tag = 'fperson'
+            else:
+                filter_tag = 'f' + filter_name
+
             filter_types.add(filter_name)
-            filters.append(u'{!tag=f%s}%s:%s' % (filter_name, filter_name, filter_value))
+            filters.append(u'{!tag=%s}%s:%s' % (filter_tag, filter_name, filter_value))
             return ''
         bare_query = re.sub(r'(%s): "([^"]+)"' % '|'.join(ALLOWABLE_FILTERS),
             extract_filter, query)
@@ -113,38 +119,15 @@ def search(request):
         if filters:
             searchparams['fq'] = filters
 
-        facet_opts = {
-            'facet.range': '{!ex=fdate}date',
-            'facet': 'true',
-            'facet.range.end': 'NOW',
-            'facet.range.gap': '+1YEAR',
-        }
-
-        facet_opts.update({
-            'facet.limit': 13,
-            'f.province.facet.mincount': 1,
-            'f.party.facet.mincount': 1,
-            'f.politician.facet.mincount': 1,
-            'facet.field': [
-                '{!ex=fpolitician_id}politician',
-                '{!ex=fprovince}province',
-                '{!ex=fparty}party'
-            ],
-            'f.province.facet.method': 'enum',
-            'f.party.facet.method': 'enum'
-        })
-
         committees_only = 'committee_slug' in filter_types or '-committee_slug:""' in filters
         committees_maybe = 'django_ct' not in filter_types or committees_only
         if committees_maybe and not committees_only:
             ctx['discontinuity'] = 2006
 
         if committees_only:
-            facet_opts['facet.range.start'] = '2006-01-01T00:00:00.000Z'
+            searchparams['facet.range.start'] = '2006-01-01T00:00:00.000Z'
         else:
-            facet_opts['facet.range.start'] = '1994-01-01T00:00:00.000Z'
-
-        searchparams.update(facet_opts)
+            searchparams['facet.range.start'] = '1994-01-01T00:00:00.000Z'
 
         for opt in ALLOWABLE_OPTIONS:
             if opt in request.GET and request.GET[opt] in ALLOWABLE_OPTIONS[opt]:
