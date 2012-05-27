@@ -13,7 +13,7 @@ $(function() {
         var newStateURL = History.getState().url;
         var $paginated = $('#paginated');
         $paginated.find('.pagination').addClass('loading');
-        $paginated.load(newStateURL + (newStateURL.indexOf('?') === -1 ? '?' : '&') + 'partial=1',
+        $paginated.load(encodeURI(newStateURL) + (newStateURL.indexOf('?') === -1 ? '?' : '&') + 'partial=1',
             '', function() {
             $(document).trigger('contentLoad');
             $paginated.css({opacity: 1.0});
