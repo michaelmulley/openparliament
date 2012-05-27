@@ -50,7 +50,7 @@ def search(request):
         if getattr(settings, 'PARLIAMENT_SEARCH_CLOSED', False):
             return closed(request, message=settings.PARLIAMENT_SEARCH_CLOSED)
             
-        query = parsetools.removeAccents(request.GET['q'].strip())        
+        query = request.GET['q'].strip()
         if 'page' in request.GET:
             try:
                 pagenum = int(request.GET['page'])
@@ -151,7 +151,10 @@ def search(request):
                 searchparams[opt] = request.GET[opt] 
                 ctx[opt] = request.GET[opt]
 
-        results = autohighlight(solr.search(bare_query, **searchparams))
+        # Our version of pysolr doesn't like Unicode
+        if searchparams.get('fq'):
+            searchparams['fq'] = map(lambda f: f.encode('utf-8'), searchparams['fq'])
+        results = autohighlight(solr.search(bare_query.encode('utf-8'), **searchparams))
 
         date_counts = []
         if 'facet_ranges' in results.facets:
