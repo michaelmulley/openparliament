@@ -414,9 +414,9 @@
 			   and old cache.
 	  -->
 <filterCache class="solr.FastLRUCache"
-			 size="512"
-			 initialSize="512"
-			 autowarmCount="0"/>
+			 size="4000"
+			 initialSize="4000"
+			 autowarmCount="2000"/>
 
 <!-- Query Result Cache
 
@@ -424,9 +424,9 @@
 		 (DocList) based on a query, a sort, and the range of documents requested.
 	  -->
 <queryResultCache class="solr.LRUCache"
-				  size="512"
-				  initialSize="512"
-				  autowarmCount="0"/>
+				  size="2000"
+				  initialSize="2000"
+				  autowarmCount="1000"/>
 
 <!-- Document Cache
 
@@ -713,7 +713,6 @@
 		<str name="bf">recip(ms(NOW/HOUR,date),3.16e-11,1,1)^1.5</str>
 		<str name="mm">75%</str>
 		<int name="ps">100</int>
-		<!-- example highlighter config, enable per-query with hl=true -->
 		<str name="hl.fl">text</str>
 		<str name="hl">true</str>
 		<str name="hl.alternateField">text</str>
@@ -721,6 +720,24 @@
 		<str name="hl.maxAlternateFieldLength">280</str>
 		<str name="hl.simple.pre">~hl~</str>
 		<str name="hl.simple.post">~/hl~</str>
+
+		<!-- date facet -->
+		<str name="facet.range">{!ex=fdate}date</str>
+		<str name="facet.range.start">1994-01-01T00:00:00.000Z</str>
+		<str name="facet.range.end">NOW</str>
+		<str name="facet.range.gap">+1YEAR</str>
+
+		<!-- field facet -->
+		<int name="facet.limit">13</int>
+		<int name="f.province.facet.mincount">1</int>
+		<int name="f.party.facet.mincount">1</int>
+		<int name="f.politician.facet.mincount">1</int>
+		<str name="facet.field">{!ex=fperson}politician</str>
+		<str name="facet.field">{!ex=fprovince}province</str>
+		<str name="facet.field">{!ex=fparty}party</str>
+		<str name="f.province.facet.method">enum</str>
+		<str name="f.party.facet.method">enum</str>
+
 	</lst>
 	<!-- In addition to defaults, "appends" params can be specified
 			 to identify values which should be appended to the list of
