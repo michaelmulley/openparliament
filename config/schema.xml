@@ -540,7 +540,7 @@
 
 	<field name="province" type="string" indexed="true" stored="true" multiValued="false" />
 
-	<field name="politician" type="string" indexed="false" stored="true" multiValued="false" />
+	<field name="politician" type="string" indexed="true" stored="true" multiValued="false" />
 
 	<field name="url" type="string" indexed="false" stored="true" multiValued="false" />
 
