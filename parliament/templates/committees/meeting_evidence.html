@@ -39,4 +39,4 @@
 
 </div>
 {% endblock %}
-{% block footer %}<p>View this document on a <a href="?singlepage=1">single page</a>.</p>{{ block.super }}{% endblock footer %}
+{% block footer %}<p>View this document on a <a href="{{ pagination_url }}?singlepage=1">single page</a>.</p>{{ block.super }}{% endblock footer %}
