@@ -7,9 +7,12 @@
 			<input type="hidden" name="prepend" value="Committee: &quot;{{ committee.slug }}&quot;">
 			{% include "search/searchbox.inc" with placeholder=search_placeholder %}
 		</form>
-		{% if committee.parent %}
-			<p style="margin-top: 10px;">This is a subcommittee of the <a href="{{ committee.parent.get_absolute_url }}">{{ committee.parent }}</a> committee.</p>
-		{% endif %}
+			<p style="margin-top: 20px;">
+				{% if committee.parent %}
+				This is a subcommittee of the <a href="{{ committee.parent.get_absolute_url }}">{{ committee.parent }}</a> committee.</p>
+				{% endif %}
+				Visit this committee on <a href="{{ committee.get_source_url }}">Parliament&rsquo;s site</a>.
+			</p>
 	</div><div class="clear"></div>
 
     <div class="context"><h2>Meetings</h2></div>

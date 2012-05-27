@@ -53,6 +53,9 @@ class Committee(models.Model):
         return ('parliament.committees.views.committee', [],
             {'slug': self.slug})
 
+    def get_source_url(self):
+        return self.committeeinsession_set.order_by('-session__start')[0].get_source_url()
+
     def get_acronym(self, session):
         return CommitteeInSession.objects.get(
             committee=self, session=session).acronym
@@ -73,6 +76,15 @@ class CommitteeInSession(models.Model):
 
     def __unicode__(self):
         return u"%s (%s) in %s" % (self.committee, self.acronym, self.session_id)
+
+    def get_source_url(self):
+        return 'http://parl.gc.ca/CommitteeBusiness/CommitteeHome.aspx?Cmte=%(acronym)s&Language=%(lang)s&Mode=1&Parl=%(parliamentnum)s&Ses=%(sessnum)s' % {
+            'acronym': self.acronym,
+            'lang': settings.LANGUAGE_CODE.upper()[0],
+            'parliamentnum': self.session.parliamentnum,
+            'sessnum': self.session.sessnum
+        }
+
 
 class CommitteeActivity(models.Model):
     
