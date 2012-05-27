@@ -162,7 +162,7 @@ def get_activity_by_url(activity_url):
     }
     root = lxml.html.parse(urllib2.urlopen(url)).getroot()
 
-    acronym = re.search(r'\(([A-Z][A-Z0-9]{3})\)', root.cssselect('div.HeaderTitle span')[0].text).group(1)
+    acronym = re.search(r'\(([A-Z][A-Z0-9]{2,3})\)', root.cssselect('div.HeaderTitle span')[0].text).group(1)
 
     activity.committee = CommitteeInSession.objects.get(acronym=acronym, session=session).committee
 
