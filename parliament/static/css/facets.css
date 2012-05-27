@@ -1,6 +1,6 @@
 .facetwidget .facetgroup {
     margin-bottom: 20px;
-    opacity: 0.8;
+    opacity: 0.85;
 }
 .facetwidget .facetgroup:hover {
     opacity: 1.0;
@@ -33,7 +33,7 @@
     height: 100%;
 }
 .barbg {
-    background-color: #f2f59a;
+    background-color: #f4efb3;
 }
 
 .facetwidget em {

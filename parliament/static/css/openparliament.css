@@ -175,6 +175,7 @@ div.headshot span{display: block;position: relative;font-size: 10px;color: #8888
 .search .result div.focus p {max-width: 620px;}
 .search .result div.context {float: right; text-align: right; color: #555; font-size: 11px; padding-top: 2px; width: 140px;}
 .search .result div.context p {margin-right: 0;}
+#main_search_controls {margin-bottom: 10px;}
 #page_searchbox{width:400px;font-size:15px;padding:4px;}
 #searchbutton{margin-left:12px;}
 p.search_options{margin: 5px 0; width: 770px; max-width: 770px; text-align: center; opacity: 0.8;}
