@@ -7,7 +7,8 @@
 		</div>
     {% for result in page.object_list %}<div class="result" data-url="{{ result.url }}">
 
-    {% if result.django_ct == 'core.politician' %}<div class="context"><p><strong>Politician</strong></p></div>
+    {% if result.django_ct == 'core.politician' %}
+{#		<div class="context"><p><strong>Politician</strong></p></div>#}
         <div class="focus"><p><a href="{{ result.url }}" class="pol_name">{{ result.politician }}</a> {{ result.text }}</p></div>{% endif %}
 
     {% if result.django_ct == 'hansards.statement' %}
