@@ -19,7 +19,7 @@ def home(request):
     c = RequestContext(request, {
         'latest_hansard': Document.debates.all()[0],
         'sitenews': SiteNews.objects.filter(active=True,
-            date__gte=datetime.datetime.now() + datetime.timedelta(days=60))[:6],
+            date__gte=datetime.datetime.now() - datetime.timedelta(days=60))[:6],
         'votes': VoteQuestion.objects.filter(session=Session.objects.current())\
             .select_related('bill')[:6],
     })
