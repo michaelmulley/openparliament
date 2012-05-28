@@ -4,10 +4,21 @@
 <title>{% block pagetitle %}{% endblock %} | openparliament.ca labs</title>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link rel="icon" type="image/png" href="{{ STATIC_URL }}images/favicon.png">
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-{% compress js %}
-<script type="text/javascript" src="{{ STATIC_URL }}js/openparliament.js"></script>
-{% endcompress %}
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+	{% compress js %}
+		<script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.slimbox.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.tooltip.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/libs/placeholder-polyfill.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/libs/json2.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/libs/history.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/libs/history.html4.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/libs/history.adapter.jquery.js"></script>
+
+		<script type="text/javascript" src="{{ STATIC_URL }}js/core.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/pagination.js"></script>
+		<script type="text/javascript" src="{{ STATIC_URL }}js/statementbrowser.js"></script>
+
+	{% endcompress %}
 {% if not debug %}
 <script type="text/javascript">
 
