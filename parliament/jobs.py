@@ -58,7 +58,7 @@ def committees(sess=None):
 
 def committees_full():
     committees()
-    commitee_evidence()
+    committee_evidence()
     
 @transaction.commit_on_success
 def hansards_load():
