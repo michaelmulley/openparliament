@@ -63,6 +63,13 @@ class Committee(models.Model):
     def latest_session(self):
         return self.sessions.order_by('-start')[0]
 
+    @property
+    def title(self):
+        if 'committee' in self.name.lower():
+            return self.name
+        else:
+            return self.name + u' Committee'
+
 class CommitteeInSession(models.Model):
     session = models.ForeignKey(Session)
     committee = models.ForeignKey(Committee)

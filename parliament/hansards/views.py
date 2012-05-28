@@ -113,16 +113,20 @@ def statement_twitter(request, hansard_id, sequence):
         get_twitter_share_url(statement.get_absolute_url(), description)
     )
     
-def statement_permalink(request, slug, year, month, day):
-    """A page displaying only a single statement. Used as a non-JS permalink."""
-    #TODO: Work with evidence
-    
+def debate_permalink(request, slug, year, month, day):
+
     doc = _get_hansard(year, month, day)
     if slug.isdigit():
         statement = get_object_or_404(Statement, document=doc, sequence=slug)
     else:
         statement = get_object_or_404(Statement, document=doc, slug=slug)
-    
+
+    return statement_permalink(request, doc, statement, "hansards/statement_permalink.html",
+        hansard=doc)
+
+def statement_permalink(request, doc, statement, template, **kwargs):
+    """A page displaying only a single statement. Used as a non-JS permalink."""
+
     if statement.politician:
         who = statement.politician.name
     else:
@@ -131,18 +135,22 @@ def statement_permalink(request, slug, year, month, day):
     
     if statement.topic:
         title += u' on %s' % statement.topic
-    t = loader.get_template("hansards/statement_permalink.html")
-    c = RequestContext(request, {
+    elif 'committee' in kwargs:
+        title += u' at the ' + kwargs['committee'].title
+
+    t = loader.get_template(template)
+    ctx = {
         'title': title,
         'who': who,
         'page': {'object_list': [statement]},
+        'doc': doc,
         'statement': statement,
-        'hansard': doc,
         'statements_full_date': True,
         'statement_url': statement.get_absolute_url(),
         #'statements_context_link': True
-    })
-    return HttpResponse(t.render(c))
+    }
+    ctx.update(kwargs)
+    return HttpResponse(t.render(RequestContext(request, ctx)))
     
 def document_cache(request, document_id, language):
     document = get_object_or_404(Document, pk=document_id)

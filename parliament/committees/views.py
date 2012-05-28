@@ -1,13 +1,14 @@
 import datetime
 
-from django.http import HttpResponse, HttpResponsePermanentRedirect
+from django.http import HttpResponse, HttpResponsePermanentRedirect, Http404
 from django.shortcuts import get_object_or_404, render
 from django.template import loader, RequestContext
 from django.core.serializers.json import simplejson as json
 
 from parliament.committees.models import Committee, CommitteeMeeting, CommitteeActivity
 from parliament.core.models import Session
-from parliament.hansards.views import document_view
+from parliament.hansards.views import document_view, statement_permalink
+from parliament.hansards.models import Statement
 
 def committee_list(request):
     committees = Committee.objects.filter(sessions=Session.objects.current(),
@@ -106,6 +107,20 @@ def committee_meeting(request, committee_slug, session_id, number, slug=None):
             'meeting': meeting,
             'committee': meeting.committee
         })
+
+def evidence_permalink(request, committee_slug, session_id, number, slug):
+
+    try:
+        meeting = CommitteeMeeting.objects.select_related('evidence', 'committee').get(
+            committee__slug=committee_slug, session=session_id, number=number)
+    except CommitteeMeeting.DoesNotExist:
+        raise Http404
+
+    doc = meeting.evidence
+    statement = get_object_or_404(Statement, document=doc, slug=slug)
+
+    return statement_permalink(request, doc, statement, "committees/evidence_permalink.html",
+        meeting=meeting, committee=meeting.committee)
 
 
 

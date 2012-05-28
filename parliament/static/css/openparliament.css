@@ -39,7 +39,7 @@ div.focus.pageheader{margin-bottom:0;}
 .context h3{font-size:15px;}
 
 /* SITE NAVIGATION */
-#breadcrumbs{width:960px;color:#555555;font-size:14px;font-weight:bold;}
+#breadcrumbs{width:960px;color:#555555;font-size:14px;font-weight:bold;margin-bottom: 10px;}
 #breadcrumbs a{background:transparent url('../images/breadglyph.png') no-repeat right;padding-right:13px;font-weight:normal;}
 #navlinks{font-weight:bold;position:absolute;font-size:15px;top:19px;left:355px;list-style-type:none;margin:0;padding:0;letter-spacing: 0.1px;}
 #navlinks li{padding:0;float:left;margin-right:10px;}
@@ -199,7 +199,7 @@ p.search_options:hover { opacity: 1.0;}
 }
 
 /* HOME */
-.home h1 {margin-top: 15px; margin-bottom: 20px;}
+.home h1 {margin-bottom: 20px;}
 #home_searchform .VS-search { width: 450px; float: left;}
 #home_searchbutton { float: left; position: relative; top: 1px; margin-left: 10px;}
 /*.js #home_searchbutton { display: none;}*/
