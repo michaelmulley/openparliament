@@ -9,6 +9,7 @@ a.quiet{font-weight:normal;}
 a:hover{text-decoration:underline;color:#1A59C7;}
 img {border: 0;}
 body.nojs .jsonly { display: none;}
+input.placeholder { color: #AAAAAA !important;}
 
 /* LAYOUT */ 
 #content{width:960px;margin-left:auto;margin-right:auto;padding-top:15px;position:relative;}
@@ -95,6 +96,10 @@ td.standard_form{width:520px;}
 }
 .VS-search.fake-VS input {
     width: 100%;
+    color: #222222;
+    /* These somehow make things work in IE... */
+    float: none;
+    background-color: white;
 }
 .VS-search.fake-VS .VS-search-inner {
     margin-left: 25px;

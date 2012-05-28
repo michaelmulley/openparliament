@@ -1,5 +1,7 @@
 OP = {};
 
+OP.badIE = ($.browser.msie && parseInt($.browser.version, 10) < 9);
+
 OP.utils = {
 
     rot13: function (t){

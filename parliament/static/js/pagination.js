@@ -15,8 +15,10 @@ $(function() {
         $paginated.find('.pagination').addClass('loading');
         $paginated.load(encodeURI(newStateURL) + (newStateURL.indexOf('?') === -1 ? '?' : '&') + 'partial=1',
             '', function() {
+            if (!OP.badIE) {
+                $paginated.css({opacity: 1.0});
+            }
             $(document).trigger('contentLoad');
-            $paginated.css({opacity: 1.0});
             var scrollDown = Boolean($(document).scrollTop() > $paginated.offset().top);
             if ($paginated.is(':hidden')) {
                 $('.show_paginated_div').hide()
@@ -26,7 +28,11 @@ $(function() {
             if (scrollDown) {
                 $('html,body').animate({scrollTop: $paginated.offset().top - 15});
             }
-        }).css({opacity: 0.6});
+        });
+
+        if (!OP.badIE) {
+            $paginated.css({opacity: 0.5});
+        }
 
         // Tell Google Analytics about the new hit
         if (typeof window._gaq !== 'undefined') {
