@@ -46,7 +46,8 @@ div.focus.pageheader{margin-bottom:0;}
 #navlinks li a{color:#CCCCCC;}
 #navlinks li.selected a{color:#FFC757;}
 #navlinks li a:hover{color:white;text-decoration:underline;}
-#navbarbg{width:100%;position:absolute;left:0;top:0;height:16px;background-color:#7d450b;border-top:34px solid #095609;border-bottom:24px solid white;}
+#navbarbg{width:100%;position:absolute;left:0;top:0;height:16px;background-color:#7d450b;border-top:34px solid #095609;}
+    /*border-bottom:24px solid white;}*/
 #navbar{position:relative;margin-left:auto;margin-right:auto;width:960px;height:50px;}
 #navbar img{position:absolute;left:1px;}
 #nav_searchform .VS-search { width: 195px; position: absolute; right: 0px; top: 11px; }
@@ -91,19 +92,12 @@ td.standard_form{width:520px;}
 #marginalia{width:155px;padding:5px;background-color:#f9f7cd;border:1px dotted #666;color:#444;position:absolute;left: 0;}
 .infobox{max-width: 650px;background-color: #f9f7cd;border: 1px dotted #666;color: #222;padding: 15px;margin-bottom: 10px;}
 
-.VS-search.fake-VS {
-    max-width: 640px;
-}
-.VS-search.fake-VS input {
-    width: 100%;
-    color: #222222;
-    /* These somehow make things work in IE... */
-    background-color: white;
-    position: relative;
-}
-.VS-search.fake-VS .VS-search-inner {
-    margin-left: 25px;
-}
+/* NOTIFICATIONS */
+.top-notification { width: 100%; }
+.top-notification.warning { background-color: #fff1ae; border-bottom: 1px solid #d8c982; }
+.top-notification.success { background-color: #e8fbd4; border-bottom: 1px solid #b4ca91; }
+.top-notification.error { background-color: #ffd2c7; border-bottom: 1px solid #be9b93; }
+.notification-inner { width: 960px; margin: 0 auto; padding: 8px 0; color: #444444; text-align: center;}
 
 /* PAGINATION */
 .pagination{text-align:center;width:640px;}
@@ -190,6 +184,19 @@ div.headshot span{display: block;position: relative;font-size: 10px;color: #8888
 #searchbutton{margin-left:12px;}
 p.search_options{margin: 5px 0; width: 770px; max-width: 770px; text-align: center; opacity: 0.8;}
 p.search_options:hover { opacity: 1.0;}
+.VS-search.fake-VS {
+    max-width: 640px;
+}
+.VS-search.fake-VS input {
+    width: 100%;
+    color: #222222;
+    /* These somehow make things work in IE... */
+    background-color: white;
+    position: relative;
+}
+.VS-search.fake-VS .VS-search-inner {
+    margin-left: 25px;
+}
 
 /* HOME */
 .home h1 {margin-top: 15px; margin-bottom: 20px;}

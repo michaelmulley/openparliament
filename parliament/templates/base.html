@@ -58,6 +58,7 @@
 	</ul>
 	{% block navbar_search %}<form action="{% url search %}" method="GET" id="nav_searchform">{% include "search/searchbox.inc" with placeholder="Search" %}</form>{% endblock navbar_search %}
 </div>
+{% block notifications %}{# e.g. <div class="top-notification success"><div class="notification-inner">Hello!</div></div> #}{% endblock %}
 <div id="content_wrap"><div id="content" class="{% block contentclass %}{% endblock %}">
 	<div id="breadcrumbs">{% block breadcrumbs_all %}<a href="/">Home</a> {% block breadcrumbs %}{% endblock breadcrumbs %}{% endblock breadcrumbs_all %}</div>
 	{% block pageheading_override %}<div class="focus pageheader"><h1>{% block pageheading %}{{ title }}{% endblock pageheading %}</h1></div><div class="clear"></div>{% endblock pageheading_override %}
