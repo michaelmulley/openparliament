@@ -4,6 +4,7 @@
 {% block pagetitle %}Keeping tabs on Canada’s Parliament{% endblock %}
 {% block breadcrumbs_all %}{% endblock %}
 {% block pageheading %}Keep tabs on Parliament.{% endblock %}
+{% block bodyclass %}home{% endblock %}
 {% block content %}
 <div class="focus">
     <form action="/search/" id="home_searchform" method="GET">
@@ -14,8 +15,7 @@
     <div class="clear"></div><div class="context"><h2>What we’re doing</h2></div>
     <div class="focus">
     <p>Info on what your representatives are doing in Ottawa can be hard to find and use. <strong>We’re trying to make it easy.</strong></p>
-    <p>Browse <a href="{% url parliament.politicians.views.current_mps %}">MPs</a>, or find someone quickly by entering
-        a name or postal code above. See what your representatives are <a href="{% url parliament.hansards.views.index %}">saying</a>, and what <a href="{% url parliament.bills.views.index %}">laws</a> they’re proposing. Poke around.</p></div>
+    <p><strong>Find your MP</strong> by entering your postal code above. See what your representatives are <a href="{% url parliament.hansards.views.index %}">saying</a>, and what <a href="{% url parliament.bills.views.index %}">laws</a> they’re proposing. Poke around.</p></div>
         <div class="clear"></div><div class="context"><h2>What they’re talking about</h2></div>
         <div class="focus"><p>The latest House transcript is from <strong>{{ latest_hansard.date|date:"F jS"}}</strong>{% if latest_hansard.most_frequent_word %}, when the <span class="tip tipunderline" title="Most frequently spoken word, excluding a fixed list of extra-boring words (like 'the', or 'government').">word of the day</span> was {% if latest_hansard.wordcloud %}<a href="{{ latest_hansard.wordcloud.url }}" rel="lightbox">{{ latest_hansard.most_frequent_word }}</a>{% else %}{{ latest_hansard.most_frequent_word}}{% endif %}{% endif %}. These are the topics that were discussed.</p><div class="spacer"></div><ul class="tile clearafter">
         	{% with latest_hansard.get_absolute_url as latest_hansard_url %}
