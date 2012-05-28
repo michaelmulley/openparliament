@@ -46,6 +46,18 @@
                 e.preventDefault();
                 var value = $(this).attr('data-facet-value');
                 var facetName = $(this).attr('data-add-facet');
+
+                var facetGroup = ['Person', 'MP', 'Witness']; // these are all people filters
+                if (_.indexOf(facetGroup, facetName) !== -1) {
+                    // get rid of the similar filters
+                    _.each(_.without(facetGroup, facetName), function(fn) {
+                        var ef = OP.search.findFacet(fn);
+                        if (ef) {
+                            visualSearch.searchQuery.remove(ef);
+                        }
+                    });
+                }
+
                 var existingFacet = OP.search.findFacet(facetName);
                 if (existingFacet) {
                     if (value) {
