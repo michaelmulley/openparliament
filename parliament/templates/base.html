@@ -58,7 +58,7 @@
 	{% block navbar_search %}<form action="{% url search %}" method="GET" id="nav_searchform">{% include "search/searchbox.inc" with placeholder="Search" %}</form>{% endblock navbar_search %}
     </div>
 <div id="content_wrap"><div id="content" class="{% block contentclass %}{% endblock %}">
-{% block pageheading_override %}<div class="focus pageheader"><h1>{% block pageheading %}{{ title }}{% endblock pageheading %}</h1></div>{% endblock pageheading_override %}
+{% block pageheading_override %}<div class="focus pageheader"><h1>{% block pageheading %}{{ title }}{% endblock pageheading %}</h1></div><div class="clear"></div>{% endblock pageheading_override %}
 {% block content %}
 
 {% endblock content %}
@@ -69,7 +69,7 @@
     icons_path: "{{ STATIC_URL }}ie6update/images/"
 };</script>
 <script type="text/javascript" src="{{ STATIC_URL }}ie6update/ie6update.js"></script>
-<![endif]-->
+<![endif]--> <!--[if IE 7]><style type="text/css">.VS-search.fake-VS input { left: -25px; }</style><![endif]-->
 {% comment %}<script type="text/javascript">
   function _loadUserVoice() {
     var s = document.createElement('script');

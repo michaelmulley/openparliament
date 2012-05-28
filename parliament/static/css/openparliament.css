@@ -98,8 +98,8 @@ td.standard_form{width:520px;}
     width: 100%;
     color: #222222;
     /* These somehow make things work in IE... */
-    float: none;
     background-color: white;
+    position: relative;
 }
 .VS-search.fake-VS .VS-search-inner {
     margin-left: 25px;
