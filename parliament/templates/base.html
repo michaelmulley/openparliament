@@ -45,20 +45,22 @@
 </script>
 </head>
 <body class="nojs {% block bodyclass %}{% endblock %}">
-<div id="navbarbg"></div><div id="navbar"><a href="/"><img src="{{ STATIC_URL }}images/logotype_bar_v2.png" alt="openparliament.ca"></a>
+<div id="navbarbg"></div>
+<div id="navbar">
+	<a href="/"><img src="{{ STATIC_URL }}images/logotype_bar_v2.png" alt="openparliament.ca"></a>
     <ul id="navlinks">
 		<li {% block navlinks_mps %}{% endblock %}><a href="{% url parliament.politicians.views.current_mps %}">MPs</a></li>
 		<li {% block navlinks_bills %}{% endblock %}><a href="{% url parliament.bills.views.index %}">Bills</a></li>
 		<li {% block navlinks_debates %}{% endblock %}><a href="{% url parliament.hansards.views.index %}">Debates</a></li>
 		<li {% block navlinks_committees %}{% endblock %}><a href="{% url parliament.committees.views.committee_list %}">Committees</a></li>
 		<li {% block navlinks_about %}{% endblock %}><a href="/about/">About</a></li>
-		<li {% block navlinks_labs %}{% endblock %}><a href="/labs/">Labs</a></li></ul>
-    <div id="breadcrumbs">{% block breadcrumbs_all %}<a href="/">Home</a> {% block breadcrumbs %}{% endblock breadcrumbs %}{% endblock breadcrumbs_all %}</div>
-{#    {% block navbar_search %}<form action="{% url search %}" method="GET" id="nav_searchform"><div><input type="text" class="tip" title="By postal code, name, or keyword." id="nav_searchbox" name="q"><a id="nav_searchbutton"></a></div></form>{% endblock navbar_search %}#}
+		<li {% block navlinks_labs %}{% endblock %}><a href="/labs/">Labs</a></li>
+	</ul>
 	{% block navbar_search %}<form action="{% url search %}" method="GET" id="nav_searchform">{% include "search/searchbox.inc" with placeholder="Search" %}</form>{% endblock navbar_search %}
-    </div>
+</div>
 <div id="content_wrap"><div id="content" class="{% block contentclass %}{% endblock %}">
-{% block pageheading_override %}<div class="focus pageheader"><h1>{% block pageheading %}{{ title }}{% endblock pageheading %}</h1></div><div class="clear"></div>{% endblock pageheading_override %}
+	<div id="breadcrumbs">{% block breadcrumbs_all %}<a href="/">Home</a> {% block breadcrumbs %}{% endblock breadcrumbs %}{% endblock breadcrumbs_all %}</div>
+	{% block pageheading_override %}<div class="focus pageheader"><h1>{% block pageheading %}{{ title }}{% endblock pageheading %}</h1></div><div class="clear"></div>{% endblock pageheading_override %}
 {% block content %}
 
 {% endblock content %}
