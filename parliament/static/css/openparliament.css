@@ -14,7 +14,7 @@ input.placeholder { color: #AAAAAA !important;}
 /* LAYOUT */ 
 #content{width:960px;margin-left:auto;margin-right:auto;padding-top:15px;position:relative;}
 #content_wrap{clear:both;background-color:white;padding-bottom:20px;}
-div.context{clear:both;float:left;width:170px;margin-bottom:10px;}
+div.context{clear:both;float:left;width:160px;margin-bottom:10px;}
 .context_4 div.context{width:220px;}
 .context_4 div.focus{width:710px;}
 .context_5 div.context{width:280px;}
