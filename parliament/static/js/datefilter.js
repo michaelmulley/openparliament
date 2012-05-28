@@ -30,7 +30,7 @@
                 return APmonths[v % 12] + ' ' + Math.floor(v/12);
             },
             currentYear: new Date().getFullYear(),
-            currentMonth: new Date().getMonth(),
+            currentMonth: new Date().getMonth()
         });
         _.extend(this, opts);
 
