@@ -55,6 +55,10 @@ def committees(sess=None):
         sess = Session.objects.current()
     parl_cmte.import_committee_list(session=sess)
     parl_cmte.import_committee_documents(sess)
+
+def committees_full():
+    committees()
+    commitee_evidence()
     
 @transaction.commit_on_success
 def hansards_load():
