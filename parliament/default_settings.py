@@ -118,6 +118,7 @@ INSTALLED_APPS = [
     'parliament.activity',
     'parliament.alerts',
     'parliament.committees',
+    'parliament.search',
 ]
 
 THUMBNAIL_SUBDIR = '_thumbs'
