@@ -24,6 +24,8 @@ class Command(BaseCommand):
             IndexingTask.objects.filter(action='update').prefetch_related('content_object')
         )
 
+        solr = pysolr.Solr(settings.HAYSTACK_SOLR_URL)
+
         if update_tasks:
             update_objs = [t.content_object for t in update_tasks if t.content_object]
 
@@ -31,12 +33,12 @@ class Command(BaseCommand):
             for cls, objs in itertools.groupby(update_objs, lambda o: o.__class__):
                 print "Indexing %s" % cls
                 index = site.get_index(cls)
-                index.backend.update(index, list(objs))
+                prepared_objs = [index.prepare(o) for o in objs]
+                solr.add(prepared_objs)
 
             IndexingTask.objects.filter(id__in=[t.id for t in update_tasks]).delete()
 
         if delete_tasks:
-            solr = pysolr.Solr(settings.HAYSTACK_SOLR_URL)
             for dt in delete_tasks:
                 print "Deleting %s" % dt.identifier
                 solr.delete(id=dt.identifier, commit=False)
