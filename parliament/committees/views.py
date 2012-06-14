@@ -53,7 +53,7 @@ def committee(request, slug):
         pass
 
     title = cmte.name
-    if not cmte.parent:
+    if 'Committee' not in title and not cmte.parent:
         title += u' Committee'
 
     t = loader.get_template("committees/committee_detail.html")
