@@ -3,8 +3,8 @@ from django.contrib import admin
 from parliament.committees.models import *
 
 class CommitteeAdmin(admin.ModelAdmin):
-    list_display = ('short_name', 'slug', 'latest_session')
-    list_filter = ('sessions',)
+    list_display = ('short_name', 'slug', 'latest_session', 'display')
+    list_filter = ('sessions', 'display')
 
 class CommitteeInSessionAdmin(admin.ModelAdmin):
     list_display = ('committee', 'acronym', 'session')

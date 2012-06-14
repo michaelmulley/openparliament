@@ -12,7 +12,7 @@ from parliament.hansards.models import Statement
 
 def committee_list(request):
     committees = Committee.objects.filter(sessions=Session.objects.current(),
-        parent__isnull=True)
+        parent__isnull=True, display=True)
 
     if request.GET.get('format') == 'json':
         # This is a one-off hack, to later be replaced by nicer general-purpose JSON code
@@ -63,7 +63,7 @@ def committee(request, slug):
         'meetings': recent_meetings,
         'recent_studies': recent_studies,
         'archive_years': meeting_years,
-        'subcommittees': Committee.objects.filter(parent=cmte, sessions=Session.objects.current()),
+        'subcommittees': Committee.objects.filter(parent=cmte, display=True, sessions=Session.objects.current()),
         'include_year': newest_year != datetime.date.today().year,
         'search_placeholder': u"Search %s transcripts" % cmte.short_name
     })

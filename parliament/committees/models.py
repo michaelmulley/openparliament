@@ -28,6 +28,8 @@ class Committee(models.Model):
         blank=True, null=True)
     sessions = models.ManyToManyField(Session, through='CommitteeInSession')
 
+    display = models.BooleanField('Display on site?', db_index=True, default=True)
+
     objects = CommitteeManager()
     
     class Meta:
