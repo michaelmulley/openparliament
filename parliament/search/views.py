@@ -139,7 +139,7 @@ def search(request):
         # Our version of pysolr doesn't like Unicode
         if searchparams.get('fq'):
             searchparams['fq'] = map(lambda f: f.encode('utf-8'), searchparams['fq'])
-        results = autohighlight(solr.search(bare_query.encode('utf-8'), **searchparams))
+        results = autohighlight(solr.search(bare_query, **searchparams))
 
         date_counts = []
         if 'facet_ranges' in results.facets:
