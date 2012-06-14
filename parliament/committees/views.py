@@ -44,9 +44,13 @@ def committee(request, slug):
         committeemeeting__in=recent_meetings
     ).distinct()
 
-    oldest_year = CommitteeMeeting.objects.order_by('date')[0].date.year
-    newest_year = recent_meetings[0].date.year
-    meeting_years = reversed(range(oldest_year, newest_year+1))
+    oldest_year = newest_year = meeting_years = None
+    try:
+        oldest_year = CommitteeMeeting.objects.filter(committee=cmte).order_by('date')[0].date.year
+        newest_year = recent_meetings[0].date.year
+        meeting_years = reversed(range(oldest_year, newest_year+1))
+    except IndexError:
+        pass
 
     title = cmte.name
     if not cmte.parent:
