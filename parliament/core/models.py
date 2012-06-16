@@ -394,7 +394,7 @@ class Politician(Person):
         self.politicianinfo_set.filter(schema=key).delete()
         
     def find_favourite_word(self, wordcloud=True):
-        statements = self.statement_set.filter(procedural=False)
+        statements = self.statement_set.filter(procedural=False, document__document_type='D')
         if self.current_member:
             # For current members, we limit to the last two years for better
             # comparison, and require at least 2,500 total words.
