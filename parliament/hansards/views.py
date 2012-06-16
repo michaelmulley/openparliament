@@ -37,7 +37,7 @@ def document_view(request, document, meeting=None, slug=None):
 
     per_page = 15
     if 'singlepage' in request.GET:
-        per_page = 1500
+        per_page = 50000
     
     statement_qs = Statement.objects.filter(document=document)\
         .select_related('member__politician', 'member__riding', 'member__party')
