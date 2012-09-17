@@ -10,6 +10,10 @@ from django.core import urlresolvers
 from django.core.mail import mail_admins
 from django.http import HttpResponsePermanentRedirect
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 def postcode_to_edid(postcode):
     # First try Elections Canada
     postcode = postcode.replace(' ', '')
@@ -17,24 +21,25 @@ def postcode_to_edid(postcode):
         #return postcode_to_edid_ec(postcode)
         return postcode_to_edid_webserv(postcode)
     except:
-        return postcode_to_edid_htv(postcode)
+        return postcode_to_edid_represent(postcode)
 
-def postcode_to_edid_htv(postcode):
-    url = 'http://howdtheyvote.ca/api.php?' + urllib.urlencode({
-        'call': 'findriding',
-        'key': settings.PARLIAMENT_HTV_API_KEY,
-        'house_id': 1,
-        'postal_code': postcode
-    })
+
+def postcode_to_edid_represent(postcode):
+    url = 'http://represent.opennorth.ca/postcodes/%s/' % postcode
     try:
-        response = urllib2.urlopen(url)
-    except urllib2.URLError:
+        content = json.load(urllib2.urlopen(url))
+    except urllib2.HTTPError as e:
+        if e.code != 404:
+            logger.exception("Represent error for %s" % url)
         return None
-    match = re.search(r'<edid>(\d+)</edid>', response.read())
-    if match:
-        return int(match.group(1))
-    return None
-    
+    edid = [
+        b['external_id'] for b in
+        content.get('boundaries_concordance', []) + content.get('boundaries_centroid', [])
+        if b['boundary_set_name'] == 'Federal electoral district'
+    ]
+    return int(edid[0]) if edid else None
+
+
 EC_POSTCODE_URL = 'http://elections.ca/scripts/pss/FindED.aspx?L=e&PC=%s'
 r_ec_edid = re.compile(r'&ED=(\d{5})&')
 def postcode_to_edid_ec(postcode):
