@@ -15,7 +15,7 @@
 </div><div class="clear"></div>
 <div class="context" id="search_leftbar"></div>
 <div class="focus" id="search_content">
-    {% if not results.hits %}
+    {% if not page or not page.paginator.count %}
 		<div id="paginated">
        {% if query %}<div class="focus"><h3>No results found.</h3></div>{% endif %}
 		</div>
