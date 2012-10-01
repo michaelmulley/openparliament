@@ -111,6 +111,7 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'compressor',
     'parliament.core',
+    'parliament.accounts',
     'parliament.hansards',
     'parliament.elections',
     'parliament.bills',

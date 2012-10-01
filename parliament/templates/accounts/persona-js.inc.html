@@ -1,0 +1,28 @@
+<script src="https://login.persona.org/include.js"></script>
+<script type="text/javascript">
+$(function() {
+	{% if request.session.authenticated_email %}OP.authenticatedEmail = "{{ request.session.authenticated_email|escapejs }}";{% else %}OP.authenticatedEmail = null;{% endif %}
+	navigator.id.watch({
+		loggedInUser: OP.authenticatedEmail,
+		onlogin: function(assertion) {
+	    	$.ajax({ 
+				type: 'POST',
+				url: '/accounts/login/',
+				data: {assertion: assertion},
+				success: function(res, status, xhr) { window.location.reload(); },
+				error: function(res, status, xhr) { alert("login failure" + res); }
+		    });
+		},
+		onlogout: function() {
+			$.ajax({
+				type: 'POST',
+				url: '/accounts/logout/',
+				success: function() { window.location.reload(); },
+				error: function (res, status, xhr) {
+					alert("logout failure" + res);
+				}
+			});
+		}
+	});
+});
+</script>
