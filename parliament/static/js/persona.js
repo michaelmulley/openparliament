@@ -81,8 +81,8 @@ $(function() {
         OP.auth.logout();
     });
 
-    if ($('a.persona-logout').length) {
-        // If there's a sign out button on the page, we need to load the Persona JS right away.
+    if ($('a.persona-logout,a.persona-login').length) {
+        // If there's a sign in/out button on the page, we need to load the Persona JS right away.
         OP.auth.callPersona(function() {}); 
     }
 
