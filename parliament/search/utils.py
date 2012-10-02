@@ -1,4 +1,5 @@
 import math
+import re
 import urllib
 
 from django.conf import settings
@@ -80,3 +81,28 @@ class SearchPaginator(object):
     @property
     def paginator(self):
         return {'num_pages': self.num_pages, 'count': self.hits}
+
+
+class BaseSearchQuery(object):
+
+    ALLOWABLE_FILTERS = {}
+
+    def __init__(self, query):
+        self.raw_query = query
+        self.filters = {}
+
+        def extract_filter(match):
+            self.filters[match.group(1)] = match.group(2)
+            return ''
+
+        self.bare_query = re.sub(r'(%s): "([^"]+)"' % '|'.join(self.ALLOWABLE_FILTERS),
+            extract_filter, self.raw_query)
+        self.bare_query = re.sub(r'\s\s+', ' ', self.bare_query).strip()
+
+    @property
+    def normalized_query(self):
+        q = self.bare_query + ' '.join((
+            u'%s: "%s"' % (key, self.filters[key])
+            for key in sorted(self.filters.keys())
+        ))
+        return q.strip()

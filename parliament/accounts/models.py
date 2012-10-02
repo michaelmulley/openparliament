@@ -5,6 +5,7 @@ from django.db import models
 class User(models.Model):
 
 	email = models.EmailField(unique=True, db_index=True)
+	email_bouncing = models.BooleanField(default=False)
 
 	created = models.DateTimeField(default=datetime.datetime.now)
 	last_login = models.DateTimeField(blank=True, null=True)

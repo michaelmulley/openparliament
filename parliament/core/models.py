@@ -208,6 +208,11 @@ class PoliticianManager(models.Manager):
             pol = self.get_by_parl_id(match.group(1), session=session)
             pol.save_parlinfo_id(parlinfoid)
             return pol
+
+    def get_by_slug_or_id(self, slug_or_id):
+        if slug_or_id.isdigit():
+            return self.get(id=slug_or_id)
+        return self.get(slug=slug_or_id)
     
     def get_by_parl_id(self, parlid, session=None, election=None, lookOnline=True):
         try:

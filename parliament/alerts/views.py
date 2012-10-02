@@ -5,8 +5,9 @@ from django import forms
 from django.conf import settings
 from django.core import urlresolvers
 from django.core.mail import send_mail, mail_admins
+from django.core.signing import Signer, BadSignature
 
-from parliament.alerts.models import PoliticianAlert
+from parliament.alerts.models import PoliticianAlert, Subscription
 from parliament.core.models import Politician
 from parliament.core.views import disable_on_readonly_db
 
@@ -89,7 +90,27 @@ def activate(request, alert_id, key):
     t = loader.get_template("alerts/activate.html")
     return HttpResponse(t.render(c))
 
-def unsubscribe(request, alert_id, key):
+
+def unsubscribe(request, key):
+    ctx = {
+        'title': 'Email alerts'
+    }
+    try:
+        subscription_id = Signer(salt='alerts_unsubscribe').unsign(key)
+        subscription = get_object_or_404(Subscription, id=subscription_id)
+        subscription.active = False
+        subscription.save()
+        if settings.PARLIAMENT_DB_READONLY:
+            mail_admins("Unsubscribe request", subscription_id)
+        ctx['query'] = subscription.topic
+    except BadSignature:
+        ctx['key_error'] = True
+    c = RequestContext(request, ctx)
+    t = loader.get_template("alerts/unsubscribe.html")
+    return HttpResponse(t.render(c))
+
+
+def unsubscribe_old(request, alert_id, key):
     alert = get_object_or_404(PoliticianAlert, pk=alert_id)
     
     correct_key = alert.get_key()
@@ -104,7 +125,8 @@ def unsubscribe(request, alert_id, key):
         
     c = RequestContext(request, {
         'pol': alert.politician,
-        'title': 'E-mail alerts for %s' % alert.politician.name,
+        'query': alert.politician.name,
+        'title': u'E-mail alerts for %s' % alert.politician.name,
         'key_error': key_error,
     })
     t = loader.get_template("alerts/unsubscribe.html")

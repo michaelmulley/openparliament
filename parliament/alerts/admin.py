@@ -8,3 +8,7 @@ class PoliticianAlertAdmin(admin.ModelAdmin):
     search_fields = ('email', 'politician__name')
     
 admin.site.register(PoliticianAlert, PoliticianAlertAdmin)
+
+admin.site.register(Topic)
+admin.site.register(Subscription)
+admin.site.register(SeenItem)

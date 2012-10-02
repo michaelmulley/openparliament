@@ -10,6 +10,7 @@ from django.utils.safestring import mark_safe
 import pysolr
 
 from parliament.core.utils import memoize_property
+from parliament.search.utils import BaseSearchQuery
 
 r_hl = re.compile(r'~(/?)hl~')
 def autohighlight(results):
@@ -28,13 +29,16 @@ def autohighlight(results):
                     val = escape(val[0])
                 else:
                     val = val[0]
+                if doc.get(field):
+                    # If the text field is already there for the document, rename it full_text
+                    doc['full_' + field] = doc[field]
                 doc[field] = mark_safe(r_hl.sub(r'<\1em>', val))
     return results
 
 solr = pysolr.Solr(settings.HAYSTACK_SOLR_URL)
 
 
-class SearchQuery(object):
+class SearchQuery(BaseSearchQuery):
     """Converts a user search query into Solr's language, and
     gets the results from Solr."""
 
@@ -53,12 +57,14 @@ class SearchQuery(object):
         'Type': 'type'
     }
 
-    def __init__(self, query, start=0, limit=15, user_params={}, facet=False):
-        self.raw_query = query  # The query, as entered by the user
+    def __init__(self, query, start=0, limit=15, user_params={},
+            facet=False, full_text=False):
+        super(SearchQuery, self).__init__(query)
         self.start = start  # What offset to start from
         self.limit = limit  # How many results to return
         self.user_params = user_params  # request.GET, basically
         self.facet = facet  # Enable faceting?
+        self.full_text = full_text
 
     def get_solr_query(self):
         searchparams = {
@@ -67,14 +73,14 @@ class SearchQuery(object):
         }
         if self.facet:
             searchparams['facet'] = 'true'
+        if self.full_text:
+            searchparams['fl'] = '*'
 
-        # Extract filters from query
-        filters = []
+        solr_filters = []
         filter_types = set()
 
-        def extract_filter(match):
-            filter_name = self.ALLOWABLE_FILTERS[match.group(1)]
-            filter_value = match.group(2)
+        for filter_name, filter_value in self.filters.items():
+            filter_name = self.ALLOWABLE_FILTERS[filter_name]
 
             if filter_name == 'date':
                 match = re.search(r'^(\d{4})-(\d\d?) to (\d{4})-(\d\d?)', filter_value)
@@ -91,10 +97,10 @@ class SearchQuery(object):
                 filter_name = 'django_ct'
                 if filter_value == 'debate':
                     filter_value = 'hansards.statement'
-                    filters.append('committee_slug:""')
+                    solr_filters.append('committee_slug:""')
                 elif filter_value == 'committee':
                     filter_value = 'hansards.statement'
-                    filters.append('-committee_slug:""')
+                    solr_filters.append('-committee_slug:""')
                 elif filter_value == 'bill':
                     filter_value = 'bills.bill'
 
@@ -107,18 +113,17 @@ class SearchQuery(object):
                 filter_tag = 'f' + filter_name
 
             filter_types.add(filter_name)
-            filters.append(u'{!tag=%s}%s:%s' % (filter_tag, filter_name, filter_value))
-            return ''
-        bare_query = re.sub(r'(%s): "([^"]+)"' % '|'.join(self.ALLOWABLE_FILTERS),
-            extract_filter, self.raw_query)
-        bare_query = re.sub(r'\s\s+', ' ', bare_query).strip()
-        if filters and not bare_query:
-            bare_query = '*:*'
+            solr_filters.append(u'{!tag=%s}%s:%s' % (filter_tag, filter_name, filter_value))
 
-        if filters:
-            searchparams['fq'] = filters
+        if solr_filters and not self.bare_query:
+            solr_query = '*:*'
+        else:
+            solr_query = self.bare_query
 
-        self.committees_only = 'committee_slug' in filter_types or '-committee_slug:""' in filters
+        if solr_filters:
+            searchparams['fq'] = solr_filters
+
+        self.committees_only = 'committee_slug' in filter_types or '-committee_slug:""' in solr_filters
         self.committees_maybe = 'django_ct' not in filter_types or self.committees_only
 
         if self.facet:
@@ -133,7 +138,7 @@ class SearchQuery(object):
         if searchparams.get('fq'):
             searchparams['fq'] = map(lambda f: f.encode('utf-8'), searchparams['fq'])
 
-        return (bare_query, searchparams)
+        return (solr_query, searchparams)
 
     @property
     @memoize_property
