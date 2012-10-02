@@ -1,3 +1,5 @@
+import re
+
 from django.template import loader, RequestContext
 from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404, render
@@ -6,7 +8,7 @@ from django.conf import settings
 from django.core import urlresolvers
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail, mail_admins
-from django.core.signing import Signer, BadSignature
+from django.core.signing import Signer, TimestampSigner, BadSignature
 from django.views.decorators.cache import never_cache
 
 from parliament.accounts.models import User
@@ -15,59 +17,52 @@ from parliament.core.models import Politician
 from parliament.core.views import disable_on_readonly_db
 from parliament.utils.views import JSONView
 
-class PoliticianAlertForm(forms.ModelForm):
-    
-    class Meta:
-        model = PoliticianAlert
-        fields = ('email', 'politician')
-        widgets = {
-            'politician': forms.widgets.HiddenInput,
-        }
+class PoliticianAlertForm(forms.Form):
+
+    email = forms.EmailField(label='Your email')
+    politician = forms.IntegerField(widget=forms.HiddenInput)
 
 @disable_on_readonly_db
-def signup(request):
-    if 'politician' not in request.REQUEST:
+def politician_hansard_signup(request):
+    try:
+        politician_id = int(re.sub(r'\D', '', request.REQUEST.get('politician', '')))
+    except ValueError:
         raise Http404
     
-    pol = get_object_or_404(Politician, pk=request.REQUEST['politician'])
+    pol = get_object_or_404(Politician, pk=politician_id)
     success = False
     if request.method == 'POST':
         # This is a hack to remove spaces from e-mails before sending them off to the validator
         # If anyone knows a cleaner way of doing this without writing a custom field, please let me know
         postdict = request.POST.copy()
         if 'email' in postdict:
-            postdict['email'] = postdict['email'].strip()
+            postdict['email'] = postdict['email'].strip().lower()
             
         form = PoliticianAlertForm(postdict)
         if form.is_valid():
-            try:
-                alert = PoliticianAlert.objects.get(email=form.cleaned_data['email'], politician=form.cleaned_data['politician'])
-            except PoliticianAlert.DoesNotExist:
-                alert = form.save()
-            
-            key = alert.get_key()
-            activate_url = urlresolvers.reverse('parliament.alerts.views.activate',
-                kwargs={'alert_id': alert.id, 'key': key}) 
+            key = "%s,%s" % (politician_id, form.cleaned_data['email'])
+            signed_key = TimestampSigner(salt='alerts_pol_subscribe').sign(key)
+            activate_url = urlresolvers.reverse('alerts_pol_subscribe',
+                kwargs={'signed_key': signed_key})
             activation_context = RequestContext(request, {
                 'pol': pol,
-                'alert': alert,
                 'activate_url': activate_url,
             })
             t = loader.get_template("alerts/activate.txt")
-            send_mail(subject=u'Confirmation required: E-mail alerts about %s' % pol.name,
+            send_mail(subject=u'Confirmation required: Email alerts about %s' % pol.name,
                 message=t.render(activation_context),
                 from_email='alerts@contact.openparliament.ca',
-                recipient_list=[alert.email])
+                recipient_list=[form.cleaned_data['email']])
             
             success = True
     else:
-        form = PoliticianAlertForm(initial={'politician': request.GET['politician']})
+        form = PoliticianAlertForm(initial={'politician': politician_id})
         
     c = RequestContext(request, {
         'form': form,
         'success': success,
         'pol': pol,
-        'title': 'E-mail alerts for %s' % pol.name,
+        'title': 'Email alerts for %s' % pol.name,
     })
     t = loader.get_template("alerts/signup.html")
     return HttpResponse(t.render(c))
@@ -135,6 +130,32 @@ class ModifyAlertView(JSONView):
         return True
 modify_alert = ModifyAlertView.as_view()
 
+@disable_on_readonly_db
+def politician_hansard_subscribe(request, signed_key):
+    try:
+        key = TimestampSigner(salt='alerts_pol_subscribe').unsign(signed_key, max_age=60*60*24*14)
+        key_error = False
+        politician_id, _, email = key.partition(',')
+        pol = get_object_or_404(Politician, id=politician_id)
+        if not pol.current_member:
+            raise Http404
+
+        user, created = User.objects.get_or_create(email=email)
+        query = u'MP: "%s" Type: "debate"' % pol.identifier
+        sub, created = Subscription.objects.get_or_create_by_query(query, user)
+        if not sub.active:
+            sub.active = True
+            sub.save()
+    except BadSignature:
+        key_error = True
+
+    return render(request, 'alerts/activate.html', {
+        'pol': pol,
+        'title': u'Email alerts for %s' % pol.name,
+        'activating': True,
+        'key_error': key_error,
+    })
+
 
 @disable_on_readonly_db
 def activate(request, alert_id, key):
@@ -158,7 +179,7 @@ def activate(request, alert_id, key):
     t = loader.get_template("alerts/activate.html")
     return HttpResponse(t.render(c))
 
-
+@never_cache
 def unsubscribe(request, key):
     ctx = {
         'title': 'Email alerts'

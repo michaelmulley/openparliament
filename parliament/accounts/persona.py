@@ -8,7 +8,7 @@ from parliament.utils.views import JSONView
 def get_user_from_persona_assertion(assertion, audience=settings.SITE_URL):
     data = browserid.verify(assertion, audience)
     assert data['email']
-    user, created = User.objects.get_or_create(email=data['email'])
+    user, created = User.objects.get_or_create(email=data['email'].lower().strip())
     return user
 
 class PersonaLoginEndpointView(JSONView):

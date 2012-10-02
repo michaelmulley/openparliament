@@ -9,6 +9,19 @@ class PoliticianAlertAdmin(admin.ModelAdmin):
     
 admin.site.register(PoliticianAlert, PoliticianAlertAdmin)
 
-admin.site.register(Topic)
-admin.site.register(Subscription)
+
+class TopicAdmin(admin.ModelAdmin):
+
+    list_display = ['query', 'created', 'last_found']
+    search_fields = ['query']
+
+
+class SubscriptionAdmin(admin.ModelAdmin):
+
+    list_display = ['user', 'topic', 'active', 'created', 'last_sent']
+    search_fields = ['user__email']
+    list_filter = ['active', 'created', 'last_sent']
+
+admin.site.register(Topic, TopicAdmin)
+admin.site.register(Subscription, SubscriptionAdmin)
 admin.site.register(SeenItem)

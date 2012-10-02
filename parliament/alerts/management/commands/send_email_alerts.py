@@ -1,6 +1,7 @@
 import logging
 import time
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 
 logger = logging.getLogger(__name__)
@@ -10,6 +11,9 @@ class Command(BaseCommand):
     help = "Searches for new items & sends applicable email alerts."
 
     def handle(self, **options):
+
+        if getattr(settings, 'PARLIAMENT_SEARCH_CLOSED', False):
+            return logger.error("Not sending alerts because of PARLIAMENT_SEARCH_CLOSED")
 
         from parliament.alerts.models import Subscription
 
