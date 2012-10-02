@@ -1,9 +1,10 @@
 from haystack import site
 from haystack import indexes
 
-from parliament.search.utils import SearchIndex
+from parliament.search.index import SearchIndex
 from parliament.bills.models import Bill
 from parliament.core.models import Session
+
 
 class BillIndex(SearchIndex):
     text = indexes.CharField(document=True, model_attr='name')
@@ -24,5 +25,4 @@ class BillIndex(SearchIndex):
         return Session.objects.current()
 
 
-    
 site.register(Bill, BillIndex)
