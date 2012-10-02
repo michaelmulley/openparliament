@@ -13,6 +13,8 @@ class Command(BaseCommand):
 
         from parliament.alerts.models import Subscription
 
+        start_time = time.time()
+
         subscriptions = Subscription.objects.filter(active=True, user__email_bouncing=False
             ).prefetch_related('user', 'topic')
 
@@ -33,4 +35,5 @@ class Command(BaseCommand):
                     sub.send_email(documents)
 
         if topics_sent:
-            print "%s topics, %s subscriptions sent" % (topics_sent, messages_sent)
+            print "%s topics, %s subscriptions sent in %s seconds" % (
+                topics_sent, messages_sent, (time.time() - start_time))

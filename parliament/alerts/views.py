@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404, render
 from django import forms
 from django.conf import settings
 from django.core import urlresolvers
+from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail, mail_admins
 from django.core.signing import Signer, BadSignature
 from django.views.decorators.cache import never_cache
@@ -102,7 +103,7 @@ class CreateAlertView(JSONView):
     def post(self, request):
         user_email = request.session.get('authenticated_email')
         if not user_email:
-            raise NotImplementedError
+            return self.login_required()
         user = User.objects.get(email=user_email)
 
         query = request.POST.get('query')
@@ -112,6 +113,27 @@ class CreateAlertView(JSONView):
         except ValueError:
             raise NotImplementedError
 create_alert = CreateAlertView.as_view()
+
+
+class ModifyAlertView(JSONView):
+
+    def post(self, request, subscription_id):
+        subscription = get_object_or_404(Subscription, id=subscription_id)
+        if subscription.user.email != request.session.get('authenticated_email'):
+            raise PermissionDenied
+
+        action = request.POST.get('action')
+        if action == 'enable':
+            subscription.active = True
+            subscription.save()
+        elif action == 'disable':
+            subscription.active = False
+            subscription.save()
+        elif action == 'delete':
+            subscription.delete()
+
+        return True
+modify_alert = ModifyAlertView.as_view()
 
 
 @disable_on_readonly_db

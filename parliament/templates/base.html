@@ -16,6 +16,12 @@
 <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 <script type="text/javascript">!window.jQuery && document.write(unescape('%3Cscript src="{{ STATIC_URL }}js/libs/jquery.min.js"%3E%3C/script%3E'))</script>
 
+<script type="text/javascript">
+window.OP = {
+  'STATIC_URL': "{{ STATIC_URL|escapejs }}"
+};
+</script>
+
 {% compress js %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.slimbox.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.tooltip.js"></script>
@@ -29,6 +35,7 @@
 <script type="text/javascript" src="{{ STATIC_URL }}js/core.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/pagination.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/statementbrowser.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/persona.js"></script>
 
 {% endcompress %}
 {% block headextra %}{% endblock %}

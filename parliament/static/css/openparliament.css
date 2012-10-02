@@ -38,6 +38,20 @@ div.focus.pageheader{margin-bottom:0;}
 .context p,.context li{margin-right:15px;}
 .context h3{font-size:15px;}
 
+table {max-width: 100%; background-color: transparent; border-collapse: collapse; border-spacing: 0;}
+.table th,
+.table td {
+  padding: 8px;
+  line-height: 18px;
+  text-align: left;
+  vertical-align: top;
+  border-top: 1px solid #dddddd;
+}
+.table-striped tbody tr:nth-child(odd) td,
+.table-striped tbody tr:nth-child(odd) th {
+  background-color: #f9f9f9;
+}
+
 /* SITE NAVIGATION */
 #breadcrumbs{width:960px;color:#555555;font-size:14px;font-weight:bold;margin-bottom: 10px;}
 #breadcrumbs a{background:transparent url('../images/breadglyph.png') no-repeat right;padding-right:13px;font-weight:normal;}

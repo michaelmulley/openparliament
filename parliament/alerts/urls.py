@@ -7,4 +7,5 @@ urlpatterns = patterns('parliament.alerts.views',
     (r'^remove/(?P<alert_id>\d+)/(?P<key>.+)$', 'unsubscribe_old'),
     url(r'^$', 'alerts_list', name='alerts_list'),
     url(r'^create/$', 'create_alert'),
+    url(r'^(?P<subscription_id>\d+)/$', 'modify_alert'),
 )
