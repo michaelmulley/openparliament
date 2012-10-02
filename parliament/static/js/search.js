@@ -19,12 +19,27 @@
         },
 
         getQuery: function() {
-            return visualSearch.searchQuery.serialize()
+            return visualSearch.searchQuery.serialize();
         },
 
         findFacet: function(name) {
             return visualSearch.searchQuery.detect(function (f) {
                 return f.get('category') === name;
+            });
+        },
+
+        createAlert: function() {
+            var query = OP.search.getQuery();
+            $.ajax({
+                type: 'POST',
+                url: '/alerts/create/',
+                data: {query: query},
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 'ok') {
+                        OP.utils.notify("Your alert has been created for " + query + ".", "success");
+                    }
+                }
             });
         },
 
@@ -75,6 +90,12 @@
                     OP.search.triggerSearch();
                 }
             });
+
+            /* Potential display alert widget */
+            if (OP.cookies.hasItem('enable-alerts')) {
+                $('#add_alert').show();
+                $('#add_alert button').click(OP.search.createAlert);
+            }
 
             /* Initialize facet widget */
             var facetWidget = new OP.FacetWidget();

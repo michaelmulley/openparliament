@@ -22,7 +22,13 @@ logger = logging.getLogger(__name__)
 class TopicManager(models.Manager):
 
     def get_or_create_by_query(self, query):
-        return self.get_or_create(query=SearchQuery(query).normalized_query)
+        query_obj = SearchQuery(query)
+        if 'Date' in query_obj.filters:
+            del query_obj.filters['Date']  # Date filters make no sense in alerts
+        normalized_query = query_obj.normalized_query
+        if not normalized_query:
+            raise ValueError("Invalid query")
+        return self.get_or_create(query=normalized_query)
 
 
 class Topic(models.Model):
@@ -35,6 +41,8 @@ class Topic(models.Model):
     objects = TopicManager()
 
     def __unicode__(self):
+        if self.politician_hansard_alert:
+            return u'%s in House debates' % self.person_name
         return self.query
 
     def save(self, *args, **kwargs):

@@ -20,8 +20,11 @@ http://openparliament.ca{{ document.url }}
 You're receiving this e-mail because you signed up at openparliament.ca to
 receive alerts about {{ topic }}.
 
-If you no longer want to receive these messages, just follow the link below:
+If you no longer want to subscribe to this alert, just follow the link below:
 {{ unsubscribe_url }}
+
+To manage your list of alerts, visit:
+http://openparliament.ca/alerts/
 
 love,
 openparliament.ca

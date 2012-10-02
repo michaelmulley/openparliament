@@ -10,19 +10,21 @@
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/icons.css">
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/visualsearch.css">
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-buttons.css">
+<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/persona-buttons.css">
 {% endcompress %}
 
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 <script type="text/javascript">!window.jQuery && document.write(unescape('%3Cscript src="{{ STATIC_URL }}js/libs/jquery.min.js"%3E%3C/script%3E'))</script>
 
 {% compress js %}
 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.slimbox.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.tooltip.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/placeholder-polyfill.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/libs/json2.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/history.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/history.html4.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/libs/history.adapter.jquery.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/libs/underscore.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}js/libs/lazyload.js"></script>
 
 <script type="text/javascript" src="{{ STATIC_URL }}js/core.js"></script>
 <script type="text/javascript" src="{{ STATIC_URL }}js/pagination.js"></script>
@@ -58,7 +60,7 @@
 	</ul>
 	{% block navbar_search %}<form action="{% url search %}" method="GET" id="nav_searchform">{% include "search/searchbox.inc" with placeholder="Search" %}</form>{% endblock navbar_search %}
 </div>
-{% block notifications %}{# e.g. <div class="top-notification success"><div class="notification-inner">Hello!</div></div> #}{% endblock %}
+<div id="notifications">{% block notifications %}{# e.g. <div class="top-notification success"><div class="notification-inner">Hello!</div></div> #}{% endblock %}</div>
 <div id="content_wrap"><div id="content" class="{% block contentclass %}{% endblock %}">
 	<div id="breadcrumbs">{% block breadcrumbs_all %}<a href="/">Home</a> {% block breadcrumbs %}{% endblock breadcrumbs %}{% endblock breadcrumbs_all %}</div>
 	{% block pageheading_override %}<div class="focus pageheader"><h1>{% block pageheading %}{{ title }}{% endblock pageheading %}</h1></div><div class="clear"></div>{% endblock pageheading_override %}
@@ -73,7 +75,8 @@
     icons_path: "{{ STATIC_URL }}ie6update/images/"
 };</script>
 <script type="text/javascript" src="{{ STATIC_URL }}ie6update/ie6update.js"></script>
-<![endif]--> <!--[if IE 7]><style type="text/css">.VS-search.fake-VS input { left: -25px; }</style><![endif]-->
+<![endif]--> <!--[if IE 7]><script type="text/javascript" src="{{ STATIC_URL }}js/libs/json2.js"></script>
+<style type="text/css">.VS-search.fake-VS input { left: -25px; }</style><![endif]-->
 {% comment %}<script type="text/javascript">
   function _loadUserVoice() {
     var s = document.createElement('script');

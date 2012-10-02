@@ -24,5 +24,15 @@ $(function() {
 			});
 		}
 	});
+	$('body').delegate('a.persona-login', 'click', function(e) {
+		e.preventDefault();
+		navigator.id.request({
+			// siteLogo: "{{ STATIC_URL }}images/o60.png"
+			// siteName: "Open Parliament"
+		});
+	}).delegate('a.persona-logout', 'click', function(e) {
+		e.preventDefault();
+		navigator.id.logout();
+	});
 });
 </script>

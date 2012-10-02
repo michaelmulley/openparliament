@@ -45,6 +45,61 @@ OP.utils = {
 
     slugify: function(s) {
         return s.toLowerCase().replace(/[^a-z0-9]/, '-');
+    },
+
+    notify: function(message, tag, opts) {
+        /** Display a notification to the user.
+         * tag should be 'warning', 'success', or 'error'
+         * see defaults for options
+         */
+        tag = tag || 'warning';
+        opts = opts || {};
+        _.defaults(opts, {
+            'animateIn': true,
+            //'allowHTML': false,
+            'hideAfter': (tag == 'error' ? 10000 : 5000) // # of milliseconds after which to hide the message, 0 to require manual close
+        });
+        var $target = $('#notifications');
+        // if (!opts.allowHTML) {
+        //     message = _.escape(message);
+        // }
+
+        var template = _.template('<div class="top-notification <%= tag %>"><div class="notification-inner">' +
+        '<a href="#" class="close">&times;</a><%- message %></div></div>');
+        var $el = $(template({ message: message, tag: tag}));
+        if ($(document).scrollTop() > $target.offset().top) {
+            if (!$('#fixed-notification-container').length) {
+                $('body').append('<div id="fixed-notification-container"></div>');
+            }
+            $target = $('#fixed-notification-container');
+        }
+        if (opts.animateIn) {
+            $el.hide();
+        }
+        $target.append($el);
+        if (opts.animateIn) {
+            $el.slideDown();
+        }
+
+        var close = function() {
+            $el.find('a.close').click();
+        };
+
+        if (opts.hideAfter) {
+            setTimeout(close, opts.hideAfter);
+        }
+        return { close: close};
+    }
+};
+
+// https://developer.mozilla.org/en-US/docs/DOM/document.cookie
+OP.cookies = {
+    getItem: function (sKey) {
+        if (!sKey || !this.hasItem(sKey)) { return null; }
+        return unescape(document.cookie.replace(new RegExp("(?:^|.*;\\s*)" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*((?:[^;](?!;))*[^;]?).*"), "$1"));
+    },
+    hasItem: function (sKey) {
+        return (new RegExp("(?:^|;\\s*)" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);
     }
 };
 
@@ -99,13 +154,21 @@ $(function() {
         var $prepend = $(this).find('input[name=prepend]');
         if ($prepend.val()) {
             var $q = $(this).find('input[name=q]');
-            $q.val($prepend.val() + ' ' + $q.val())
+            $q.val($prepend.val() + ' ' + $q.val());
             $prepend.val('');
             $prepend.remove();
         }
     });
     $('input[name=q]').val('');
 
+    $('body').delegate('.top-notification a.close', 'click', function(e) {
+        var $notification = $(this).closest('.top-notification');
+        
+        $notification.slideUp(function() {
+            $notification.remove(); // We won't need it again after it's been closed
+        });
+    });
+    
     // This event is to be triggered on AJAX loads too
     $(document).bind('contentLoad', function() {
         $('.tip, .related_link').tooltip({delay: 100, showURL: false});

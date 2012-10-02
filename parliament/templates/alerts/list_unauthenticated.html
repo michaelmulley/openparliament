@@ -1,0 +1,14 @@
+{% extends "alerts/base.html" %}
+
+{% block content %}
+<div class="context"><h2>What you can get</h2></div>
+<div class="focus"><p>An automated email, every time something happens in Parliament that matches your interests.</p>
+<p>For example:</p>
+{% include "alerts/search_examples.inc.html" %}
+</div><div class="clear"></div>
+<div class="context"><h2>But first</h2></div>
+<div class="focus"><p>You need to <a class="persona-login" href="#">sign in</a>, so that we can send the email to the right place.</p>
+	<p>To take care of email verification, we use a service called Persona (from Mozilla, the lovely nonprofit that makes Firefox). Even if you&rsquo;ve never used it before, it takes only a few clicks to sign in:</p>
+	<p style="text-align:center"><a class="persona-button persona-login" href="#"><span>Sign in with your email</span></a></p>
+</div><div class="clear"></div>
+{% endblock %}

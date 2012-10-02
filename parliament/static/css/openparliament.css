@@ -98,6 +98,9 @@ td.standard_form{width:520px;}
 .top-notification.success { background-color: #e8fbd4; border-bottom: 1px solid #b4ca91; }
 .top-notification.error { background-color: #ffd2c7; border-bottom: 1px solid #be9b93; }
 .notification-inner { width: 960px; margin: 0 auto; padding: 8px 0; color: #444444; text-align: center;}
+.top-notification .close {float: right; color: #000; font-size: 20px; font-weight: bold; line-height: 0.75; text-shadow: 0 1px 0 rgba(255,255,255,1); opacity: 0.25;}
+.top-notification .close:hover {color: #000; text-decoration: none; opacity: 0.4;}
+#fixed-notification-container { position: fixed; width: 100%; top: 0; z-index: 20;}
 
 /* PAGINATION */
 .pagination{text-align:center;width:640px;}
