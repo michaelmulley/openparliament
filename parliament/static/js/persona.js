@@ -2,12 +2,14 @@ OP.auth = {
 
     personaInitialized: false,
 
+    personaLogoutTimeout: false,
+
     initializePersona: function() {
         var init = function() {
             navigator.id.watch({
                 loggedInUser: OP.auth.authenticatedEmail,
                 onlogin: function(assertion) {
-                    $.ajax({ 
+                    $.ajax({
                         type: 'POST',
                         url: '/accounts/login/',
                         data: {assertion: assertion},
@@ -16,14 +18,7 @@ OP.auth = {
                     });
                 },
                 onlogout: function() {
-                    $.ajax({
-                        type: 'POST',
-                        url: '/accounts/logout/',
-                        success: function() { window.location.reload(); },
-                        error: function (res, status, xhr) {
-                            alert("logout failure" + res);
-                        }
-                    });
+                    OP.auth.localLogout();
                 }
             });
             OP.auth.personaInitialized = true;
@@ -65,8 +60,26 @@ OP.auth = {
     },
 
     logout: function() {
+        // At the moment, logout can fail silently if third-party cookies are disabled.
+        // Use this workaround
+        OP.auth.personaLogoutTimeout = window.setTimeout(OP.auth.localLogout, 1000);
         OP.auth.callPersona(function() {
             navigator.id.logout();
+        });
+    },
+
+    localLogout: function() {
+        if (OP.auth.personaLogoutTimeout) {
+            window.clearTimeout(OP.auth.personaLogoutTimeout);
+            OP.auth.personaLogoutTimeout = false;
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/accounts/logout/',
+            success: function() { window.location.reload(); },
+            error: function (res, status, xhr) {
+                alert("logout failure" + res);
+            }
         });
     }
 
@@ -81,7 +94,7 @@ $(function() {
         OP.auth.logout();
     });
 
-    if ($('a.persona-logout,a.persona-login').length) {
+    if ($('a.persona-logout,a.persona-login').length || !_.isUndefined(navigator.id)) {
         // If there's a sign in/out button on the page, we need to load the Persona JS right away.
         OP.auth.callPersona(function() {}); 
     }
