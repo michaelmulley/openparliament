@@ -91,11 +91,8 @@
                 }
             });
 
-            /* Potential display alert widget */
-            if (OP.cookies.hasItem('enable-alerts')) {
-                $('#add_alert').show();
-                $('#add_alert button').click(OP.search.createAlert);
-            }
+            /* Initialize alert button */
+            $('#add_alert button').click(OP.search.createAlert);
 
             /* Initialize facet widget */
             var facetWidget = new OP.FacetWidget();
@@ -135,6 +132,16 @@
 
                 if (data && data.facets) {
                     facetWidget.setValues(data.facets);
+                }
+
+                /* Potentially display alert widget */
+                if (OP.cookies.hasItem('enable-alerts')) {
+                    if (OP.search.getQuery().length) {
+                        $('#add_alert').show();
+                    }
+                    else {
+                        $('#add_alert').hide();
+                    }
                 }
 
                 /* Set values in date widget */
