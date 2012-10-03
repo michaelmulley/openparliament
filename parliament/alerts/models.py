@@ -46,15 +46,18 @@ class Topic(models.Model):
         return self.query
 
     def save(self, *args, **kwargs):
-        new = not bool(self.id)
         super(Topic, self).save(*args, **kwargs)
-        if new:
-            self.get_new_items(limit=40)
+        self.initialize_if_necessary()
 
     def get_search_query(self, limit=25):
         return SearchQuery(self.query, limit=limit,
             user_params={'sort': 'date desc'},
             full_text=True)
+
+    def initialize_if_necessary(self):
+        if (not self.last_checked) or (
+                (datetime.datetime.now() - self.last_checked) < datetime.timedelta(hours=24)):
+            self.get_new_items(limit=40)
 
     def get_new_items(self, label_as_seen=True, limit=25):
         query_obj = self.get_search_query(limit=limit)
@@ -135,6 +138,12 @@ class Subscription(models.Model):
     def __unicode__(self):
         return u'%s: %s' % (self.user, self.topic)
 
+    def save(self, *args, **kwargs):
+        new = not self.id
+        super(Subscription, self).save(*args, **kwargs)
+        if new:
+            self.topic.initialize_if_necessary()
+
     def get_unsubscribe_url(self, full=False):
         key = Signer(salt='alerts_unsubscribe').sign(unicode(self.id))
         return urlresolvers.reverse('alerts_unsubscribe',
@@ -160,7 +169,6 @@ class Subscription(models.Model):
         text = t.render(Context(ctx))
         return dict(text=text)
 
-
     def get_subject_line(self, documents):
         if self.topic.politician_hansard_alert:
             topics = set((d['topic'] for d in documents))
@@ -169,7 +177,7 @@ class Subscription(models.Model):
                 'topics': english_list(list(topics))
             }
         else:
-            subj = u'New in Parliament for %s' % self.topic.query
+            subj = u'New from openparliament.ca for %s' % self.topic.query
         return subj[:200]
 
     def send_email(self, documents):
