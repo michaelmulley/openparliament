@@ -21,5 +21,5 @@ class PersonaLoginEndpointView(JSONView):
 class PersonaLogoutEndpointView(JSONView):
 
     def post(self, request):
-        request.session['authenticated_email'] = None
+        request.authenticated_email = None
         return True

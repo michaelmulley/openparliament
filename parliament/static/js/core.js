@@ -96,7 +96,11 @@ OP.utils = {
 OP.cookies = {
     getItem: function (sKey) {
         if (!sKey || !this.hasItem(sKey)) { return null; }
-        return unescape(document.cookie.replace(new RegExp("(?:^|.*;\\s*)" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*((?:[^;](?!;))*[^;]?).*"), "$1"));
+        var ck = unescape(document.cookie.replace(new RegExp("(?:^|.*;\\s*)" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*((?:[^;](?!;))*[^;]?).*"), "$1"));
+        if (ck.substr(0, 1) === '"' && ck.substr(-1, 1) === '"') {
+            return ck.substr(1, ck.length-2);
+        }
+        return ck;
     },
     hasItem: function (sKey) {
         return (new RegExp("(?:^|;\\s*)" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);

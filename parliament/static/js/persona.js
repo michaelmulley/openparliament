@@ -4,35 +4,25 @@ OP.auth = {
 
     personaLogoutTimeout: false,
 
-    initializePersona: function() {
-        var init = function() {
-            navigator.id.watch({
-                loggedInUser: OP.auth.authenticatedEmail,
-                onlogin: function(assertion) {
-                    $.ajax({
-                        type: 'POST',
-                        url: '/accounts/login/',
-                        data: {assertion: assertion},
-                        success: function(res, status, xhr) { window.location.reload(); },
-                        error: function(res, status, xhr) { alert("login failure" + res); }
-                    });
-                },
-                onlogout: function() {
-                    OP.auth.localLogout();
-                }
-            });
-            OP.auth.personaInitialized = true;
-        };
+    authenticatedEmail: OP.cookies.getItem('email'),
 
-        if (_.isUndefined(OP.auth.authenticatedEmail)) {
-            $.getJSON('/accounts/current/', function(data) {
-                OP.auth.authenticatedEmail = data.content;
-                init();
-            });
-        }
-        else {
-            init();
-        }
+    initializePersona: function() {
+        navigator.id.watch({
+            loggedInUser: OP.auth.authenticatedEmail,
+            onlogin: function(assertion) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/accounts/login/',
+                    data: {assertion: assertion},
+                    success: function(res, status, xhr) { window.location.reload(); },
+                    error: function(res, status, xhr) { alert("login failure" + res); }
+                });
+            },
+            onlogout: function() {
+                OP.auth.localLogout();
+            }
+        });
+        OP.auth.personaInitialized = true;
     },
 
     callPersona: function(callback) {

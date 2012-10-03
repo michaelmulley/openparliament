@@ -70,11 +70,11 @@ def politician_hansard_signup(request):
 
 @never_cache
 def alerts_list(request):
-    if not request.session.get('authenticated_email'):
+    if not request.authenticated_email:
         return render(request, 'alerts/list_unauthenticated.html',
             {'title': 'Email alerts'})
 
-    user = User.objects.get(email=request.session['authenticated_email'])
+    user = User.objects.get(email=request.authenticated_email)
     subscriptions = Subscription.objects.filter(user=user).select_related('topic')
 
     t = loader.get_template('alerts/list.html')
@@ -96,7 +96,7 @@ def alerts_list(request):
 class CreateAlertView(JSONView):
 
     def post(self, request):
-        user_email = request.session.get('authenticated_email')
+        user_email = request.authenticated_email
         if not user_email:
             return self.login_required()
         user = User.objects.get(email=user_email)
@@ -114,7 +114,7 @@ class ModifyAlertView(JSONView):
 
     def post(self, request, subscription_id):
         subscription = get_object_or_404(Subscription, id=subscription_id)
-        if subscription.user.email != request.session.get('authenticated_email'):
+        if subscription.user.email != request.authenticated_email:
             raise PermissionDenied
 
         action = request.POST.get('action')
