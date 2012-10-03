@@ -157,28 +157,6 @@ def politician_hansard_subscribe(request, signed_key):
     })
 
 
-@disable_on_readonly_db
-def activate(request, alert_id, key):
-    
-    alert = get_object_or_404(PoliticianAlert, pk=alert_id)
-    
-    correct_key = alert.get_key()
-    if correct_key != key.replace('=', ''):
-        key_error = True
-    else:
-        key_error = False
-        alert.active = True
-        alert.save()
-        
-    c = RequestContext(request, {
-        'pol': alert.politician,
-        'title': 'E-mail alerts for %s' % alert.politician.name,
-        'activating': True,
-        'key_error': key_error
-    })
-    t = loader.get_template("alerts/activate.html")
-    return HttpResponse(t.render(c))
-
 @never_cache
 def unsubscribe(request, key):
     ctx = {
