@@ -56,7 +56,7 @@ class Topic(models.Model):
 
     def initialize_if_necessary(self):
         if (not self.last_checked) or (
-                (datetime.datetime.now() - self.last_checked) < datetime.timedelta(hours=24)):
+                (datetime.datetime.now() - self.last_checked) > datetime.timedelta(hours=24)):
             self.get_new_items(limit=40)
 
     def get_new_items(self, label_as_seen=True, limit=25):
