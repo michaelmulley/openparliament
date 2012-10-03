@@ -50,9 +50,19 @@ class Topic(models.Model):
         self.initialize_if_necessary()
 
     def get_search_query(self, limit=25):
-        return SearchQuery(self.query, limit=limit,
+        query_obj = SearchQuery(self.query, limit=limit,
             user_params={'sort': 'date desc'},
             full_text=True)
+
+        # Only look for items newer than 60 days
+        today = datetime.date.today()
+        past = today - datetime.timedelta(days=60)
+        query_obj.filters['Date'] = '%d-%02d to %d-12' % (
+            past.year,
+            past.month,
+            today.year)
+
+        return query_obj
 
     def initialize_if_necessary(self):
         if (not self.last_checked) or (
