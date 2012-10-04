@@ -14,8 +14,10 @@ class Migration(DataMigration):
             subscription, created = orm.Subscription.objects.get_or_create(
                 topic=topic,
                 user=user,
-                created=pa.created,
-                active=pa.active
+                defaults={
+                    'created': pa.created,
+                    'active': pa.active
+                }
             )
         print "PoliticianAlert objects converted."
         print "You now need to call topic.initialize_if_necessary so that initial alerts"
