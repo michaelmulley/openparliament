@@ -198,7 +198,8 @@ class Subscription(models.Model):
             'alerts@contact.openparliament.ca',
             [self.user.email]
         )
-        msg.bcc = ['michael@openparliament.ca']
+        if not self.topic.politician_hansard_alert:
+            msg.bcc = ['michael@openparliament.ca']
         if rendered.get('html'):
             msg.attach_alternative(rendered['html'], 'text/html')
         if getattr(settings, 'PARLIAMENT_SEND_EMAIL', False):

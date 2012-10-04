@@ -10,7 +10,7 @@ class Migration(DataMigration):
         for pa in orm.PoliticianAlert.objects.filter(active=True).select_related('politician'):
             query = u'MP: "%s" Type: "debate"' % pa.politician.slug
             topic, created = orm.Topic.objects.get_or_create(query=query)
-            user, created = orm['accounts.User'].objects.get_or_create(email=pa.email)
+            user, created = orm['accounts.User'].objects.get_or_create(email=pa.email.lower().strip())
             subscription, created = orm.Subscription.objects.get_or_create(
                 topic=topic,
                 user=user,
