@@ -144,6 +144,7 @@ class Subscription(models.Model):
         unique_together = [
             ('topic', 'user')
         ]
+        ordering = ['-created']
 
     def __unicode__(self):
         return u'%s: %s' % (self.user, self.topic)
