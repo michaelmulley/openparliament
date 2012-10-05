@@ -13,7 +13,7 @@ from parliament.imports.billtext import get_plain_bill_text
 import logging
 logger = logging.getLogger(__name__)
 
-LEGISINFO_XML_LIST_URL = 'http://parl.gc.ca/LegisInfo/Home.aspx?language=E&Parl=%(parliament)s&Ses=%(session)s&Page=%(page)s&Mode=1&download=xml'
+LEGISINFO_XML_LIST_URL = 'http://parl.gc.ca/LegisInfo/Home.aspx?language=E&ParliamentSession=%(sessid)s&Page=%(page)s&Mode=1&download=xml'
 LEGISINFO_SINGLE_BILL_URL = 'http://www.parl.gc.ca/LegisInfo/BillDetails.aspx?Language=E&Mode=1&billId=%(legisinfo_id)s&download=xml'
 
 def _parse_date(d):
@@ -39,8 +39,7 @@ def import_bills(session):
     while fetch_next_page:
         page += 1
         url = LEGISINFO_XML_LIST_URL % {
-            'parliament': session.parliamentnum,
-            'session': session.sessnum,
+            'sessid': session.id,
             'page': page
         }
         tree = etree.parse(urllib2.urlopen(url))

@@ -186,7 +186,7 @@ class BillInSession(models.Model):
 class BillText(models.Model):
 
     bill = models.ForeignKey(Bill)
-    docid = models.PositiveIntegerField(db_index=True)
+    docid = models.PositiveIntegerField(unique=True, db_index=True)
 
     created = models.DateTimeField(default=datetime.datetime.now)
 
