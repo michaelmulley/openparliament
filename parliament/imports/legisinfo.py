@@ -188,7 +188,7 @@ def _import_bill(lbill, session, previous_session=None):
             )
             bill.save()  # to trigger search indexing
         except CannotScrapeException:
-            logger.error(u"Could not get bill text for %s" % bill)
+            logger.warning(u"Could not get bill text for %s" % bill)
 
     if getattr(bill, '_newbill', False) and not session.end:
         bill.save_sponsor_activity()
