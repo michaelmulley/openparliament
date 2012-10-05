@@ -51,7 +51,10 @@ def import_bills(session):
             fetch_next_page = False
 
         for lbill in bills:
-            _import_bill(lbill,session, previous_session)
+            try:
+                _import_bill(lbill, session, previous_session)
+            except urllib2.HTTPError as e:
+                logger.error("%s %s" % (e, getattr(e, 'url', '(no url)')))
 
     return True
 
@@ -178,6 +181,9 @@ def _import_bill(lbill, session, previous_session=None):
         bis.bill = bis.bill # bizarrely, the django orm makes you do this
         bis.save()
 
+    if getattr(bill, '_newbill', False) and not session.end:
+        bill.save_sponsor_activity()
+
     if bill.text_docid and not BillText.objects.filter(docid=bill.text_docid).exists():
         try:
             BillText.objects.create(
@@ -188,9 +194,6 @@ def _import_bill(lbill, session, previous_session=None):
             bill.save()  # to trigger search indexing
         except CannotScrapeException:
             logger.warning(u"Could not get bill text for %s" % bill)
-
-    if getattr(bill, '_newbill', False) and not session.end:
-        bill.save_sponsor_activity()
 
     return bill
             

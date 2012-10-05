@@ -1,3 +1,5 @@
+#coding: utf-8
+
 from haystack import site
 from haystack import indexes
 
@@ -28,6 +30,14 @@ class BillIndex(SearchIndex):
             return Session.objects.get_by_date(obj.introduced)
 
         return Session.objects.current()
+
+    def prepare_title(self, obj):
+        if len(obj.name) < 150:
+            return obj.name
+        elif obj.short_title_en:
+            return obj.short_title_en
+        else:
+            return obj.name[:140] + u'…'
 
     def get_queryset(self):
         return Bill.objects.all().prefetch_related(
