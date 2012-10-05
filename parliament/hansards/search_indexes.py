@@ -17,11 +17,18 @@ class StatementIndex(SearchIndex):
     url = indexes.CharField(model_attr='get_absolute_url', indexed=False)
     committee = indexes.CharField(model_attr='committee_name')
     committee_slug = indexes.CharField(model_attr='committee_slug')
+    doctype = indexes.CharField(null=True)
     
     def get_queryset(self):
         return Statement.objects.all().prefetch_related(
             'member__politician', 'member__party', 'member__riding', 'document',
             'document__committeemeeting__committee'
         ).order_by('-date')
+
+    def prepare_doctype(self, obj):
+        if obj.committee_name:
+            return 'committee'
+        else:
+            return 'debate'
 
 site.register(Statement, StatementIndex)

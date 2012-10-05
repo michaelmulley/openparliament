@@ -2,6 +2,7 @@ import datetime
 from collections import defaultdict
 import re
 
+from django.conf import settings
 from django.core import urlresolvers
 from django.db import models
 
@@ -104,13 +105,29 @@ class Bill(models.Model):
         
     legisinfo_url = property(get_legisinfo_url)
         
-    def get_billtext_url(self, lang='E'):
+    def get_billtext_url(self, lang='E', single_page=False):
         if not self.text_docid:
             return None
-        return PARLIAMENT_DOCVIEWER_URL % {
+        url = PARLIAMENT_DOCVIEWER_URL % {
             'lang': lang,
             'docid': self.text_docid
         }
+        if single_page:
+            url += '&File=4&Col=1'
+        return url
+
+    def get_text(self, language=settings.LANGUAGE_CODE):
+        if not self.text_docid:
+            return ''
+        try:
+            bt = BillText.objects.get(bill=self, docid=self.text_docid)
+            return getattr(bt, 'text_' + language)
+        except BillText.DoesNotExist:
+            return ''
+
+    @property
+    def latest_date(self):
+        return self.status_date if self.status_date else self.introduced
         
     def save(self, *args, **kwargs):
         if not self.number_only:
@@ -165,6 +182,19 @@ class BillInSession(models.Model):
 
     def __unicode__(self):
         return u"%s in session %s" % (self.bill, self.session_id)
+
+class BillText(models.Model):
+
+    bill = models.ForeignKey(Bill)
+    docid = models.PositiveIntegerField(db_index=True)
+
+    created = models.DateTimeField(default=datetime.datetime.now)
+
+    text_en = models.TextField()
+    text_fr = models.TextField(blank=True)
+
+    def __unicode__(self):
+        return u"Document #%d for %s" % (self.docid, self.bill)
 
         
 VOTE_RESULT_CHOICES = (

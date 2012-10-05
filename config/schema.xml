@@ -538,6 +538,8 @@
 	<field name="django_ct" type="string" indexed="true"  stored="true"  multiValued="false" />
 	<field name="django_id" type="string" indexed="false"  stored="true"  multiValued="false" />
 
+	<field name="doctype" type="string" indexed="true" stored="true" multiValued="false" />
+
 	<field name="province" type="string" indexed="true" stored="true" multiValued="false" />
 
 	<field name="politician" type="string" indexed="true" stored="true" multiValued="false" />
@@ -558,6 +560,8 @@
 	<field name="session" type="string" indexed="false" stored="true" multiValued="false" />
 
 	<field name="topic" type="string" indexed="true" stored="true" multiValued="false" />
+
+	<field name="title" type="string" indexed="false" stored="true" multiValued="false" />
 
 	<field name="date" type="date" indexed="true" stored="true" multiValued="false" />
 

@@ -16,12 +16,13 @@
 			<p>{{ result.date|date:"F jS, Y"}}
 			<br>{% if result.committee %}Committee meeting{% else %}House debate{% endif %}</p>
 			<p>{% if result.politician_id %}<a href="/politicians/{{ result.politician_id }}/" class="pol_name">{{ result.politician }}</a>{% else %}<strong>{{ result.politician }}</strong>{% endif %}{% if result.party %}<br><span class="tag partytag_{{ result.party|slugify }}">{{ result.party }}</span>{% endif %}</p></div>
-        <div class="focus"><p><a href="{{ result.url }}#hl" class="statement_topic">{% if result.topic %}{{ result.topic }}{% elif result.committee %}{{ result.committee }} committee{% else %}(no topic){% endif %}</a> &nbsp;{{ result.text }}</p></div>
+        <div class="focus"><p><a href="{{ result.url }}#hl" class="statement_topic">{% if result.topic %}{{ result.topic }}{% elif result.committee %}{{ result.committee }} committee{% else %}House debate{% endif %}</a> &nbsp;{{ result.text }}</p></div>
         <div class="clear"></div>
     {% endif %}
 
-    {% if result.django_ct == 'bills.bill' %}<div class="context"><p><strong>Legislation</strong></p></div>
-        <div class="focus"><p><a href="{{ result.url }}">Bill {{ result.number }}</a> <span class="pol_affil">({{ result.session}})</span></p><p>{{ result.text }}</p></div>{% endif %}</div>
+    {% if result.django_ct == 'bills.bill' %}<div class="context"><p>{{ result.date|date:"F jS, Y"}}<br>Bill</p>
+	<p>{% if result.politician_id %}<a href="/politicians/{{ result.politician_id }}/" class="pol_name">{{ result.politician }}</a>{% if result.party %}<br><span class="tag partytag_{{ result.party|slugify }}">{{ result.party }}</span>{% endif %}{% endif %}</p></div>
+        <div class="focus"><p><a href="{{ result.url }}">Bill {{ result.number }}</a> <span class="pol_affil">{{ result.title }}</span></p><p>{{ result.text }}</p></div>{% endif %}</div>
     {% endfor %}
 	<div class="clear"></div>
     {% include "pagination.inc" %}

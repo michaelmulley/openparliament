@@ -11,7 +11,7 @@ class PolIndex(SearchIndex):
     party = indexes.CharField(model_attr='latest_member__party__short_name')
     province = indexes.CharField(model_attr='latest_member__riding__province')
     url = indexes.CharField(model_attr='get_absolute_url', indexed=False)
-    #dob = indexes.DateTimeField(model_attr='dob')
+    doctype = indexes.CharField(default='mp')
     
     def get_queryset(self):
         return Politician.objects.elected()

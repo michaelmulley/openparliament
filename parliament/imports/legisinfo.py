@@ -5,8 +5,10 @@ from django.db import transaction
 
 from lxml import etree
 
-from parliament.bills.models import Bill, BillInSession
+from parliament.bills.models import Bill, BillInSession, BillText
 from parliament.core.models import Session, Politician, ElectedMember
+from parliament.imports import CannotScrapeException
+from parliament.imports.billtext import get_plain_bill_text
 
 import logging
 logger = logging.getLogger(__name__)
@@ -176,6 +178,18 @@ def _import_bill(lbill, session, previous_session=None):
     if getattr(bis, '_changed', False):
         bis.bill = bis.bill # bizarrely, the django orm makes you do this
         bis.save()
+
+    if bill.text_docid and not BillText.objects.filter(docid=bill.text_docid).exists():
+        try:
+            BillText.objects.create(
+                bill=bill,
+                docid=bill.text_docid,
+                text_en=get_plain_bill_text(bill)
+            )
+            bill.save()  # to trigger search indexing
+        except CannotScrapeException:
+            logger.error(u"Could not get bill text for %s" % bill)
+
     if getattr(bill, '_newbill', False) and not session.end:
         bill.save_sponsor_activity()
 

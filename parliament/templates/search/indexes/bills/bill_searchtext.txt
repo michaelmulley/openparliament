@@ -1,0 +1,1 @@
+{% autoescape off %}{{ object.name }} {{ object.short_title_en }} {{ object.get_text }}{% endautoescape %}

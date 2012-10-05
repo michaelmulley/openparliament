@@ -709,8 +709,8 @@
 			searchtext boosted^3
 		</str>
 		<str name="q.alt">*:*</str>
-		<str name="fl">id, django_ct, django_id, province, politician, politician_id, url, number, topic, date, party, session, committee</str>
-		<str name="bf">recip(ms(NOW/HOUR,date),3.16e-11,1,1)^1.5</str>
+		<str name="fl">id, django_ct, django_id, doctype, province, politician, politician_id, url, number, topic, title, date, party, session, committee</str>
+		<str name="bf">recip(ms(NOW/HOUR,date),3.16e-11,1,1)^300</str>
 		<str name="mm">75%</str>
 		<int name="ps">100</int>
 		<str name="hl.fl">text</str>
@@ -732,11 +732,14 @@
 		<int name="f.province.facet.mincount">1</int>
 		<int name="f.party.facet.mincount">1</int>
 		<int name="f.politician.facet.mincount">1</int>
+		<int name="f.doctype.facet.mincount">1</int>
 		<str name="facet.field">{!ex=fperson}politician</str>
 		<str name="facet.field">{!ex=fprovince}province</str>
 		<str name="facet.field">{!ex=fparty}party</str>
+		<str name="facet.field">{!ex=fdoctype}doctype</str>
 		<str name="f.province.facet.method">enum</str>
 		<str name="f.party.facet.method">enum</str>
+		<str name="f.doctype.facet.method">enum</str>
 
 	</lst>
 	<!-- In addition to defaults, "appends" params can be specified
