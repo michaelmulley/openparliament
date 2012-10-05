@@ -19,12 +19,27 @@
         },
 
         getQuery: function() {
-            return visualSearch.searchQuery.serialize()
+            return visualSearch.searchQuery.serialize();
         },
 
         findFacet: function(name) {
             return visualSearch.searchQuery.detect(function (f) {
                 return f.get('category') === name;
+            });
+        },
+
+        createAlert: function() {
+            var query = OP.search.getQuery();
+            $.ajax({
+                type: 'POST',
+                url: '/alerts/create/',
+                data: {query: query},
+                dataType: 'json',
+                success: function(data) {
+                    if (data.status == 'ok') {
+                        OP.utils.notify("Your alert has been created for " + query + ".", "success");
+                    }
+                }
             });
         },
 
@@ -76,6 +91,9 @@
                 }
             });
 
+            /* Initialize alert button */
+            $('#add_alert button').click(OP.search.createAlert);
+
             /* Initialize facet widget */
             var facetWidget = new OP.FacetWidget();
             $('#search_leftbar').append(facetWidget.$el);
@@ -114,6 +132,16 @@
 
                 if (data && data.facets) {
                     facetWidget.setValues(data.facets);
+                }
+
+                /* Potentially display alert widget */
+                if (OP.cookies.hasItem('enable-alerts')) {
+                    if (OP.search.getQuery().length) {
+                        $('#add_alert').show();
+                    }
+                    else {
+                        $('#add_alert').hide();
+                    }
                 }
 
                 /* Set values in date widget */

@@ -1,7 +1,7 @@
 from haystack import site
 from haystack import indexes
 
-from parliament.search.utils import SearchIndex
+from parliament.search.index import SearchIndex
 from parliament.hansards.models import Statement
 
 class StatementIndex(SearchIndex):

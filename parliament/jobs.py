@@ -9,7 +9,6 @@ from parliament.imports import parlvotes, legisinfo, parl_document, parl_cmte
 from parliament.core.models import Politician, Session
 from parliament.hansards.models import Document
 from parliament.activity import utils as activityutils
-from parliament.alerts import utils as alertutils
 from parliament.activity.models import Activity
 
 import logging
@@ -87,8 +86,6 @@ def hansards_parse():
             raise e
         else:
             transaction.commit()
-        if getattr(settings, 'PARLIAMENT_SEND_EMAIL', False):
-            alertutils.alerts_for_hansard(hansard)
     transaction.commit()
             
 def hansards():

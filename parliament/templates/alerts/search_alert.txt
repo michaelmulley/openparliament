@@ -1,0 +1,31 @@
+{% load alerts %}{% autoescape off %}{% filter wordwrap:76 %}Your alert for {{ topic }} has new results in Parliament:
+{% for document in documents %}{% if document.django_ct == 'hansards.statement' %}
+{{ document.date|date:"F jS, P" }}
+{{ document.politician }} {% if document.topic %}on {{ document.topic }}{% elif document.committee %}at the {{ document.committee }} committee{% endif %}
+http://openparliament.ca{{ document.url }}
+----------------------------------------------------------
+
+{{ document.text|text_highlight }}
+{% elif document.django_ct == 'bills.bill' %}
+Bill {{ document.number }}
+http://openparliament.ca{{ document.url }}
+{{ document.text|text_highlight }}
+{% else %}
+http://openparliament.ca{{ document.url }}
+{{ document.text|text_highlight }}
+{% endif %}
+{% endfor %}
+
+************
+You're receiving this e-mail because you signed up at openparliament.ca to
+receive alerts about {{ topic }}.
+
+If you no longer want to subscribe to this alert, just follow the link below:
+{{ unsubscribe_url }}
+
+To manage your list of alerts, visit:
+http://openparliament.ca/alerts/
+
+love,
+openparliament.ca
+{% endfilter %}{% endautoescape %}

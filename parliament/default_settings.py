@@ -65,6 +65,9 @@ COMPRESS_OFFLINE = True
 
 APPEND_SLASH = False
 
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_AGE = 60*60*24*60  # 60 days
+
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',
@@ -75,6 +78,7 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = [
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
+    'parliament.accounts.middleware.AuthenticatedEmailMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -111,6 +115,7 @@ INSTALLED_APPS = [
     'sorl.thumbnail',
     'compressor',
     'parliament.core',
+    'parliament.accounts',
     'parliament.hansards',
     'parliament.elections',
     'parliament.bills',

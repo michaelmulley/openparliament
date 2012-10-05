@@ -34,6 +34,12 @@ class JSONView(View):
             resp = HttpResponse('<html><body>' + resp.content + '</body></html>')
         return resp
 
+    def login_required(self):
+        resp = HttpResponse('Login required', content_type='text/plain')
+        resp.status_code = 403
+        resp['X-OP-Login-Required'] = 'yep'
+        return resp
+
     def custom_response(self, status, content, content_key='content', status_code=200):
         resp = HttpResponse(content_type=self.content_type)
         resp.status_code = status_code

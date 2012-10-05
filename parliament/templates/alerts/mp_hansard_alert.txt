@@ -1,0 +1,22 @@
+{% autoescape off %}{% filter wordwrap:76 %}Here's what {{ person_name }} had to say in the House of Commons.
+
+{% for document in documents %}
+{{ document.date|date:"F jS, P" }}
+{{ document.topic }}
+http://openparliament.ca{{ document.url }}
+----------------------------------------------------------
+
+{{ document.full_text }}
+
+{% endfor %}
+
+************
+You're receiving this e-mail because you signed up at openparliament.ca to
+receive alerts about {{ person_name }}.
+
+If you no longer want to receive these messages, just follow the link below:
+{{ unsubscribe_url }}
+
+love,
+openparliament.ca
+{% endfilter %}{% endautoescape %}

@@ -1,0 +1,62 @@
+{% extends "alerts/base.html" %}
+
+{% block content %}
+<div class="focus"><p>You&rsquo;re signed in as <strong>{{ user.email }}</strong>. If that&rsquo;s not who you want to be today, <a href="#" class="persona-logout">sign out</a>.</p></div><div class="clear"></div>
+{% if subscriptions %}
+<div class="context"><h2>Existing alerts</h2></div>
+<div class="focus">
+<table id="subscriptions" class="table-striped" style="width: 80%">
+	{% for sub in subscriptions %}
+	<tr data-subscription-id="{{ sub.id }}">
+		<td style="padding-right: 30px; width: 75%;font-style: italic;">{{ sub.topic }}</td>
+		<td>{% if sub.active %}<button class="btn" data-action="disable">Pause</button>{% else %}<button class="btn btn-success" data-action="enable">Enable</button>{% endif %}</td>
+		<td><button class="btn btn-danger delete" data-action="delete">Delete</button></td>
+	</tr>
+	{% endfor %}
+</table>
+</div><div class="clear"></div>
+{% endif %}
+
+<div class="context"><h2>Creating alerts</h2></div>
+<div class="focus"><p>To create an alert, use our <a href="/search/">search</a> to look for something like:</p>
+{% include "alerts/search_examples.inc.html" %}
+<p>Then click the green <strong>Create an alert</strong> button on the left of the search page.</p>
+</div>
+<div class="clear"></div>
+{% endblock %}
+
+{% block breadcrumbs %}Alerts{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript">
+$(function() {
+	$('table#subscriptions').delegate('button', 'click', function() {
+		var $button = $(this);
+		var $row = $button.closest('tr');
+		var subscription = $row.data('subscription-id');
+		if (!subscription) {
+			return OP.utils.notify("Oh dear. Something went wrong.", 'error');
+		}
+		var url = '/alerts/' + subscription + '/';
+		var action = $button.attr('data-action');
+		$.ajax({
+			type: 'POST',
+			data: { action: action },
+			url: url,
+			success: function(data) {
+				if (action === 'enable') {
+					$button.attr('data-action', 'disable').removeClass('btn-success').text('Pause');
+				}
+				else if (action === 'disable') {
+					$button.attr('data-action', 'enable').addClass('btn-success').text('Enable');
+				}
+				else if (action === 'delete') {
+					$row.fadeOut();
+				}
+			}
+		});
+	});
+});
+</script>
+{% endblock %}

@@ -13,9 +13,11 @@
 	<div id="visual_search"></div>
 	<p class="search_options jsonly">Refine by <a data-add-facet="MP" href="#">MP</a>, <a data-add-facet="Party" href="#">party</a>, <a data-add-facet="Committee" href="#">committee</a>, <a data-add-facet="Province" href="#">province</a>, or <a data-add-facet="Type" href="#">result type</a>.</p>
 </div><div class="clear"></div>
-<div class="context" id="search_leftbar"></div>
+<div class="context" id="search_leftbar">
+<div id="add_alert" style="display:none;padding-bottom: 20px;"><p><strong>Get email</strong> when new items match this search:</p> <div style="text-align: center"><button class="btn btn-success">Create an alert</button></div></div>
+</div>
 <div class="focus" id="search_content">
-    {% if not results.hits %}
+    {% if not page or not page.paginator.count %}
 		<div id="paginated">
        {% if query %}<div class="focus"><h3>No results found.</h3></div>{% endif %}
 		</div>

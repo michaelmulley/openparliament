@@ -1,95 +1,183 @@
+import re
+
 from django.template import loader, RequestContext
 from django.http import HttpResponse, Http404
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django import forms
 from django.conf import settings
 from django.core import urlresolvers
+from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail, mail_admins
+from django.core.signing import Signer, TimestampSigner, BadSignature
+from django.views.decorators.cache import never_cache
 
-from parliament.alerts.models import PoliticianAlert
+from parliament.accounts.models import User
+from parliament.alerts.models import PoliticianAlert, Subscription
 from parliament.core.models import Politician
 from parliament.core.views import disable_on_readonly_db
+from parliament.utils.views import JSONView
 
-class PoliticianAlertForm(forms.ModelForm):
-    
-    class Meta:
-        model = PoliticianAlert
-        fields = ('email', 'politician')
-        widgets = {
-            'politician': forms.widgets.HiddenInput,
-        }
+class PoliticianAlertForm(forms.Form):
+
+    email = forms.EmailField(label='Your email')
+    politician = forms.IntegerField(widget=forms.HiddenInput)
 
 @disable_on_readonly_db
-def signup(request):
-    if 'politician' not in request.REQUEST:
+def politician_hansard_signup(request):
+    try:
+        politician_id = int(re.sub(r'\D', '', request.REQUEST.get('politician', '')))
+    except ValueError:
         raise Http404
     
-    pol = get_object_or_404(Politician, pk=request.REQUEST['politician'])
+    pol = get_object_or_404(Politician, pk=politician_id)
     success = False
     if request.method == 'POST':
         # This is a hack to remove spaces from e-mails before sending them off to the validator
         # If anyone knows a cleaner way of doing this without writing a custom field, please let me know
         postdict = request.POST.copy()
         if 'email' in postdict:
-            postdict['email'] = postdict['email'].strip()
+            postdict['email'] = postdict['email'].strip().lower()
             
         form = PoliticianAlertForm(postdict)
         if form.is_valid():
-            try:
-                alert = PoliticianAlert.objects.get(email=form.cleaned_data['email'], politician=form.cleaned_data['politician'])
-            except PoliticianAlert.DoesNotExist:
-                alert = form.save()
-            
-            key = alert.get_key()
-            activate_url = urlresolvers.reverse('parliament.alerts.views.activate',
-                kwargs={'alert_id': alert.id, 'key': key}) 
+            key = "%s,%s" % (politician_id, form.cleaned_data['email'])
+            signed_key = TimestampSigner(salt='alerts_pol_subscribe').sign(key)
+            activate_url = urlresolvers.reverse('alerts_pol_subscribe',
+                kwargs={'signed_key': signed_key})
             activation_context = RequestContext(request, {
                 'pol': pol,
-                'alert': alert,
                 'activate_url': activate_url,
             })
             t = loader.get_template("alerts/activate.txt")
-            send_mail(subject=u'Confirmation required: E-mail alerts about %s' % pol.name,
+            send_mail(subject=u'Confirmation required: Email alerts about %s' % pol.name,
                 message=t.render(activation_context),
                 from_email='alerts@contact.openparliament.ca',
-                recipient_list=[alert.email])
+                recipient_list=[form.cleaned_data['email']])
             
             success = True
     else:
-        form = PoliticianAlertForm(initial={'politician': request.GET['politician']})
+        form = PoliticianAlertForm(initial={'politician': politician_id})
         
     c = RequestContext(request, {
         'form': form,
         'success': success,
         'pol': pol,
-        'title': 'E-mail alerts for %s' % pol.name,
+        'title': 'Email alerts for %s' % pol.name,
     })
     t = loader.get_template("alerts/signup.html")
     return HttpResponse(t.render(c))
-    
-@disable_on_readonly_db
-def activate(request, alert_id, key):
-    
-    alert = get_object_or_404(PoliticianAlert, pk=alert_id)
-    
-    correct_key = alert.get_key()
-    if correct_key != key.replace('=', ''):
-        key_error = True
-    else:
-        key_error = False
-        alert.active = True
-        alert.save()
-        
+
+
+@never_cache
+def alerts_list(request):
+    if not request.authenticated_email:
+        return render(request, 'alerts/list_unauthenticated.html',
+            {'title': 'Email alerts'})
+
+    user = User.objects.get(email=request.authenticated_email)
+    subscriptions = Subscription.objects.filter(user=user).select_related('topic')
+
+    t = loader.get_template('alerts/list.html')
     c = RequestContext(request, {
-        'pol': alert.politician,
-        'title': 'E-mail alerts for %s' % alert.politician.name,
-        'activating': True,
-        'key_error': key_error
+        'user': user,
+        'subscriptions': subscriptions,
+        'title': 'Your email alerts'
     })
-    t = loader.get_template("alerts/activate.html")
+    resp = HttpResponse(t.render(c))
+    resp.set_cookie(
+        key='enable-alerts',
+        value='y',
+        max_age=60*60*24*90,
+        httponly=False
+    )
+    return resp
+
+
+class CreateAlertView(JSONView):
+
+    def post(self, request):
+        user_email = request.authenticated_email
+        if not user_email:
+            return self.login_required()
+        user = User.objects.get(email=user_email)
+
+        query = request.POST.get('query')
+        try:
+            subscription = Subscription.objects.get_or_create_by_query(query, user)
+            return True
+        except ValueError:
+            raise NotImplementedError
+create_alert = CreateAlertView.as_view()
+
+
+class ModifyAlertView(JSONView):
+
+    def post(self, request, subscription_id):
+        subscription = get_object_or_404(Subscription, id=subscription_id)
+        if subscription.user.email != request.authenticated_email:
+            raise PermissionDenied
+
+        action = request.POST.get('action')
+        if action == 'enable':
+            subscription.active = True
+            subscription.save()
+        elif action == 'disable':
+            subscription.active = False
+            subscription.save()
+        elif action == 'delete':
+            subscription.delete()
+
+        return True
+modify_alert = ModifyAlertView.as_view()
+
+@disable_on_readonly_db
+def politician_hansard_subscribe(request, signed_key):
+    try:
+        key = TimestampSigner(salt='alerts_pol_subscribe').unsign(signed_key, max_age=60*60*24*14)
+        key_error = False
+        politician_id, _, email = key.partition(',')
+        pol = get_object_or_404(Politician, id=politician_id)
+        if not pol.current_member:
+            raise Http404
+
+        user, created = User.objects.get_or_create(email=email)
+        query = u'MP: "%s" Type: "debate"' % pol.identifier
+        sub, created = Subscription.objects.get_or_create_by_query(query, user)
+        if not sub.active:
+            sub.active = True
+            sub.save()
+    except BadSignature:
+        key_error = True
+
+    return render(request, 'alerts/activate.html', {
+        'pol': pol,
+        'title': u'Email alerts for %s' % pol.name,
+        'activating': True,
+        'key_error': key_error,
+    })
+
+
+@never_cache
+def unsubscribe(request, key):
+    ctx = {
+        'title': 'Email alerts'
+    }
+    try:
+        subscription_id = Signer(salt='alerts_unsubscribe').unsign(key)
+        subscription = get_object_or_404(Subscription, id=subscription_id)
+        subscription.active = False
+        subscription.save()
+        if settings.PARLIAMENT_DB_READONLY:
+            mail_admins("Unsubscribe request", subscription_id)
+        ctx['query'] = subscription.topic
+    except BadSignature:
+        ctx['key_error'] = True
+    c = RequestContext(request, ctx)
+    t = loader.get_template("alerts/unsubscribe.html")
     return HttpResponse(t.render(c))
 
-def unsubscribe(request, alert_id, key):
+
+def unsubscribe_old(request, alert_id, key):
     alert = get_object_or_404(PoliticianAlert, pk=alert_id)
     
     correct_key = alert.get_key()
@@ -104,7 +192,8 @@ def unsubscribe(request, alert_id, key):
         
     c = RequestContext(request, {
         'pol': alert.politician,
-        'title': 'E-mail alerts for %s' % alert.politician.name,
+        'query': alert.politician.name,
+        'title': u'E-mail alerts for %s' % alert.politician.name,
         'key_error': key_error,
     })
     t = loader.get_template("alerts/unsubscribe.html")
