@@ -8,6 +8,7 @@ http://openparliament.ca{{ document.url }}
 {{ document.text|text_highlight }}
 {% elif document.django_ct == 'bills.bill' %}
 Bill {{ document.number }}
+{{ document.title }}
 http://openparliament.ca{{ document.url }}
 {{ document.text|text_highlight }}
 {% else %}

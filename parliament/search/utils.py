@@ -56,8 +56,10 @@ class BaseSearchQuery(object):
 
     @property
     def normalized_query(self):
-        q = self.bare_query + ' '.join((
-            u'%s: "%s"' % (key, self.filters[key])
-            for key in sorted(self.filters.keys())
-        ))
+        q = (self.bare_query
+            + (' ' if self.bare_query and self.filters else '')
+            + ' '.join((
+                u'%s: "%s"' % (key, self.filters[key])
+                for key in sorted(self.filters.keys())
+        )))
         return q.strip()

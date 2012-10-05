@@ -17,6 +17,9 @@ receive alerts about {{ person_name }}.
 If you no longer want to receive these messages, just follow the link below:
 {{ unsubscribe_url }}
 
+To manage your list of alerts, visit:
+http://openparliament.ca/alerts/
+
 love,
 openparliament.ca
 {% endfilter %}{% endautoescape %}
