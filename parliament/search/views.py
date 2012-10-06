@@ -15,6 +15,7 @@ from parliament.core.utils import postcode_to_edid
 from parliament.core.views import closed, flatpage_response
 from parliament.search.solr import SearchQuery
 from parliament.search.utils import SearchPaginator
+from parliament.utils.views import adaptive_redirect
 
 PER_PAGE = getattr(settings, 'SEARCH_RESULTS_PER_PAGE', 15)
 
@@ -28,8 +29,9 @@ def search(request):
         if not 'page' in request.GET:
             resp = try_postcode_first(request)
             if resp: return resp
-            resp = try_politician_first(request)
-            if resp: return resp
+            if not request.is_ajax():
+                resp = try_politician_first(request)
+                if resp: return resp
 
         query = request.GET['q'].strip()
         if request.GET.get('prepend'):
@@ -90,7 +92,7 @@ def try_postcode_first(request):
         if edid:
             try:
                 member = ElectedMember.objects.get(end_date__isnull=True, riding__edid=edid)
-                return HttpResponseRedirect(member.politician.get_absolute_url())
+                return adaptive_redirect(request, member.politician.get_absolute_url())
             except ElectedMember.DoesNotExist:
                 return flatpage_response(request, u"Ain’t nobody lookin’ out for you",
                     mark_safe(u"""It looks like that postal code is in the riding of %s. There is no current

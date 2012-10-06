@@ -2,7 +2,7 @@ import re
 
 from django.conf import settings
 from django.core.serializers.json import simplejson as json
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic import View
 
 class JSONView(View):
@@ -41,10 +41,7 @@ class JSONView(View):
         return resp
 
     def redirect(self, url):
-        resp = HttpResponse('Please redirect yourself to %s' % url, content_type='text/plain')
-        resp.status_code = 403
-        resp['X-OP-Redirect'] = url
-        return resp
+        return AjaxRedirectResponse(url)
 
     def custom_response(self, status, content, content_key='content', status_code=200):
         resp = HttpResponse(content_type=self.content_type)
@@ -61,3 +58,20 @@ class JSONView(View):
             content=error_messages,
             content_key='errors'
         )
+
+
+class AjaxRedirectResponse(HttpResponse):
+
+    def __init__(self, url, status_code=403):
+        super(AjaxRedirectResponse, self).__init__(
+            '<script>window.location.href = "%s";</script>' % url,
+            content_type='text/html'
+        )
+        self.status_code = status_code
+        self['X-OP-Redirect'] = url
+
+
+def adaptive_redirect(request, url):
+    if request.is_ajax():
+        return AjaxRedirectResponse(url)
+    return HttpResponseRedirect(url)
