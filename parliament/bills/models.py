@@ -152,7 +152,8 @@ class Bill(models.Model):
     def get_session(self):
         """Returns the most recent session this bill belongs to."""
         try:
-            self.session = self.sessions.all().order_by('-start')[0]
+            self.__dict__['session'] = s = self.sessions.all().order_by('-start')[0]
+            return s
         except (IndexError, ValueError):
             return getattr(self, '_session', None)
 
