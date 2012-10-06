@@ -149,11 +149,10 @@ class Bill(models.Model):
                 variety='billsponsor',
             )
         
-    @memoize_property
     def get_session(self):
         """Returns the most recent session this bill belongs to."""
         try:
-            return self.sessions.all().order_by('-start')[0]
+            self.session = self.sessions.all().order_by('-start')[0]
         except (IndexError, ValueError):
             return getattr(self, '_session', None)
 
@@ -163,6 +162,18 @@ class Bill(models.Model):
         self._session = session
         
     session = property(get_session)
+
+class BillInSessionManager(models.Manager):
+
+    def get_by_legisinfo_id(self, legisinfo_id):
+        legisinfo_id = int(legisinfo_id)
+        try:
+            return self.get(legisinfo_id=legisinfo_id)
+        except BillInSession.DoesNotExist:
+            from parliament.imports import legisinfo
+            legisinfo.import_bill_by_id(legisinfo_id)
+            return self.get(legisinfo_id=legisinfo_id)
+
 
 class BillInSession(models.Model):
     """Represents a bill, as introduced in a single session.
@@ -177,11 +188,16 @@ class BillInSession(models.Model):
 
     legisinfo_id = models.PositiveIntegerField(db_index=True, blank=True, null=True)
     introduced = models.DateField(blank=True, null=True)
-    sponsor_politician= models.ForeignKey(Politician, blank=True, null=True)
+    sponsor_politician = models.ForeignKey(Politician, blank=True, null=True)
     sponsor_member = models.ForeignKey(ElectedMember, blank=True, null=True)
+
+    objects = BillInSessionManager()
 
     def __unicode__(self):
         return u"%s in session %s" % (self.bill, self.session_id)
+
+    def get_absolute_url(self):
+        return self.bill.url_for_session(self.session)
 
 class BillText(models.Model):
 

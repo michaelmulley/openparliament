@@ -17,7 +17,7 @@ from django.db import transaction
 import alpheus
 from BeautifulSoup import BeautifulSoup
 
-from parliament.bills.models import Bill, VoteQuestion
+from parliament.bills.models import Bill, BillInSession, VoteQuestion
 from parliament.core.models import Politician, ElectedMember, Session
 from parliament.hansards.models import Statement, Document, OldSequenceMapping
 
@@ -231,7 +231,9 @@ def _process_related_link(match, statement):
         statement._related_pols.add(pol)
     elif link_type == 'legislation':
         try:
-            bill = Bill.objects.get_by_legisinfo_id(hocid)
+            bis = BillInSession.objects.get_by_legisinfo_id(hocid)
+            bill = bis.bill
+            url = bis.get_absolute_url()
         except Bill.DoesNotExist:
             match = re.search(r'\b[CS]\-\d+[A-E]?\b', text)
             if not match:
@@ -239,7 +241,7 @@ def _process_related_link(match, statement):
                 return text
             bill = Bill.objects.create_temporary_bill(legisinfo_id=hocid,
                 number=match.group(0), session=statement.document.session)
-        url = bill.url_for_session(statement.document.session)
+            url = bill.get_absolute_url()
         title = bill.name
         statement._related_bills.add(bill)
     elif link_type == 'vote':
