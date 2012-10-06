@@ -57,7 +57,7 @@
 {% endwith %}
         </div>
 <div class="focus">
-{% if member %}<h2>{% if not member.current %}Last in Parliament {{ member.end_date|date:"F Y"}}, as {% endif %}<span itemprop="affiliation" itemscope itemtype="http://schema.org/Organization"><span class="tag partytag_{{ member.party.slug|lower }}" itemprop="name">{{ member.party.short_name }}</span> <span{% if member.current %} itemprop="jobTitle"{% endif %}>MP for {{ member.riding }}</h2>{% endif %}
+{% if member %}<h2>{% if not member.current %}Last in Parliament {{ member.end_date|date:"F Y"}}, as {% endif %}<span itemprop="affiliation" itemscope itemtype="http://schema.org/Organization"><span {# class="tag partytag_{{ member.party.slug|lower }}" #}itemprop="name">{{ member.party.short_name }}</span></span> <span{% if member.current %} itemprop="jobTitle"{% endif %}>MP for {{ member.riding }}</h2>{% endif %}
 
 {% with pol.latest_candidate as candidate %}{% if candidate %}
 <p><strong>{% if candidate.elected %}Won{% else %}Lost{% endif %}</strong> {{ pol|hisher|lower }} last election, {% if candidate.election.byelection %}a byelection {% endif %}in {{ candidate.election.date|date:"Y" }}, with {{ candidate.votepercent }}% of the vote.</p>
