@@ -36,9 +36,9 @@
 						href="{{ statement.member.politician.get_absolute_url }}"><img
 						src="{% thumbnail statement.member.politician.headshot 67x90 crop_first="28,20,68,20" %}"
 						class="headshot_thumb" alt=""></a>{% endif %}{% if statement.who %}<p class="speaking">
-					{% if statement.member %}<a href="{{ statement.member.politician.get_absolute_url }}">{% endif %}
+					{% if name_info.url %}<a href="{{ name_info.url }}">{% endif %}
 					<span class="pol_name">{{ name_info.display_name }}</span>
-					{% if statement.member or name_info.post %}{% if statement.member %}</a>{% endif %} <span
+					{% if name_info.url %}</a>{% endif %}{% if statement.member or name_info.post %} <span
 							class="pol_affil">{% if name_info.post %}{{ name_info.post }}{% else %}{# else post #}
 						{% if not name_info.named %}{{ statement.member.politician.name }}{% else %}{# else named #}{{ statement.member.riding.dashed_name }}, {{ statement.member.riding.province }}{% endif %}{# end named #}{% endif %}{# end post #}</span>{% endif %}{# end member #}
 					</p>{% endif %}{# endif != Proceedings #}

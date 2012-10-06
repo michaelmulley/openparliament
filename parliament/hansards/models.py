@@ -427,16 +427,20 @@ class Statement(models.Model):
                     info['post'] = self.who_context
                 else:
                     info['post_reminder'] = self.who_context
-        elif parsetools.r_notamember.search(self.who):
-            info['display_name'] = self.who
-            if self.member.politician.name in self.who:
-                info['display_name'] = re.sub(r'\(.+\)', '', self.who)
-            info['named'] = False
-        elif not '(' in self.who or not parsetools.r_politicalpost.search(self.who):
-            info['display_name'] = self.member.politician.name
+                if self.who_hocid:
+                    info['url'] = '/search/?q=Witness%%3A+%%22%s%%22' % self.who_hocid
         else:
-            info['post'] = re.search(r'\((.+)\)', self.who).group(1).split(',')[0]
-            info['display_name'] = self.member.politician.name
+            info['url'] = self.member.politician.get_absolute_url()
+            if parsetools.r_notamember.search(self.who):
+                info['display_name'] = self.who
+                if self.member.politician.name in self.who:
+                    info['display_name'] = re.sub(r'\(.+\)', '', self.who)
+                info['named'] = False
+            elif not '(' in self.who or not parsetools.r_politicalpost.search(self.who):
+                info['display_name'] = self.member.politician.name
+            else:
+                info['post'] = re.search(r'\((.+)\)', self.who).group(1).split(',')[0]
+                info['display_name'] = self.member.politician.name
         return info
 
     @staticmethod
