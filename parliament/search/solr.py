@@ -94,15 +94,7 @@ class SearchQuery(BaseSearchQuery):
                 filter_value = '[{0:02}-{1:02}-01T00:01:01.000Z TO {2:02}-{3:02}-01T00:01:01.000Z]'.format(fromyear, frommonth, toyear, tomonth)
 
             elif filter_name == 'type':
-                filter_name = 'django_ct'
-                if filter_value == 'debate':
-                    filter_value = 'hansards.statement'
-                    solr_filters.append('committee_slug:""')
-                elif filter_value == 'committee':
-                    filter_value = 'hansards.statement'
-                    solr_filters.append('-committee_slug:""')
-                elif filter_value == 'bill':
-                    filter_value = 'bills.bill'
+                filter_name = 'doctype'
 
             if ' ' in filter_value and filter_name != 'date':
                 filter_value = u'"%s"' % filter_value
@@ -123,8 +115,8 @@ class SearchQuery(BaseSearchQuery):
         if solr_filters:
             searchparams['fq'] = solr_filters
 
-        self.committees_only = 'committee_slug' in filter_types or '-committee_slug:""' in solr_filters
-        self.committees_maybe = 'django_ct' not in filter_types or self.committees_only
+        self.committees_only = 'Committee' in self.filters or self.filters.get('Type') == 'committee'
+        self.committees_maybe = 'Type' not in self.filters or self.committees_only
 
         if self.facet:
             if self.committees_only:

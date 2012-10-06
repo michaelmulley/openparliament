@@ -46,6 +46,12 @@
 				filterName: 'Person',
 				pluralName: 'People',
 				rawValues: {{ facet_fields.politician|json }}
+			},
+			{
+				filterName: 'Type',
+				pluralName: 'Result Type',
+				rawValues: {{ facet_fields.doctype|json }},
+				labelFunc: function(v) { return OP.search.DOCTYPES[v]; }
 			}
 		];
 		$(document).trigger('op_search_results_loaded', {

@@ -89,4 +89,12 @@
         YT: 'Yukon',
         NU: 'Nunavut'
     };
+
+    OP.search.DOCTYPES = {
+        debate: 'House debate',
+        committee: 'Committee meeting',
+        mp: 'Person',
+        bill: 'Bill'
+    };
+    
 })();
