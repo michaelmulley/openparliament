@@ -29,9 +29,7 @@ def politician_hansard_signup(request):
         politician_id = int(re.sub(r'\D', '', request.REQUEST.get('politician', '')))
     except ValueError:
         raise Http404
-
-    raise Exception()
-    
+ 
     pol = get_object_or_404(Politician, pk=politician_id)
     success = False
     if request.method == 'POST':
