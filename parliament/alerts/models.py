@@ -90,7 +90,14 @@ class Topic(models.Model):
                 for result_id in result_ids
             ])
 
-        return [r for r in reversed(query_obj.documents) if r['url'] in result_ids]
+        items = [r for r in reversed(query_obj.documents) if r['url'] in result_ids]
+
+        if self.politician_hansard_alert:
+            # Remove procedural stuff by the Speaker
+            items = [r for r in items
+                if 'Speaker' not in r['politician'] or len(r['full_text']) > 1200]
+
+        return items
 
     @property
     def politician_hansard_alert(self):
