@@ -17,15 +17,9 @@
 <div id="add_alert" style="display:none;padding-bottom: 20px;"><p><strong>Get email</strong> when new items match this search:</p> <div style="text-align: center"><button class="btn btn-success">Create an alert</button></div></div>
 </div>
 <div class="focus" id="search_content">
-    {% if not page or not page.paginator.count %}
-		<div id="paginated">
-       {% if query %}<div class="focus"><h3>No results found.</h3></div>{% endif %}
-		</div>
-	{% else %}
         <div id="paginated">
 {% include "search/search_results.inc" %}
         </div>
-	{% endif %}
 </div>
 {% endblock %}
 {% block headextra %}
