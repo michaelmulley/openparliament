@@ -15,7 +15,9 @@ OP.auth = {
                     url: '/accounts/login/',
                     data: {assertion: assertion},
                     success: function(res, status, xhr) { window.location.reload(); },
-                    error: function(res, status, xhr) { alert("login failure" + res); }
+                    error: function(res, status, xhr) {
+                        OP.utils.notify("Oops! There was a problem logging you in.", 'error');
+                    }
                 });
             },
             onlogout: function() {
@@ -68,7 +70,7 @@ OP.auth = {
             url: '/accounts/logout/',
             success: function() { window.location.reload(); },
             error: function (res, status, xhr) {
-                alert("logout failure" + res);
+                OP.utils.notify("Oops! There was a problem logging you out.", 'error');
             }
         });
     }
@@ -86,7 +88,7 @@ $(function() {
 
     if ($('a.persona-logout,a.persona-login').length || !_.isUndefined(navigator.id)) {
         // If there's a sign in/out button on the page, we need to load the Persona JS right away.
-        OP.auth.callPersona(function() {}); 
+        OP.auth.callPersona(function() {});
     }
 
     $(document).ajaxError(function(event, jqXHR, ajaxSettings, thrownError) {
@@ -94,7 +96,7 @@ $(function() {
             OP.auth.login();
         }
         else if (jqXHR.getResponseHeader('X-OP-Redirect')) {
-            window.location.pathname = jqXHR.getResponseHeader('X-OP-Redirect');
+            window.location.href = jqXHR.getResponseHeader('X-OP-Redirect');
         }
     });
 });

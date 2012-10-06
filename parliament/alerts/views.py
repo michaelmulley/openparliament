@@ -75,6 +75,11 @@ def alerts_list(request):
             {'title': 'Email alerts'})
 
     user = User.objects.get(email=request.authenticated_email)
+
+    if request.session.get('pending_alert'):
+        Subscription.objects.get_or_create_by_query(request.session['pending_alert'], user)
+        del request.session['pending_alert']
+
     subscriptions = Subscription.objects.filter(user=user).select_related('topic')
 
     t = loader.get_template('alerts/list.html')
@@ -96,12 +101,14 @@ def alerts_list(request):
 class CreateAlertView(JSONView):
 
     def post(self, request):
+        query = request.POST.get('query')
+        if not query:
+            raise Http404
         user_email = request.authenticated_email
         if not user_email:
-            return self.login_required()
+            request.session['pending_alert'] = query
+            return self.redirect(urlresolvers.reverse('alerts_list'))
         user = User.objects.get(email=user_email)
-
-        query = request.POST.get('query')
         try:
             subscription = Subscription.objects.get_or_create_by_query(query, user)
             return True

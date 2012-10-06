@@ -40,6 +40,12 @@ class JSONView(View):
         resp['X-OP-Login-Required'] = 'yep'
         return resp
 
+    def redirect(self, url):
+        resp = HttpResponse('Please redirect yourself to %s' % url, content_type='text/plain')
+        resp.status_code = 403
+        resp['X-OP-Redirect'] = url
+        return resp
+
     def custom_response(self, status, content, content_key='content', status_code=200):
         resp = HttpResponse(content_type=self.content_type)
         resp.status_code = status_code
