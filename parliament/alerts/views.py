@@ -1,10 +1,11 @@
 import re
 
 from django.template import loader, RequestContext
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render
 from django import forms
 from django.conf import settings
+from django.contrib import messages
 from django.core import urlresolvers
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail, mail_admins
@@ -28,6 +29,8 @@ def politician_hansard_signup(request):
         politician_id = int(re.sub(r'\D', '', request.REQUEST.get('politician', '')))
     except ValueError:
         raise Http404
+
+    raise Exception()
     
     pol = get_object_or_404(Politician, pk=politician_id)
     success = False
@@ -37,9 +40,17 @@ def politician_hansard_signup(request):
         postdict = request.POST.copy()
         if 'email' in postdict:
             postdict['email'] = postdict['email'].strip().lower()
-            
+
         form = PoliticianAlertForm(postdict)
         if form.is_valid():
+            if form.cleaned_data['email'] == request.authenticated_email:
+                Subscription.objects.get_or_create_by_query(
+                    _generate_query_for_politician(pol),
+                    request.authenticated_email_user
+                )
+                messages.success(request, u"You're signed up for alerts for %s." % pol.name)
+                return HttpResponseRedirect(urlresolvers.reverse('alerts_list'))
+
             key = "%s,%s" % (politician_id, form.cleaned_data['email'])
             signed_key = TimestampSigner(salt='alerts_pol_subscribe').sign(key)
             activate_url = urlresolvers.reverse('alerts_pol_subscribe',
@@ -53,10 +64,15 @@ def politician_hansard_signup(request):
                 message=t.render(activation_context),
                 from_email='alerts@contact.openparliament.ca',
                 recipient_list=[form.cleaned_data['email']])
-            
+
             success = True
     else:
-        form = PoliticianAlertForm(initial={'politician': politician_id})
+        initial = {
+            'politician': politician_id
+        }
+        if request.authenticated_email:
+            initial['email'] = request.authenticated_email
+        form = PoliticianAlertForm(initial=initial)
         
     c = RequestContext(request, {
         'form': form,
@@ -137,6 +153,9 @@ class ModifyAlertView(JSONView):
         return True
 modify_alert = ModifyAlertView.as_view()
 
+def _generate_query_for_politician(pol):
+    return u'MP: "%s" Type: "debate"' % pol.identifier
+
 @disable_on_readonly_db
 def politician_hansard_subscribe(request, signed_key):
     try:
@@ -148,8 +167,8 @@ def politician_hansard_subscribe(request, signed_key):
             raise Http404
 
         user, created = User.objects.get_or_create(email=email)
-        query = u'MP: "%s" Type: "debate"' % pol.identifier
-        sub, created = Subscription.objects.get_or_create_by_query(query, user)
+        sub, created = Subscription.objects.get_or_create_by_query(
+            _generate_query_for_politician(pol), user)
         if not sub.active:
             sub.active = True
             sub.save()

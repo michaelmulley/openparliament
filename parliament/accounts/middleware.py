@@ -14,7 +14,23 @@ class AuthenticatedEmailDescriptor(object):
         request.session['_ae'] = email
         request.session.modified = True
 
+
+class AuthenticatedEmailUserDescriptor(object):
+
+    def __get__(self, request, objtype=None):
+        from parliament.accounts.models import User
+        if not request.authenticated_email:
+            return None
+        try:
+            user = User.objects.get(
+                email=request.authenticated_email)
+        except User.DoesNotExist:
+            user = None
+        request.authenticated_email_user = user
+        return user
+
 HttpRequest.authenticated_email = AuthenticatedEmailDescriptor()
+HttpRequest.authenticated_email_user = AuthenticatedEmailUserDescriptor()
 
 
 class AuthenticatedEmailMiddleware(object):
