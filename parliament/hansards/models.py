@@ -95,8 +95,28 @@ class Document(models.Model):
         elif self.document_type == self.EVIDENCE:
             return self.committeemeeting.get_absolute_url()
 
+    def to_api_dict(self, representation):
+        d = dict(
+            url=self.get_absolute_url(),
+            date=unicode(self.date) if self.date else None,
+            number=self.number,
+            document_type=self.get_document_type_display()
+        )
+        if representation == 'detail':
+            d.update(
+                source_id=self.source_id,
+                source_url=self.source_url,
+                session=self.session_id,
+                most_frequent_word=self.most_frequent_word
+            )
+        return d
+
     @property
     def url(self):
+        return self.source_url
+
+    @property
+    def source_url(self):
         return url_from_docid(self.source_id)
         
     def _topics(self, l):
@@ -414,6 +434,20 @@ class Statement(models.Model):
                 'riding': unicode(self.member.riding),
             }
         return v
+
+    def to_api_dict(self, representation):
+        d = dict(
+            url=self.get_absolute_url(),
+            time=unicode(self.time) if self.time else None,
+            attribution=self.who,
+            content_en=self.content_en,
+            content_fr=self.content_fr,
+            h1=self.h1,
+            h2=self.h2,
+            h3=self.h3,
+            politician_url=self.politician.get_absolute_url() if self.politician else None,
+        )
+        return d
     
     @property
     @memoize_property    

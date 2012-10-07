@@ -83,14 +83,17 @@ window.OP = {
 <div class="col three"><strong>Words</strong><br>
 <a href="{% url debates %}">Debates</a> (Hansard)<br>
 <a href="{% url committee_list %}">Committees</a><br>
-<a href="{% url search %}">Search</a></div>
+<a href="{% url search %}">Search</a><br>
+<a href="{% url alerts_list %}">Alerts</a>
+</div>
 <div class="col three"><strong>Laws</strong><br>
 <a href="{% url bills %}">Bills</a><br>
 <a href="{% url votes %}">Votes</a></div>
 <div class="col three"><strong>More</strong><br>
 <a href="http://openparliament.uservoice.com/">Feedback</a> / <a class="maillink">Contact</a><br>
-<a href="{% url alerts_list %}">Alerts</a><br>
-<a href="/labs/haiku/">Haiku</a></div>
+<a href="/labs/haiku/">Haiku</a>
+{% if request.apibrowser_url and debug %}<br><a href="{{ request.apibrowser_url }}" rel="nofollow">JSON</a> for developers{% endif %}
+</div>
   {% endblock footer %}<div class="clear"></div></div></div>
 <!--[if IE 6]>
 <script type="text/javascript">var IE6UPDATE_OPTIONS = {

@@ -1,24 +1,45 @@
 import datetime
-import json
-import urllib, urllib2
 
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from django.conf import settings
-from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
+from django.http import HttpResponse, Http404, HttpResponsePermanentRedirect
 from django.shortcuts import get_object_or_404
 from django.template import loader, RequestContext
 from django.views.generic.dates import (ArchiveIndexView, YearArchiveView, MonthArchiveView)
 from django.views.decorators.vary import vary_on_headers
 
-from parliament.core.utils import get_twitter_share_url
+from parliament.core.api import ModelDetailView, ModelListView
 from parliament.hansards.models import Document, Statement
 
 def _get_hansard(year, month, day):
     return get_object_or_404(Document.debates,
         date=datetime.date(int(year), int(month), int(day)))
 
-def hansard(request, year, month, day, slug=None):
-    return document_view(request, _get_hansard(year, month, day), slug=slug)
+class HansardView(ModelDetailView):
+
+    resource_name = 'House debates'
+
+    def get_object(self, request, **kwargs):
+        return _get_hansard(**kwargs)
+
+    def get_html(self, request, **kwargs):
+        return document_view(request, _get_hansard(**kwargs))
+hansard = HansardView.as_view()
+
+class HansardStatementView(ModelDetailView):
+
+    resource_name = 'Speech (House debate)'
+
+    def get_object(self, request, year, month, day, slug):
+        date = datetime.date(int(year), int(month), int(day))
+        return Statement.objects.get(
+            document__document_type='D',
+            document__date=date,
+            slug=slug
+        )
+
+    def get_html(self, request, year, month, day, slug):
+        return document_view(request, _get_hansard(year, month, day), slug=slug)
+hansard_statement = HansardStatementView.as_view()        
 
 def document_redirect(request, document_id, slug=None):
     try:
@@ -95,24 +116,21 @@ def document_view(request, document, meeting=None, slug=None):
             'pagination_url': meeting.get_absolute_url(),
         })
     return HttpResponse(t.render(RequestContext(request, ctx)))
-    
-def statement_twitter(request, hansard_id, sequence):
-    """Redirects to a Twitter page, prepopulated with sharing info for a particular statement."""
-    try:
-        statement = Statement.objects.get(document=hansard_id, sequence=sequence)
-    except Statement.DoesNotExist:
-        raise Http404
-        
-    if statement.politician:
-        description = statement.politician.name
-    else:
-        description = statement.who
-    description += ' on ' + statement.topic
-    
-    return HttpResponseRedirect(
-        get_twitter_share_url(statement.get_absolute_url(), description)
-    )
-    
+
+
+class HansardSpeechesView(ModelListView):
+
+    resource_name = 'Speeches (House debate)'
+
+    def get_qs(self, request, year, month, day):
+        date = datetime.date(int(year), int(month), int(day))
+        return Statement.objects.filter(
+            document__document_type='D',
+            document__date=date
+        ).order_by('sequence').prefetch_related('politician')
+hansard_speeches = HansardSpeechesView.as_view()
+
+
 def debate_permalink(request, slug, year, month, day):
 
     doc = _get_hansard(year, month, day)
@@ -166,14 +184,24 @@ class TitleAdder(object):
         context.update(title=self.page_title)
         return context
 
-class DebateIndexView(TitleAdder, ArchiveIndexView):
+class APIArchiveView(ModelListView):
+
+    resource_name = 'House debates'
+
+    def get_html(self, request, **kwargs):
+        return self.get(request, **kwargs)
+
+    def get_qs(self, request, **kwargs):
+        return self.get_dated_items()[1]
+
+class DebateIndexView(TitleAdder, ArchiveIndexView, APIArchiveView):
     queryset = Document.debates.all()
     date_field = 'date'
     template_name = "hansards/hansard_archive.html"
     page_title='The Debates of the House of Commons'
 index = DebateIndexView.as_view()
 
-class DebateYearArchive(TitleAdder, YearArchiveView):
+class DebateYearArchive(TitleAdder, YearArchiveView, APIArchiveView):
     queryset = Document.debates.all().order_by('date')
     date_field = 'date'
     make_object_list = True
@@ -181,7 +209,7 @@ class DebateYearArchive(TitleAdder, YearArchiveView):
     page_title = lambda self: 'Debates from %s' % self.get_year()
 by_year = DebateYearArchive.as_view()
 
-class DebateMonthArchive(TitleAdder, MonthArchiveView):
+class DebateMonthArchive(TitleAdder, MonthArchiveView, APIArchiveView):
     queryset = Document.debates.all().order_by('date')
     date_field = 'date'
     make_object_list = True

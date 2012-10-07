@@ -60,7 +60,7 @@
                     return callback(accache.committees, {preserveOrder: true});
                 }
                 $.getJSON('/committees/?format=json', function(data) {
-                    accache.committees = _.map(data, function(i) { return { value:i.slug, label:i.name};})
+                    accache.committees = _.map(data.content.objects, function(i) { return { value:i.slug, label:i.name};})
                     callback(accache.committees, {preserveOrder: true});
                 });
                 break;

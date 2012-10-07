@@ -14,9 +14,9 @@ from django.views.decorators.cache import never_cache
 
 from parliament.accounts.models import User
 from parliament.alerts.models import PoliticianAlert, Subscription
+from parliament.core.api import JSONView
 from parliament.core.models import Politician
 from parliament.core.views import disable_on_readonly_db
-from parliament.utils.views import JSONView
 
 class PoliticianAlertForm(forms.Form):
 

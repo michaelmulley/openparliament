@@ -85,7 +85,7 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     #'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
+    'parliament.core.api.FetchFromCacheMiddleware',
 ]
 
 ROOT_URLCONF = 'parliament.urls'

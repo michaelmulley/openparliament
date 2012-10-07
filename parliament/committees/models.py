@@ -72,6 +72,24 @@ class Committee(models.Model):
         else:
             return self.name + u' Committee'
 
+    def to_api_dict(self, representation):
+        d = dict(
+            url=self.get_absolute_url(),
+            name=self.name,
+            short_name=self.short_name,
+            slug=self.slug,
+            parent=self.parent.get_absolute_url() if self.parent else None,
+        )
+        if representation == 'detail':
+            d['sessions'] = [{
+                    'session': cis.session_id,
+                    'acronym': cis.acronym,
+                    'source_url': cis.get_source_url(),
+                } for cis in self.committeeinsession_set.all().order_by('-session__end').select_related('session')]
+            d['subcommittees'] = [c.get_absolute_url() for c in self.subcommittees.all()]
+        return d
+
+
 class CommitteeInSession(models.Model):
     session = models.ForeignKey(Session)
     committee = models.ForeignKey(Committee)

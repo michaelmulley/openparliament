@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block headextra %}
+<style type="text/css">
+pre {
+  overflow: auto;
+  font-size: 13px;
+  font-family: monospace;
+  white-space: pre;
+  word-wrap: normal;
+}
+pre .key {
+  color: #660E7A;
+}
+pre .structure {
+  color: #B58110;
+}
+pre .value {
+  color: #038C35;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="focus">
+<pre id="apibrowser_json">{{ json }}</pre>
+</div>
+{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript" src="{{ STATIC_URL }}js/jsonformatter.js"></script>
+<script type="text/javascript">
+$(function() {
+	$('#apibrowser_json').html(OP.utils.formatJSON($('#apibrowser_json').text()));
+});
+</script>
+{% endblock %}
+
+{% block breadcrumbs_all %}{% endblock %}

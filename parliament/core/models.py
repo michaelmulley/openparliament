@@ -269,7 +269,22 @@ class Politician(Person):
     slug = models.CharField(max_length=30, blank=True, db_index=True)
     
     objects = PoliticianManager()
-        
+
+    def to_api_dict(self, representation):
+        d = dict(
+            url=self.get_absolute_url(),
+            name=self.name
+        )
+        if representation == 'detail':
+            d.update(
+                name_given=self.name_given,
+                name_family=self.name_family,
+                gender=self.gender,
+                image=self.headshot.url,
+                info=self.info_multivalued()
+            )
+        return d
+
     def add_alternate_name(self, name):
         normname = parsetools.normalizeName(name)
         if normname not in self.alternate_names():
