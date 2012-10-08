@@ -10,7 +10,8 @@ from django.template import Context, loader, RequestContext
 from django.template.defaultfilters import date as format_date
 from django.views.decorators.vary import vary_on_headers
 
-from parliament.bills.models import Bill, VoteQuestion, MemberVote
+from parliament.bills.models import Bill, VoteQuestion, MemberVote, BillInSession
+from parliament.core.api import ModelListView, ModelDetailView
 from parliament.core.models import Session
 from parliament.hansards.models import Statement
 
@@ -20,53 +21,66 @@ def bill_pk_redirect(request, bill_id):
         urlresolvers.reverse('parliament.bills.views.bill', kwargs={
         'session_id': bill.get_session().id, 'bill_number': bill.number}))
 
-@vary_on_headers('X-Requested-With')
-def bill(request, session_id, bill_number):
-    PER_PAGE = 10
-    bill = get_object_or_404(Bill, sessions=session_id, number=bill_number)
-    statements = bill.statement_set.all().order_by('-time', '-sequence').select_related('member', 'member__politician', 'member__riding', 'member__party')
-    paginator = Paginator(statements, PER_PAGE)
 
-    try:
-        pagenum = int(request.GET.get('page', '1'))
-    except ValueError:
-        pagenum = 1
-    try:
-        page = paginator.page(pagenum)
-    except (EmptyPage, InvalidPage):
-        page = paginator.page(paginator.num_pages)
+class BillDetailView(ModelDetailView):
 
-    c = RequestContext(request, {
-        'bill': bill,
-        'page': page,
-        'votequestions': bill.votequestion_set.all().order_by('-date', '-number'),
-        'title': ('Bill %s' % bill.number) + (' (Historical)' if bill.session.end else ''), 
-        'statements_full_date': True,
-        'statements_context_link': True,
-    })
-    if request.is_ajax():
-        t = loader.get_template("hansards/statement_page.inc")
-    else:
-        t = loader.get_template("bills/bill_detail.html")
-    return HttpResponse(t.render(c))
+    def get_object(self, request, session_id, bill_number):
+        return BillInSession.objects.select_related(
+            'bill', 'sponsor_politician').get(session=session_id, bill__number=bill_number)
+
+    def get_html(self, request, session_id, bill_number):
+        PER_PAGE = 10
+        bill = get_object_or_404(Bill, sessions=session_id, number=bill_number)
+        statements = bill.statement_set.all().order_by('-time', '-sequence').select_related('member', 'member__politician', 'member__riding', 'member__party')
+        paginator = Paginator(statements, PER_PAGE)
+
+        try:
+            pagenum = int(request.GET.get('page', '1'))
+        except ValueError:
+            pagenum = 1
+        try:
+            page = paginator.page(pagenum)
+        except (EmptyPage, InvalidPage):
+            page = paginator.page(paginator.num_pages)
+
+        c = RequestContext(request, {
+            'bill': bill,
+            'page': page,
+            'votequestions': bill.votequestion_set.all().order_by('-date', '-number'),
+            'title': ('Bill %s' % bill.number) + (' (Historical)' if bill.session.end else ''), 
+            'statements_full_date': True,
+            'statements_context_link': True,
+        })
+        if request.is_ajax():
+            t = loader.get_template("hansards/statement_page.inc")
+        else:
+            t = loader.get_template("bills/bill_detail.html")
+        return HttpResponse(t.render(c))
+bill = vary_on_headers('X-Requested-With')(BillDetailView.as_view())
     
-def index(request):
-    sessions = Session.objects.with_bills()
-    len(sessions) # evaluate it
-    bills = Bill.objects.filter(sessions=sessions[0])
-    votes = VoteQuestion.objects.select_related('bill').filter(session=sessions[0])[:6]
+class BillListView(ModelListView):
 
-    t = loader.get_template('bills/index.html')
-    c = RequestContext(request, {
-        'object_list': bills,
-        'session_list': sessions,
-        'votes': votes,
-        'session': sessions[0],
-        'title': 'Bills & Votes'
-    })
+    def get_qs(self, request):
+        return BillInSession.objects.all().order_by('-introduced').select_related('bill', 'sponsor_politician')
 
-    return HttpResponse(t.render(c))
-        
+    def get_html(self, request):
+        sessions = Session.objects.with_bills()
+        len(sessions) # evaluate it
+        bills = Bill.objects.filter(sessions=sessions[0])
+        votes = VoteQuestion.objects.select_related('bill').filter(session=sessions[0])[:6]
+
+        t = loader.get_template('bills/index.html')
+        c = RequestContext(request, {
+            'object_list': bills,
+            'session_list': sessions,
+            'votes': votes,
+            'session': sessions[0],
+            'title': 'Bills & Votes'
+        })
+
+        return HttpResponse(t.render(c))
+index = BillListView.as_view()
+
 def bills_for_session(request, session_id):
     session = get_object_or_404(Session, pk=session_id)
     bills = Bill.objects.filter(sessions=session)

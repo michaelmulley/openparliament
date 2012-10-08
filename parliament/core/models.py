@@ -272,7 +272,6 @@ class Politician(Person):
 
     def to_api_dict(self, representation):
         d = dict(
-            url=self.get_absolute_url(),
             name=self.name
         )
         if representation == 'detail':

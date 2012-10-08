@@ -17,6 +17,7 @@ CALLBACK_URL = 'http://www2.parl.gc.ca/HousePublications/GetWebOptionsCallBack.a
 BILL_VOTES_URL = 'http://www2.parl.gc.ca/Housebills/BillVotes.aspx?Language=E&Parl=%s&Ses=%s&Bill=%s'
 
 LEGISINFO_BILL_URL = 'http://www.parl.gc.ca/LegisInfo/BillDetails.aspx?Language=%(lang)s&Mode=1&Bill=%(bill)s&Parl=%(parliament)s&Ses=%(session)s'
+LEGISINFO_BILL_ID_URL = 'http://www.parl.gc.ca/LEGISINFO/BillDetails.aspx?Language=%(lang)s&Mode=1&billId=%(id)s'
 PARLIAMENT_DOCVIEWER_URL = 'http://parl.gc.ca/HousePublications/Publication.aspx?Language=%(lang)s&Mode=1&DocId=%(docid)s'
 
 class BillManager(models.Manager):
@@ -188,7 +189,7 @@ class BillInSession(models.Model):
     session = models.ForeignKey(Session)
 
     legisinfo_id = models.PositiveIntegerField(db_index=True, blank=True, null=True)
-    introduced = models.DateField(blank=True, null=True)
+    introduced = models.DateField(blank=True, null=True, db_index=True)
     sponsor_politician = models.ForeignKey(Politician, blank=True, null=True)
     sponsor_member = models.ForeignKey(ElectedMember, blank=True, null=True)
 
@@ -199,6 +200,39 @@ class BillInSession(models.Model):
 
     def get_absolute_url(self):
         return self.bill.url_for_session(self.session)
+
+    def get_legisinfo_url(self, lang='E'):
+        return LEGISINFO_BILL_ID_URL % {
+            'lang': lang,
+            'id': self.legisinfo_id
+        }
+
+    def to_api_dict(self, representation):
+        d = {
+            'session': self.session_id,
+            'legisinfo_id': self.legisinfo_id,
+            'introduced': unicode(self.introduced),
+            'name_en': self.bill.name,
+            'number': self.bill.number
+        }
+        if representation == 'detail':
+            d.update(
+                name_fr=self.bill.name_fr,
+                short_title_en=self.bill.short_title_en,
+                short_title_fr=self.bill.short_title_fr,
+                home_chamber=self.bill.get_institution_display(),
+                law=self.bill.law,
+                sponsor_politician_url=self.sponsor_politician.get_absolute_url() if self.sponsor_politician else None,
+                text_url=self.bill.get_billtext_url(),
+                other_sessions=[self.bill.url_for_session(s)
+                    for s in self.bill.sessions.all()
+                    if s.id != self.session_id],
+                votes=[vq.get_absolute_url() for vq in VoteQuestion.objects.filter(bill=self.bill_id)],
+                private_member_bill=self.bill.privatemember,
+                legisinfo_url=self.get_legisinfo_url(),
+            )
+        return d
+
 
 class BillText(models.Model):
 

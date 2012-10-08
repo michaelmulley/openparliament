@@ -97,7 +97,6 @@ class Document(models.Model):
 
     def to_api_dict(self, representation):
         d = dict(
-            url=self.get_absolute_url(),
             date=unicode(self.date) if self.date else None,
             number=self.number,
             document_type=self.get_document_type_display()
@@ -107,7 +106,6 @@ class Document(models.Model):
                 source_id=self.source_id,
                 source_url=self.source_url,
                 session=self.session_id,
-                most_frequent_word=self.most_frequent_word
             )
         return d
 
@@ -437,14 +435,13 @@ class Statement(models.Model):
 
     def to_api_dict(self, representation):
         d = dict(
-            url=self.get_absolute_url(),
             time=unicode(self.time) if self.time else None,
             attribution=self.who,
             content_en=self.content_en,
             content_fr=self.content_fr,
-            h1=self.h1,
-            h2=self.h2,
-            h3=self.h3,
+            h1_en=self.h1,
+            h2_en=self.h2,
+            h3_en=self.h3,
             politician_url=self.politician.get_absolute_url() if self.politician else None,
         )
         return d

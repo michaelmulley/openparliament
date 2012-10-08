@@ -2,14 +2,15 @@ import json
 import re
 from urllib import urlencode
 
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse, Http404
 from django.middleware.cache import FetchFromCacheMiddleware as DjangoFetchFromCacheMiddleware
 from django.shortcuts import render
 from django.views.generic import View
 
-from tastypie.paginator import Paginator
 from webob.acceptparse import Accept
+
 
 class APIView(View):
 
@@ -71,7 +72,7 @@ class APIView(View):
             return self.format_not_allowed(request)
 
         if format != 'apibrowser' and 'apibrowser' in available_formats:
-            params = dict([k, v.encode('utf-8')] for k,v in request.GET.items())
+            params = dict([k, v.encode('utf-8')] for k, v in request.GET.items())
             params['format'] = 'apibrowser'
             request.apibrowser_url = '?' + urlencode(params)
 
@@ -83,7 +84,7 @@ class APIView(View):
 
     def format_not_allowed(self, request):
         msg = u'This resource is only available in ' + ', '.join(
-            set([f[1] for f in self.formats if f[0] == ff][0] 
+            set([f[1] for f in self.formats if f[0] == ff][0]
                 for ff in self.available_methods[request.method.lower()]))
         return HttpResponse(msg, content_type='text/plain', status=406)
 
@@ -103,8 +104,9 @@ class APIView(View):
         if self.allow_jsonp and 'callback' in request.GET:
             callback = re.sub(r'[^a-zA-Z0-9_]', '', request.GET['callback'])
             resp.write(callback + '(')
-        json.dump({'status': 'ok', 'content': result}, resp,
-            indent=4 if pretty_print else None)
+        if not isinstance(result, dict):
+            result = {'content': result}
+        json.dump(result, resp, indent=4 if pretty_print else None)
         if callback:
             resp.write(');')
 
@@ -146,7 +148,9 @@ class ModelListView(APIView):
     default_limit = 20
     
     def object_to_dict(self, obj):
-        return obj.to_api_dict(representation='list')
+        d = obj.to_api_dict(representation='list')
+        d['url'] = obj.get_absolute_url()
+        return d
 
     def get_qs(self, request, **kwargs):
         return self.model._default_manager.all()
@@ -169,23 +173,42 @@ class ModelListView(APIView):
         qs = self.get_qs(request, **kwargs)
         qs = self.filter(request, qs)
 
-        paginator = Paginator(request.GET, qs, resource_uri=request.path, limit=self.default_limit)
-        result = paginator.page()
-        result['objects'] = [self.object_to_dict(obj) for obj in result['objects']]
+        paginator = APIPaginator(request, qs, limit=self.default_limit)
+        (objects, page_data) = paginator.page()
+        result = dict(
+            objects=[self.object_to_dict(obj) for obj in objects],
+            pagination=page_data
+        )
+        related = self.get_related_resources(request, qs, result)
+        if related:
+            result['related'] = related
         return result
+
+    def get_related_resources(self, request, qs, result):
+        return None
 
 
 class ModelDetailView(APIView):
 
     def object_to_dict(self, obj):
-        return obj.to_api_dict(representation='detail')
+        d = obj.to_api_dict(representation='detail')
+        d['url'] = obj.get_absolute_url()
+        return d
 
     def get_json(self, request, **kwargs):
         try:
             obj = self.get_object(request, **kwargs)
         except ObjectDoesNotExist:
             raise Http404
-        return self.object_to_dict(obj)
+        result = dict(object=self.object_to_dict(obj))
+        related = self.get_related_resources(request, obj, result)
+        if related:
+            result['related'] = related
+        return result
+
+    def get_related_resources(self, request, obj, result):
+        return None
+
 
 class FetchFromCacheMiddleware(DjangoFetchFromCacheMiddleware):
     # Our API resources have the same URL as HTML resources,
@@ -204,3 +227,143 @@ class FetchFromCacheMiddleware(DjangoFetchFromCacheMiddleware):
             request._cache_update_cache = False
             return None
         return super(FetchFromCacheMiddleware, self).process_request(request)
+
+class BadRequest(Exception):
+    pass
+
+
+class APIPaginator(object):
+    """
+    Limits result sets down to sane amounts for passing to the client.
+
+    Largely cribbed from django-tastypie.
+    """
+    def __init__(self, request, objects, limit=None, offset=0, max_limit=500):
+        """
+        Instantiates the ``Paginator`` and allows for some configuration.
+
+        The ``objects`` should be a list-like object of ``Resources``.
+        This is typically a ``QuerySet`` but can be anything that
+        implements slicing. Required.
+
+        Optionally accepts a ``limit`` argument, which specifies how many
+        items to show at a time. Defaults to ``None``, which is no limit.
+
+        Optionally accepts an ``offset`` argument, which specifies where in
+        the ``objects`` to start displaying results from. Defaults to 0.
+        """
+        self.request_data = request.GET
+        self.objects = objects
+        self.limit = limit
+        self.max_limit = max_limit
+        self.offset = offset
+        self.resource_uri = request.path
+
+    def get_limit(self):
+        """
+        Determines the proper maximum number of results to return.
+
+        In order of importance, it will use:
+
+            * The user-requested ``limit`` from the GET parameters, if specified.
+            * The object-level ``limit`` if specified.
+            * ``settings.API_LIMIT_PER_PAGE`` if specified.
+
+        Default is 20 per page.
+        """
+        settings_limit = getattr(settings, 'API_LIMIT_PER_PAGE', 20)
+
+        if 'limit' in self.request_data:
+            limit = self.request_data['limit']
+        elif self.limit is not None:
+            limit = self.limit
+        else:
+            limit = settings_limit
+
+        try:
+            limit = int(limit)
+        except ValueError:
+            raise BadRequest("Invalid limit '%s' provided. Please provide a positive integer." % limit)
+
+        if limit == 0:
+            if self.limit:
+                limit = self.limit
+            else:
+                limit = settings_limit
+
+        if limit < 0:
+            raise BadRequest("Invalid limit '%s' provided. Please provide a positive integer >= 0." % limit)
+
+        if self.max_limit and limit > self.max_limit:
+            return self.max_limit
+
+        return limit
+
+    def get_offset(self):
+        """
+        Determines the proper starting offset of results to return.
+
+        It attempst to use the user-provided ``offset`` from the GET parameters,
+        if specified. Otherwise, it falls back to the object-level ``offset``.
+
+        Default is 0.
+        """
+        offset = self.offset
+
+        if 'offset' in self.request_data:
+            offset = self.request_data['offset']
+
+        try:
+            offset = int(offset)
+        except ValueError:
+            raise BadRequest("Invalid offset '%s' provided. Please provide an integer." % offset)
+
+        if offset < 0:
+            raise BadRequest("Invalid offset '%s' provided. Please provide a positive integer >= 0." % offset)
+
+        return offset
+
+    def _generate_uri(self, limit, offset):
+        if self.resource_uri is None:
+            return None
+
+        # QueryDict has a urlencode method that can handle multiple values for the same key
+        request_params = self.request_data.copy()
+        if 'limit' in request_params:
+            del request_params['limit']
+        if 'offset' in request_params:
+            del request_params['offset']
+        request_params.update({'limit': limit, 'offset': max(offset, 0)})
+        encoded_params = request_params.urlencode()
+
+        return '%s?%s' % (
+            self.resource_uri,
+            encoded_params
+        )
+
+    def page(self):
+        """
+        Returns a tuple of (objects, page_data), where objects is one page of objects (a list),
+        and page_data is a dict of pagination info.
+        """
+        limit = self.get_limit()
+        offset = self.get_offset()
+
+        page_data = {
+            'offset': offset,
+            'limit': limit,
+        }
+
+        # We get one more object than requested, to see if
+        # there's a next page.
+        objects = list(self.objects[offset:offset + limit + 1])
+        if len(objects) > limit:
+            objects.pop()
+            page_data['next'] = self._generate_uri(limit, offset + limit)
+        else:
+            page_data['next'] = None
+
+        page_data['previous'] = (self._generate_uri(limit, offset - limit)
+            if offset > 0 else None)
+
+        return (objects, page_data)

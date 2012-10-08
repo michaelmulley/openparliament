@@ -1,6 +1,7 @@
 import datetime
 
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.core import urlresolvers
 from django.http import HttpResponse, Http404, HttpResponsePermanentRedirect
 from django.shortcuts import get_object_or_404
 from django.template import loader, RequestContext
@@ -23,7 +24,14 @@ class HansardView(ModelDetailView):
 
     def get_html(self, request, **kwargs):
         return document_view(request, _get_hansard(**kwargs))
+
+    def get_related_resources(self, request, obj, result):
+        return {
+            'speeches_url': urlresolvers.reverse('debate_speeches', kwargs=self.kwargs),
+            'debates_url': urlresolvers.reverse('debates')
+        }
 hansard = HansardView.as_view()
+
 
 class HansardStatementView(ModelDetailView):
 
@@ -37,9 +45,17 @@ class HansardStatementView(ModelDetailView):
             slug=slug
         )
 
+    def get_related_resources(self, request, qs, result):
+        parent_kwargs = dict(self.kwargs)
+        parent_kwargs.pop('slug')
+        return {
+            'speeches_url': urlresolvers.reverse('debate_speeches', kwargs=parent_kwargs),
+            'hansard_url': urlresolvers.reverse('debate', kwargs=parent_kwargs)
+        }
+
     def get_html(self, request, year, month, day, slug):
         return document_view(request, _get_hansard(year, month, day), slug=slug)
-hansard_statement = HansardStatementView.as_view()        
+hansard_statement = HansardStatementView.as_view()
 
 def document_redirect(request, document_id, slug=None):
     try:
@@ -120,6 +136,8 @@ def document_view(request, document, meeting=None, slug=None):
 
 class HansardSpeechesView(ModelListView):
 
+    filterable_fields = ['procedural']
+
     resource_name = 'Speeches (House debate)'
 
     def get_qs(self, request, year, month, day):
@@ -128,8 +146,23 @@ class HansardSpeechesView(ModelListView):
             document__document_type='D',
             document__date=date
         ).order_by('sequence').prefetch_related('politician')
+
+    def get_related_resources(self, request, qs, result):
+        return {
+            'hansard_url': urlresolvers.reverse('debate', kwargs=self.kwargs)
+        }
 hansard_speeches = HansardSpeechesView.as_view()
 
+
+class SpeechesView(ModelListView):
+
+    filterable_fields = ['procedural']
+
+    resource_name = 'Speeches'
+
+    def get_qs(self, request):
+        return Statement.objects.all().order_by('-time').prefetch_related('politician')
+speeches = SpeechesView.as_view()
 
 def debate_permalink(request, slug, year, month, day):
 
