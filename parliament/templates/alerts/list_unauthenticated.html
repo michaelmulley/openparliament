@@ -1,12 +1,14 @@
 {% extends "alerts/base.html" %}
 
 {% block content %}
+{% if not request.session.pending_alert %}
 <div class="context"><h2>What you get</h2></div>
 <div class="focus"><p>An automated email, every time something happens in Parliament that matches your interests.</p>
 <p>For example:</p>
 {% include "alerts/search_examples.inc.html" %}
 </div><div class="clear"></div>
-<div class="context"><h2>But first</h2></div>
+{% endif %}
+<div class="context"><h2>Get started</h2></div>
 <noscript><div class="focus"><p>You need to enable JavaScript.</p></div></noscript>
 <div class="focus jsonly"><p>You need to <!-- <a class="persona-login" href="#">sign in</a> --> sign in, so that we can send the email to the right place.</p>
 	<p>Read and check off the following to get started:</p>
