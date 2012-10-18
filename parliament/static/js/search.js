@@ -134,14 +134,12 @@
                     facetWidget.setValues(data.facets);
                 }
 
-                /* Potentially display alert widget */
-                if (OP.cookies.hasItem('enable-alerts')) {
-                    if (OP.search.getQuery().length) {
-                        $('#add_alert').show();
-                    }
-                    else {
-                        $('#add_alert').hide();
-                    }
+                /* Display alert widget */
+                if (OP.search.getQuery().length) {
+                    $('#add_alert').show();
+                }
+                else {
+                    $('#add_alert').hide();
                 }
 
                 /* Set values in date widget */
