@@ -1,0 +1,12 @@
+{% if messages %}
+<script type="text/javascript">
+$(function() {
+	{% for message in messages %}
+	OP.utils.notify("{{ message|escapejs }}", "{{ message.tags }}", {
+		animateIn: false,
+		hideAfter: false
+	});
+	{% endfor %}
+});
+</script>
+{% endif %}
