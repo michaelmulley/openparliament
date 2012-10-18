@@ -113,6 +113,9 @@ class APIView(View):
         return resp
 
     def process_apibrowser(self, result, request, **kwargs):
+        if isinstance(result, HttpResponse):
+            return result
+
         kwargs['pretty_print'] = True
         content = self.process_json(result, request, **kwargs).content
         title = u'API'
@@ -149,7 +152,8 @@ class ModelListView(APIView):
     
     def object_to_dict(self, obj):
         d = obj.to_api_dict(representation='list')
-        d['url'] = obj.get_absolute_url()
+        if 'url' not in d:
+            d['url'] = obj.get_absolute_url()
         return d
 
     def get_qs(self, request, **kwargs):
@@ -192,7 +196,8 @@ class ModelDetailView(APIView):
 
     def object_to_dict(self, obj):
         d = obj.to_api_dict(representation='detail')
-        d['url'] = obj.get_absolute_url()
+        if 'url' not in d:
+            d['url'] = obj.get_absolute_url()
         return d
 
     def get_json(self, request, **kwargs):
@@ -228,14 +233,13 @@ class FetchFromCacheMiddleware(DjangoFetchFromCacheMiddleware):
             return None
         return super(FetchFromCacheMiddleware, self).process_request(request)
 
+
 class BadRequest(Exception):
     pass
 
 
 class APIPaginator(object):
     """
-    Limits result sets down to sane amounts for passing to the client.
-
     Largely cribbed from django-tastypie.
     """
     def __init__(self, request, objects, limit=None, offset=0, max_limit=500):

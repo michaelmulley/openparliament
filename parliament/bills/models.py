@@ -223,6 +223,8 @@ class BillInSession(models.Model):
                 home_chamber=self.bill.get_institution_display(),
                 law=self.bill.law,
                 sponsor_politician_url=self.sponsor_politician.get_absolute_url() if self.sponsor_politician else None,
+                sponsor_politician_role_url=urlresolvers.reverse('politician_role',
+                    kwargs={'member_id': self.sponsor_member_id}) if self.sponsor_member_id else None,
                 text_url=self.bill.get_billtext_url(),
                 other_sessions=[self.bill.url_for_session(s)
                     for s in self.bill.sessions.all()

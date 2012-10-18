@@ -443,6 +443,8 @@ class Statement(models.Model):
             h2_en=self.h2,
             h3_en=self.h3,
             politician_url=self.politician.get_absolute_url() if self.politician else None,
+            politician_role_url=urlresolvers.reverse('politician_role',
+                kwargs={'member_id': self.member_id}) if self.member_id else None,
         )
         return d
     

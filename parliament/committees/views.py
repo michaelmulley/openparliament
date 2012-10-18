@@ -1,5 +1,6 @@
 import datetime
 
+from django.core import urlresolvers
 from django.http import HttpResponse, HttpResponsePermanentRedirect, Http404
 from django.shortcuts import get_object_or_404, render
 from django.template import loader, RequestContext
@@ -109,18 +110,59 @@ def committee_activity(request, activity_id):
         'committee': activity.committee
     })
 
-def committee_meeting(request, committee_slug, session_id, number, slug=None):
-    meeting = get_object_or_404(CommitteeMeeting, committee__slug=committee_slug,
-        session=session_id, number=number)
+def _get_meeting(committee_slug, session_id, number):
+    try:
+        return CommitteeMeeting.objects.select_related('evidence', 'committee').get(
+            committee__slug=committee_slug, session=session_id, number=number)
+    except CommitteeMeeting.DoesNotExist:
+        raise Http404
 
-    document = meeting.evidence
-    if document:
-        return document_view(request, document, meeting=meeting, slug=slug)
-    else:
-        return render(request, "committees/meeting.html", {
-            'meeting': meeting,
-            'committee': meeting.committee
-        })
+
+class CommitteeMeetingView(ModelDetailView):
+
+    def get_object(self, request, committee_slug, session_id, number):
+        return _get_meeting(committee_slug, session_id, number)
+
+    def get_related_resources(self, request, obj, result):
+        if obj.evidence_id:
+            return {
+                'speeches_url': urlresolvers.reverse('committee_meeting_speeches',
+                    kwargs=self.kwargs)
+            }
+
+    def get_html(self, request, committee_slug, session_id, number, slug=None):
+        meeting = self.get_object(request, committee_slug, session_id, number)
+
+        document = meeting.evidence
+        if document:
+            return document_view(request, document, meeting=meeting, slug=slug)
+        else:
+            return render(request, "committees/meeting.html", {
+                'meeting': meeting,
+                'committee': meeting.committee
+            })
+committee_meeting = CommitteeMeetingView.as_view()
+
+
+class CommitteeMeetingStatementView(ModelDetailView):
+
+    def get_object(self, request, committee_slug, session_id, number, slug):
+        meeting = _get_meeting(committee_slug, session_id, number)
+        return meeting.evidence.statement_set.get(slug=slug)
+
+    def get_html(self, request, **kwargs):
+        return committee_meeting(request, **kwargs)
+committee_meeting_statement = CommitteeMeetingStatementView.as_view()
+
+
+class CommitteeMeetingSpeechesView(ModelListView):
+
+    resource_name = 'Speeches (committee meeting)'
+
+    def get_qs(self, request, **kwargs):
+        meeting = _get_meeting(**kwargs)
+        return meeting.evidence.statement_set.all()
+
 
 def evidence_permalink(request, committee_slug, session_id, number, slug):
 

@@ -9,6 +9,7 @@ import urllib, urllib2
 
 from django.conf import settings
 from django.core.cache import cache
+from django.core import urlresolvers
 from django.db import models
 from django.template.defaultfilters import slugify
 
@@ -282,6 +283,10 @@ class Politician(Person):
                 image=self.headshot.url,
                 info=self.info_multivalued()
             )
+            d['role_history'] = [
+                member.to_api_dict('detail', include_politician=False)
+                for member in self.electedmember_set.all().select_related(depth=1).order_by('-end_date')
+            ]
         return d
 
     def add_alternate_name(self, name):
@@ -634,6 +639,29 @@ class ElectedMember(models.Model):
             return u"%s (%s) was the member from %s from %s to %s" % (self.politician, self.party, self.riding, self.start_date, self.end_date)
         else:
             return u"%s (%s) is the member from %s (since %s)" % (self.politician, self.party, self.riding, self.start_date)
+
+    def to_api_dict(self, representation, include_politician=True):
+        d = dict(
+            url=self.get_absolute_url(),
+            currently_in_office=self.current,
+            start_date=unicode(self.start_date),
+            end_date=unicode(self.end_date),
+            party={
+                'name_en': self.party.name,
+                'short_name_en': self.party.short_name
+            },
+            riding={
+                'name_en': self.riding.name,
+                'province': self.riding.province,
+                'edid': self.riding.edid,
+            }
+        )
+        if include_politician:
+            d['politician_url'] = self.politician.get_absolute_url()
+        return d
+
+    def get_absolute_url(self):
+        return urlresolvers.reverse('politician_role', kwargs={'member_id': self.id})
             
     @property
     def current(self):

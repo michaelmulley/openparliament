@@ -2,7 +2,7 @@ import datetime
 
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core import urlresolvers
-from django.http import HttpResponse, Http404, HttpResponsePermanentRedirect
+from django.http import HttpResponse, Http404, HttpResponsePermanentRedirect, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.template import loader, RequestContext
 from django.views.generic.dates import (ArchiveIndexView, YearArchiveView, MonthArchiveView)
@@ -164,16 +164,25 @@ class SpeechesView(ModelListView):
         return Statement.objects.all().order_by('-time').prefetch_related('politician')
 speeches = SpeechesView.as_view()
 
-def debate_permalink(request, slug, year, month, day):
+class DebatePermalinkView(ModelDetailView):
 
-    doc = _get_hansard(year, month, day)
-    if slug.isdigit():
-        statement = get_object_or_404(Statement, document=doc, sequence=slug)
-    else:
-        statement = get_object_or_404(Statement, document=doc, slug=slug)
+    def _get_objs(self, request, slug, year, month, day):
+        doc = _get_hansard(year, month, day)
+        if slug.isdigit():
+            statement = get_object_or_404(Statement, document=doc, sequence=slug)
+        else:
+            statement = get_object_or_404(Statement, document=doc, slug=slug)
+        return doc, statement
 
-    return statement_permalink(request, doc, statement, "hansards/statement_permalink.html",
-        hansard=doc)
+    def get_json(self, request, **kwargs):
+        url = self._get_objs(request, **kwargs)[1].get_absolute_url()
+        return HttpResponseRedirect(url + '?' + request.GET.urlencode())
+
+    def get_html(self, request, **kwargs):
+        doc, statement = self._get_objs(request, **kwargs)
+        return statement_permalink(request, doc, statement, "hansards/statement_permalink.html",
+            hansard=doc)
+debate_permalink = DebatePermalinkView.as_view()
 
 def statement_permalink(request, doc, statement, template, **kwargs):
     """A page displaying only a single statement. Used as a non-JS permalink."""

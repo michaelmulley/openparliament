@@ -185,6 +185,24 @@ class CommitteeMeeting(models.Model):
     def __unicode__(self):
         return u"%s on %s" % (self.committee.short_name, self.date)
 
+    def to_api_dict(self, representation):
+        d = dict(
+            date=unicode(self.date),
+            number=unicode(self.date)
+        )
+        if representation == 'detail':
+            d.update(
+                start_time=unicode(self.start_time),
+                end_time=unicode(self.end_time),
+                committee=self.committee.get_absolute_url(),
+                session=self.session_id,
+                minutes_url=self.minutes_url if self.minutes else None,
+                notice_url=self.notice_url if self.notice else None,
+                in_camera=self.in_camera,
+                webcast_url=self.webcast_url
+            )
+        return d
+
     @memoize_property
     def activities_list(self):
         return list(self.activities.all().order_by('-study'))
