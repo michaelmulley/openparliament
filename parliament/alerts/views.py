@@ -199,28 +199,3 @@ def unsubscribe(request, key):
     c = RequestContext(request, ctx)
     t = loader.get_template("alerts/unsubscribe.html")
     return HttpResponse(t.render(c))
-
-
-def unsubscribe_old(request, alert_id, key):
-    alert = get_object_or_404(PoliticianAlert, pk=alert_id)
-    
-    correct_key = alert.get_key()
-    if correct_key != key:
-        key_error = True
-    else:
-        key_error = False
-        alert.active = False
-        alert.save()
-        if settings.PARLIAMENT_DB_READONLY:
-            mail_admins("Unsubscribe request", alert_id)
-        
-    c = RequestContext(request, {
-        'pol': alert.politician,
-        'query': alert.politician.name,
-        'title': u'E-mail alerts for %s' % alert.politician.name,
-        'key_error': key_error,
-    })
-    t = loader.get_template("alerts/unsubscribe.html")
-    return HttpResponse(t.render(c))
-    
-    
