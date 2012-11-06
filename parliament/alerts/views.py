@@ -156,9 +156,11 @@ def _generate_query_for_politician(pol):
 
 @disable_on_readonly_db
 def politician_hansard_subscribe(request, signed_key):
+    ctx = {
+        'key_error': False
+    }
     try:
         key = TimestampSigner(salt='alerts_pol_subscribe').unsign(signed_key, max_age=60*60*24*14)
-        key_error = False
         politician_id, _, email = key.partition(',')
         pol = get_object_or_404(Politician, id=politician_id)
         if not pol.current_member:
@@ -170,15 +172,14 @@ def politician_hansard_subscribe(request, signed_key):
         if not sub.active:
             sub.active = True
             sub.save()
+        ctx.update(
+            pol=pol,
+            title=u'Email alerts for %s' % pol.name
+        )
     except BadSignature:
-        key_error = True
+        ctx['key_error'] = True
 
-    return render(request, 'alerts/activate.html', {
-        'pol': pol,
-        'title': u'Email alerts for %s' % pol.name,
-        'activating': True,
-        'key_error': key_error,
-    })
+    return render(request, 'alerts/activate.html', ctx)
 
 
 @never_cache
