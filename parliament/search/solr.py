@@ -58,13 +58,14 @@ class SearchQuery(BaseSearchQuery):
     }
 
     def __init__(self, query, start=0, limit=15, user_params={},
-            facet=False, full_text=False):
+            facet=False, full_text=False, solr_params={}):
         super(SearchQuery, self).__init__(query)
         self.start = start  # What offset to start from
         self.limit = limit  # How many results to return
         self.user_params = user_params  # request.GET, basically
         self.facet = facet  # Enable faceting?
         self.full_text = full_text
+        self.extra_solr_params = solr_params
 
     def get_solr_query(self):
         searchparams = {
@@ -125,6 +126,7 @@ class SearchQuery(BaseSearchQuery):
                 searchparams['facet.range.start'] = '1994-01-01T00:00:00.000Z'
 
         searchparams.update(self.validated_user_params)
+        searchparams.update(self.extra_solr_params)
 
         # Our version of pysolr doesn't like Unicode
         if searchparams.get('fq'):

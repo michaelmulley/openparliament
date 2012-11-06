@@ -52,7 +52,10 @@ class Topic(models.Model):
     def get_search_query(self, limit=25):
         query_obj = SearchQuery(self.query, limit=limit,
             user_params={'sort': 'date desc'},
-            full_text=self.politician_hansard_alert)
+            full_text=self.politician_hansard_alert,
+            solr_params={
+                'mm': '100%' # match all query terms
+            })
 
         # Only look for items newer than 60 days
         today = datetime.date.today()
