@@ -31,7 +31,7 @@ class Command(BaseCommand):
 
             update_objs.sort(key=lambda o: o.__class__.__name__)
             for cls, objs in itertools.groupby(update_objs, lambda o: o.__class__):
-                print "Indexing %s" % cls
+                logger.debug("Indexing %s" % cls)
                 index = site.get_index(cls)
                 prepared_objs = [index.prepare(o) for o in objs]
                 solr.add(prepared_objs)
