@@ -38,7 +38,6 @@ def import_votes(session=None):
             paired_total=int(vote.find('TotalPaired').text))
         if sum((votequestion.yea_total, votequestion.nay_total)) < 100:
             logger.error("Fewer than 100 votes on vote#%s" % votenumber)
-            continue
         decision = vote.find('Decision').text
         if decision == 'Agreed to':
             votequestion.result = 'Y'
