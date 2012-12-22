@@ -325,13 +325,16 @@ class Statement(models.Model):
     def save(self, *args, **kwargs):
         if not self.wordcount:
             self.wordcount = parsetools.countWords(self.text_plain())
-        if ((not self.procedural) and self.wordcount <= 300
-            and ( (parsetools.r_notamember.search(self.who) and re.search(r'(Speaker|Chair|président)', self.who))
-            or (not self.who))):
-            # Some form of routine, procedural statement (e.g. somethng short by the speaker)
-            self.procedural = True
         self.content_en = self.content_en.replace('\n', '').replace('</p>', '</p>\n').strip()
         self.content_fr = self.content_fr.replace('\n', '').replace('</p>', '</p>\n').strip()
+        if ((not self.procedural) and self.wordcount <= 300
+            and ( 
+                (parsetools.r_notamember.search(self.who) and re.search(r'(Speaker|Chair|président)', self.who))
+                or (not self.who)
+                or not any(p for p in self.content_en.split('\n') if 'class="procedural"' not in p)
+            )):
+            # Some form of routine, procedural statement (e.g. somethng short by the speaker)
+            self.procedural = True
         if not self.urlcache:
             self.generate_url()
         super(Statement, self).save(*args, **kwargs)
