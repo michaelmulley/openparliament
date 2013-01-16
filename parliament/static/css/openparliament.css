@@ -1,5 +1,5 @@
 /* GLOBAL SETTINGS */
-body{font-family:"Helvetica Neue",Arial,Helvetica,sans-serif;margin:0;padding:0;line-height:1.33333333333;font-size:15px;color: #111111;background-color:#F0F0F0;}
+body{font-family:"Helvetica Neue",Arial,Helvetica,sans-serif;margin:0;padding:0;line-height:1.33333333333;font-size:15px;color: #111111;background-color:#DDDDDD;}
 p{margin:0 0 10px 0;}
 h1{font-size:32px;font-weight:bold;color:#222222;margin:0 0 20px 0;padding:0;line-height:40px;}
 h2{font-size:24px;font-weight:normal;font-weight:300;margin:0 0 10px 0;color:#522D07;line-height:30px;}
@@ -12,8 +12,8 @@ body.nojs .jsonly { display: none;}
 input.placeholder { color: #AAAAAA !important;}
 
 /* LAYOUT */ 
-#content{width:960px;margin-left:auto;margin-right:auto;padding-top:15px;position:relative;}
-#content_wrap{clear:both;background-color:white;padding-bottom:20px;}
+#content, .footer_content{width:960px;margin-left:auto;margin-right:auto;padding: 15px 0;position:relative;}
+#content_wrap{clear:both;background-color:white;}
 div.context{clear:both;float:left;width:160px;margin-bottom:10px;}
 .context_4 div.context{width:220px;}
 .context_4 div.focus{width:710px;}
@@ -65,8 +65,8 @@ table {max-width: 100%; background-color: transparent; border-collapse: collapse
 #navbar{position:relative;margin-left:auto;margin-right:auto;width:960px;height:45px;}
 #navbar img{position:absolute;left:1px;}
 #nav_searchform .VS-search { width: 195px; position: absolute; right: 0px; top: 11px; }
-#footer{clear:both;width:100%;height:60px;padding-top:10px;}
-#footer p{margin-left:auto;margin-right:auto;width:520px;text-align:center;font-size:11px;color:#777777;}
+#footer{clear:both;width:100%;height:60px;color: #777777; font-size: 13px;}
+#footer .col {float: left; padding: 0 10px;}
 #footer a{color:#777777;font-weight:normal;text-decoration:underline;}
 #footer a:hover{color:#1A59C7;}
 
@@ -105,6 +105,15 @@ td.standard_form{width:520px;}
 .standard_form input[type=text]:hover,.standard_form textarea:hover{background-color:white;}
 #marginalia{width:155px;padding:5px;background-color:#f9f7cd;border:1px dotted #666;color:#444;position:absolute;left: 0;}
 .infobox{max-width: 650px;background-color: #f9f7cd;border: 1px dotted #666;color: #222;padding: 15px;margin-bottom: 10px;}
+.opennorth_logo {
+  display: block;
+  width: 160px;
+  height: 55px;
+  background-image: url(../images/opennorth-160.png);
+}
+.opennorth_logo:hover {
+  background-position: 0 -56px;
+}
 
 /* NOTIFICATIONS */
 .top-notification { width: 100%; padding-top: 5px; }

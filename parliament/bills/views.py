@@ -81,8 +81,11 @@ def bills_for_session(request, session_id):
     })
     return HttpResponse(t.render(c))
         
-def votes_for_session(request, session_id):
-    session = get_object_or_404(Session, pk=session_id)
+def votes_for_session(request, session_id=None):
+    if session_id:
+        session = get_object_or_404(Session, pk=session_id)
+    else:
+        session = Session.objects.current()
 
     t = loader.get_template('bills/votequestion_list.html')
     c = RequestContext(request, {

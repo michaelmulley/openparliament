@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 
 urlpatterns = patterns('parliament.hansards.views',
-    (r'^$', 'index'),
+    url(r'^$', 'index', name='debates'),
     (r'^(?P<year>\d{4})/$', 'by_year'),
     (r'^(?P<year>\d{4})/(?P<month>\d{1,2})/', include(patterns('parliament.hansards.views',
         (r'^$', 'by_month'),
