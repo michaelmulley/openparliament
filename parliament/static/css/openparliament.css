@@ -65,7 +65,7 @@ table {max-width: 100%; background-color: transparent; border-collapse: collapse
 #navbar{position:relative;margin-left:auto;margin-right:auto;width:960px;height:45px;}
 #navbar img{position:absolute;left:1px;}
 #nav_searchform .VS-search { width: 195px; position: absolute; right: 0px; top: 11px; }
-#footer{clear:both;width:100%;height:60px;color: #777777; font-size: 13px;}
+#footer{clear:both;width:100%;height:60px;color: #777777; font-size: 12px;}
 #footer .col {float: left; padding: 0 10px;}
 #footer a{color:#777777;font-weight:normal;text-decoration:underline;}
 #footer a:hover{color:#1A59C7;}
@@ -108,11 +108,11 @@ td.standard_form{width:520px;}
 .opennorth_logo {
   display: block;
   width: 160px;
-  height: 55px;
+  height: 54px;
   background-image: url(../images/opennorth-160.png);
 }
 .opennorth_logo:hover {
-  background-position: 0 -56px;
+  background-position: 0 -54px;
 }
 
 /* NOTIFICATIONS */
