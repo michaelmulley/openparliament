@@ -6,7 +6,7 @@ DEPENDENCIES = [
     'alpheus',
     'BeautifulSoup>=3.2.0',
     'cssselect',
-    'Django==1.4.1',
+    'Django>=1.4,<1.5',
     'django-compressor==1.1.2',
     'django-debug-toolbar==0.8.3',
     'django-devserver==0.0.2',
