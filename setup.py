@@ -19,7 +19,7 @@ DEPENDENCIES = [
     'httplib2',
     'lxml',
     'Markdown==2.0.3',
-    'PIL>=1.1.6',
+    'Pillow',
     'PyBrowserID',
     'pysolr==2.0.9',
     'sorl-thumbnail==3.2.5',
