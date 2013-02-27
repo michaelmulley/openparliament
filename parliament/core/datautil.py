@@ -5,6 +5,10 @@ Production code should NOT import from this file."""
 import sys, re, urllib, urllib2, os, csv
 from collections import defaultdict
 import urlparse
+try:
+    from PIL import Image
+except ImportError:
+    import Image
 
 from django.db import transaction, models
 from django.db.models import Count
@@ -36,13 +40,15 @@ def load_pol_pic(pol):
     pol.save()
 
 def delete_invalid_pol_pics():
-    from PIL import Image
     for p in Politician.objects.exclude(headshot__isnull=True).exclude(headshot=''):
         try:
             Image.open(p.headshot)
         except IOError:
             print "DELETING image for %s" % p
-            os.unlink(p.headshot.path)
+            try:
+                os.unlink(p.headshot.path)
+            except OSError:
+                pass
             p.headshot = None
             p.save()
             
