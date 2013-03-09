@@ -36,6 +36,7 @@ setup(
     author='Michael Mulley',
     url='http://openparliament.ca',
     packages=find_packages(),
+    include_package_data=True,
     install_requires=DEPENDENCIES,
     dependency_links=[
         'https://github.com/rhymeswithcycle/alpheus/archive/master.zip#egg=alpheus',
