@@ -52,8 +52,8 @@ class HansardStatementView(ModelDetailView):
         parent_kwargs = dict(self.kwargs)
         parent_kwargs.pop('slug')
         return {
-            'speeches_url': urlresolvers.reverse('debate_speeches', kwargs=parent_kwargs),
-            'hansard_url': urlresolvers.reverse('debate', kwargs=parent_kwargs)
+            'document_speeches_url': urlresolvers.reverse('speeches') + '?' +
+                urlencode({'document': result['object']['document_url']}),
         }
 
     def get_html(self, request, year, month, day, slug):
@@ -156,7 +156,10 @@ class SpeechesView(ModelListView):
 
     filters = {
         'procedural': APIFilters.dbfield(),
-        'document': document_filter
+        'document': document_filter,
+        'politician': APIFilters.politician(),
+        'politician_role': APIFilters.fkey(lambda u: {'member': u[-1]}),
+        'time': APIFilters.dbfield(filter_types=APIFilters.numeric_filters)
     }
 
     resource_name = 'Speeches'

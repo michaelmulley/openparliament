@@ -72,7 +72,7 @@ class BillListView(ModelListView):
         'number': APIFilters.dbfield('bill__number'),
         'law': APIFilters.dbfield('bill__law'),
         'private_member_bill': APIFilters.dbfield('bill__privatemember'),
-        'sponsor_politician': APIFilters.fkey(lambda u: {'sponsor_politician__slug': u[-1]}),
+        'sponsor_politician': APIFilters.politician('sponsor_politician'),
         'sponsor_politician_role': APIFilters.fkey(lambda u: {'sponsor_member': u[-1]}),
     }
 
@@ -202,7 +202,7 @@ class BallotListView(ModelListView):
     filters = {
         'vote': APIFilters.fkey(lambda u: {'votequestion__session': u[-2],
                                            'votequestion__number': u[-1]}),
-        'politician': APIFilters.fkey(lambda u: {'politician__slug': u[-1]}),
+        'politician': APIFilters.politician(),
         'politician_role': APIFilters.fkey(lambda u: {'member': u[-1]}),
         'ballot': APIFilters.choices('vote')
     }

@@ -1,9 +1,11 @@
 import datetime
 import itertools
 import re
+from urllib import urlencode
 
 from django.conf import settings
 from django.contrib.syndication.views import Feed
+from django.core import urlresolvers
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import HttpResponse, Http404, HttpResponsePermanentRedirect
@@ -79,6 +81,16 @@ class PoliticianView(ModelDetailView):
             return get_object_or_404(Politician, slug=pol_slug)
         else:
             return get_object_or_404(Politician, pk=pol_id)
+
+    def get_related_resources(self, request, obj, result):
+        pol_query = '?' + urlencode({'politician': obj.identifier})
+        return {
+            'speeches_url': urlresolvers.reverse('speeches') + pol_query,
+            'ballots_url': urlresolvers.reverse('vote_ballots') + pol_query,
+            'sponsored_bills_url': urlresolvers.reverse('bills') + '?' +
+                urlencode({'sponsor_politician': obj.identifier})
+
+        }
 
     def get_html(self, request, pol_id=None, pol_slug=None):
         pol = self.get_object(request, pol_id, pol_slug)

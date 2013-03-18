@@ -37,12 +37,13 @@ class APIView(View):
         if hasattr(self, 'get_json'):
             self.get_apibrowser = self.get_json
 
+        self._formats_list = [f[0] for f in self.api_formats]
         self._mimetype_lookup = dict(
             (f[1], f[0]) for f in self.api_formats
         )
 
     def get_api_format(self, request):
-        if request.GET.get('format') in self.api_formats:
+        if request.GET.get('format') in self._formats_list:
             return request.GET['format']
         elif request.GET.get('format'):
             return None
@@ -149,7 +150,7 @@ class APIFilters(object):
     string_filters = ['exact', 'iexact', 'contains', 'icontains',
         'startswith', 'istartswith', 'endswith', 'iendswith']
 
-    numeric_filters = ['exact', 'gt', 'gte', 'lt', 'lte', 'isnull']
+    numeric_filters = ['exact', 'gt', 'gte', 'lt', 'lte', 'isnull', 'range']
 
     @staticmethod
     def dbfield(field_name=None, filter_types=['exact']):
@@ -165,6 +166,8 @@ class APIFilters(object):
                 val = False
             elif val in ['none', 'None', 'null']:
                 val = None
+            if filter_extra == 'range':
+                val = val.split(',')
             return qs.filter(**{
                 (field_name if field_name else filter_name) + '__' + filter_extra: val
             })
@@ -183,6 +186,11 @@ class APIFilters(object):
             url_bits = val.rstrip('/').split('/')
             return qs.filter(**(query_func(url_bits)))
         return inner
+
+    @staticmethod
+    def politician(field_name='politician'):
+        return APIFilters.fkey(lambda u: ({field_name: u[-1]} if u[-1].isdigit()
+            else {field_name + '__slug': u[-1]}))
 
     @staticmethod
     def choices(field_name=None):
@@ -273,19 +281,13 @@ def no_robots(request):
 
 
 class FetchFromCacheMiddleware(DjangoFetchFromCacheMiddleware):
-    # Our API resources have the same URL as HTML resources,
-    # and we use Accept header negotiation to determine what to respond with.
-    # The clean way of dealing with this at the cache layer is to add Vary: Accept
-    # to our responses, and both Django's cache middleware and any well-behaved
-    # upstream caches should work fine. But that will also cache separate versions
-    # of the page for any given Accept: header, which could significantly reduce
-    # the performance of the cache.
-    # 
-    # So we take the hacky approach of disabling our cache if the string 'json'
-    # appears in the Accept header.
+    # Since API resources are often served from the same URL as
+    # main site resources, and we use Accept header negotiation to determine
+    # formats, it's not a good fit with the full-site cache middleware.
+    # So we'll just disable it for the API.
 
     def process_request(self, request):
-        if 'json' in request.META.get('HTTP_ACCEPT', ''):
+        if request.get_host().lower().startswith(settings.PARLIAMENT_API_HOST):
             request._cache_update_cache = False
             return None
         return super(FetchFromCacheMiddleware, self).process_request(request)

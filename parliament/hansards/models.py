@@ -437,7 +437,7 @@ class Statement(models.Model):
     def to_api_dict(self, representation):
         d = dict(
             time=unicode(self.time) if self.time else None,
-            attribution=self.who,
+            attribution_en=self.who,
             content_en=self.content_en,
             content_fr=self.content_fr,
             h1_en=self.h1,
@@ -447,6 +447,8 @@ class Statement(models.Model):
             politician_url=self.politician.get_absolute_url() if self.politician else None,
             politician_role_url=urlresolvers.reverse('politician_role',
                 kwargs={'member_id': self.member_id}) if self.member_id else None,
+            procedural=self.procedural,
+            source_id=self.source_id
         )
         d['document_url'] = d['url'][:d['url'].rstrip('/').rfind('/')+1]
         return d
