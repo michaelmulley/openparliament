@@ -99,13 +99,14 @@ class Document(models.Model):
         d = dict(
             date=unicode(self.date) if self.date else None,
             number=self.number,
-            document_type=self.get_document_type_display()
         )
         if representation == 'detail':
             d.update(
                 source_id=self.source_id,
                 source_url=self.source_url,
                 session=self.session_id,
+                document_type=self.get_document_type_display(),
+                most_frequent_word=self.most_frequent_word,
             )
         return d
 
@@ -442,10 +443,12 @@ class Statement(models.Model):
             h1_en=self.h1,
             h2_en=self.h2,
             h3_en=self.h3,
+            url=self.get_absolute_url(),
             politician_url=self.politician.get_absolute_url() if self.politician else None,
             politician_role_url=urlresolvers.reverse('politician_role',
                 kwargs={'member_id': self.member_id}) if self.member_id else None,
         )
+        d['document_url'] = d['url'][:d['url'].rstrip('/').rfind('/')+1]
         return d
     
     @property

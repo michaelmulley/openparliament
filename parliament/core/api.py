@@ -4,9 +4,10 @@ from urllib import urlencode
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseBadRequest
 from django.middleware.cache import FetchFromCacheMiddleware as DjangoFetchFromCacheMiddleware
 from django.shortcuts import render
+from django.utils.html import escape
 from django.views.generic import View
 
 from webob.acceptparse import Accept
@@ -79,7 +80,10 @@ class APIView(View):
             if method == 'get':
                 return self.format_not_allowed(request)
             return self.http_method_not_allowed(request)
-        result = handler(request, **kwargs)
+        try:
+            result = handler(request, **kwargs)
+        except BadRequest as e:
+            return HttpResponseBadRequest(escape(unicode(e)), content_type='text/plain')
 
         processor = getattr(self, 'process_' + format, self.process_default)
         return processor(result, request, **kwargs)
@@ -140,10 +144,64 @@ class JSONView(APIView):
         super(JSONView, self).__init__(*args, **kwargs)
 
 
-class ModelListView(APIView):
+class APIFilters(object):
 
-    filter_types = ['exact', 'iexact', 'contains', 'icontains',
-        'startswith', 'istartswith', 'endswith', 'iendswith', 'isnull']
+    string_filters = ['exact', 'iexact', 'contains', 'icontains',
+        'startswith', 'istartswith', 'endswith', 'iendswith']
+
+    numeric_filters = ['exact', 'gt', 'gte', 'lt', 'lte', 'isnull']
+
+    @staticmethod
+    def dbfield(field_name=None, filter_types=['exact']):
+        """Returns a filter function for a standard database query."""
+        def inner(qs, view, filter_name, filter_extra, val):
+            if not filter_extra:
+                filter_extra = 'exact'
+            if filter_extra not in filter_types:
+                raise BadRequest("Invalid filter argument %s" % filter_extra)
+            if val in ['true', 'True']:
+                val = True
+            elif val in ['false', 'False']:
+                val = False
+            elif val in ['none', 'None', 'null']:
+                val = None
+            return qs.filter(**{
+                (field_name if field_name else filter_name) + '__' + filter_extra: val
+            })
+        return inner
+
+    @staticmethod
+    def fkey(query_func):
+        """Returns a filter function for a foreign-key field.
+        The required argument is a function that takes an array 
+        (the filter value split by '/'), and returns a dict of the ORM filters to apply.
+        So a foreign key to a bill could accept an argument like
+            "/bills/41-1/C-50"
+        and query_func would be lambda u: {'bill__session': u[-2], 'bill__number': u[-1]}
+        """
+        def inner(qs, view, filter_name, filter_extra, val):
+            url_bits = val.rstrip('/').split('/')
+            return qs.filter(**(query_func(url_bits)))
+        return inner
+
+    @staticmethod
+    def choices(field_name=None):
+        """Returns a filter function for a database field with defined choices;
+        the filter will work whether provided the internal DB value or the display
+        value."""
+        def inner(qs, view, filter_name, filter_extra, val):
+            fname = field_name if field_name else filter_name
+            try:
+                search_val = next(c[0] for c in qs.model._meta.get_field(fname).choices
+                    if val in c)
+            except StopIteration:
+                raise BadRequest("Invalid value for %s" % filter_name)
+            return qs.filter(**{fname: search_val})
+        return inner
+
+
+
+class ModelListView(APIView):
 
     default_limit = 20
     
@@ -158,16 +216,9 @@ class ModelListView(APIView):
 
     def filter(self, request, qs):
         for (f, val) in request.GET.items():
-            if '__' in f:
-                (filter_field, filter_type) = f.split('__')
-            else:
-                (filter_field, filter_type) = (f, 'exact')
-            if filter_field in getattr(self, 'filterable_fields', []) and filter_type in self.filter_types:
-                if val in ['true', 'True']:
-                    val = True
-                elif val in ['false', 'False']:
-                    val = False
-                qs = qs.filter(**{filter_field + '__' + filter_type: val})
+            filter_name, _, filter_extra = f.partition('__')
+            if filter_name in getattr(self, 'filters', {}):
+                qs = self.filters[filter_name](qs, self, filter_name, filter_extra, val)
         return qs
 
     def get_json(self, request, **kwargs):

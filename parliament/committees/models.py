@@ -77,7 +77,7 @@ class Committee(models.Model):
             name_en=self.name,
             short_name_en=self.short_name,
             slug=self.slug,
-            parent=self.parent.get_absolute_url() if self.parent else None,
+            parent_url=self.parent.get_absolute_url() if self.parent else None,
         )
         if representation == 'detail':
             d['sessions'] = [{
@@ -190,13 +190,13 @@ class CommitteeMeeting(models.Model):
             date=unicode(self.date),
             number=self.number,
             in_camera=self.in_camera,
-            has_evidence=bool(self.evidence_id)
+            has_evidence=bool(self.evidence_id),
+            committee_url=self.committee.get_absolute_url(),
         )
         if representation == 'detail':
             d.update(
                 start_time=unicode(self.start_time),
                 end_time=unicode(self.end_time),
-                committee=self.committee.get_absolute_url(),
                 session=self.session_id,
                 minutes_url=self.minutes_url if self.minutes else None,
                 notice_url=self.notice_url if self.notice else None,

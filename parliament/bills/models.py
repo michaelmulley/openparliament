@@ -210,7 +210,7 @@ class BillInSession(models.Model):
         d = {
             'session': self.session_id,
             'legisinfo_id': self.legisinfo_id,
-            'introduced': unicode(self.introduced),
+            'introduced': unicode(self.introduced) if self.introduced else None,
             'name_en': self.bill.name,
             'number': self.bill.number
         }
@@ -225,10 +225,10 @@ class BillInSession(models.Model):
                 sponsor_politician_role_url=urlresolvers.reverse('politician_role',
                     kwargs={'member_id': self.sponsor_member_id}) if self.sponsor_member_id else None,
                 text_url=self.bill.get_billtext_url(),
-                other_sessions=[self.bill.url_for_session(s)
+                other_session_urls=[self.bill.url_for_session(s)
                     for s in self.bill.sessions.all()
                     if s.id != self.session_id],
-                votes=[vq.get_absolute_url() for vq in VoteQuestion.objects.filter(bill=self.bill_id)],
+                vote_urls=[vq.get_absolute_url() for vq in VoteQuestion.objects.filter(bill=self.bill_id)],
                 private_member_bill=self.bill.privatemember,
                 legisinfo_url=self.get_legisinfo_url(),
             )
@@ -373,7 +373,7 @@ class MemberVote(models.Model):
             'politician_url': self.politician.get_absolute_url(),
             'politician_role_url': urlresolvers.reverse('politician_role',
                 kwargs={'member_id': self.member_id}) if self.member_id else None,
-            'vote': self.get_vote_display(),
+            'ballot': self.get_vote_display(),
         }
 
 VOTE_CHOICES_PARTY = VOTE_CHOICES + [('F', "Free vote")]            

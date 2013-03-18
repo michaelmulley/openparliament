@@ -11,7 +11,7 @@ from django.template.defaultfilters import date as format_date
 from django.views.decorators.vary import vary_on_headers
 
 from parliament.bills.models import Bill, VoteQuestion, MemberVote, BillInSession
-from parliament.core.api import ModelListView, ModelDetailView
+from parliament.core.api import ModelListView, ModelDetailView, APIFilters
 from parliament.core.models import Session
 from parliament.hansards.models import Statement
 
@@ -27,6 +27,11 @@ class BillDetailView(ModelDetailView):
     def get_object(self, request, session_id, bill_number):
         return BillInSession.objects.select_related(
             'bill', 'sponsor_politician').get(session=session_id, bill__number=bill_number)
+
+    def get_related_resources(self, request, qs, result):
+        return {
+            'bills_url': urlresolvers.reverse('bills')
+        }
 
     def get_html(self, request, session_id, bill_number):
         PER_PAGE = 10
@@ -60,10 +65,19 @@ bill = vary_on_headers('X-Requested-With')(BillDetailView.as_view())
     
 class BillListView(ModelListView):
 
-    filterable_fields = ['session']
+    filters = {
+        'session': APIFilters.dbfield(),
+        'introduced': APIFilters.dbfield(filter_types=APIFilters.numeric_filters),
+        'legisinfo_id': APIFilters.dbfield(),
+        'number': APIFilters.dbfield('bill__number'),
+        'law': APIFilters.dbfield('bill__law'),
+        'private_member_bill': APIFilters.dbfield('bill__privatemember'),
+        'sponsor_politician': APIFilters.fkey(lambda u: {'sponsor_politician__slug': u[-1]}),
+        'sponsor_politician_role': APIFilters.fkey(lambda u: {'sponsor_member': u[-1]}),
+    }
 
     def get_qs(self, request):
-        return BillInSession.objects.all().order_by('-introduced').select_related('bill', 'sponsor_politician')
+        return BillInSession.objects.all().select_related('bill', 'sponsor_politician')
 
     def get_html(self, request):
         sessions = Session.objects.with_bills()
@@ -108,7 +122,19 @@ bills_for_session = BillSessionListView.as_view()
 
 class VoteListView(ModelListView):
 
-    filterable_fields = ['session']
+    filters = {
+        'session': APIFilters.dbfield(),
+        'yea_total': APIFilters.dbfield(filter_types=APIFilters.numeric_filters),
+        'nay_total': APIFilters.dbfield(filter_types=APIFilters.numeric_filters),
+        'paired_total': APIFilters.dbfield(filter_types=APIFilters.numeric_filters),
+        'date': APIFilters.dbfield(filter_types=APIFilters.numeric_filters),
+        'number': APIFilters.dbfield(filter_types=APIFilters.numeric_filters),
+        'bill': APIFilters.fkey(lambda u: {
+            'bill__session': u[-2],
+            'bill__number': u[-1]
+        }),
+        'result': APIFilters.choices()
+    }
 
     def get_json(self, request, session_id=None):
         if session_id:
@@ -117,7 +143,7 @@ class VoteListView(ModelListView):
         return super(VoteListView, self).get_json(request)
 
     def get_qs(self, request):
-        return VoteQuestion.objects.select_related(depth=1)
+        return VoteQuestion.objects.select_related(depth=1).order_by('-date', '-number')
 
     def get_html(self, request, session_id=None):
         if session_id:
@@ -146,6 +172,13 @@ class VoteDetailView(ModelDetailView):
     def get_object(self, request, session_id, number):
         return get_object_or_404(VoteQuestion, session=session_id, number=number)
 
+    def get_related_resources(self, request, obj, result):
+        return {
+            'ballots_url': urlresolvers.reverse('vote_ballots') + '?' +
+                urlencode({'vote': result['object']['url']}),
+            'votes_url': urlresolvers.reverse('votes')
+        }
+
     def get_html(self, request, session_id, number):
         vote = self.get_object(request, session_id, number)
         membervotes = MemberVote.objects.filter(votequestion=vote)\
@@ -165,6 +198,14 @@ vote = VoteDetailView.as_view()
 
 
 class BallotListView(ModelListView):
+
+    filters = {
+        'vote': APIFilters.fkey(lambda u: {'votequestion__session': u[-2],
+                                           'votequestion__number': u[-1]}),
+        'politician': APIFilters.fkey(lambda u: {'politician__slug': u[-1]}),
+        'politician_role': APIFilters.fkey(lambda u: {'member': u[-1]}),
+        'ballot': APIFilters.choices('vote')
+    }
 
     def get_qs(self, request):
         return MemberVote.objects.all()

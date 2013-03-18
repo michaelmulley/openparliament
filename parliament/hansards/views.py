@@ -1,4 +1,5 @@
 import datetime
+from urllib import urlencode
 
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core import urlresolvers
@@ -8,7 +9,8 @@ from django.template import loader, RequestContext
 from django.views.generic.dates import (ArchiveIndexView, YearArchiveView, MonthArchiveView)
 from django.views.decorators.vary import vary_on_headers
 
-from parliament.core.api import ModelDetailView, ModelListView
+from parliament.committees.models import CommitteeMeeting
+from parliament.core.api import ModelDetailView, ModelListView, APIFilters
 from parliament.hansards.models import Document, Statement
 
 def _get_hansard(year, month, day):
@@ -27,7 +29,8 @@ class HansardView(ModelDetailView):
 
     def get_related_resources(self, request, obj, result):
         return {
-            'speeches_url': urlresolvers.reverse('debate_speeches', kwargs=self.kwargs),
+            'speeches_url': urlresolvers.reverse('speeches') + '?' +
+                urlencode({'document': result['object']['url']}),
             'debates_url': urlresolvers.reverse('debates')
         }
 hansard = HansardView.as_view()
@@ -134,34 +137,35 @@ def document_view(request, document, meeting=None, slug=None):
     return HttpResponse(t.render(RequestContext(request, ctx)))
 
 
-class HansardSpeechesView(ModelListView):
-
-    filterable_fields = ['procedural']
-
-    resource_name = 'Speeches (House debate)'
-
-    def get_qs(self, request, year, month, day):
-        date = datetime.date(int(year), int(month), int(day))
-        return Statement.objects.filter(
-            document__document_type='D',
-            document__date=date
-        ).order_by('sequence').prefetch_related('politician')
-
-    def get_related_resources(self, request, qs, result):
-        return {
-            'hansard_url': urlresolvers.reverse('debate', kwargs=self.kwargs)
-        }
-hansard_speeches = HansardSpeechesView.as_view()
-
-
 class SpeechesView(ModelListView):
 
-    filterable_fields = ['procedural']
+    def document_filter(qs, view, filter_name, filter_extra, val):
+        u = val.rstrip('/').split('/')
+        if u[-4] == 'debates':
+            # /debates/2013/2/15/
+            date = datetime.date(int(u[-3]), int(u[-2]), int(u[-1]))
+            return qs.filter(
+                document__document_type='D',
+                document__date=date
+            ).order_by('sequence')
+        elif u[-4] == 'committees':
+            # /commmittees/national-defence/41-1/63/
+            meeting = CommitteeMeeting.objects.get(
+                committee__slug=u[-3], session=u[-2], number=u[-1])
+            return qs.filter(document=meeting.evidence_id).order_by('sequence')
+
+    filters = {
+        'procedural': APIFilters.dbfield(),
+        'document': document_filter
+    }
 
     resource_name = 'Speeches'
 
     def get_qs(self, request):
-        return Statement.objects.all().order_by('-time').prefetch_related('politician')
+        qs = Statement.objects.all().prefetch_related('politician')
+        if 'document' not in request.GET:
+            qs = qs.order_by('-time')
+        return qs
 speeches = SpeechesView.as_view()
 
 class DebatePermalinkView(ModelDetailView):

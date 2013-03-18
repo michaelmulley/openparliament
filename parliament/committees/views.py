@@ -1,4 +1,5 @@
 import datetime
+from urllib import urlencode
 
 from django.core import urlresolvers
 from django.http import HttpResponse, HttpResponsePermanentRedirect, Http404
@@ -7,7 +8,7 @@ from django.template import loader, RequestContext
 from django.core.serializers.json import simplejson as json
 
 from parliament.committees.models import Committee, CommitteeMeeting, CommitteeActivity
-from parliament.core.api import ModelListView, ModelDetailView
+from parliament.core.api import ModelListView, ModelDetailView, APIFilters
 from parliament.core.models import Session
 from parliament.hansards.views import document_view, statement_permalink
 from parliament.hansards.models import Statement
@@ -17,9 +18,16 @@ class CommitteeListView(ModelListView):
 
     resource_name = 'Committees'
 
+    filters = {
+        'session': APIFilters.dbfield('sessions')
+    }
+
     def get_qs(self, request):
-        return Committee.objects.filter(sessions=Session.objects.current(),
+        qs = Committee.objects.filter(
             parent__isnull=True, display=True).order_by('name')
+        if 'session' not in request.GET:
+            qs = qs.filter(sessions=Session.objects.current())
+        return qs
 
     def get_html(self, request):
         committees = self.get_qs(request)
@@ -48,7 +56,9 @@ class CommitteeView(ModelDetailView):
 
     def get_related_resources(self, request, qs, result):
         return {
-            'meetings_url': urlresolvers.reverse('committee_meetings', kwargs={'committee_slug': self.kwargs['slug']})
+            'meetings_url': urlresolvers.reverse('committee_meetings') + '?' +
+                urlencode({'committee': self.kwargs['slug']}),
+            'committees_url': urlresolvers.reverse('committee_list')
         }
 
     def get_html(self, request, slug):
@@ -124,9 +134,16 @@ def _get_meeting(committee_slug, session_id, number):
 
 class CommitteeMeetingListView(ModelListView):
 
-    def get_qs(self, request, committee_slug):
-        cmte = get_object_or_404(Committee, slug=committee_slug)
-        return CommitteeMeeting.objects.filter(committee=cmte)
+    filters = {
+        'number': APIFilters.dbfield(filter_types=APIFilters.numeric_filters),
+        'session': APIFilters.dbfield(),
+        'date': APIFilters.dbfield(filter_types=APIFilters.numeric_filters),
+        'in_camera': APIFilters.dbfield(),
+        'committee': APIFilters.fkey(lambda u: {'committee__slug': u[-1]})
+    }
+
+    def get_qs(self, request):
+        return CommitteeMeeting.objects.all().order_by('-date')
 
 
 class CommitteeMeetingView(ModelDetailView):
@@ -137,8 +154,8 @@ class CommitteeMeetingView(ModelDetailView):
     def get_related_resources(self, request, obj, result):
         if obj.evidence_id:
             return {
-                'speeches_url': urlresolvers.reverse('committee_meeting_speeches',
-                    kwargs=self.kwargs)
+                'speeches_url': urlresolvers.reverse('speeches') + '?' +
+                    urlencode({'document': result['object']['url']})
             }
 
     def get_html(self, request, committee_slug, session_id, number, slug=None):
@@ -164,15 +181,6 @@ class CommitteeMeetingStatementView(ModelDetailView):
     def get_html(self, request, **kwargs):
         return committee_meeting(request, **kwargs)
 committee_meeting_statement = CommitteeMeetingStatementView.as_view()
-
-
-class CommitteeMeetingSpeechesView(ModelListView):
-
-    resource_name = 'Speeches (committee meeting)'
-
-    def get_qs(self, request, **kwargs):
-        meeting = _get_meeting(**kwargs)
-        return meeting.evidence.statement_set.all()
 
 
 def evidence_permalink(request, committee_slug, session_id, number, slug):

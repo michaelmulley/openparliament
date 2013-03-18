@@ -13,7 +13,7 @@ from django.views.decorators.vary import vary_on_headers
 
 from parliament.activity.models import Activity
 from parliament.activity import utils as activity
-from parliament.core.api import JSONView, ModelListView, ModelDetailView
+from parliament.core.api import JSONView, ModelListView, ModelDetailView, APIFilters
 from parliament.core.models import Politician, ElectedMember
 from parliament.core.utils import feed_wrapper
 from parliament.hansards.models import Statement, Document
@@ -23,7 +23,12 @@ class CurrentMPView(ModelListView):
     resource_name = 'MPs'
 
     default_limit = 308
-    filterable_fields = ['name', 'name_family', 'name_given']
+
+    filters = {
+        'name': APIFilters.dbfield(),
+        'family_name': APIFilters.dbfield('name_family'),
+        'given_name': APIFilters.dbfield('name_given')
+    }
 
     def get_qs(self, request):
         return Politician.objects.current().order_by('name_family')
