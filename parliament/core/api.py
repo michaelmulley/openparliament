@@ -17,11 +17,10 @@ class APIView(View):
     # Set this to True to allow JSONP (cross-domain) requests
     allow_jsonp = False
 
-    # The list of formats should be ordered by preferability
-    formats = [
-        ('html', 'text/html'),
-        ('json', 'application/json'),
+    # The list of API formats should be ordered by preferability
+    api_formats = [
         ('apibrowser', 'text/html'),
+        ('json', 'application/json')
     ]
 
     # By default, if the Accept header doesn't match anything
@@ -37,25 +36,21 @@ class APIView(View):
         if hasattr(self, 'get_json'):
             self.get_apibrowser = self.get_json
 
-        self.available_methods = dict()
-        self.MIMETYPE_LOOKUP = dict()
-        for m in self.http_method_names:
-            for f, mime in self.formats:
-                if hasattr(self, '_'.join((m, f))):
-                    self.available_methods.setdefault(m, set()).add(f)
-                    self.MIMETYPE_LOOKUP.setdefault(mime, f)
+        self._mimetype_lookup = dict(
+            (f[1], f[0]) for f in self.api_formats
+        )
 
-    def get_request_format(self, request, available_formats):
-        if request.GET.get('format') in available_formats:
+    def get_api_format(self, request):
+        if request.GET.get('format') in self.api_formats:
             return request.GET['format']
         elif request.GET.get('format'):
             return None
 
-        mimetype = Accept(request.META.get('HTTP_ACCEPT', 'text/html')).best_match(
-            [f[1] for f in self.formats if f[0] in available_formats],
+        mimetype = Accept(request.META.get('HTTP_ACCEPT', 'application/json')).best_match(
+            [f[1] for f in self.api_formats],
             default_match=self.default_mimetype
         )
-        return self.MIMETYPE_LOOKUP[mimetype] if mimetype else None
+        return self._mimetype_lookup[mimetype] if mimetype else None
 
     def dispatch(self, request, **kwargs):
         self.request = request
@@ -63,30 +58,35 @@ class APIView(View):
 
         method = request.method.lower()
 
-        if method not in self.available_methods:
+        print request.get_host()
+
+        request.api_request = (request.get_host().lower().startswith(settings.PARLIAMENT_API_HOST)
+                               or request.GET.get('format'))
+
+        if request.api_request:
+            format = self.get_api_format(request)
+            if not format:
+                return self.format_not_allowed(request)
+        else:
+            # No format negotiation on non-API requests
+            format = 'html'
+
+            if hasattr(self, 'get_json'):
+                request.apibrowser_url = '//' + settings.PARLIAMENT_API_HOST + request.path
+
+        handler = getattr(self, '_'.join((method, format)), None)
+        if handler is None:
+            if method == 'get':
+                return self.format_not_allowed(request)
             return self.http_method_not_allowed(request)
-
-        available_formats = self.available_methods[method]
-        format = self.get_request_format(request, available_formats)
-        if not format:
-            return self.format_not_allowed(request)
-
-        if format != 'apibrowser' and 'apibrowser' in available_formats:
-            params = dict([k, v.encode('utf-8')] for k, v in request.GET.items())
-            params['format'] = 'apibrowser'
-            request.apibrowser_url = '?' + urlencode(params)
-
-        handler = getattr(self, '_'.join((method, format)))
         result = handler(request, **kwargs)
 
         processor = getattr(self, 'process_' + format, self.process_default)
         return processor(result, request, **kwargs)
 
     def format_not_allowed(self, request):
-        msg = u'This resource is only available in ' + ', '.join(
-            set([f[1] for f in self.formats if f[0] == ff][0]
-                for ff in self.available_methods[request.method.lower()]))
-        return HttpResponse(msg, content_type='text/plain', status=406)
+        return HttpResponse("This resource is not available in the requested format.",
+            content_type='text/plain', status=406)
 
     def process_default(self, result, request, **kwargs):
         return result
@@ -126,9 +126,6 @@ class APIView(View):
             title=title
         )
         return render(request, 'api/browser.html', ctx)
-
-    def _allowed_methods(self):
-        return [m.upper() for m in self.available_methods]
 
 
 class JSONView(APIView):
@@ -174,7 +171,10 @@ class ModelListView(APIView):
         return qs
 
     def get_json(self, request, **kwargs):
-        qs = self.get_qs(request, **kwargs)
+        try:
+            qs = self.get_qs(request, **kwargs)
+        except ObjectDoesNotExist:
+            raise Http404
         qs = self.filter(request, qs)
 
         paginator = APIPaginator(request, qs, limit=self.default_limit)
@@ -213,6 +213,12 @@ class ModelDetailView(APIView):
 
     def get_related_resources(self, request, obj, result):
         return None
+
+
+def no_robots(request):
+    if request.get_host().lower().startswith(settings.PARLIAMENT_API_HOST):
+        return HttpResponse('User-agent: *\nDisallow: /\n', content_type='text/plain')
+    return HttpResponse('', content_type='text/plain')
 
 
 class FetchFromCacheMiddleware(DjangoFetchFromCacheMiddleware):

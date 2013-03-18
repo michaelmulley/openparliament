@@ -276,13 +276,25 @@ class Politician(Person):
             name=self.name
         )
         if representation == 'detail':
+            info = self.info_multivalued()
             d.update(
-                name_given=self.name_given,
-                name_family=self.name_family,
-                gender=self.gender,
+                given_name=self.name_given,
+                family_name=self.name_family,
+                gender=self.get_gender_display().lower(),
                 image=self.headshot.url,
-                info=self.info_multivalued()
+                other_info=info,
+                links=[{
+                    'url': self.parlpage,
+                    'note': 'Page on parl.gc.ca'
+                }]
             )
+            if 'email' in info:
+                d['email'] = info.pop('email')[0]
+            if 'web_site' in info:
+                d['links'].append({
+                    'url': info.pop('web_site')[0],
+                    'note': 'Official site'
+                })
             d['role_history'] = [
                 member.to_api_dict('detail', include_politician=False)
                 for member in self.electedmember_set.all().select_related(depth=1).order_by('-end_date')
@@ -527,9 +539,9 @@ class RidingManager(models.Manager):
     
     # FIXME: This should really be in the database, not the model
     FIX_RIDING = {
-        'richmond-arthabasca' : 'richmond-arthabaska',
-        'richemond-arthabaska' : 'richmond-arthabaska',
-        'battle-river' : 'westlock-st-paul',
+        'richmond-arthabasca': 'richmond-arthabaska',
+        'richemond-arthabaska': 'richmond-arthabaska',
+        'battle-river': 'westlock-st-paul',
         'vancouver-est': 'vancouver-east',
         'calgary-ouest': 'calgary-west',
         'kitchener-wilmot-wellesley-woolwich': 'kitchener-conestoga',
@@ -645,13 +657,14 @@ class ElectedMember(models.Model):
             url=self.get_absolute_url(),
             currently_in_office=self.current,
             start_date=unicode(self.start_date),
-            end_date=unicode(self.end_date),
+            end_date=unicode(self.end_date) if self.end_date else None,
             party={
                 'name_en': self.party.name,
                 'short_name_en': self.party.short_name
             },
+            role=u"%s MP for %s" % (self.party.short_name, self.riding.dashed_name),
             riding={
-                'name_en': self.riding.name,
+                'name_en': self.riding.dashed_name,
                 'province': self.riding.province,
                 'edid': self.riding.edid,
             }

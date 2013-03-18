@@ -6,9 +6,8 @@ from django.conf import settings
 from django.core import urlresolvers
 from django.db import models
 
-from parliament.core.models import Session, InternalXref, ElectedMember, Politician, Party
+from parliament.core.models import Session, ElectedMember, Politician, Party
 from parliament.activity import utils as activity
-from parliament.core.utils import memoize_property
 
 import logging
 logger = logging.getLogger(__name__)
@@ -275,6 +274,32 @@ class VoteQuestion(models.Model):
     class Meta:
         ordering=('-date', '-number')
 
+    def to_api_dict(self, representation):
+        r = {
+            'bill_url': self.bill.get_absolute_url() if self.bill else None,
+            'session': self.session_id,
+            'number': self.number,
+            'date': unicode(self.date),
+            'description': self.description,
+            'result': self.get_result_display(),
+            'yea_total': self.yea_total,
+            'nay_total': self.nay_total,
+            'paired_total': self.paired_total,
+        }
+        if representation == 'detail':
+            r.update(
+                context_statement=self.context_statement.get_absolute_url() if self.context_statement else None,
+                party_votes=[{
+                    'vote': pv.get_vote_display(),
+                    'disagreement': pv.disagreement,
+                    'party': {
+                        'name_en': pv.party.name,
+                        'short_name_en': pv.party.short_name
+                    },
+                } for pv in self.partyvote_set.all()]
+            )
+        return r
+
     def label_absent_members(self):
         for member in ElectedMember.objects.on_date(self.date).exclude(membervote__votequestion=self):
             MemberVote(votequestion=self, member=member, politician_id=member.politician_id, vote='A').save()
@@ -341,6 +366,15 @@ class MemberVote(models.Model):
             
     def save_activity(self):
         activity.save_activity(self, politician=self.politician, date=self.votequestion.date)
+
+    def to_api_dict(self, representation):
+        return {
+            'vote_url': self.votequestion.get_absolute_url(),
+            'politician_url': self.politician.get_absolute_url(),
+            'politician_role_url': urlresolvers.reverse('politician_role',
+                kwargs={'member_id': self.member_id}) if self.member_id else None,
+            'vote': self.get_vote_display(),
+        }
 
 VOTE_CHOICES_PARTY = VOTE_CHOICES + [('F', "Free vote")]            
 class PartyVote(models.Model):

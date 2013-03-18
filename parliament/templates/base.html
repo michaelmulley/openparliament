@@ -91,8 +91,8 @@ window.OP = {
 <a href="{% url votes %}">Votes</a></div>
 <div class="col three"><strong>More</strong><br>
 <a href="http://openparliament.uservoice.com/">Feedback</a> / <a class="maillink">Contact</a><br>
-<a href="/labs/haiku/">Haiku</a>
-{% if request.apibrowser_url and debug %}<br><a href="{{ request.apibrowser_url }}" rel="nofollow">JSON</a> for developers{% endif %}
+<a href="/labs/haiku/">Haiku</a><br>
+<a href="/api/">Developers</a> {% if request.apibrowser_url and debug %}(<a href="{{ request.apibrowser_url }}" rel="nofollow">JSON</a>){% endif %}
 </div>
   {% endblock footer %}<div class="clear"></div></div></div>
 <!--[if IE 6]>

@@ -68,6 +68,8 @@ APPEND_SLASH = False
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_AGE = 60*60*24*60  # 60 days
 
+PARLIAMENT_API_HOST = 'api.openparliament.ca'
+
 # List of callables that know how to import templates from various sources.
 TEMPLATE_LOADERS = (
     'django.template.loaders.filesystem.Loader',

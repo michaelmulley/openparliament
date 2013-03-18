@@ -46,6 +46,11 @@ class CommitteeView(ModelDetailView):
     def get_object(self, request, slug):
         return get_object_or_404(Committee, slug=slug)
 
+    def get_related_resources(self, request, qs, result):
+        return {
+            'meetings_url': urlresolvers.reverse('committee_meetings', kwargs={'committee_slug': self.kwargs['slug']})
+        }
+
     def get_html(self, request, slug):
         cmte = self.get_object(request, slug)
         recent_meetings = list(CommitteeMeeting.objects.filter(committee=cmte).order_by('-date')[:20])
@@ -116,6 +121,12 @@ def _get_meeting(committee_slug, session_id, number):
             committee__slug=committee_slug, session=session_id, number=number)
     except CommitteeMeeting.DoesNotExist:
         raise Http404
+
+class CommitteeMeetingListView(ModelListView):
+
+    def get_qs(self, request, committee_slug):
+        cmte = get_object_or_404(Committee, slug=committee_slug)
+        return CommitteeMeeting.objects.filter(committee=cmte)
 
 
 class CommitteeMeetingView(ModelDetailView):

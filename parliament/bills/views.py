@@ -1,5 +1,5 @@
 import datetime
-import re
+from urllib import urlencode
 
 from django.contrib.syndication.views import Feed
 from django.core import urlresolvers
@@ -60,6 +60,8 @@ bill = vary_on_headers('X-Requested-With')(BillDetailView.as_view())
     
 class BillListView(ModelListView):
 
+    filterable_fields = ['session']
+
     def get_qs(self, request):
         return BillInSession.objects.all().order_by('-introduced').select_related('bill', 'sponsor_politician')
 
@@ -81,56 +83,96 @@ class BillListView(ModelListView):
         return HttpResponse(t.render(c))
 index = BillListView.as_view()
 
-def bills_for_session(request, session_id):
-    session = get_object_or_404(Session, pk=session_id)
-    bills = Bill.objects.filter(sessions=session)
-    votes = VoteQuestion.objects.select_related('bill').filter(session=session)[:6]
 
-    t = loader.get_template('bills/bill_list.html')
-    c = RequestContext(request, {
-        'object_list': bills,
-        'session': session,
-        'votes': votes,
-        'title': 'Bills for the %s' % session
-    })
-    return HttpResponse(t.render(c))
-        
-def votes_for_session(request, session_id=None):
-    if session_id:
+class BillSessionListView(ModelListView):
+
+    def get_json(self, request, session_id):
+        return HttpResponseRedirect(urlresolvers.reverse('bills') + '?'
+                                    + urlencode({'session': session_id}))
+
+    def get_html(self, request, session_id):
         session = get_object_or_404(Session, pk=session_id)
-    else:
-        session = Session.objects.current()
+        bills = Bill.objects.filter(sessions=session)
+        votes = VoteQuestion.objects.select_related('bill').filter(session=session)[:6]
 
-    t = loader.get_template('bills/votequestion_list.html')
-    c = RequestContext(request, {
-        'object_list': VoteQuestion.objects.select_related(depth=1).filter(session=session),
-        'session': session,
-        'title': 'Votes for the %s' % session
-    })
-    return HttpResponse(t.render(c))
+        t = loader.get_template('bills/bill_list.html')
+        c = RequestContext(request, {
+            'object_list': bills,
+            'session': session,
+            'votes': votes,
+            'title': 'Bills for the %s' % session
+        })
+        return HttpResponse(t.render(c))
+bills_for_session = BillSessionListView.as_view()
+
+
+class VoteListView(ModelListView):
+
+    filterable_fields = ['session']
+
+    def get_json(self, request, session_id=None):
+        if session_id:
+            return HttpResponseRedirect(urlresolvers.reverse('votes') + '?'
+                                        + urlencode({'session': session_id}))
+        return super(VoteListView, self).get_json(request)
+
+    def get_qs(self, request):
+        return VoteQuestion.objects.select_related(depth=1)
+
+    def get_html(self, request, session_id=None):
+        if session_id:
+            session = get_object_or_404(Session, pk=session_id)
+        else:
+            session = Session.objects.current()
+
+        t = loader.get_template('bills/votequestion_list.html')
+        c = RequestContext(request, {
+            'object_list': self.get_qs(request).filter(session=session),
+            'session': session,
+            'title': 'Votes for the %s' % session
+        })
+        return HttpResponse(t.render(c))
+votes_for_session = VoteListView.as_view()
         
 def vote_pk_redirect(request, vote_id):
     vote = get_object_or_404(VoteQuestion, pk=vote_id)
     return HttpResponsePermanentRedirect(
         urlresolvers.reverse('parliament.bills.views.vote', kwargs={
         'session_id': vote.session_id, 'number': vote.number}))
-        
-def vote(request, session_id, number):
-    vote = get_object_or_404(VoteQuestion, session=session_id, number=number)
-    membervotes = MemberVote.objects.filter(votequestion=vote)\
-        .order_by('member__party', 'member__politician__name_family')\
-        .select_related('member', 'member__party', 'member__politician')
-    partyvotes = vote.partyvote_set.select_related('party').all()
-    
-    c = RequestContext(request, {
-        'vote': vote,
-        'membervotes': membervotes,
-        'parties_y': [pv.party for pv in partyvotes if pv.vote == 'Y'],
-        'parties_n': [pv.party for pv in partyvotes if pv.vote == 'N']
-    })
-    t = loader.get_template("bills/votequestion_detail.html")
-    return HttpResponse(t.render(c))
-    
+
+
+class VoteDetailView(ModelDetailView):
+
+    def get_object(self, request, session_id, number):
+        return get_object_or_404(VoteQuestion, session=session_id, number=number)
+
+    def get_html(self, request, session_id, number):
+        vote = self.get_object(request, session_id, number)
+        membervotes = MemberVote.objects.filter(votequestion=vote)\
+            .order_by('member__party', 'member__politician__name_family')\
+            .select_related('member', 'member__party', 'member__politician')
+        partyvotes = vote.partyvote_set.select_related('party').all()
+
+        c = RequestContext(request, {
+            'vote': vote,
+            'membervotes': membervotes,
+            'parties_y': [pv.party for pv in partyvotes if pv.vote == 'Y'],
+            'parties_n': [pv.party for pv in partyvotes if pv.vote == 'N']
+        })
+        t = loader.get_template("bills/votequestion_detail.html")
+        return HttpResponse(t.render(c))
+vote = VoteDetailView.as_view()
+
+
+class BallotListView(ModelListView):
+
+    def get_qs(self, request):
+        return MemberVote.objects.all()
+
+    def object_to_dict(self, obj):
+        return obj.to_api_dict(representation='list')
+ballots = BallotListView.as_view()
+
 class BillListFeed(Feed):
     title = 'Bills in the House of Commons'
     description = 'New bills introduced to the House, from openparliament.ca.'

@@ -188,7 +188,9 @@ class CommitteeMeeting(models.Model):
     def to_api_dict(self, representation):
         d = dict(
             date=unicode(self.date),
-            number=unicode(self.date)
+            number=self.number,
+            in_camera=self.in_camera,
+            has_evidence=bool(self.evidence_id)
         )
         if representation == 'detail':
             d.update(
@@ -198,7 +200,6 @@ class CommitteeMeeting(models.Model):
                 session=self.session_id,
                 minutes_url=self.minutes_url if self.minutes else None,
                 notice_url=self.notice_url if self.notice else None,
-                in_camera=self.in_camera,
                 webcast_url=self.webcast_url
             )
         return d
