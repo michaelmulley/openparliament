@@ -31,6 +31,8 @@ class APIView(View):
     # and our options.
     default_mimetype = None
 
+    resource_type = ''
+
     def __init__(self, *args, **kwargs):
         super(APIView, self).__init__(*args, **kwargs)
 
@@ -123,13 +125,20 @@ class APIView(View):
 
         kwargs['pretty_print'] = True
         content = self.process_json(result, request, **kwargs).content
-        title = u'API'
-        if getattr(self, 'resource_name', None):
-            title += u': ' + self.resource_name
+        resource_name = getattr(self, 'resource_name', None)
+        title = resource_name if resource_name else u'API'
+        params = request.GET.copy()
+        params['format'] = 'json'
         ctx = dict(
             json=content,
-            title=title
+            title=title,
+            filters=getattr(self, 'filters', {}),
+            resource_name=resource_name,
+            resource_type=self.resource_type,
+            raw_json_url='?' + params.urlencode(),
         )
+        if hasattr(self, 'get_html'):
+            ctx['main_site_url'] = settings.SITE_URL + request.path
         return render(request, 'api/browser.html', ctx)
 
 
@@ -212,6 +221,8 @@ class APIFilters(object):
 class ModelListView(APIView):
 
     default_limit = 20
+
+    resource_type = u'list'
     
     def object_to_dict(self, obj):
         d = obj.to_api_dict(representation='list')
@@ -252,6 +263,8 @@ class ModelListView(APIView):
 
 
 class ModelDetailView(APIView):
+
+    resource_type = 'single'
 
     def object_to_dict(self, obj):
         d = obj.to_api_dict(representation='detail')

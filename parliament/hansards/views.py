@@ -19,7 +19,7 @@ def _get_hansard(year, month, day):
 
 class HansardView(ModelDetailView):
 
-    resource_name = 'House debates'
+    resource_name = 'House debate'
 
     def get_object(self, request, **kwargs):
         return _get_hansard(**kwargs)
@@ -49,8 +49,6 @@ class HansardStatementView(ModelDetailView):
         )
 
     def get_related_resources(self, request, qs, result):
-        parent_kwargs = dict(self.kwargs)
-        parent_kwargs.pop('slug')
         return {
             'document_speeches_url': urlresolvers.reverse('speeches') + '?' +
                 urlencode({'document': result['object']['document_url']}),
@@ -159,7 +157,12 @@ class SpeechesView(ModelListView):
         'document': document_filter,
         'politician': APIFilters.politician(),
         'politician_role': APIFilters.fkey(lambda u: {'member': u[-1]}),
-        'time': APIFilters.dbfield(filter_types=APIFilters.numeric_filters)
+        'time': APIFilters.dbfield(filter_types=APIFilters.numeric_filters),
+        'mentioned_politician': APIFilters.politician('mentioned_politicians'),
+        'mentioned_bill': APIFilters.fkey(lambda u: {
+            'bills__billinsession__session': u[-2],
+            'bills__number': u[-1]
+        })
     }
 
     resource_name = 'Speeches'

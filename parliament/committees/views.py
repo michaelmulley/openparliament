@@ -134,6 +134,8 @@ def _get_meeting(committee_slug, session_id, number):
 
 class CommitteeMeetingListView(ModelListView):
 
+    resource_name = 'Committee meetings'
+
     filters = {
         'number': APIFilters.dbfield(filter_types=APIFilters.numeric_filters),
         'session': APIFilters.dbfield(),
@@ -147,6 +149,8 @@ class CommitteeMeetingListView(ModelListView):
 
 
 class CommitteeMeetingView(ModelDetailView):
+
+    resource_name = 'Committee meeting'
 
     def get_object(self, request, committee_slug, session_id, number):
         return _get_meeting(committee_slug, session_id, number)
@@ -174,9 +178,17 @@ committee_meeting = CommitteeMeetingView.as_view()
 
 class CommitteeMeetingStatementView(ModelDetailView):
 
+    resource_name = 'Speech (committee meeting)'
+
     def get_object(self, request, committee_slug, session_id, number, slug):
         meeting = _get_meeting(committee_slug, session_id, number)
         return meeting.evidence.statement_set.get(slug=slug)
+
+    def get_related_resources(self, request, qs, result):
+        return {
+            'document_speeches_url': urlresolvers.reverse('speeches') + '?' +
+                urlencode({'document': result['object']['document_url']}),
+        }        
 
     def get_html(self, request, **kwargs):
         return committee_meeting(request, **kwargs)

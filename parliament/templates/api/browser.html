@@ -2,29 +2,50 @@
 
 {% block headextra %}
 <style type="text/css">
-pre {
+#apibrowser_json {
+	margin: 0;
+}
+#apibrowser_json code {
   overflow: auto;
+  display: block;
   font-size: 13px;
   font-family: monospace;
   white-space: pre;
   word-wrap: normal;
+  padding: 1em;
+  background: #002b36;
+  color: #93a1a1;
+  /*border: 1px solid #777777;*/
+}
+pre code a {
+	color: #268BD2;
 }
 pre .key {
-  color: #660E7A;
+  color: #b58900;
 }
 pre .structure {
-  color: #B58110;
+  color: #6c71c4;
 }
 pre .value {
-  color: #038C35;
+  color: #2aa198;
 }
 </style>
 {% endblock %}
 
 {% block content %}
-<div class="focus">
-<pre id="apibrowser_json">{{ json }}</pre>
+<div class="focus"><p>This is a <strong>{{ resource_type }}</strong>
+{% if resource_type == 'list' %}of {{ resource_name|lower }}{% else %}{{ resource_name|lower }} resource{% endif %}
+from the openparliament.ca API. If you&rsquo;re new here, you might want to look at the <a href="/api/">documentation</a>. If <code>API</code> and <code>JSON</code> are gibberish to you, you&rsquo;re better off at our <a href="{% if main_site_url %}{{ main_site_url }}{% else %}http://openparliament.ca/{% endif %}">main site</a>.</p></div><div class="clear"></div>
+
+{% if filters %}<div class="context"><h2>Filters</h2></div><div class="focus">{{ filters.keys }}</div><div class="clear"></div>{% endif %}
+
+<div class="context"><h2>Content</h2>
+	<p>Get this resource as <a href="{{ raw_json_url }}">raw JSON</a>.</p>
+	{% if main_site_url %}<p>See the corresponding <a href="{{ main_site_url }}">webpage</a>.</p>{% endif %}
 </div>
+<div class="focus">
+<pre id="apibrowser_json"><code>{{ json }}</code></pre>
+</div><div class="clear"></div>
 {% endblock %}
 
 {% block javascript %}
@@ -32,7 +53,7 @@ pre .value {
 <script type="text/javascript" src="{{ STATIC_URL }}js/jsonformatter.js"></script>
 <script type="text/javascript">
 $(function() {
-	$('#apibrowser_json').html(OP.utils.formatJSON($('#apibrowser_json').text()));
+	$('#apibrowser_json code').html(OP.utils.formatJSON($('#apibrowser_json').text()));
 });
 </script>
 {% endblock %}

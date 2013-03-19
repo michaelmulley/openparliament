@@ -24,6 +24,8 @@ def bill_pk_redirect(request, bill_id):
 
 class BillDetailView(ModelDetailView):
 
+    resource_name = 'Bill'
+
     def get_object(self, request, session_id, bill_number):
         return BillInSession.objects.select_related(
             'bill', 'sponsor_politician').get(session=session_id, bill__number=bill_number)
@@ -64,6 +66,8 @@ class BillDetailView(ModelDetailView):
 bill = vary_on_headers('X-Requested-With')(BillDetailView.as_view())
     
 class BillListView(ModelListView):
+
+    resource_name = 'Bills'
 
     filters = {
         'session': APIFilters.dbfield(),
@@ -122,6 +126,8 @@ bills_for_session = BillSessionListView.as_view()
 
 class VoteListView(ModelListView):
 
+    resource_name = 'Votes'
+
     filters = {
         'session': APIFilters.dbfield(),
         'yea_total': APIFilters.dbfield(filter_types=APIFilters.numeric_filters),
@@ -169,6 +175,8 @@ def vote_pk_redirect(request, vote_id):
 
 class VoteDetailView(ModelDetailView):
 
+    resource_name = 'Vote'
+
     def get_object(self, request, session_id, number):
         return get_object_or_404(VoteQuestion, session=session_id, number=number)
 
@@ -198,6 +206,8 @@ vote = VoteDetailView.as_view()
 
 
 class BallotListView(ModelListView):
+
+    resource_name = 'Ballots'
 
     filters = {
         'vote': APIFilters.fkey(lambda u: {'votequestion__session': u[-2],

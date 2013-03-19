@@ -22,7 +22,7 @@ from parliament.hansards.models import Statement, Document
 
 class CurrentMPView(ModelListView):
 
-    resource_name = 'MPs'
+    resource_name = 'Politicians'
 
     default_limit = 308
 
@@ -48,7 +48,7 @@ current_mps = CurrentMPView.as_view()
 
 class FormerMPView(ModelListView):
 
-    resource_name = 'MPs'
+    resource_name = 'Politicians'
 
     def get_qs(self, request):
         return Politician.objects.elected_but_not_current().order_by('name_family')
@@ -74,7 +74,7 @@ former_mps = FormerMPView.as_view()
 
 class PoliticianView(ModelDetailView):
 
-    resource_name = 'MP'
+    resource_name = 'Politician'
 
     def get_object(self, request, pol_id=None, pol_slug=None):
         if pol_slug:
