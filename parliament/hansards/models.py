@@ -442,7 +442,9 @@ class Statement(models.Model):
             elif not '(' in self.who or not parsetools.r_politicalpost.search(self.who):
                 info['display_name'] = self.member.politician.name
             else:
-                info['post'] = re.search(r'\((.+)\)', self.who).group(1).split(',')[0]
+                post_match = re.search(r'\((.+)\)', self.who)
+                if post_match:
+                    info['post'] = post_match.group(1).split(',')[0]
                 info['display_name'] = self.member.politician.name
         return info
 
