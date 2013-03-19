@@ -17,7 +17,7 @@ def home(request):
     
     t = loader.get_template("home.html")
     c = RequestContext(request, {
-        'latest_hansard': Document.debates.all()[0],
+        'latest_hansard': Document.debates.filter(date__isnull=False, public=True)[0],
         'sitenews': SiteNews.objects.filter(active=True,
             date__gte=datetime.datetime.now() - datetime.timedelta(days=60))[:6],
         'votes': VoteQuestion.objects.filter(session=Session.objects.current())\
