@@ -295,6 +295,10 @@ class Politician(Person):
                     'url': info.pop('web_site')[0],
                     'note': 'Official site'
                 })
+            if 'phone' in info:
+                d['voice'] = info.pop('phone')[0]
+            if 'fax' in info:
+                d['fax'] = info.pop('fax')[0]
             d['role_history'] = [
                 member.to_api_dict('detail', include_politician=False)
                 for member in self.electedmember_set.all().select_related(depth=1).order_by('-end_date')

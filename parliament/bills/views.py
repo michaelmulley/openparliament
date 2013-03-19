@@ -218,7 +218,7 @@ class BallotListView(ModelListView):
     }
 
     def get_qs(self, request):
-        return MemberVote.objects.all()
+        return MemberVote.objects.all().order_by('-votequestion__date')
 
     def object_to_dict(self, obj):
         return obj.to_api_dict(representation='list')
