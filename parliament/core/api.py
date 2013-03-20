@@ -129,13 +129,18 @@ class APIView(View):
         title = resource_name if resource_name else u'API'
         params = request.GET.copy()
         params['format'] = 'json'
+        filters = [
+            (f, getattr(self.filters[f], 'help', ''))
+            for f in sorted(getattr(self, 'filters', {}).keys())
+        ]
         ctx = dict(
             json=content,
             title=title,
-            filters=getattr(self, 'filters', {}),
+            filters=filters,
             resource_name=resource_name,
             resource_type=self.resource_type,
             raw_json_url='?' + params.urlencode(),
+            notes=getattr(self, 'api_notes', None)
         )
         if hasattr(self, 'get_html'):
             ctx['main_site_url'] = settings.SITE_URL + request.path
@@ -162,7 +167,7 @@ class APIFilters(object):
     numeric_filters = ['exact', 'gt', 'gte', 'lt', 'lte', 'isnull', 'range']
 
     @staticmethod
-    def dbfield(field_name=None, filter_types=['exact']):
+    def dbfield(field_name=None, filter_types=['exact'], help=None):
         """Returns a filter function for a standard database query."""
         def inner(qs, view, filter_name, filter_extra, val):
             if not filter_extra:
@@ -180,10 +185,11 @@ class APIFilters(object):
             return qs.filter(**{
                 (field_name if field_name else filter_name) + '__' + filter_extra: val
             })
+        inner.help = help
         return inner
 
     @staticmethod
-    def fkey(query_func):
+    def fkey(query_func, help=None):
         """Returns a filter function for a foreign-key field.
         The required argument is a function that takes an array 
         (the filter value split by '/'), and returns a dict of the ORM filters to apply.
@@ -194,26 +200,29 @@ class APIFilters(object):
         def inner(qs, view, filter_name, filter_extra, val):
             url_bits = val.rstrip('/').split('/')
             return qs.filter(**(query_func(url_bits)))
+        inner.help = help
         return inner
 
     @staticmethod
     def politician(field_name='politician'):
         return APIFilters.fkey(lambda u: ({field_name: u[-1]} if u[-1].isdigit()
-            else {field_name + '__slug': u[-1]}))
+            else {field_name + '__slug': u[-1]}),
+            help="e.g. /politicians/tony-clement/")
 
     @staticmethod
-    def choices(field_name=None):
+    def choices(field_name, model):
         """Returns a filter function for a database field with defined choices;
         the filter will work whether provided the internal DB value or the display
         value."""
+        choices = model._meta.get_field(field_name).choices
         def inner(qs, view, filter_name, filter_extra, val):
-            fname = field_name if field_name else filter_name
             try:
-                search_val = next(c[0] for c in qs.model._meta.get_field(fname).choices
+                search_val = next(c[0] for c in choices
                     if val in c)
             except StopIteration:
                 raise BadRequest("Invalid value for %s" % filter_name)
-            return qs.filter(**{fname: search_val})
+            return qs.filter(**{field_name: search_val})
+        inner.help = u', '.join(c[1] for c in choices)
         return inner
 
 

@@ -27,9 +27,9 @@ class CurrentMPView(ModelListView):
     default_limit = 308
 
     filters = {
-        'name': APIFilters.dbfield(),
-        'family_name': APIFilters.dbfield('name_family'),
-        'given_name': APIFilters.dbfield('name_given')
+        'name': APIFilters.dbfield(help='e.g. Stephen Harper'),
+        'family_name': APIFilters.dbfield('name_family', help='e.g. Harper'),
+        'given_name': APIFilters.dbfield('name_given', help='e.g. Stephen'),
     }
 
     def get_qs(self, request):

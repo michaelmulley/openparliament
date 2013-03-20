@@ -8,6 +8,7 @@ from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpRespons
 from django.shortcuts import get_object_or_404
 from django.template import Context, loader, RequestContext
 from django.template.defaultfilters import date as format_date
+from django.utils.safestring import mark_safe
 from django.views.decorators.vary import vary_on_headers
 
 from parliament.bills.models import Bill, VoteQuestion, MemberVote, BillInSession
@@ -70,12 +71,16 @@ class BillListView(ModelListView):
     resource_name = 'Bills'
 
     filters = {
-        'session': APIFilters.dbfield(),
-        'introduced': APIFilters.dbfield(filter_types=APIFilters.numeric_filters),
-        'legisinfo_id': APIFilters.dbfield(),
-        'number': APIFilters.dbfield('bill__number'),
-        'law': APIFilters.dbfield('bill__law'),
-        'private_member_bill': APIFilters.dbfield('bill__privatemember'),
+        'session': APIFilters.dbfield(help="e.g. 41-1"),
+        'introduced': APIFilters.dbfield(filter_types=APIFilters.numeric_filters,
+            help="date bill was introduced, e.g. introduced__gt=2010-01-01"),
+        'legisinfo_id': APIFilters.dbfield(help="integer ID assigned by parl.gc.ca's LEGISinfo"),
+        'number': APIFilters.dbfield('bill__number',
+            help="a string, not an integer: e.g. C-10"),
+        'law': APIFilters.dbfield('bill__law',
+            help="did it become law? True, False"),
+        'private_member_bill': APIFilters.dbfield('bill__privatemember',
+            help="is it a private member's bill? True, False"),
         'sponsor_politician': APIFilters.politician('sponsor_politician'),
         'sponsor_politician_role': APIFilters.fkey(lambda u: {'sponsor_member': u[-1]}),
     }
@@ -128,18 +133,27 @@ class VoteListView(ModelListView):
 
     resource_name = 'Votes'
 
+    api_notes = mark_safe("""<p>What we call votes are <b>divisions</b> in official Parliamentary lingo.
+        We refer to an individual person's vote as a <a href="/votes/ballots/">ballot</a>.</p>
+    """)
+
     filters = {
-        'session': APIFilters.dbfield(),
-        'yea_total': APIFilters.dbfield(filter_types=APIFilters.numeric_filters),
-        'nay_total': APIFilters.dbfield(filter_types=APIFilters.numeric_filters),
-        'paired_total': APIFilters.dbfield(filter_types=APIFilters.numeric_filters),
-        'date': APIFilters.dbfield(filter_types=APIFilters.numeric_filters),
-        'number': APIFilters.dbfield(filter_types=APIFilters.numeric_filters),
+        'session': APIFilters.dbfield(help="e.g. 41-1"),
+        'yea_total': APIFilters.dbfield(filter_types=APIFilters.numeric_filters,
+            help="# votes for"),
+        'nay_total': APIFilters.dbfield(filter_types=APIFilters.numeric_filters,
+            help="# votes against, e.g. nay_total__gt=10"),
+        'paired_total': APIFilters.dbfield(filter_types=APIFilters.numeric_filters,
+            help="paired votes are an odd convention that seem to have stopped in 2011"),
+        'date': APIFilters.dbfield(filter_types=APIFilters.numeric_filters,
+            help="date__gte=2011-01-01"),
+        'number': APIFilters.dbfield(filter_types=APIFilters.numeric_filters,
+            help="every vote in a session has a sequential number"),
         'bill': APIFilters.fkey(lambda u: {
             'bill__session': u[-2],
             'bill__number': u[-1]
-        }),
-        'result': APIFilters.choices()
+        }, help="e.g. /bills/41-1/C-10/"),
+        'result': APIFilters.choices('result', VoteQuestion)
     }
 
     def get_json(self, request, session_id=None):
@@ -177,6 +191,8 @@ class VoteDetailView(ModelDetailView):
 
     resource_name = 'Vote'
 
+    api_notes = VoteListView.api_notes
+
     def get_object(self, request, session_id, number):
         return get_object_or_404(VoteQuestion, session=session_id, number=number)
 
@@ -211,14 +227,17 @@ class BallotListView(ModelListView):
 
     filters = {
         'vote': APIFilters.fkey(lambda u: {'votequestion__session': u[-2],
-                                           'votequestion__number': u[-1]}),
+                                           'votequestion__number': u[-1]},
+                                help="e.g. /votes/41-1/472/"),
         'politician': APIFilters.politician(),
-        'politician_role': APIFilters.fkey(lambda u: {'member': u[-1]}),
-        'ballot': APIFilters.choices('vote')
+        'politician_role': APIFilters.fkey(lambda u: {'member': u[-1]},
+            help="e.g. /politicians/roles/326/"),
+        'ballot': APIFilters.choices('vote', MemberVote)
     }
 
     def get_qs(self, request):
-        return MemberVote.objects.all().order_by('-votequestion__date')
+        return MemberVote.objects.all().select_related(
+            'votequestion').order_by('-votequestion__date', '-votequestion__number')
 
     def object_to_dict(self, obj):
         return obj.to_api_dict(representation='list')

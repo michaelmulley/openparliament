@@ -137,11 +137,14 @@ class CommitteeMeetingListView(ModelListView):
     resource_name = 'Committee meetings'
 
     filters = {
-        'number': APIFilters.dbfield(filter_types=APIFilters.numeric_filters),
-        'session': APIFilters.dbfield(),
-        'date': APIFilters.dbfield(filter_types=APIFilters.numeric_filters),
-        'in_camera': APIFilters.dbfield(),
-        'committee': APIFilters.fkey(lambda u: {'committee__slug': u[-1]})
+        'number': APIFilters.dbfield(filter_types=APIFilters.numeric_filters,
+            help="each meeting in a session is given a sequential #"),
+        'session': APIFilters.dbfield(help="e.g. 41-1"),
+        'date': APIFilters.dbfield(filter_types=APIFilters.numeric_filters,
+            help="e.g. date__gt=2010-01-01"),
+        'in_camera': APIFilters.dbfield(help="closed to the public? True, False"),
+        'committee': APIFilters.fkey(lambda u: {'committee__slug': u[-1]},
+            help="e.g. /committees/aboriginal-affairs")
     }
 
     def get_qs(self, request):

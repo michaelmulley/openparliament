@@ -659,7 +659,7 @@ class ElectedMember(models.Model):
     def to_api_dict(self, representation, include_politician=True):
         d = dict(
             url=self.get_absolute_url(),
-            currently_in_office=self.current,
+            #currently_in_office=self.current,
             start_date=unicode(self.start_date),
             end_date=unicode(self.end_date) if self.end_date else None,
             party={

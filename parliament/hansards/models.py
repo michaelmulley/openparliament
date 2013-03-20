@@ -99,6 +99,7 @@ class Document(models.Model):
         d = dict(
             date=unicode(self.date) if self.date else None,
             number=self.number,
+            most_frequent_word=self.most_frequent_word,
         )
         if representation == 'detail':
             d.update(
@@ -106,7 +107,6 @@ class Document(models.Model):
                 source_url=self.source_url,
                 session=self.session_id,
                 document_type=self.get_document_type_display(),
-                most_frequent_word=self.most_frequent_word,
             )
         return d
 
