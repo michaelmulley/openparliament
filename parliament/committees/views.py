@@ -162,7 +162,7 @@ class CommitteeMeetingView(ModelDetailView):
         if obj.evidence_id:
             return {
                 'speeches_url': urlresolvers.reverse('speeches') + '?' +
-                    urlencode({'document': result['object']['url']})
+                    urlencode({'document': result['url']})
             }
 
     def get_html(self, request, committee_slug, session_id, number, slug=None):
@@ -190,7 +190,7 @@ class CommitteeMeetingStatementView(ModelDetailView):
     def get_related_resources(self, request, qs, result):
         return {
             'document_speeches_url': urlresolvers.reverse('speeches') + '?' +
-                urlencode({'document': result['object']['document_url']}),
+                urlencode({'document': result['document_url']}),
         }        
 
     def get_html(self, request, **kwargs):

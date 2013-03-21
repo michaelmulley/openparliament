@@ -1,6 +1,5 @@
 import json
 import re
-from urllib import urlencode
 
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
@@ -286,7 +285,7 @@ class ModelDetailView(APIView):
             obj = self.get_object(request, **kwargs)
         except ObjectDoesNotExist:
             raise Http404
-        result = dict(object=self.object_to_dict(obj))
+        result = self.object_to_dict(obj)
         related = self.get_related_resources(request, obj, result)
         if related:
             result['related'] = related
@@ -444,11 +443,11 @@ class APIPaginator(object):
         objects = list(self.objects[offset:offset + limit + 1])
         if len(objects) > limit:
             objects.pop()
-            page_data['next'] = self._generate_uri(limit, offset + limit)
+            page_data['next_url'] = self._generate_uri(limit, offset + limit)
         else:
-            page_data['next'] = None
+            page_data['next_url'] = None
 
-        page_data['previous'] = (self._generate_uri(limit, offset - limit)
+        page_data['previous_url'] = (self._generate_uri(limit, offset - limit)
             if offset > 0 else None)
 
         return (objects, page_data)

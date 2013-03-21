@@ -663,14 +663,14 @@ class ElectedMember(models.Model):
             start_date=unicode(self.start_date),
             end_date=unicode(self.end_date) if self.end_date else None,
             party={
-                'name_en': self.party.name,
-                'short_name_en': self.party.short_name
+                'name': {'en':self.party.name},
+                'short_name': {'en':self.party.short_name}
             },
-            role=u"%s MP for %s" % (self.party.short_name, self.riding.dashed_name),
+            label=u"%s MP for %s" % (self.party.short_name, self.riding.dashed_name),
             riding={
-                'name_en': self.riding.dashed_name,
+                'name': {'en': self.riding.dashed_name},
                 'province': self.riding.province,
-                'edid': self.riding.edid,
+                'id': self.riding.edid,
             }
         )
         if include_politician:

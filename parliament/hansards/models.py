@@ -437,12 +437,8 @@ class Statement(models.Model):
     def to_api_dict(self, representation):
         d = dict(
             time=unicode(self.time) if self.time else None,
-            attribution_en=self.who,
-            content_en=self.content_en,
-            content_fr=self.content_fr,
-            h1_en=self.h1,
-            h2_en=self.h2,
-            h3_en=self.h3,
+            attribution={'en': self.who},
+            content={'en': self.content_en, 'fr': self.content_fr},
             url=self.get_absolute_url(),
             politician_url=self.politician.get_absolute_url() if self.politician else None,
             politician_role_url=urlresolvers.reverse('politician_role',
@@ -450,6 +446,10 @@ class Statement(models.Model):
             procedural=self.procedural,
             source_id=self.source_id
         )
+        for h in ('h1', 'h2', 'h3'):
+            v = getattr(self, h)
+            if v:
+                d[h] = {'en': v}
         d['document_url'] = d['url'][:d['url'].rstrip('/').rfind('/')+1]
         return d
     

@@ -199,7 +199,7 @@ class VoteDetailView(ModelDetailView):
     def get_related_resources(self, request, obj, result):
         return {
             'ballots_url': urlresolvers.reverse('vote_ballots') + '?' +
-                urlencode({'vote': result['object']['url']}),
+                urlencode({'vote': result['url']}),
             'votes_url': urlresolvers.reverse('votes')
         }
 

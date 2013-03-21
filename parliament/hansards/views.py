@@ -30,7 +30,7 @@ class HansardView(ModelDetailView):
     def get_related_resources(self, request, obj, result):
         return {
             'speeches_url': urlresolvers.reverse('speeches') + '?' +
-                urlencode({'document': result['object']['url']}),
+                urlencode({'document': result['url']}),
             'debates_url': urlresolvers.reverse('debates')
         }
 hansard = HansardView.as_view()
@@ -51,7 +51,7 @@ class HansardStatementView(ModelDetailView):
     def get_related_resources(self, request, qs, result):
         return {
             'document_speeches_url': urlresolvers.reverse('speeches') + '?' +
-                urlencode({'document': result['object']['document_url']}),
+                urlencode({'document': result['document_url']}),
         }
 
     def get_html(self, request, year, month, day, slug):
