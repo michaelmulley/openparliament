@@ -6,9 +6,8 @@ from django.conf import settings
 from django.core import urlresolvers
 from django.db import models
 
-from parliament.core.models import Session, InternalXref, ElectedMember, Politician, Party
+from parliament.core.models import Session, ElectedMember, Politician, Party
 from parliament.activity import utils as activity
-from parliament.core.utils import memoize_property
 
 import logging
 logger = logging.getLogger(__name__)
@@ -17,6 +16,7 @@ CALLBACK_URL = 'http://www2.parl.gc.ca/HousePublications/GetWebOptionsCallBack.a
 BILL_VOTES_URL = 'http://www2.parl.gc.ca/Housebills/BillVotes.aspx?Language=E&Parl=%s&Ses=%s&Bill=%s'
 
 LEGISINFO_BILL_URL = 'http://www.parl.gc.ca/LegisInfo/BillDetails.aspx?Language=%(lang)s&Mode=1&Bill=%(bill)s&Parl=%(parliament)s&Ses=%(session)s'
+LEGISINFO_BILL_ID_URL = 'http://www.parl.gc.ca/LEGISINFO/BillDetails.aspx?Language=%(lang)s&Mode=1&billId=%(id)s'
 PARLIAMENT_DOCVIEWER_URL = 'http://parl.gc.ca/HousePublications/Publication.aspx?Language=%(lang)s&Mode=1&DocId=%(docid)s'
 
 class BillManager(models.Manager):
@@ -188,7 +188,7 @@ class BillInSession(models.Model):
     session = models.ForeignKey(Session)
 
     legisinfo_id = models.PositiveIntegerField(db_index=True, blank=True, null=True)
-    introduced = models.DateField(blank=True, null=True)
+    introduced = models.DateField(blank=True, null=True, db_index=True)
     sponsor_politician = models.ForeignKey(Politician, blank=True, null=True)
     sponsor_member = models.ForeignKey(ElectedMember, blank=True, null=True)
 
@@ -199,6 +199,41 @@ class BillInSession(models.Model):
 
     def get_absolute_url(self):
         return self.bill.url_for_session(self.session)
+
+    def get_legisinfo_url(self, lang='E'):
+        return LEGISINFO_BILL_ID_URL % {
+            'lang': lang,
+            'id': self.legisinfo_id
+        }
+
+    def to_api_dict(self, representation):
+        d = {
+            'session': self.session_id,
+            'legisinfo_id': self.legisinfo_id,
+            'introduced': unicode(self.introduced) if self.introduced else None,
+            'name_en': self.bill.name,
+            'number': self.bill.number
+        }
+        if representation == 'detail':
+            d.update(
+                name_fr=self.bill.name_fr,
+                short_title_en=self.bill.short_title_en,
+                short_title_fr=self.bill.short_title_fr,
+                home_chamber=self.bill.get_institution_display(),
+                law=self.bill.law,
+                sponsor_politician_url=self.sponsor_politician.get_absolute_url() if self.sponsor_politician else None,
+                sponsor_politician_role_url=urlresolvers.reverse('politician_role',
+                    kwargs={'member_id': self.sponsor_member_id}) if self.sponsor_member_id else None,
+                text_url=self.bill.get_billtext_url(),
+                other_session_urls=[self.bill.url_for_session(s)
+                    for s in self.bill.sessions.all()
+                    if s.id != self.session_id],
+                vote_urls=[vq.get_absolute_url() for vq in VoteQuestion.objects.filter(bill=self.bill_id)],
+                private_member_bill=self.bill.privatemember,
+                legisinfo_url=self.get_legisinfo_url(),
+            )
+        return d
+
 
 class BillText(models.Model):
 
@@ -238,6 +273,32 @@ class VoteQuestion(models.Model):
         
     class Meta:
         ordering=('-date', '-number')
+
+    def to_api_dict(self, representation):
+        r = {
+            'bill_url': self.bill.get_absolute_url() if self.bill else None,
+            'session': self.session_id,
+            'number': self.number,
+            'date': unicode(self.date),
+            'description': self.description,
+            'result': self.get_result_display(),
+            'yea_total': self.yea_total,
+            'nay_total': self.nay_total,
+            'paired_total': self.paired_total,
+        }
+        if representation == 'detail':
+            r.update(
+                context_statement=self.context_statement.get_absolute_url() if self.context_statement else None,
+                party_votes=[{
+                    'vote': pv.get_vote_display(),
+                    'disagreement': pv.disagreement,
+                    'party': {
+                        'name_en': pv.party.name,
+                        'short_name_en': pv.party.short_name
+                    },
+                } for pv in self.partyvote_set.all()]
+            )
+        return r
 
     def label_absent_members(self):
         for member in ElectedMember.objects.on_date(self.date).exclude(membervote__votequestion=self):
@@ -305,6 +366,15 @@ class MemberVote(models.Model):
             
     def save_activity(self):
         activity.save_activity(self, politician=self.politician, date=self.votequestion.date)
+
+    def to_api_dict(self, representation):
+        return {
+            'vote_url': self.votequestion.get_absolute_url(),
+            'politician_url': self.politician.get_absolute_url(),
+            'politician_role_url': urlresolvers.reverse('politician_role',
+                kwargs={'member_id': self.member_id}) if self.member_id else None,
+            'ballot': self.get_vote_display(),
+        }
 
 VOTE_CHOICES_PARTY = VOTE_CHOICES + [('F', "Free vote")]            
 class PartyVote(models.Model):

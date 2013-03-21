@@ -241,6 +241,23 @@ p.share_link input{width:300px;padding-left:5px;}
 /* COMMITTEES */
 .committees .no_evidence a { color: #777777; }
 
+/* API BROWSER */
+.api_filters input[type=text] {
+  font-size: 13px;
+  line-height: 18px;
+  color: #555555;
+  padding: 4px;
+  border: 1px solid #cccccc;
+  border-radius: 3px;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  width: 90%;
+}
+.api_filters td { padding-right: 18px;}
+.api_filters .add,.api_filters .close { color: #555555;}
+.api_filters .add {font-size: 20px;}
+.api_filters .add:hover, .api_filters .close:hover { color: #1a59c7; text-decoration: none;}
+.api_filters .buttonrow .submit { text-align: right; padding-right: 40px;}
+
 /* SLIMBOX */
 #lbOverlay{position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background-color:#000;cursor:pointer;}
 #lbCenter,#lbBottomContainer{position:absolute;z-index:9999;overflow:hidden;background-color:#fff;}

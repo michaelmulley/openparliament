@@ -95,8 +95,27 @@ class Document(models.Model):
         elif self.document_type == self.EVIDENCE:
             return self.committeemeeting.get_absolute_url()
 
+    def to_api_dict(self, representation):
+        d = dict(
+            date=unicode(self.date) if self.date else None,
+            number=self.number,
+            most_frequent_word=self.most_frequent_word,
+        )
+        if representation == 'detail':
+            d.update(
+                source_id=self.source_id,
+                source_url=self.source_url,
+                session=self.session_id,
+                document_type=self.get_document_type_display(),
+            )
+        return d
+
     @property
     def url(self):
+        return self.source_url
+
+    @property
+    def source_url(self):
         return url_from_docid(self.source_id)
         
     def _topics(self, l):
@@ -414,6 +433,25 @@ class Statement(models.Model):
                 'riding': unicode(self.member.riding),
             }
         return v
+
+    def to_api_dict(self, representation):
+        d = dict(
+            time=unicode(self.time) if self.time else None,
+            attribution={'en': self.who},
+            content={'en': self.content_en, 'fr': self.content_fr},
+            url=self.get_absolute_url(),
+            politician_url=self.politician.get_absolute_url() if self.politician else None,
+            politician_role_url=urlresolvers.reverse('politician_role',
+                kwargs={'member_id': self.member_id}) if self.member_id else None,
+            procedural=self.procedural,
+            source_id=self.source_id
+        )
+        for h in ('h1', 'h2', 'h3'):
+            v = getattr(self, h)
+            if v:
+                d[h] = {'en': v}
+        d['document_url'] = d['url'][:d['url'].rstrip('/').rfind('/')+1]
+        return d
     
     @property
     @memoize_property    

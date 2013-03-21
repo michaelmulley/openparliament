@@ -9,6 +9,7 @@ import urllib, urllib2
 
 from django.conf import settings
 from django.core.cache import cache
+from django.core import urlresolvers
 from django.db import models
 from django.template.defaultfilters import slugify
 
@@ -269,7 +270,41 @@ class Politician(Person):
     slug = models.CharField(max_length=30, blank=True, db_index=True)
     
     objects = PoliticianManager()
-        
+
+    def to_api_dict(self, representation):
+        d = dict(
+            name=self.name
+        )
+        if representation == 'detail':
+            info = self.info_multivalued()
+            d.update(
+                given_name=self.name_given,
+                family_name=self.name_family,
+                gender=self.get_gender_display().lower(),
+                image=self.headshot.url,
+                other_info=info,
+                links=[{
+                    'url': self.parlpage,
+                    'note': 'Page on parl.gc.ca'
+                }]
+            )
+            if 'email' in info:
+                d['email'] = info.pop('email')[0]
+            if 'web_site' in info:
+                d['links'].append({
+                    'url': info.pop('web_site')[0],
+                    'note': 'Official site'
+                })
+            if 'phone' in info:
+                d['voice'] = info.pop('phone')[0]
+            if 'fax' in info:
+                d['fax'] = info.pop('fax')[0]
+            d['role_history'] = [
+                member.to_api_dict('detail', include_politician=False)
+                for member in self.electedmember_set.all().select_related(depth=1).order_by('-end_date')
+            ]
+        return d
+
     def add_alternate_name(self, name):
         normname = parsetools.normalizeName(name)
         if normname not in self.alternate_names():
@@ -508,9 +543,9 @@ class RidingManager(models.Manager):
     
     # FIXME: This should really be in the database, not the model
     FIX_RIDING = {
-        'richmond-arthabasca' : 'richmond-arthabaska',
-        'richemond-arthabaska' : 'richmond-arthabaska',
-        'battle-river' : 'westlock-st-paul',
+        'richmond-arthabasca': 'richmond-arthabaska',
+        'richemond-arthabaska': 'richmond-arthabaska',
+        'battle-river': 'westlock-st-paul',
         'vancouver-est': 'vancouver-east',
         'calgary-ouest': 'calgary-west',
         'kitchener-wilmot-wellesley-woolwich': 'kitchener-conestoga',
@@ -620,6 +655,30 @@ class ElectedMember(models.Model):
             return u"%s (%s) was the member from %s from %s to %s" % (self.politician, self.party, self.riding, self.start_date, self.end_date)
         else:
             return u"%s (%s) is the member from %s (since %s)" % (self.politician, self.party, self.riding, self.start_date)
+
+    def to_api_dict(self, representation, include_politician=True):
+        d = dict(
+            url=self.get_absolute_url(),
+            #currently_in_office=self.current,
+            start_date=unicode(self.start_date),
+            end_date=unicode(self.end_date) if self.end_date else None,
+            party={
+                'name': {'en':self.party.name},
+                'short_name': {'en':self.party.short_name}
+            },
+            label=u"%s MP for %s" % (self.party.short_name, self.riding.dashed_name),
+            riding={
+                'name': {'en': self.riding.dashed_name},
+                'province': self.riding.province,
+                'id': self.riding.edid,
+            }
+        )
+        if include_politician:
+            d['politician_url'] = self.politician.get_absolute_url()
+        return d
+
+    def get_absolute_url(self):
+        return urlresolvers.reverse('politician_role', kwargs={'member_id': self.id})
             
     @property
     def current(self):

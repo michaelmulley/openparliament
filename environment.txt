@@ -7,7 +7,7 @@ Markdown==2.0.3
 PIL>=1.1.6
 South==0.7.2
 django-devserver==0.0.2
-django-debug-toolbar==0.8.3
+django-debug-toolbar>=0.9.4
 git+http://github.com/django-extensions/django-extensions.git#egg=django_extensions
 django-haystack==1.0.1-final
 #psycopg2>=2.0.7
@@ -18,10 +18,11 @@ feedparser==4.1
 twitter>=1.5
 httplib2
 django-piston==0.2.3
-django-tastypie==0.9.10
 django-compressor==1.1.2
 freebase
 lxml
 #recaptcha-client==1.0.5
 -e git+git://github.com/rhymeswithcycle/alpheus.git#egg=alpheus
 PyBrowserID
+# WebOb is used for Accept header parsing
+webob==1.2.2

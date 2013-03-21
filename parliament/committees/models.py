@@ -72,6 +72,23 @@ class Committee(models.Model):
         else:
             return self.name + u' Committee'
 
+    def to_api_dict(self, representation):
+        d = dict(
+            name_en=self.name,
+            short_name_en=self.short_name,
+            slug=self.slug,
+            parent_url=self.parent.get_absolute_url() if self.parent else None,
+        )
+        if representation == 'detail':
+            d['sessions'] = [{
+                    'session': cis.session_id,
+                    'acronym': cis.acronym,
+                    'source_url': cis.get_source_url(),
+                } for cis in self.committeeinsession_set.all().order_by('-session__end').select_related('session')]
+            d['subcommittees'] = [c.get_absolute_url() for c in self.subcommittees.all()]
+        return d
+
+
 class CommitteeInSession(models.Model):
     session = models.ForeignKey(Session)
     committee = models.ForeignKey(Committee)
@@ -167,6 +184,25 @@ class CommitteeMeeting(models.Model):
     
     def __unicode__(self):
         return u"%s on %s" % (self.committee.short_name, self.date)
+
+    def to_api_dict(self, representation):
+        d = dict(
+            date=unicode(self.date),
+            number=self.number,
+            in_camera=self.in_camera,
+            has_evidence=bool(self.evidence_id),
+            committee_url=self.committee.get_absolute_url(),
+        )
+        if representation == 'detail':
+            d.update(
+                start_time=unicode(self.start_time),
+                end_time=unicode(self.end_time),
+                session=self.session_id,
+                minutes_url=self.minutes_url if self.minutes else None,
+                notice_url=self.notice_url if self.notice else None,
+                webcast_url=self.webcast_url
+            )
+        return d
 
     @memoize_property
     def activities_list(self):

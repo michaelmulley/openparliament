@@ -1,9 +1,11 @@
 import datetime
 import itertools
 import re
+from urllib import urlencode
 
 from django.conf import settings
 from django.contrib.syndication.views import Feed
+from django.core import urlresolvers
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import HttpResponse, Http404, HttpResponsePermanentRedirect
@@ -13,82 +15,125 @@ from django.views.decorators.vary import vary_on_headers
 
 from parliament.activity.models import Activity
 from parliament.activity import utils as activity
+from parliament.core.api import JSONView, ModelListView, ModelDetailView, APIFilters
 from parliament.core.models import Politician, ElectedMember
 from parliament.core.utils import feed_wrapper
 from parliament.hansards.models import Statement, Document
-from parliament.utils.views import JSONView
 
-def current_mps(request):
-    t = loader.get_template('politicians/electedmember_list.html')
-    c = RequestContext(request, {
-        'object_list': ElectedMember.objects.current().order_by(
-            'riding__province', 'politician__name_family').select_related('politician', 'riding', 'party'),
-        'title': 'Current Members of Parliament'
-    })
-    return HttpResponse(t.render(c))
+class CurrentMPView(ModelListView):
+
+    resource_name = 'Politicians'
+
+    default_limit = 308
+
+    filters = {
+        'name': APIFilters.dbfield(help='e.g. Stephen Harper'),
+        'family_name': APIFilters.dbfield('name_family', help='e.g. Harper'),
+        'given_name': APIFilters.dbfield('name_given', help='e.g. Stephen'),
+    }
+
+    def get_qs(self, request):
+        return Politician.objects.current().order_by('name_family')
+
+    def get_html(self, request):
+        t = loader.get_template('politicians/electedmember_list.html')
+        c = RequestContext(request, {
+            'object_list': ElectedMember.objects.current().order_by(
+                'riding__province', 'politician__name_family').select_related('politician', 'riding', 'party'),
+            'title': 'Current Members of Parliament'
+        })
+        return HttpResponse(t.render(c))
+current_mps = CurrentMPView.as_view()
+
+
+class FormerMPView(ModelListView):
+
+    resource_name = 'Politicians'
+
+    def get_qs(self, request):
+        return Politician.objects.elected_but_not_current().order_by('name_family')
+
+    def get_html(self, request):
+        former_members = ElectedMember.objects.exclude(end_date__isnull=True)\
+            .order_by('riding__province', 'politician__name_family', '-start_date')\
+            .select_related('politician', 'riding', 'party')
+        seen = set()
+        object_list = []
+        for member in former_members:
+            if member.politician_id not in seen:
+                object_list.append(member)
+                seen.add(member.politician_id)
         
-def former_mps(request):
-    former_members = ElectedMember.objects.exclude(end_date__isnull=True)\
-        .order_by('riding__province', 'politician__name_family', '-start_date')\
-        .select_related('politician', 'riding', 'party')
-    seen = set()
-    object_list = []
-    for member in former_members:
-        if member.politician_id not in seen:
-            object_list.append(member)
-            seen.add(member.politician_id)
-    
-    c = RequestContext(request, {
-        'object_list': object_list,
-        'title': 'Former MPs (since 1994)'
-    })
-    t = loader.get_template("politicians/former_electedmember_list.html")
-    return HttpResponse(t.render(c))
+        c = RequestContext(request, {
+            'object_list': object_list,
+            'title': 'Former MPs (since 1994)'
+        })
+        t = loader.get_template("politicians/former_electedmember_list.html")
+        return HttpResponse(t.render(c))
+former_mps = FormerMPView.as_view()
 
-@vary_on_headers('X-Requested-With')
-def politician(request, pol_id=None, pol_slug=None):
-    if pol_slug:
-        pol = get_object_or_404(Politician, slug=pol_slug)
-    else:
-        pol = get_object_or_404(Politician, pk=pol_id)
-        if pol.slug:
+class PoliticianView(ModelDetailView):
+
+    resource_name = 'Politician'
+
+    def get_object(self, request, pol_id=None, pol_slug=None):
+        if pol_slug:
+            return get_object_or_404(Politician, slug=pol_slug)
+        else:
+            return get_object_or_404(Politician, pk=pol_id)
+
+    def get_related_resources(self, request, obj, result):
+        pol_query = '?' + urlencode({'politician': obj.identifier})
+        return {
+            'speeches_url': urlresolvers.reverse('speeches') + pol_query,
+            'ballots_url': urlresolvers.reverse('vote_ballots') + pol_query,
+            'sponsored_bills_url': urlresolvers.reverse('bills') + '?' +
+                urlencode({'sponsor_politician': obj.identifier})
+
+        }
+
+    def get_html(self, request, pol_id=None, pol_slug=None):
+        pol = self.get_object(request, pol_id, pol_slug)
+        if pol.slug and not pol_slug:
             return HttpResponsePermanentRedirect(pol.get_absolute_url())
-    
-    show_statements = bool('page' in request.GET or 
-        (pol.latest_member and not pol.latest_member.current))
-    
-    if show_statements:
-        STATEMENTS_PER_PAGE = 10
-        statements = pol.statement_set.filter(
-            procedural=False, document__document_type=Document.DEBATE).order_by('-time', '-sequence')
-        paginator = Paginator(statements, STATEMENTS_PER_PAGE)
-        try:
-            pagenum = int(request.GET.get('page', '1'))
-        except ValueError:
-            pagenum = 1
-        try:
-            statement_page = paginator.page(pagenum)
-        except (EmptyPage, InvalidPage):
-            statement_page = paginator.page(paginator.num_pages)
-    else:
-        statement_page = None
         
-    c = RequestContext(request, {
-        'pol': pol,
-        'member': pol.latest_member,
-        'candidacies': pol.candidacy_set.all().order_by('-election__date'),
-        'electedmembers': pol.electedmember_set.all().order_by('-start_date'),
-        'page': statement_page,
-        'statements_politician_view': True,
-        'show_statements': show_statements,
-        'activities': activity.iter_recent(Activity.public.filter(politician=pol)),
-        'search_placeholder': u"Search %s in Parliament" % pol.name
-    })
-    if request.is_ajax():
-        t = loader.get_template("hansards/statement_page_politician_view.inc")
-    else:
-        t = loader.get_template("politicians/politician.html")
-    return HttpResponse(t.render(c))
+        show_statements = bool('page' in request.GET or 
+            (pol.latest_member and not pol.latest_member.current))
+        
+        if show_statements:
+            STATEMENTS_PER_PAGE = 10
+            statements = pol.statement_set.filter(
+                procedural=False, document__document_type=Document.DEBATE).order_by('-time', '-sequence')
+            paginator = Paginator(statements, STATEMENTS_PER_PAGE)
+            try:
+                pagenum = int(request.GET.get('page', '1'))
+            except ValueError:
+                pagenum = 1
+            try:
+                statement_page = paginator.page(pagenum)
+            except (EmptyPage, InvalidPage):
+                statement_page = paginator.page(paginator.num_pages)
+        else:
+            statement_page = None
+            
+        c = RequestContext(request, {
+            'pol': pol,
+            'member': pol.latest_member,
+            'candidacies': pol.candidacy_set.all().order_by('-election__date'),
+            'electedmembers': pol.electedmember_set.all().order_by('-start_date'),
+            'page': statement_page,
+            'statements_politician_view': True,
+            'show_statements': show_statements,
+            'activities': activity.iter_recent(Activity.public.filter(politician=pol)),
+            'search_placeholder': u"Search %s in Parliament" % pol.name
+        })
+        if request.is_ajax():
+            t = loader.get_template("hansards/statement_page_politician_view.inc")
+        else:
+            t = loader.get_template("politicians/politician.html")
+        return HttpResponse(t.render(c))
+politician = vary_on_headers('X-Requested-With')(PoliticianView.as_view())
+
 
 def contact(request, pol_id=None, pol_slug=None):
     if pol_slug:
@@ -133,6 +178,23 @@ class PoliticianAutocompleteView(JSONView):
         )
         return list(itertools.islice(results, 15))
 politician_autocomplete = PoliticianAutocompleteView.as_view()
+
+
+class PoliticianRoleView(ModelDetailView):
+
+    resource_name = 'Politician role'
+
+    def get_object(self, request, member_id):
+        return ElectedMember.objects.select_related(depth=1).get(id=member_id)
+
+
+class PoliticianRoleListView(ModelListView):
+
+    resource_name = 'Politician roles'
+
+    def get_qs(self, request):
+        return ElectedMember.objects.all().select_related(depth=1)
+
 
 class PoliticianStatementFeed(Feed):
     
