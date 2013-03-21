@@ -117,7 +117,12 @@ jQuery.fn.overflowtip = function() {
     });
 };
 
+if (window.Raven) {
+    Raven.config('http://dd5ba91c44624714b48f16324b0301b3@sentry.oconnect.ca/3').install();
+}
+
 $(function() {
+
 
     // MARGINALIA
     var $content = $('#content');
