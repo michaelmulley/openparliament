@@ -28,7 +28,7 @@ OP.auth = {
     },
 
     callPersona: function(callback) {
-        if (_.isUndefined(navigator.id)) {
+        if (!navigator.id) {
             LazyLoad.js('https://login.persona.org/include.js', function() {
                 OP.auth.initializePersona();
                 callback();
@@ -86,7 +86,7 @@ $(function() {
         OP.auth.logout();
     });
 
-    if ($('a.persona-logout,a.persona-login').length || !_.isUndefined(navigator.id)) {
+    if ($('a.persona-logout,a.persona-login').length || navigator.id) {
         // If there's a sign in/out button on the page, we need to load the Persona JS right away.
         OP.auth.callPersona(function() {});
     }
