@@ -23,6 +23,8 @@ class Committee(models.Model):
     
     name = models.TextField()
     short_name = models.TextField()
+    name_fr = models.TextField(null=True, blank=True)
+    short_name_fr = models.TextField(null=True, blank=True)
     slug = models.SlugField(unique=True)
     parent = models.ForeignKey('self', related_name='subcommittees',
         blank=True, null=True)
