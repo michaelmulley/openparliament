@@ -1,6 +1,6 @@
 from django.views.decorators.cache import never_cache
 
-from parliament.core.api import JSONView
+from parliament.utils.views import JSONView
 
 
 class CurrentAccountView(JSONView):

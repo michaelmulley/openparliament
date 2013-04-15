@@ -146,18 +146,6 @@ class APIView(View):
         return render(request, 'api/browser.html', ctx)
 
 
-class JSONView(APIView):
-
-    default_mimetype = 'application/json'
-
-    def __init__(self, *args, **kwargs):
-        # Make self.get_json == self.get
-        for meth in self.http_method_names:
-            if hasattr(self, meth):
-                setattr(self, meth + '_json', getattr(self, meth))
-        super(JSONView, self).__init__(*args, **kwargs)
-
-
 class APIFilters(object):
 
     string_filters = ['exact', 'iexact', 'contains', 'icontains',

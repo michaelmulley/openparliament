@@ -3,7 +3,7 @@ import browserid
 from django.conf import settings
 
 from parliament.accounts.models import User
-from parliament.core.api import JSONView
+from parliament.utils.views import JSONView
 
 def get_user_from_persona_assertion(assertion, audience=settings.SITE_URL):
     data = browserid.verify(assertion, audience)

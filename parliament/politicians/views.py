@@ -15,10 +15,11 @@ from django.views.decorators.vary import vary_on_headers
 
 from parliament.activity.models import Activity
 from parliament.activity import utils as activity
-from parliament.core.api import JSONView, ModelListView, ModelDetailView, APIFilters
+from parliament.core.api import ModelListView, ModelDetailView, APIFilters
 from parliament.core.models import Politician, ElectedMember
 from parliament.core.utils import feed_wrapper
 from parliament.hansards.models import Statement, Document
+from parliament.utils.views import JSONView
 
 class CurrentMPView(ModelListView):
 

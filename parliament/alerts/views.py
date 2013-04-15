@@ -13,10 +13,10 @@ from django.core.signing import Signer, TimestampSigner, BadSignature
 from django.views.decorators.cache import never_cache
 
 from parliament.accounts.models import User
-from parliament.alerts.models import PoliticianAlert, Subscription
-from parliament.core.api import JSONView
+from parliament.alerts.models import Subscription
 from parliament.core.models import Politician
 from parliament.core.views import disable_on_readonly_db
+from parliament.utils.views import JSONView
 
 class PoliticianAlertForm(forms.Form):
 
