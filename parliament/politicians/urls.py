@@ -4,7 +4,7 @@ from parliament.politicians.views import *
 urlpatterns = patterns('parliament.politicians.views',
     url(r'^(?P<pol_id>\d+)/rss/statements/$', 'politician_statement_feed', name="politician_statement_feed"),
     url(r'^(?P<pol_id>\d+)/rss/activity/$', PoliticianActivityFeed(), name="politician_activity_feed"),
-    (r'^$', 'current_mps'),
+    url(r'^$', 'current_mps', name='politicians'),
     (r'^former/$', 'former_mps'),
     (r'^autocomplete/$', 'politician_autocomplete'),
     url(r'^memberships/$', PoliticianMembershipListView.as_view(), name='politician_membership_list'),

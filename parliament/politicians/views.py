@@ -31,10 +31,17 @@ class CurrentMPView(ModelListView):
         'name': APIFilters.dbfield(help='e.g. Stephen Harper'),
         'family_name': APIFilters.dbfield('name_family', help='e.g. Harper'),
         'given_name': APIFilters.dbfield('name_given', help='e.g. Stephen'),
+        'include': APIFilters.noop(help="'former' to show former MPs (since 94), 'all' for current and former")
     }
 
     def get_qs(self, request):
-        return Politician.objects.current().order_by('name_family')
+        if request.GET.get('include') == 'former':
+            qs = Politician.objects.elected_but_not_current()
+        elif request.GET.get('include') == 'all':
+            qs = Politician.objects.elected()
+        else:
+            qs = Politician.objects.current()
+        return qs.order_by('name_family')
 
     def get_html(self, request):
         t = loader.get_template('politicians/electedmember_list.html')
@@ -51,8 +58,8 @@ class FormerMPView(ModelListView):
 
     resource_name = 'Politicians'
 
-    def get_qs(self, request):
-        return Politician.objects.elected_but_not_current().order_by('name_family')
+    def get_json(self, request):
+        return HttpResponsePermanentRedirect(urlresolvers.reverse('politicians') + '?include=former')
 
     def get_html(self, request):
         former_members = ElectedMember.objects.exclude(end_date__isnull=True)\
