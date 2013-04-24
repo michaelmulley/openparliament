@@ -9,8 +9,8 @@
 	<p><b>Everything is JSON.</b> But, when you access the page in your browser (or, specifically, with a client whose <code>Accept</code> header indicates a preference for <code>text/html</code> over <code>application/json</code>), you'll get a friendly formatted page instead. Here, <a href="http://api.openparliament.ca/votes/">take a look</a>.</p>
 	<p><b>It&rsquo;s hypertext.</b> Most resources link to related resources. Start with <a href="http://api.openparliament.ca/bills/">bills</a>, <a href="http://api.openparliament.ca/votes/">votes</a>, <a href="http://api.openparliament.ca/politicians/">MPs</a>, <a href="http://api.openparliament.ca/debates/">debates</a>, or <a href="http://api.openparliament.ca/">committees</a>, and you should be able to find your way to what you're looking for.</p>
 	<p><b>There&rsquo;s a rate limit.</b> Make more than 30 requests in a minute, and you may get <code>HTTP 429 Too Many Requests</code>. Get in touch if this is a problem for you.</p>
-	<p><b>Things change.</b> At the moment, there are no promises of backwards compatibility. If you&rsquo;re using this, you should sign up for a low-traffic <a href="https://groups.google.com/d/forum/openparliament-api">mailing list</a> where I'll post about any breaking changes.</p>
-	<p><b>Don&rsquo;t be shy.</b> The API currently doesn&rsquo;t enforce this, but you should put your email in <code>User-Agent</code> headers&mdash;that way I look at how people are using the API, and contact you if your requests are causing problems. And please get in touch with comments and questions.</p>
+	<p><b>Things change.</b> At the moment, there are no promises of backwards compatibility. If you&rsquo;re using this, you should sign up for a low-traffic <a href="https://groups.google.com/d/forum/openparliament-api">mailing list</a> where I&rsquo;ll post about any breaking changes.</p>
+	<p><b>Don&rsquo;t be shy.</b> The API doesn&rsquo;t currently enforce this, but you should put your email in <code>User-Agent</code> headers&mdash;that way I can look at how people are using the API, and contact you if your requests are causing problems. And please get in touch with comments and questions.</p>
 </div><div class="clear"></div>
 
 <div class="context"><h2>Bulk data</h2></div>
@@ -21,6 +21,12 @@
 	<p>To <b>find ridings or MPs</b> based on addresses or postal codes, use <a href="http://represent.opennorth.ca/">Represent</a>.</p>
 	<p><a href="http://parl.gc.ca/">parl.gc.ca</a> has, in recent years, started to include lots of XML data&mdash;that's the original source for 90% of the data on this site. <a href="http://parl.gc.ca/HouseChamberBusiness/ChamberSittings.aspx">Hansard</a> and <a href="http://www.parl.gc.ca/LEGISINFO/">LegisINFO</a> pages will have little orangle XML buttons on them.</p>
 	<p><a href="http://parliamentdata.ca/">ParliamentData.ca</a> is an under-construction independently-built API much like this one.</p>
+</div><div class="clear"></div>
+
+<div class="context"><h2>Copyright</h2></div>
+<div class="focus">
+	<p>All content on this site comes from Parliament, and so is copyright of Queen Elizabeth. <a href="http://www.parl.gc.ca/information/about/copyright/permission_hoc.asp?Language=E">Speaker&rsquo;s Permission</a> establishes some of the terms of use for some of the content.</p>
+	<p>This site holds no copyright on any data accessible through this API. But providing attribution via a link back to openparliament.ca would be awfully nice of you.</p>
 </div><div class="clear"></div>
 
 {% endblock content %}
