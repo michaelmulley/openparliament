@@ -288,6 +288,9 @@ def no_robots(request):
         return HttpResponse('User-agent: *\nDisallow: /\n', content_type='text/plain')
     return HttpResponse('', content_type='text/plain')
 
+def docs(request):
+    return render(request, 'api/doc.html', {'title': 'API'})
+
 
 class FetchFromCacheMiddleware(DjangoFetchFromCacheMiddleware):
     # Since API resources are often served from the same URL as
