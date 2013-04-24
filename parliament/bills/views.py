@@ -82,7 +82,7 @@ class BillListView(ModelListView):
         'private_member_bill': APIFilters.dbfield('bill__privatemember',
             help="is it a private member's bill? True, False"),
         'sponsor_politician': APIFilters.politician('sponsor_politician'),
-        'sponsor_politician_role': APIFilters.fkey(lambda u: {'sponsor_member': u[-1]}),
+        'sponsor_politician_membership': APIFilters.fkey(lambda u: {'sponsor_member': u[-1]}),
     }
 
     def get_qs(self, request):
@@ -230,7 +230,7 @@ class BallotListView(ModelListView):
                                            'votequestion__number': u[-1]},
                                 help="e.g. /votes/41-1/472/"),
         'politician': APIFilters.politician(),
-        'politician_role': APIFilters.fkey(lambda u: {'member': u[-1]},
+        'politician_membership': APIFilters.fkey(lambda u: {'member': u[-1]},
             help="e.g. /politicians/roles/326/"),
         'ballot': APIFilters.choices('vote', MemberVote)
     }

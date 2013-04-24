@@ -222,7 +222,7 @@ class BillInSession(models.Model):
                 home_chamber=self.bill.get_institution_display(),
                 law=self.bill.law,
                 sponsor_politician_url=self.sponsor_politician.get_absolute_url() if self.sponsor_politician else None,
-                sponsor_politician_role_url=urlresolvers.reverse('politician_role',
+                sponsor_politician_membership_url=urlresolvers.reverse('politician_membership',
                     kwargs={'member_id': self.sponsor_member_id}) if self.sponsor_member_id else None,
                 text_url=self.bill.get_billtext_url(),
                 other_session_urls=[self.bill.url_for_session(s)
@@ -371,7 +371,7 @@ class MemberVote(models.Model):
         return {
             'vote_url': self.votequestion.get_absolute_url(),
             'politician_url': self.politician.get_absolute_url(),
-            'politician_role_url': urlresolvers.reverse('politician_role',
+            'politician_membership_url': urlresolvers.reverse('politician_membership',
                 kwargs={'member_id': self.member_id}) if self.member_id else None,
             'ballot': self.get_vote_display(),
         }

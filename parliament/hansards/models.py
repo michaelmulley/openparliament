@@ -441,7 +441,7 @@ class Statement(models.Model):
             content={'en': self.content_en, 'fr': self.content_fr},
             url=self.get_absolute_url(),
             politician_url=self.politician.get_absolute_url() if self.politician else None,
-            politician_role_url=urlresolvers.reverse('politician_role',
+            politician_membership_url=urlresolvers.reverse('politician_membership',
                 kwargs={'member_id': self.member_id}) if self.member_id else None,
             procedural=self.procedural,
             source_id=self.source_id

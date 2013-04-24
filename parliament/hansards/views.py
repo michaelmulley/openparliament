@@ -157,7 +157,7 @@ class SpeechesView(ModelListView):
         'procedural': APIFilters.dbfield(help="is this a short, routine procedural speech? True or False"),
         'document': document_filter,
         'politician': APIFilters.politician(),
-        'politician_role': APIFilters.fkey(lambda u: {'member': u[-1]}),
+        'politician_membership': APIFilters.fkey(lambda u: {'member': u[-1]}),
         'time': APIFilters.dbfield(filter_types=APIFilters.numeric_filters,
             help="e.g. time__range=2012-10-19 10:00,2012-10-19 11:00"),
         'mentioned_politician': APIFilters.politician('mentioned_politicians'),

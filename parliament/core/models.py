@@ -299,7 +299,7 @@ class Politician(Person):
                 d['voice'] = info.pop('phone')[0]
             if 'fax' in info:
                 d['fax'] = info.pop('fax')[0]
-            d['role_history'] = [
+            d['memberships'] = [
                 member.to_api_dict('detail', include_politician=False)
                 for member in self.electedmember_set.all().select_related(depth=1).order_by('-end_date')
             ]
@@ -659,14 +659,13 @@ class ElectedMember(models.Model):
     def to_api_dict(self, representation, include_politician=True):
         d = dict(
             url=self.get_absolute_url(),
-            #currently_in_office=self.current,
             start_date=unicode(self.start_date),
             end_date=unicode(self.end_date) if self.end_date else None,
             party={
                 'name': {'en':self.party.name},
                 'short_name': {'en':self.party.short_name}
             },
-            label=u"%s MP for %s" % (self.party.short_name, self.riding.dashed_name),
+            label={'en': u"%s MP for %s" % (self.party.short_name, self.riding.dashed_name)},
             riding={
                 'name': {'en': self.riding.dashed_name},
                 'province': self.riding.province,
@@ -678,7 +677,7 @@ class ElectedMember(models.Model):
         return d
 
     def get_absolute_url(self):
-        return urlresolvers.reverse('politician_role', kwargs={'member_id': self.id})
+        return urlresolvers.reverse('politician_membership', kwargs={'member_id': self.id})
             
     @property
     def current(self):

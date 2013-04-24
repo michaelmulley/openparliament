@@ -181,17 +181,17 @@ class PoliticianAutocompleteView(JSONView):
 politician_autocomplete = PoliticianAutocompleteView.as_view()
 
 
-class PoliticianRoleView(ModelDetailView):
+class PoliticianMembershipView(ModelDetailView):
 
-    resource_name = 'Politician role'
+    resource_name = 'Politician membership'
 
     def get_object(self, request, member_id):
         return ElectedMember.objects.select_related(depth=1).get(id=member_id)
 
 
-class PoliticianRoleListView(ModelListView):
+class PoliticianMembershipListView(ModelListView):
 
-    resource_name = 'Politician roles'
+    resource_name = 'Politician memberships'
 
     def get_qs(self, request):
         return ElectedMember.objects.all().select_related(depth=1)
