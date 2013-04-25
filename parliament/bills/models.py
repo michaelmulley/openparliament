@@ -79,7 +79,9 @@ class Bill(models.Model):
     introduced = models.DateField(blank=True, null=True)
     text_docid = models.IntegerField(blank=True, null=True,
         help_text="The parl.gc.ca document ID of the latest version of the bill's text")
-    
+
+    display = models.BooleanField('Display on site?', db_index=True, default=True)
+
     objects = BillManager()
     
     class Meta:
