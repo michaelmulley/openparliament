@@ -211,14 +211,15 @@ class BillInSession(models.Model):
             'session': self.session_id,
             'legisinfo_id': self.legisinfo_id,
             'introduced': unicode(self.introduced) if self.introduced else None,
-            'name_en': self.bill.name,
+            'name': {
+                'en': self.bill.name,
+                'fr': self.bill.name_fr
+            },
             'number': self.bill.number
         }
         if representation == 'detail':
             d.update(
-                name_fr=self.bill.name_fr,
-                short_title_en=self.bill.short_title_en,
-                short_title_fr=self.bill.short_title_fr,
+                short_title={'en': self.bill.short_title_en, 'fr': self.bill.short_title_fr},
                 home_chamber=self.bill.get_institution_display(),
                 law=self.bill.law,
                 sponsor_politician_url=self.sponsor_politician.get_absolute_url() if self.sponsor_politician else None,
@@ -280,7 +281,7 @@ class VoteQuestion(models.Model):
             'session': self.session_id,
             'number': self.number,
             'date': unicode(self.date),
-            'description': self.description,
+            'description': {'en': self.description},
             'result': self.get_result_display(),
             'yea_total': self.yea_total,
             'nay_total': self.nay_total,

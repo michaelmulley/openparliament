@@ -74,8 +74,8 @@ class Committee(models.Model):
 
     def to_api_dict(self, representation):
         d = dict(
-            name_en=self.name,
-            short_name_en=self.short_name,
+            name={'en': self.name},
+            short_name={'en': self.short_name},
             slug=self.slug,
             parent_url=self.parent.get_absolute_url() if self.parent else None,
         )
