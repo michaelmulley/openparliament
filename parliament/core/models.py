@@ -95,7 +95,7 @@ class Person(models.Model):
     
     name = models.CharField(max_length=100)
     name_given = models.CharField("Given name", max_length=50, blank=True)
-    name_family = models.CharField("Family name", max_length=50, blank=True)
+    name_family = models.CharField("Family name", max_length=50, null=True, blank=True)
 
     def __unicode__(self):
         return self.name
