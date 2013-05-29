@@ -103,6 +103,9 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
     if len(statements) != len(pdoc_fr.statements):
         logger.info("French and English statement counts don't match for %r" % document)
 
+    fr_statements = dict((getattr(s, 'meta', dict()).get('id', None), s) for s in pdoc_fr.statements)
+    if None in fr_statements:
+        del fr_statements[None]
     _r_paragraphs = re.compile(ur'<p[^>]* data-HoCid=.+?</p>')
     _r_paragraph_id = re.compile(ur'<p[^>]* data-HoCid="(?P<id>\d+)"')
     fr_paragraphs = dict()
@@ -126,6 +129,9 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
             _r_paragraphs.sub(_substitute_french_content, st.content_en),
             st
         )
+        for heading in range(1, 4):
+            fr_meta = getattr(fr_statements.get(st.source_id, None), 'meta', dict())
+            setattr(st, 'h%s_fr' % heading, fr_meta.get('h%s' % heading, ''))
     document.multilingual = True
 
     Statement.set_slugs(statements)
