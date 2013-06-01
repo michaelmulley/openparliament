@@ -226,6 +226,7 @@ class VoteQuestion(models.Model):
     number = models.PositiveIntegerField()
     date = models.DateField(db_index=True)
     description = models.TextField()
+    description_fr = models.TextField(null=True, blank=True)
     result = models.CharField(max_length=1, choices=VOTE_RESULT_CHOICES)
     yea_total = models.SmallIntegerField()
     nay_total = models.SmallIntegerField()

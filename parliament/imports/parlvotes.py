@@ -12,7 +12,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 VOTELIST_URL = 'http://www2.parl.gc.ca/HouseChamberBusiness/Chambervotelist.aspx?Language=E&Mode=1&Parl=%(parliamentnum)s&Ses=%(sessnum)s&xml=True&SchemaVersion=1.0'
-VOTEDETAIL_URL = 'http://www2.parl.gc.ca/HouseChamberBusiness/Chambervotedetail.aspx?Language=E&Mode=1&Parl=%(parliamentnum)s&Ses=%(sessnum)s&FltrParl=%(parliamentnum)s&FltrSes=%(sessnum)s&vote=%(votenum)s&xml=True'
+VOTEDETAIL_URL = 'http://www2.parl.gc.ca/HouseChamberBusiness/Chambervotedetail.aspx?Language=%(lang)s&Mode=1&Parl=%(parliamentnum)s&Ses=%(sessnum)s&FltrParl=%(parliamentnum)s&FltrSes=%(sessnum)s&vote=%(votenum)s&xml=True'
 
 @transaction.commit_on_success
 def import_votes(session=None):
@@ -58,6 +58,7 @@ def import_votes(session=None):
 
         # Now get the detailed results
         votedetailurl = VOTEDETAIL_URL % {'parliamentnum' : session.parliamentnum,
+                'lang': 'E',
                 'sessnum': session.sessnum,
                 'votenum': votenumber }
         try:
@@ -69,6 +70,20 @@ def import_votes(session=None):
             continue
         detailroot = detailtree.getroot()
         votequestion.description = parsetools.etree_extract_text(detailroot.find('Context')).strip()
+
+        votedetailurl_fr = VOTEDETAIL_URL % {'parliamentnum' : session.parliamentnum,
+                'lang': 'F',
+                'sessnum': session.sessnum,
+                'votenum': votenumber }
+        try:
+            votedetailpage_fr = urllib2.urlopen(votedetailurl_fr)
+            detailtree_fr = etree.parse(votedetailpage_fr)
+        except Exception, e:
+            print "ERROR on %s" % votedetailurl_fr
+            print e
+            continue
+        detailroot_fr = detailtree_fr.getroot()
+        votequestion.description_fr = parsetools.etree_extract_text(detailroot_fr.find('Context')).strip()
 
         
         # Okay, save the question, start processing members.
