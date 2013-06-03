@@ -294,8 +294,8 @@ class VoteQuestion(models.Model):
                     'vote': pv.get_vote_display(),
                     'disagreement': pv.disagreement,
                     'party': {
-                        'name_en': pv.party.name,
-                        'short_name_en': pv.party.short_name
+                        'name': {'en': pv.party.name},
+                        'short_name': {'en': pv.party.short_name}
                     },
                 } for pv in self.partyvote_set.all()]
             )
