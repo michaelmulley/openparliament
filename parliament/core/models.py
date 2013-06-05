@@ -281,7 +281,7 @@ class Politician(Person):
                 given_name=self.name_given,
                 family_name=self.name_family,
                 gender=self.get_gender_display().lower(),
-                image=self.headshot.url,
+                image=self.headshot.url if self.headshot else None,
                 other_info=info,
                 links=[{
                     'url': self.parlpage,
