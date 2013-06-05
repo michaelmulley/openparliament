@@ -174,8 +174,6 @@ def import_parl_election(url, election, session=None, soup=None): # FIXME sessio
             if candidate is None:
                 saveCandidate = True
                 candidate = Politician(name="%s %s" % (first, last), name_given=first, name_family=last)
-                if link:
-                    candidate.parlpage = parllink
             
             # Cell 3: occupation
             occupation = cells[2].string
