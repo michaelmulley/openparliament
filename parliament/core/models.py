@@ -283,13 +283,15 @@ class Politician(Person):
                 gender=self.get_gender_display().lower(),
                 image=self.headshot.url if self.headshot else None,
                 other_info=info,
-                links=[{
-                    'url': self.parlpage,
-                    'note': 'Page on parl.gc.ca'
-                }]
+                links=[]
             )
             if 'email' in info:
                 d['email'] = info.pop('email')[0]
+            if self.parlpage:
+                d['links'].append({
+                    'url': self.parlpage,
+                    'note': 'Page on parl.gc.ca'
+                })
             if 'web_site' in info:
                 d['links'].append({
                     'url': info.pop('web_site')[0],
