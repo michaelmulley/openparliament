@@ -313,10 +313,14 @@ class Statement(models.Model):
     h1 = models.CharField(max_length=300, blank=True)
     h2 = models.CharField(max_length=300, blank=True)
     h3 = models.CharField(max_length=300, blank=True)
+    h1_fr = models.CharField(max_length=500, blank=True)
+    h2_fr = models.CharField(max_length=500, blank=True)
+    h3_fr = models.CharField(max_length=500, blank=True)
 
     member = models.ForeignKey(ElectedMember, blank=True, null=True)
     politician = models.ForeignKey(Politician, blank=True, null=True) # a shortcut -- should == member.politician
     who = models.CharField(max_length=300, blank=True)
+    who_fr = models.CharField(max_length=500, blank=True)
     who_hocid = models.PositiveIntegerField(blank=True, null=True, db_index=True)
     who_context = models.CharField(max_length=300, blank=True)
 
