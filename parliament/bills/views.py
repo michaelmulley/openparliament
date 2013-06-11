@@ -232,7 +232,9 @@ class BallotListView(ModelListView):
         'politician': APIFilters.politician(),
         'politician_membership': APIFilters.fkey(lambda u: {'member': u[-1]},
             help="e.g. /politicians/roles/326/"),
-        'ballot': APIFilters.choices('vote', MemberVote)
+        'ballot': APIFilters.choices('vote', MemberVote),
+        'dissent': APIFilters.dbfield('dissent',
+            help="does this look like a vote against party line? not reliable for research. True, False")
     }
 
     def get_qs(self, request):
