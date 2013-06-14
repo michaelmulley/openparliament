@@ -150,7 +150,7 @@ class VoteListView(ModelListView):
         'number': APIFilters.dbfield(filter_types=APIFilters.numeric_filters,
             help="every vote in a session has a sequential number"),
         'bill': APIFilters.fkey(lambda u: {
-            'bill__session': u[-2],
+            'bill__sessions': u[-2],
             'bill__number': u[-1]
         }, help="e.g. /bills/41-1/C-10/"),
         'result': APIFilters.choices('result', VoteQuestion)
