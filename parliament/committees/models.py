@@ -8,7 +8,7 @@ from django.db import models
 from parliament.core.models import Session
 from parliament.core.parsetools import slugify
 from parliament.core.templatetags.ours import english_list
-from parliament.core.utils import memoize_property
+from parliament.core.utils import memoize_property, language_property
 from parliament.hansards.models import Document, url_from_docid
 
 class CommitteeManager(models.Manager):
@@ -21,8 +21,10 @@ class CommitteeManager(models.Manager):
 
 class Committee(models.Model):
     
-    name = models.TextField()
-    short_name = models.TextField()
+    name_en = models.TextField()
+    short_name_en = models.TextField()
+    name_fr = models.TextField(blank=True)
+    short_name_fr = models.TextField(blank=True)
     slug = models.SlugField(unique=True)
     parent = models.ForeignKey('self', related_name='subcommittees',
         blank=True, null=True)
@@ -31,16 +33,21 @@ class Committee(models.Model):
     display = models.BooleanField('Display on site?', db_index=True, default=True)
 
     objects = CommitteeManager()
+
+    name = language_property('name')
+    short_name = language_property('short_name')
     
     class Meta:
-        ordering = ['name']
+        ordering = ['name_en']
         
     def __unicode__(self):
         return self.name
 
     def save(self, *args, **kwargs):
-        if not self.short_name:
-            self.short_name = self.name
+        if not self.short_name_en:
+            self.short_name_en = self.name_en
+        if not self.short_name_fr:
+            self.short_name_fr = self.name_fr
         if not self.slug:
             self.slug = slugify(self.short_name, allow_numbers=True)
             if self.parent:
@@ -67,15 +74,15 @@ class Committee(models.Model):
 
     @property
     def title(self):
-        if 'committee' in self.name.lower():
+        if 'committee' in self.name_en.lower():
             return self.name
         else:
             return self.name + u' Committee'
 
     def to_api_dict(self, representation):
         d = dict(
-            name={'en': self.name},
-            short_name={'en': self.short_name},
+            name={'en': self.name_en, 'fr': self.name_fr},
+            short_name={'en': self.short_name_en, 'fr': self.short_name_fr},
             slug=self.slug,
             parent_url=self.parent.get_absolute_url() if self.parent else None,
         )
@@ -120,9 +127,11 @@ class CommitteeActivity(models.Model):
     name_fr = models.CharField(max_length=500)
     
     study = models.BooleanField(default=False) # study or activity
+
+    name = language_property('name')
     
     def __unicode__(self):
-        return self.name_en
+        return self.name
 
     @models.permalink
     def get_absolute_url(self):
@@ -256,7 +265,9 @@ class CommitteeReport(models.Model):
     
     session = models.ForeignKey(Session)
     number = models.SmallIntegerField(blank=True, null=True) # watch this become a char
-    name = models.CharField(max_length=500)
+    name_en = models.CharField(max_length=500)
+    name_fr = models.CharField(max_length=500, blank=True)
+
     
     source_id = models.IntegerField(unique=True, db_index=True)
     
@@ -265,6 +276,8 @@ class CommitteeReport(models.Model):
     
     government_response = models.BooleanField(default=False)
     parent = models.ForeignKey('self', null=True, blank=True, related_name='children')
+
+    name = language_property('name')
     
     def __unicode__(self):
         return u"%s report #%s" % (self.committee, self.number)

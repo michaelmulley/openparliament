@@ -12,7 +12,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 VOTELIST_URL = 'http://www2.parl.gc.ca/HouseChamberBusiness/Chambervotelist.aspx?Language=E&Mode=1&Parl=%(parliamentnum)s&Ses=%(sessnum)s&xml=True&SchemaVersion=1.0'
-VOTEDETAIL_URL = 'http://www2.parl.gc.ca/HouseChamberBusiness/Chambervotedetail.aspx?Language=E&Mode=1&Parl=%(parliamentnum)s&Ses=%(sessnum)s&FltrParl=%(parliamentnum)s&FltrSes=%(sessnum)s&vote=%(votenum)s&xml=True'
+VOTEDETAIL_URL = 'http://www2.parl.gc.ca/HouseChamberBusiness/Chambervotedetail.aspx?Language=%(lang)s&Mode=1&Parl=%(parliamentnum)s&Ses=%(sessnum)s&FltrParl=%(parliamentnum)s&FltrSes=%(sessnum)s&vote=%(votenum)s&xml=True'
 
 @transaction.commit_on_success
 def import_votes(session=None):
@@ -56,19 +56,23 @@ def import_votes(session=None):
                 logger.warning("Temporary bill %s created for vote %s" % (billnumber, votenumber))
 
         # Now get the detailed results
-        votedetailurl = VOTEDETAIL_URL % {'parliamentnum' : session.parliamentnum,
-                'sessnum': session.sessnum,
-                'votenum': votenumber }
-        try:
+        def get_detail(lang):
+            votedetailurl = VOTEDETAIL_URL % {
+                    'lang': lang,
+                    'parliamentnum' : session.parliamentnum,
+                    'sessnum': session.sessnum,
+                    'votenum': votenumber 
+            }
             votedetailpage = urllib2.urlopen(votedetailurl)
             detailtree = etree.parse(votedetailpage)
-        except Exception, e:
-            print "ERROR on %s" % votedetailurl
-            print e
+            detailroot = detailtree.getroot()
+            return (detailroot, parsetools.etree_extract_text(detailroot.find('Context')).strip())
+        try:
+            detailroot_fr, votequestion.description_fr = get_detail('F')
+            detailroot, votequestion.description_en = get_detail('E')
+        except Exception as e:
+            logger.exception("Import error on vote #%s" % votenumber)
             continue
-        detailroot = detailtree.getroot()
-        votequestion.description = parsetools.etree_extract_text(detailroot.find('Context')).strip()
-
         
         # Okay, save the question, start processing members.
         votequestion.save()

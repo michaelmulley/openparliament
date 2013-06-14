@@ -18,7 +18,7 @@ class BillTextOptions(admin.ModelAdmin):
     
 class VoteQuestionOptions(admin.ModelAdmin):
     list_display = ('number', 'date', 'bill', 'description', 'result')
-    raw_id_fields = ('bill',)
+    raw_id_fields = ('bill', 'context_statement')
     
 class MemberVoteOptions(admin.ModelAdmin):
     list_display = ('politician', 'votequestion', 'vote')

@@ -34,8 +34,8 @@ class BillIndex(SearchIndex):
     def prepare_title(self, obj):
         if len(obj.name) < 150:
             return obj.name
-        elif obj.short_title_en:
-            return obj.short_title_en
+        elif obj.short_title:
+            return obj.short_title
         else:
             return obj.name[:140] + u'…'
 

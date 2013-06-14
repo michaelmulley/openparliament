@@ -30,9 +30,9 @@ def import_committee_list(session=None):
         try:
             return Committee.objects.get_by_acronym(acronym, session)
         except Committee.DoesNotExist:
-            committee, created = Committee.objects.get_or_create(name=name.strip(), parent=parent)
+            committee, created = Committee.objects.get_or_create(name=name_en.strip(), parent=parent)
             if created:
-                logger.warning(u"Creating committee: %s, %s" % (committee.name, committee.slug))
+                logger.warning(u"Creating committee: %s, %s" % (committee.name_en, committee.slug))
             CommitteeInSession.objects.get_or_create(
                 committee=committee, session=session, acronym=acronym)
             return committee
@@ -236,9 +236,9 @@ def import_committee_reports(committee, session):
             match = re.search(r'^Report (\d+) - (.+)', report_name)
             if match:
                 report.number = int(match.group(1))
-                report.name = match.group(2).strip()
+                report.name_en = match.group(2).strip()
             else:
-                report.name = report_name
+                report.name_en = report_name
             report.government_response = bool(report_link.xpath("../span[contains(., 'Government Response')]"))
         
         match = re.search(r'Adopted by the Committee on ([a-zA-Z0-9, ]+)', report_link.tail)

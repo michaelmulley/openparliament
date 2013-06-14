@@ -7,6 +7,7 @@ from django.core import urlresolvers
 from django.db import models
 
 from parliament.core.models import Session, ElectedMember, Politician, Party
+from parliament.core.utils import language_property
 from parliament.activity import utils as activity
 
 import logging
@@ -55,7 +56,7 @@ class BillManager(models.Manager):
 
 class Bill(models.Model):
     
-    name = models.TextField(blank=True)
+    name_en = models.TextField(blank=True)
     name_fr = models.TextField(blank=True)
     short_title_en = models.TextField(blank=True)
     short_title_fr = models.TextField(blank=True)
@@ -81,6 +82,9 @@ class Bill(models.Model):
         help_text="The parl.gc.ca document ID of the latest version of the bill's text")
     
     objects = BillManager()
+
+    name = language_property('name')
+    short_title = language_property('short_title')
     
     class Meta:
         ordering = ('privatemember', 'institution', 'number_only')
@@ -212,7 +216,7 @@ class BillInSession(models.Model):
             'legisinfo_id': self.legisinfo_id,
             'introduced': unicode(self.introduced) if self.introduced else None,
             'name': {
-                'en': self.bill.name,
+                'en': self.bill.name_en,
                 'fr': self.bill.name_fr
             },
             'number': self.bill.number
@@ -246,6 +250,8 @@ class BillText(models.Model):
     text_en = models.TextField()
     text_fr = models.TextField(blank=True)
 
+    text = language_property('text')
+
     def __unicode__(self):
         return u"Document #%d for %s" % (self.docid, self.bill)
 
@@ -261,13 +267,16 @@ class VoteQuestion(models.Model):
     session = models.ForeignKey(Session)
     number = models.PositiveIntegerField()
     date = models.DateField(db_index=True)
-    description = models.TextField()
+    description_en = models.TextField()
+    description_fr = models.TextField(blank=True)
     result = models.CharField(max_length=1, choices=VOTE_RESULT_CHOICES)
     yea_total = models.SmallIntegerField()
     nay_total = models.SmallIntegerField()
     paired_total = models.SmallIntegerField()
     context_statement = models.ForeignKey('hansards.Statement',
         blank=True, null=True, on_delete=models.SET_NULL)
+
+    description = language_property('description')
     
     def __unicode__(self):
         return u"Vote #%s on %s" % (self.number, self.date)
@@ -281,7 +290,7 @@ class VoteQuestion(models.Model):
             'session': self.session_id,
             'number': self.number,
             'date': unicode(self.date),
-            'description': {'en': self.description},
+            'description': {'en': self.description_en, 'fr': self.description_fr},
             'result': self.get_result_display(),
             'yea_total': self.yea_total,
             'nay_total': self.nay_total,

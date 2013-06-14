@@ -9,7 +9,7 @@
 {% block content %}
 
 <div class="focus">
-{% if bill.short_title_en %}<h2>{{ bill.short_title_en }}</h2>{% endif %}    
+{% if bill.short_title %}<h2>{{ bill.short_title }}</h2>{% endif %}    
 <h3>{{ bill.name }}</h3>
 {% if bill.session.end %}<p>This bill was last introduced in the {{ bill.session }}, which ended in {{ bill.session.end|date:"F Y"}}.</p>{% endif %}
 {% with bill.sessions.all as sessions %}{% if sessions|length > 1 %}<p>This bill was previously introduced in {{ sessions|list_filter:bill.session|list_prefix:"the "|english_list:"; " }}.</p>{% endif %}{% endwith %}

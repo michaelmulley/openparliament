@@ -103,7 +103,7 @@ def _import_bill(lbill, session, previous_session=None):
         bis._changed = True
         bill.set_temporary_session(session)
 
-    _update(bill, 'name', lbill.xpath('BillTitle/Title[@language="en"]')[0].text)
+    _update(bill, 'name_en', lbill.xpath('BillTitle/Title[@language="en"]')[0].text)
 
     if not bill.status:
         # This is presumably our first import of the bill; check if this
@@ -114,7 +114,7 @@ def _import_bill(lbill, session, previous_session=None):
             if previous_session:
                 mergebill = Bill.objects.get(sessions=previous_session,
                                              number=bill.number,
-                                             name__iexact=bill.name)
+                                             name_en__iexact=bill.name_en)
 
                 if bill.id:
                     # If the new bill has already been saved, let's not try
