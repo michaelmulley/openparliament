@@ -16,7 +16,7 @@ from django.utils.safestring import mark_safe
 from parliament.core.models import Session, ElectedMember, Politician
 from parliament.bills.models import Bill
 from parliament.core import parsetools, text_utils
-from parliament.core.utils import memoize_property
+from parliament.core.utils import memoize_property, language_property
 from parliament.activity import utils as activity
 
 import logging
@@ -129,15 +129,16 @@ class Document(models.Model):
         
     def topics(self):
         """Returns a tuple with (topic, statement slug) for every topic mentioned."""
-        return self._topics(self.statement_set.all().values_list('h2', 'slug'))
+        return self._topics(self.statement_set.all().values_list('h2_' + settings.LANGUAGE_CODE, 'slug'))
         
     def headings(self):
         """Returns a tuple with (heading, statement slug) for every heading mentioned."""
-        return self._topics(self.statement_set.all().values_list('h1', 'slug'))
+        return self._topics(self.statement_set.all().values_list('h1_' + settings.LANGUAGE_CODE, 'slug'))
     
     def topics_with_qp(self):
         """Returns the same as topics(), but with a link to Question Period at the start of the list."""
-        statements = self.statement_set.all().values_list('h2', 'slug', 'h1')
+        statements = self.statement_set.all().values_list(
+            'h2_' + settings.LANGUAGE_CODE, 'slug', 'h1_' + settings.LANGUAGE_CODE)
         topics = self._topics(statements)
         qp_seq = None
         for s in statements:
@@ -310,15 +311,21 @@ class Statement(models.Model):
     slug = models.SlugField(max_length=100, blank=True)
     urlcache = models.CharField(max_length=200, blank=True)
 
-    h1 = models.CharField(max_length=300, blank=True)
-    h2 = models.CharField(max_length=300, blank=True)
-    h3 = models.CharField(max_length=300, blank=True)
+    h1_en = models.CharField(max_length=300, blank=True)
+    h2_en = models.CharField(max_length=300, blank=True)
+    h3_en = models.CharField(max_length=300, blank=True)
+    h1_fr = models.CharField(max_length=400, blank=True)
+    h2_fr = models.CharField(max_length=400, blank=True)
+    h3_fr = models.CharField(max_length=400, blank=True)
 
     member = models.ForeignKey(ElectedMember, blank=True, null=True)
     politician = models.ForeignKey(Politician, blank=True, null=True) # a shortcut -- should == member.politician
-    who = models.CharField(max_length=300, blank=True)
+    who_en = models.CharField(max_length=300, blank=True)
+    who_fr = models.CharField(max_length=500, blank=True)
     who_hocid = models.PositiveIntegerField(blank=True, null=True, db_index=True)
-    who_context = models.CharField(max_length=300, blank=True)
+    who_context_en = models.CharField(max_length=300, blank=True)
+    who_context_fr = models.CharField(max_length=500, blank=True)
+
 
     content_en = models.TextField()
     content_fr = models.TextField(blank=True)
@@ -340,7 +347,13 @@ class Statement(models.Model):
         unique_together = (
             ('document', 'slug')
         )
-        
+
+    h1 = language_property('h1')
+    h2 = language_property('h2')
+    h3 = language_property('h3')
+    who = language_property('who')
+    who_context = language_property('who_context')
+
     def save(self, *args, **kwargs):
         if not self.wordcount:
             self.wordcount = parsetools.countWords(self.text_plain())

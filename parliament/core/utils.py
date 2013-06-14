@@ -76,6 +76,14 @@ def memoize_property(target):
             setattr(self, cacheattr, target(self))
         return getattr(self, cacheattr)
     return wrapped
+
+def language_property(fieldname):
+    if settings.LANGUAGE_CODE.startswith('fr'):
+        fieldname = fieldname + '_fr'
+    else:
+        fieldname = fieldname + '_en'
+
+    return property(lambda self: getattr(self, fieldname))
     
 def redir_view(view):
     """Function factory to redirect requests to the given view."""

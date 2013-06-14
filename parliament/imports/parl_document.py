@@ -106,11 +106,14 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
     _r_paragraphs = re.compile(ur'<p[^>]* data-HoCid=.+?</p>')
     _r_paragraph_id = re.compile(ur'<p[^>]* data-HoCid="(?P<id>\d+)"')
     fr_paragraphs = dict()
+    fr_statements = dict()
 
     def _get_paragraph_id(p):
         return int(_r_paragraph_id.match(p).group('id'))
 
     for st in pdoc_fr.statements:
+        if st.meta['id']:
+            fr_statements[st.meta['id']] = st
         for p in _r_paragraphs.findall(st.content):
             fr_paragraphs[_get_paragraph_id(p)] = p
 
@@ -126,6 +129,15 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
             _r_paragraphs.sub(_substitute_french_content, st.content_en),
             st
         )
+        fr_data = fr_statements.get(st.source_id)
+        if fr_data:
+            st.h1_fr = fr_data.meta.get('h1', '')
+            st.h2_fr = fr_data.meta.get('h2', '')
+            st.h3_fr = fr_data.meta.get('h3', '')
+            st.who_fr = fr_data.meta.get('person_attribution', '')
+            st.who_context_fr = fr_data.meta.get('person_context', '')
+
+
     document.multilingual = True
 
     Statement.set_slugs(statements)
