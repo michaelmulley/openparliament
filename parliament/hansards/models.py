@@ -161,23 +161,27 @@ class Document(models.Model):
         """
         ids_seen = set()
         speakers = SortedDict()
-        for st in self.statement_set.filter(who_hocid__isnull=False).values(
-                'who', 'who_context', 'slug', 'politician__name', 'who_hocid'):
-            if st['who_hocid'] in ids_seen:
+        for st in self.statement_set.filter(who_hocid__isnull=False).values_list(
+                'who_' + settings.LANGUAGE_CODE,            # 0
+                'who_context_' + settings.LANGUAGE_CODE,    # 1
+                'slug',                                     # 2
+                'politician__name',                         # 3
+                'who_hocid'):                               # 4
+            if st[4] in ids_seen:
                 continue
-            ids_seen.add(st['who_hocid'])
-            if st['politician__name']:
-                who = st['politician__name']
+            ids_seen.add(st[4])
+            if st[3]:
+                who = st[3]
             else:
-                who = parsetools.r_parens.sub('', st['who'])
+                who = parsetools.r_parens.sub('', st[0])
                 who = re.sub('^\s*\S+\s+', '', who).strip() # strip honorific
             if who not in speakers:
                 info = {
-                    'slug': st['slug'],
-                    'politician': bool(st['politician__name'])
+                    'slug': st[2],
+                    'politician': bool(st[3])
                 }
-                if st['who_context']:
-                    info['description'] = st['who_context']
+                if st[1]:
+                    info['description'] = st[1]
                 speakers[who] = info
         return speakers
 
