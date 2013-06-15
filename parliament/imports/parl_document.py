@@ -70,17 +70,17 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
             content_en=pstate.content,
             time=pstate.meta['timestamp'])
         s.source_id = pstate.meta['id']
-        s.h1 = pstate.meta.get('h1', '')
-        s.h2 = pstate.meta.get('h2', '')
-        s.h3 = pstate.meta.get('h3', '')
+        s.h1_en = pstate.meta.get('h1', '')
+        s.h2_en = pstate.meta.get('h2', '')
+        s.h3_en = pstate.meta.get('h3', '')
 
-        if s.h3 and not s.h2:
-            s.h2 = s.h3
-            s.h3 = ''
+        if s.h1_en and not s.h2_en:
+            s.h2_en = s.h3_en
+            s.h3_en = ''
 
-        s.who = pstate.meta.get('person_attribution', '')
+        s.who_en = pstate.meta.get('person_attribution', '')
         s.who_hocid = int(pstate.meta['person_id']) if pstate.meta.get('person_id') else None
-        s.who_context = pstate.meta.get('person_context', '')
+        s.who_context_en = pstate.meta.get('person_context', '')
 
         s.statement_type = pstate.meta.get('intervention_type', '').lower()
         s.written_question = pstate.meta.get('written_question', '').upper()[:1]
@@ -134,6 +134,9 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
             st.h1_fr = fr_data.meta.get('h1', '')
             st.h2_fr = fr_data.meta.get('h2', '')
             st.h3_fr = fr_data.meta.get('h3', '')
+            if st.h1_fr and not st.h2_fr:
+                st.h2_fr = s.h3_fr
+                st.h3_fr = ''
             st.who_fr = fr_data.meta.get('person_attribution', '')
             st.who_context_fr = fr_data.meta.get('person_context', '')
 
