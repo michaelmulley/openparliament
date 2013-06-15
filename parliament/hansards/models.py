@@ -450,7 +450,7 @@ class Statement(models.Model):
     def to_api_dict(self, representation):
         d = dict(
             time=unicode(self.time) if self.time else None,
-            attribution={'en': self.who},
+            attribution={'en': self.who_en, 'fr': self.who_fr},
             content={'en': self.content_en, 'fr': self.content_fr},
             url=self.get_absolute_url(),
             politician_url=self.politician.get_absolute_url() if self.politician else None,
@@ -460,9 +460,8 @@ class Statement(models.Model):
             source_id=self.source_id
         )
         for h in ('h1', 'h2', 'h3'):
-            v = getattr(self, h)
-            if v:
-                d[h] = {'en': v}
+            if getattr(self, h):
+                d[h] = {'en': getattr(self, h + '_en'), 'fr': getattr(self, h + '_fr')}
         d['document_url'] = d['url'][:d['url'].rstrip('/').rfind('/')+1]
         return d
     
