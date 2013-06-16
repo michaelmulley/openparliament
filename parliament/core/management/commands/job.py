@@ -3,8 +3,12 @@ import traceback
 import sys
 
 from django.core.management.base import BaseCommand, CommandError
-from django.db import transaction
 from django.core.mail import mail_admins
+
+try:
+    from pudb import post_mortem
+except ImportError:
+    from pdb import post_mortem
 
 from parliament import jobs
 
@@ -23,10 +27,7 @@ class Command(BaseCommand):
         except Exception, e:
             try:
                 if options.get('pdb'):
-                    try:
-                        import pudb; pudb.post_mortem()
-                    except ImportError:
-                        import pdb; pdb.post_mortem()
+                    post_mortem()
                 else:
                     tb = "\n".join(traceback.format_exception(*(sys.exc_info())))
                     mail_admins("Exception in job %s" % jobname, "\n".join(traceback.format_exception(*(sys.exc_info()))))
