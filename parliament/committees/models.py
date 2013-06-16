@@ -49,7 +49,7 @@ class Committee(models.Model):
         if not self.short_name_fr:
             self.short_name_fr = self.name_fr
         if not self.slug:
-            self.slug = slugify(self.short_name, allow_numbers=True)
+            self.slug = slugify(self.short_name_en, allow_numbers=True)
             if self.parent:
                 self.slug = self.parent.slug + '-' + self.slug
             self.slug = self.slug[:46]
