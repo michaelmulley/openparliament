@@ -1,11 +1,11 @@
 import datetime
 from urllib import urlencode
 
+from django.conf import settings
 from django.core import urlresolvers
 from django.http import HttpResponse, HttpResponsePermanentRedirect, Http404
 from django.shortcuts import get_object_or_404, render
 from django.template import loader, RequestContext
-from django.core.serializers.json import simplejson as json
 
 from parliament.committees.models import Committee, CommitteeMeeting, CommitteeActivity
 from parliament.core.api import ModelListView, ModelDetailView, APIFilters
@@ -24,7 +24,7 @@ class CommitteeListView(ModelListView):
 
     def get_qs(self, request):
         qs = Committee.objects.filter(
-            parent__isnull=True, display=True).order_by('name')
+            parent__isnull=True, display=True).order_by('name_' + settings.LANGUAGE_CODE)
         if 'session' not in request.GET:
             qs = qs.filter(sessions=Session.objects.current())
         return qs
