@@ -5,6 +5,7 @@ import re
 from django.conf import settings
 from django.core import urlresolvers
 from django.db import models
+from django.utils.safestring import mark_safe
 
 from parliament.core.models import Session, ElectedMember, Politician, Party
 from parliament.core.utils import language_property
@@ -141,12 +142,20 @@ class Bill(models.Model):
             url += '&File=4&Col=1'
         return url
 
-    def get_text(self, language=settings.LANGUAGE_CODE):
+    def get_text_object(self):
         if not self.text_docid:
-            return ''
+            raise BillText.DoesNotExist
+        return BillText.objects.get(bill=self, docid=self.text_docid)
+
+    def get_text(self, language=settings.LANGUAGE_CODE):
         try:
-            bt = BillText.objects.get(bill=self, docid=self.text_docid)
-            return getattr(bt, 'text_' + language)
+            return getattr(self.get_text_object(), 'text_' + language)
+        except BillText.DoesNotExist:
+            return ''
+
+    def get_summary(self):
+        try:
+            return self.get_text_object().summary_html
         except BillText.DoesNotExist:
             return ''
 
@@ -314,6 +323,18 @@ class BillText(models.Model):
 
     def __unicode__(self):
         return u"Document #%d for %s" % (self.docid, self.bill)
+
+    @property
+    def summary(self):
+        match = re.search(r'SUMMARY\n([\s\S]+?)Also available on', self.text_en)
+        return match.group(1).strip() if match else None
+
+    @property
+    def summary_html(self):
+        summary = self.summary
+        if not summary:
+            return ''
+        return mark_safe('<p>' + summary.replace('\n', '</p><p>') + '</p>')
 
         
 VOTE_RESULT_CHOICES = (

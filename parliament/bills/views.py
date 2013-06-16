@@ -53,6 +53,7 @@ class BillDetailView(ModelDetailView):
 
         c = RequestContext(request, {
             'bill': bill,
+            'bill_summary': bill.get_summary(),
             'page': page,
             'votequestions': bill.votequestion_set.all().order_by('-date', '-number'),
             'title': ('Bill %s' % bill.number) + (' (Historical)' if bill.session.end else ''), 

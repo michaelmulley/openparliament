@@ -1,6 +1,16 @@
 {% extends "bills/base.html" %}
 {% load ours compress %}
 {% block contentclass %}context_3{% endblock %}
+
+{% block javascript %}
+{{ block.super }}
+<script type="text/javascript">
+$(function () {
+	$('.bill_summary').expander({slicePoint: 400, widow: 20});
+});
+</script>
+{% endblock %}
+
 {% block breadcrumbs %}{{ block.super }}<a href="{% url parliament.bills.views.index %}">Bills</a>
 <a href="{% url parliament.bills.views.bills_for_session session_id=bill.session.id %}">{{ bill.session }}</a> {{ title }}{% endblock %}
 {% block headextra %}
@@ -19,14 +29,25 @@
 <div class="clear"></div><div class="context"><h2>Sponsor</h2></div>
 <div class="focus"><p><a href="{{ bill.sponsor_politician.get_absolute_url }}">{{ bill.sponsor_politician.name }}</a> {% if bill.sponsor_member %}&nbsp;<span class="tag partytag_{{ bill.sponsor_member.party.slug|lower }}">{{ bill.sponsor_member.party.short_name }}</span>{% endif %}</p>
 {% if bill.privatemember %}<p>Introduced as a <strong>private member’s bill</strong>. {% if not bill.law %}(These don’t often become law.){% endif %}</p>{% endif %}</div>{% endif %}
+
 {% if bill.status or bill.law %}
 <div class="clear"></div><div class="context"><h2>Status</h2></div>
 <div class="focus"><p>{% if bill.law %}This bill has received Royal Assent and is now <strong>law</strong>.{% else %}{{ bill.status }}, as of {{ bill.status_date }} {% if bill.session.end %}<br>(This bill <strong>did not</strong> become law.){% endif %}{% endif %}</p>
 {% if not bill.session.end and not bill.law %}<p>Subscribe to a <a href="{% url bill_feed bill_id=bill.id %}" class="feed">feed</a> of speeches and votes in the House related to Bill {{ bill.number }}.</p>{% endif %}
     </div>{% endif %}
+
+{% if bill_summary %}
+<div class="clear"></div><div class="context"><h2>Summary</h2>
+<p class="quiet">This is from the published bill. The <a href="{{ bill.legisinfo_url }}">Library of Parliament</a> often publishes better independent summaries.</p>
+</div>
+<div class="focus"><div class="bill_summary">{{ bill_summary }}</div>
+</div>
+{% endif %}
+
 {% if bill.name %}
 <div class="clear"></div><div class="context"><h2>Elsewhere</h2></div>
 <div class="focus"><p>All sorts of information on this bill is available at <a href="{{ bill.legisinfo_url }}">LEGISinfo</a>, provided by the Library of Parliament.{% if bill.text_docid %} You can also read the <a href="{{ bill.get_billtext_url }}">full text of the bill</a>.{% endif %}</p></div>{% endif %}
+
 {% if votequestions %}
 <div class="clear"></div><div class="context"><h2>Votes</h2></div>
 <div class="focus"><ul class="tile">
