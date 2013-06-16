@@ -61,8 +61,6 @@ class APIView(View):
 
         method = request.method.lower()
 
-        print request.get_host()
-
         request.api_request = (request.get_host().lower().startswith(settings.PARLIAMENT_API_HOST)
                                or request.GET.get('format'))
 
