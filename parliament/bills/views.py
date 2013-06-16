@@ -81,6 +81,7 @@ class BillListView(ModelListView):
             help="did it become law? True, False"),
         'private_member_bill': APIFilters.dbfield('bill__privatemember',
             help="is it a private member's bill? True, False"),
+        'status_code': APIFilters.dbfield('status_code'),
         'sponsor_politician': APIFilters.politician('sponsor_politician'),
         'sponsor_politician_membership': APIFilters.fkey(lambda u: {'sponsor_member': u[-1]}),
     }
@@ -100,7 +101,8 @@ class BillListView(ModelListView):
             'session_list': sessions,
             'votes': votes,
             'session': sessions[0],
-            'title': 'Bills & Votes'
+            'title': 'Bills & Votes',
+            'recently_active': Bill.objects.recently_active()
         })
 
         return HttpResponse(t.render(c))

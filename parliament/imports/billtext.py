@@ -4,8 +4,8 @@ import urllib2
 import lxml.html
 from lxml.html.clean import clean
 
-from parliament.bills.models import Bill
 from parliament.imports import CannotScrapeException
+
 
 def get_bill_text_element(bill_or_url):
     """Given a Bill object or URL to a full-text page on parl.gc.ca,
@@ -33,7 +33,6 @@ def get_bill_text_element(bill_or_url):
                 cells[2].drop_tree()
 
     return div
-
 
 
 def get_plain_bill_text(bill_or_url):

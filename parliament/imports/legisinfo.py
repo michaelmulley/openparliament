@@ -1,12 +1,15 @@
 import datetime
 import urllib2
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 
 from lxml import etree
 
-from parliament.bills.models import Bill, BillInSession, BillText
+from parliament.bills.models import Bill, BillInSession, BillText, BillEvent
+from parliament.committees.models import Committee, CommitteeMeeting
 from parliament.core.models import Session, Politician, ElectedMember
+from parliament.hansards.models import Document
 from parliament.imports import CannotScrapeException
 from parliament.imports.billtext import get_plain_bill_text
 
@@ -105,7 +108,7 @@ def _import_bill(lbill, session, previous_session=None):
 
     _update(bill, 'name_en', lbill.xpath('BillTitle/Title[@language="en"]')[0].text)
 
-    if not bill.status:
+    if not bill.status_code:
         # This is presumably our first import of the bill; check if this
         # looks like a reintroduced bill and we want to merge with an
         # older Bill object.
@@ -157,15 +160,54 @@ def _import_bill(lbill, session, previous_session=None):
         bill.introduced = bis.introduced
 
     try:
-        _update(bill, 'status',
-            lbill.xpath('Events/LastMajorStageEvent/Event/Status/Title[@language="en"]')[0].text)
-        _update(bill, 'status_fr',
-            lbill.xpath('Events/LastMajorStageEvent/Event/Status/Title[@language="fr"]')[0].text)
-        _update(bill, 'status_date', _parse_date(
-            lbill.xpath('Events/LastMajorStageEvent/Event/@date')[0]))
+        status_code = lbill.xpath('Events')[0].get('laagCurrentStage')
+        if status_code == '':
+            status_code = 'Introduced'
+        _update(bill, 'status_code', status_code)
+        if status_code not in Bill.STATUS_CODES:
+            logger.error("Unknown bill status code %s" % status_code)
+        #_update(bill, 'status_date', _parse_date(
+        #    lbill.xpath('Events/LastMajorStageEvent/Event/@date')[0]))
+        status_dates = [_parse_date(d) for d in lbill.xpath('Events/LegislativeEvents/Event/@date')]
+        _update(bill, 'status_date', max(status_dates))
     except IndexError:
         # Some older bills don't have status information
         pass
+
+    for levent in lbill.xpath('Events/LegislativeEvents/Event'):
+        source_id = int(levent.get('id'))
+        if BillEvent.objects.filter(source_id=source_id).exists():
+            continue
+
+        event = BillEvent(
+            source_id=source_id,
+            bis=bis,
+            date=_parse_date(levent.get('date')),
+            institution='S' if levent.get('chamber') == 'SEN' else 'C',
+            status_en=levent.xpath('Status/Title[@language="en"]/text()')[0],
+            status_fr=levent.xpath('Status/Title[@language="fr"]/text()')[0]
+        )
+
+        if event.institution == 'C':
+            hansard_num = levent.get('meetingNumber')
+            try:
+                event.debate = Document.debates.get(session=bis.session, number=hansard_num)
+            except Document.DoesNotExist:
+                logger.warning(u"Could not associate BillEvent for %s with Hansard#%s" % (bill, hansard_num))
+
+            for lcommittee in levent.xpath('Committee'):
+                acronym = lcommittee.get('accronym')
+                if acronym and acronym != 'WHOL':
+                    event.save()
+                    try:
+                        committee = Committee.objects.get_by_acronym(acronym, bis.session)
+                        for number in lcommittee.xpath('CommitteeMeetings/CommitteeMeeting/@number'):
+                            event.committee_meetings.add(
+                                CommitteeMeeting.objects.get(committee=committee, number=int(number), session=bis.session)
+                            )
+                    except ObjectDoesNotExist:
+                        logger.exception("Could not import committee meetings: %s" % etree.tostring(lcommittee))
+        event.save()
 
     try:
         _update(bill, 'text_docid', int(

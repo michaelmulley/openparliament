@@ -1,3 +1,7 @@
+# This implements an old version of a simple API. I'm keeping it around for
+# compatibility, but it is no longer documented, and the current API has nothing
+# to do with this code.
+
 from piston.handler import BaseHandler
 from piston.resource import Resource
 from piston.utils import rc, throttle

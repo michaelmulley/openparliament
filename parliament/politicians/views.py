@@ -21,6 +21,7 @@ from parliament.core.utils import feed_wrapper
 from parliament.hansards.models import Statement, Document
 from parliament.utils.views import JSONView
 
+
 class CurrentMPView(ModelListView):
 
     resource_name = 'Politicians'
@@ -71,7 +72,7 @@ class FormerMPView(ModelListView):
             if member.politician_id not in seen:
                 object_list.append(member)
                 seen.add(member.politician_id)
-        
+
         c = RequestContext(request, {
             'object_list': object_list,
             'title': 'Former MPs (since 1994)'
@@ -80,9 +81,13 @@ class FormerMPView(ModelListView):
         return HttpResponse(t.render(c))
 former_mps = FormerMPView.as_view()
 
+
 class PoliticianView(ModelDetailView):
 
     resource_name = 'Politician'
+
+    api_notes = """The other_info field is a direct copy of an internal catchall key-value store;
+        beware that its structure may change frequently."""
 
     def get_object(self, request, pol_id=None, pol_slug=None):
         if pol_slug:
@@ -104,10 +109,10 @@ class PoliticianView(ModelDetailView):
         pol = self.get_object(request, pol_id, pol_slug)
         if pol.slug and not pol_slug:
             return HttpResponsePermanentRedirect(pol.get_absolute_url())
-        
-        show_statements = bool('page' in request.GET or 
+
+        show_statements = bool('page' in request.GET or
             (pol.latest_member and not pol.latest_member.current))
-        
+
         if show_statements:
             STATEMENTS_PER_PAGE = 10
             statements = pol.statement_set.filter(
@@ -123,7 +128,7 @@ class PoliticianView(ModelDetailView):
                 statement_page = paginator.page(paginator.num_pages)
         else:
             statement_page = None
-            
+
         c = RequestContext(request, {
             'pol': pol,
             'member': pol.latest_member,
@@ -159,15 +164,17 @@ def contact(request, pol_id=None, pol_slug=None):
     })
     t = loader.get_template("politicians/contact.html")
     return HttpResponse(t.render(c))
-    
+
+
 def hide_activity(request):
     if not request.user.is_authenticated() and request.user.is_staff:
         raise PermissionDenied
-        
+
     activity = Activity.objects.get(pk=request.POST['activity_id'])
     activity.active = False
     activity.save()
     return HttpResponse('OK')
+
 
 class PoliticianAutocompleteView(JSONView):
 
@@ -205,41 +212,42 @@ class PoliticianMembershipListView(ModelListView):
 
 
 class PoliticianStatementFeed(Feed):
-    
+
     def get_object(self, request, pol_id):
         self.language = request.GET.get('language', settings.LANGUAGE_CODE)
         return get_object_or_404(Politician, pk=pol_id)
-    
+
     def title(self, pol):
         return "%s in the House of Commons" % pol.name
-        
+
     def link(self, pol):
         return "http://openparliament.ca" + pol.get_absolute_url()
-        
+
     def description(self, pol):
         return "Statements by %s in the House of Commons, from openparliament.ca." % pol.name
-        
+
     def items(self, pol):
         return Statement.objects.filter(
             member__politician=pol, document__document_type=Document.DEBATE).order_by('-time')[:12]
-        
+
     def item_title(self, statement):
         return statement.topic
-        
+
     def item_link(self, statement):
         return statement.get_absolute_url()
-        
+
     def item_description(self, statement):
         return statement.text_html(language=self.language)
-        
+
     def item_pubdate(self, statement):
         return statement.time
 
 politician_statement_feed = feed_wrapper(PoliticianStatementFeed)
-        
+
 r_title = re.compile(r'<span class="tag.+?>(.+?)</span>')
 r_link = re.compile(r'<a [^>]*?href="(.+?)"')
 r_excerpt = re.compile(r'<span class="excerpt">')
+
 
 class PoliticianActivityFeed(Feed):
 
@@ -269,14 +277,14 @@ class PoliticianActivityFeed(Feed):
         else:
             # FIXME include links in activity model?
             return ''
-            
+
     def item_guid(self, activity):
         return activity.guid
-    
+
     def item_description(self, activity):
         payload = r_excerpt.sub('<br><span style="display: block; border-left: 1px dotted #AAAAAA; margin-left: 2em; padding-left: 1em; font-style: italic; margin-top: 5px;">', activity.payload_wrapped())
         payload = r_title.sub('', payload)
         return payload
-        
+
     def item_pubdate(self, activity):
         return datetime.datetime(activity.date.year, activity.date.month, activity.date.day)

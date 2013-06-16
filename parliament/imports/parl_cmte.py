@@ -30,7 +30,7 @@ def import_committee_list(session=None):
         try:
             return Committee.objects.get_by_acronym(acronym, session)
         except Committee.DoesNotExist:
-            committee, created = Committee.objects.get_or_create(name=name_en.strip(), parent=parent)
+            committee, created = Committee.objects.get_or_create(name_en=name.strip(), parent=parent)
             if created:
                 logger.warning(u"Creating committee: %s, %s" % (committee.name_en, committee.slug))
             CommitteeInSession.objects.get_or_create(

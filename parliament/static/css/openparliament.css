@@ -154,6 +154,8 @@ td.standard_form{width:520px;}
 .activity_bill{background-color:#a4aede;}
 .activity_committee{background-color:#a4ded2;}
 .bill_law{background-color:#A9FA98;}
+.bill_dead{background-color:#FF9093;}
+.bill_dormant{background-color:#F1F28D;}
 
 /* STATEMENTS */
 .statement .pol_name{font-weight:bold;}

@@ -6,7 +6,7 @@ class BillOptions(admin.ModelAdmin):
     search_fields = ['number']
     raw_id_fields = ('sponsor_member','sponsor_politician')
     list_display = ('number', 'name', 'session', 'privatemember', 'sponsor_politician', 'added', 'introduced')
-    list_filter = ('institution', 'privatemember', 'added', 'sessions', 'introduced')
+    list_filter = ('institution', 'privatemember', 'added', 'sessions', 'introduced', 'status_date')
     ordering = ['-introduced']
 
 class BillInSessionOptions(admin.ModelAdmin):
@@ -26,6 +26,11 @@ class MemberVoteOptions(admin.ModelAdmin):
     
 class PartyVoteAdmin(admin.ModelAdmin):
     list_display = ('party', 'votequestion', 'vote', 'disagreement')
+
+class BillEventAdmin(admin.ModelAdmin):
+    list_display = ('bill_number', 'status', 'date', 'institution')
+    raw_id_fields = ('debate', 'committee_meetings', 'bis')
+    list_filter = ('date', 'institution')
     
 
 admin.site.register(Bill, BillOptions)
@@ -34,3 +39,4 @@ admin.site.register(BillText, BillTextOptions)
 admin.site.register(VoteQuestion, VoteQuestionOptions)
 admin.site.register(MemberVote, MemberVoteOptions)
 admin.site.register(PartyVote, PartyVoteAdmin)
+admin.site.register(BillEvent, BillEventAdmin)

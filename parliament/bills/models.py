@@ -54,28 +54,49 @@ class BillManager(models.Manager):
                     legisinfo_id=legisinfo_id)
             return bill
 
-class Bill(models.Model):
-    
+    def recently_active(self, number=12):
+        return Bill.objects.filter(status_date__isnull=False).exclude(models.Q(privatemember=True) 
+            & models.Q(status_code='Introduced')).order_by('-status_date')[:number]
+
+
+class Bill(models.Model): 
+    CHAMBERS = (
+        ('C', 'House'),
+        ('S', 'Senate'),
+    )
+    STATUS_CODES = {
+        u'BillNotActive': 'Not active',
+        u'WillNotBeProceededWith': 'Dead',
+        u'SenateAt2ndReading': 'Second reading (Senate)',
+        u'RoyalAssentAwaiting': 'Awaiting royal assent',
+        u'BillDefeated': 'Defeated',
+        u'HouseAt2ndReading': 'Second reading (House)',
+        u'HouseAtReportStage': 'Report stage (House)',
+        u'RoyalAssentGiven': 'Law (royal assent given)',
+        u'SenateAt1stReading': 'First reading (Senate)',
+        u'HouseInCommittee': 'In committee (House)',
+        u'SenateInCommittee': 'In committee (Senate)',
+        u'SenateConsiderationOfCommitteeReport': 'Considering committee report (Senate)',
+        u'SenateAt3rdReading': 'Third reading (House)',
+        u'Introduced': 'Introduced'
+    }
+
     name_en = models.TextField(blank=True)
     name_fr = models.TextField(blank=True)
     short_title_en = models.TextField(blank=True)
     short_title_fr = models.TextField(blank=True)
     number = models.CharField(max_length=10)
     number_only = models.SmallIntegerField()
-    institution = models.CharField(max_length=1, db_index=True, choices=(
-        ('C', 'House'),
-        ('S', 'Senate'),
-    ))
+    institution = models.CharField(max_length=1, db_index=True, choices=CHAMBERS)
     sessions = models.ManyToManyField(Session, through='BillInSession')
     privatemember = models.NullBooleanField()
     sponsor_member = models.ForeignKey(ElectedMember, blank=True, null=True)
-    sponsor_politician= models.ForeignKey(Politician, blank=True, null=True)
+    sponsor_politician = models.ForeignKey(Politician, blank=True, null=True)
     law = models.NullBooleanField()
 
-    # TODO: Remodel status to allow multiple status events, with dates
-    status = models.CharField(max_length=200, blank=True)
-    status_fr = models.CharField(max_length=200, blank=True)
-    status_date = models.DateField(blank=True, null=True)
+    status_date = models.DateField(blank=True, null=True, db_index=True)
+    status_code = models.CharField(max_length=50, blank=True)
+
     added = models.DateField(default=datetime.date.today, db_index=True)
     introduced = models.DateField(blank=True, null=True)
     text_docid = models.IntegerField(blank=True, null=True,
@@ -85,7 +106,7 @@ class Bill(models.Model):
 
     name = language_property('name')
     short_title = language_property('short_title')
-    
+   
     class Meta:
         ordering = ('privatemember', 'institution', 'number_only')
     
@@ -140,7 +161,7 @@ class Bill(models.Model):
             self.privatemember = bool(self.number_only >= 200)
         if not self.institution:
             self.institution = self.number[0]
-        if not self.law and 'Royal Assent' in self.status:
+        if not self.law and self.status_code == 'RoyalAssentGiven':
             self.law = True
         super(Bill, self).save(*args, **kwargs)
 
@@ -167,6 +188,18 @@ class Bill(models.Model):
         self._session = session
         
     session = property(get_session)
+
+    @property
+    def status(self):
+        return self.STATUS_CODES.get(self.status_code, 'Unknown')
+
+    @property
+    def dead(self):
+        return self.status_code in ('BillNotActive', 'WillNotBeProceededWith', 'BillDefeated')
+
+    @property
+    def dormant(self):
+        return (self.status_date and (datetime.date.today() - self.status_date).days > 150)
 
 class BillInSessionManager(models.Manager):
 
@@ -236,8 +269,35 @@ class BillInSession(models.Model):
                 vote_urls=[vq.get_absolute_url() for vq in VoteQuestion.objects.filter(bill=self.bill_id)],
                 private_member_bill=self.bill.privatemember,
                 legisinfo_url=self.get_legisinfo_url(),
+                status_code=self.bill.status_code,
+                status={'en': self.bill.status}
             )
         return d
+
+
+class BillEvent(models.Model):
+    bis = models.ForeignKey(BillInSession)
+
+    date = models.DateField(db_index=True)
+
+    source_id = models.PositiveIntegerField(unique=True, db_index=True)
+
+    institution = models.CharField(max_length=1, choices=Bill.CHAMBERS)
+
+    status_en = models.TextField()
+    status_fr = models.TextField(blank=True)
+
+    debate = models.ForeignKey('hansards.Document', blank=True, null=True, on_delete=models.SET_NULL)
+    committee_meetings = models.ManyToManyField('committees.CommitteeMeeting')
+
+    status = language_property('status')
+
+    def __unicode__(self):
+        return u"%s: %s, %s" % (self.status, self.bis.bill.number, self.date)
+
+    @property
+    def bill_number(self):
+        return self.bis.bill.number
 
 
 class BillText(models.Model):
