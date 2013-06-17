@@ -13,7 +13,8 @@
 {% block recently_active %}{% if recently_active %}
 <div class="context"><h2>Recently active bills</h2></div>
 <div class="focus"><ul class="tile">
-	{% for bill in recently_active %}<li class="twoline six {% if bill.short_title %}tip" title="{{ bill.name|strip_act }}"{% else %}overflowtip"{# " #}{% endif %}><a href="{% url bill session_id=session.id bill_number=bill.number %}">{{ bill.number }}</a> {% if bill.law %}<span class="tag bill_law">Law</span> {% elif bill.dead and not session.end %}<span class="tag bill_dead">Dead</span> {% elif bill.dormant and not session.end %}<span class="tag bill_dormant" title="No change in status for five months">Dormant</span> {% endif %}{% if bill.short_title %}{{ bill.short_title }}{% else %}{{ bill.name|strip_act }}{% endif %}</li>{% endfor %}
+	{# EDITING HERE? Copy changes to the same block below. #}
+	{% for bill in recently_active %}<li class="twoline six {% if bill.short_title %}tip" title="{{ bill.name|strip_act }}"{% else %}overflowtip"{# " #}{% endif %}><a href="{% url bill session_id=session.id bill_number=bill.number %}">{{ bill.number }}</a> {% if bill.law %}<span class="tag bill_law">Law</span> {% elif bill.dead and not session.end %}<span class="tag bill_dead">Dead</span> {% elif bill.dormant and not session.end %}<span class="tag bill_dormant" title="No change in status for five months">Dormant</span> {% endif %}{% if bill.short_title %}{{ bill.short_title|strip_act }}{% else %}{{ bill.name|strip_act }}{% endif %}</li>{% endfor %}
 </ul><div class="clear"></div></div>
 {% endif %}{% endblock %}
 
@@ -31,7 +32,8 @@
 {% if pm.grouper %}<div class="focus"><p>Private members' bills are introduced by MPs who are not cabinet ministers&mdash;opposition members, or sometimes government backbenchers. They rarely become law.</p></div>{% endif %}
 <div class="clear"></div><div class="context"><h2>{% if pm.grouper %}Private members' bills{% else %}Government bills{% endif %}</h2></div><div class="focus">
     <ul class="tile">
-    {% for bill in pm.list %}{% if bill.number_only != 1 %}<li class="twoline six {% if bill.short_title %}tip" title="{{ bill.name|strip_act }}"{% else %}overflowtip"{# " #}{% endif %}><a href="{% url bill session_id=session.id bill_number=bill.number %}">{{ bill.number }}</a> {% if bill.law %}<span class="tag bill_law">Law</span> {% elif bill.dead %}<span class="tag bill_dead">Dead</span> {% elif bill.dormant %}<span class="tag bill_dormant" title="No change in status for five months">Dormant</span> {% endif %}{% if bill.short_title %}{{ bill.short_title }}{% else %}{{ bill.name|strip_act }}{% endif %}</li>{% endif %}{% endfor %}
+    {# EDITING HERE? Copy changes to the same block above. #}
+    {% for bill in pm.list %}{% if bill.number_only != 1 %}<li class="twoline six {% if bill.short_title %}tip" title="{{ bill.name|strip_act }}"{% else %}overflowtip"{# " #}{% endif %}><a href="{% url bill session_id=session.id bill_number=bill.number %}">{{ bill.number }}</a> {% if bill.law %}<span class="tag bill_law">Law</span> {% elif bill.dead and not session.end %}<span class="tag bill_dead">Dead</span> {% elif bill.dormant and not session.end %}<span class="tag bill_dormant" title="No change in status for five months">Dormant</span> {% endif %}{% if bill.short_title %}{{ bill.short_title|strip_act }}{% else %}{{ bill.name|strip_act }}{% endif %}</li>{% endif %}{% endfor %}
     </ul><div class="clear"></div>
 </div>
 {% endfor %}

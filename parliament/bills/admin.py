@@ -14,7 +14,7 @@ class BillInSessionOptions(admin.ModelAdmin):
 
 class BillTextOptions(admin.ModelAdmin):
     list_display = ['bill', 'docid', 'created']
-    search_fields = ['bill__number', 'bill__name', 'docid']
+    search_fields = ['bill__number', 'bill__name_en', 'docid']
     
 class VoteQuestionOptions(admin.ModelAdmin):
     list_display = ('number', 'date', 'bill', 'description', 'result')

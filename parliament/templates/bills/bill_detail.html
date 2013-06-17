@@ -6,7 +6,25 @@
 {{ block.super }}
 <script type="text/javascript">
 $(function () {
-	$('.bill_summary').expander({slicePoint: 400, widow: 20});
+	$('.bill_summary').expander({slicePoint: 400, widow: 60});
+
+	$('#bill-tabs a').click(function(e) {
+		e.preventDefault();
+    	History.pushState(null, null, this.href);
+	});
+
+	$(window).bind('statechange', function() {
+        var newStateURL = History.getState().url;
+        var tab = OP.utils.getQueryParam('tab');
+
+		$('#bill-tabs li').removeClass('active')
+        if (tab) {
+        	$('#bill-tabs li.' + tab).addClass('active');
+        }
+        else {
+        	$('#bill-tabs li').first().addClass('active');
+        }
+	});
 });
 </script>
 {% endblock %}
@@ -36,13 +54,13 @@ $(function () {
 {% if not bill.session.end and not bill.law %}<p>Subscribe to a <a href="{% url bill_feed bill_id=bill.id %}" class="feed">feed</a> of speeches and votes in the House related to Bill {{ bill.number }}.</p>{% endif %}
     </div>{% endif %}
 
-{% if bill_summary %}
+{% with bill.get_summary as bill_summary %}{% if bill_summary %}
 <div class="clear"></div><div class="context"><h2>Summary</h2>
 <p class="quiet">This is from the published bill. The <a href="{{ bill.legisinfo_url }}">Library of Parliament</a> often publishes better independent summaries.</p>
 </div>
 <div class="focus"><div class="bill_summary">{{ bill_summary }}</div>
 </div>
-{% endif %}
+{% endif %}{% endwith %}
 
 {% if bill.name %}
 <div class="clear"></div><div class="context"><h2>Elsewhere</h2></div>
@@ -54,9 +72,33 @@ $(function () {
 {% for vote in votequestions %}<li class="six twoline overflowtip"><a href="{{ vote.get_absolute_url }}">{{ vote.date|date:"N j, Y" }}</a> <span class="tag voteresult_{{ vote.result }}">{{ vote.get_result_display }}</span> {{ vote.description }}</li>{% endfor %}
 </ul></div>
 {% endif %}
+
+<div class="clear"></div><div class="focus">
+	<ul class="nav nav-tabs" id="bill-tabs">
+  {% if has_major_speeches %}
+  <li class="{% if tab == 'major-speeches' %}active {% endif %}major-speeches">
+    <a href="?tab=major-speeches">House debate</a>
+  </li>
+  {% endif %}
+  {% if has_mentions %}
+  <li class="{% if tab == 'mentions' %}active {% endif %}mentions">
+    <a href="?tab=mentions">All House mentions</a>
+  </li>
+  {% endif %}
+  {% if has_meetings %}
+  <li class="{% if tab == 'meetings' %}active {% endif %}meetings">
+    <a href="?tab=meetings">Committee meetings</a>
+  </li>
+  {% endif %}
+</ul>
+</div>
 <div id="paginated">
     
-{% include "hansards/statement_page.inc" %}
+{% if page %}
+	{% include "hansards/statement_page.inc" %}
+{% elif tab == 'meetings' %}
+	{% include "bills/related_meetings.inc" %}
+{% endif %}
 
 </div>
 

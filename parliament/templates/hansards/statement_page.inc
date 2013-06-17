@@ -12,7 +12,7 @@
 {% for statement in page.object_list %}{% with statement.name_info as name_info %}
 	{% with statement.get_absolute_url as statementurl %}
 		<div class="statement{% if forloop.first %} first{% endif %}{% if highlight_statement == statement %} highlighted{% endif %}"
-			 {% if highlight_statement == statement %}id="hl"{% else %}id="s{{ statement.sequence }}"{% endif %}
+			 {% if highlight_statement == statement %}id="hl"{% else %}id="s{{ statement.slug }}"{% endif %}
 			 data-url="{{ statementurl }}" {% if statement.content_fr and 0 %} data-francais="{{ statement.content_fr }}"{% endif %}>
 			<div class="context clearafter">
 				<noscript><p><a href="{{ statementurl }}only/">Permalink</a></p></noscript>

@@ -159,6 +159,22 @@ class Bill(models.Model):
         except BillText.DoesNotExist:
             return ''
 
+    def get_related_debates(self):
+        from parliament.hansards.models import Document
+        return Document.objects.filter(billinsession__bill=self)
+
+    def get_committee_meetings(self):
+        from parliament.committees.models import CommitteeMeeting
+        return CommitteeMeeting.objects.filter(billevent__bis__bill=self)
+
+    def get_major_speeches(self):
+        doc_ids = list(self.get_related_debates().values_list('id', flat=True))
+        return self.statement_set.filter(
+            document__in=doc_ids,
+            procedural=False,
+            wordcount__gt=125,
+            h2_en__endswith='Act')
+
     @property
     def latest_date(self):
         return self.status_date if self.status_date else self.introduced
@@ -237,6 +253,8 @@ class BillInSession(models.Model):
     introduced = models.DateField(blank=True, null=True, db_index=True)
     sponsor_politician = models.ForeignKey(Politician, blank=True, null=True)
     sponsor_member = models.ForeignKey(ElectedMember, blank=True, null=True)
+
+    debates = models.ManyToManyField('hansards.Document', through='BillEvent')
 
     objects = BillInSessionManager()
 
@@ -326,7 +344,7 @@ class BillText(models.Model):
 
     @property
     def summary(self):
-        match = re.search(r'SUMMARY\n([\s\S]+?)Also available on', self.text_en)
+        match = re.search(r'SUMMARY\n([\s\S]+?)(Also a|A)vailable on', self.text_en)
         return match.group(1).strip() if match else None
 
     @property

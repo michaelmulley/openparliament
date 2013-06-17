@@ -14,7 +14,7 @@ from django.views.decorators.vary import vary_on_headers
 from parliament.bills.models import Bill, VoteQuestion, MemberVote, BillInSession
 from parliament.core.api import ModelListView, ModelDetailView, APIFilters
 from parliament.core.models import Session
-from parliament.hansards.models import Statement
+from parliament.hansards.models import Statement, Document
 
 def bill_pk_redirect(request, bill_id):
     bill = get_object_or_404(Bill, pk=bill_id)
@@ -36,32 +36,62 @@ class BillDetailView(ModelDetailView):
             'bills_url': urlresolvers.reverse('bills')
         }
 
-    def get_html(self, request, session_id, bill_number):
-        PER_PAGE = 10
-        bill = get_object_or_404(Bill, sessions=session_id, number=bill_number)
-        statements = bill.statement_set.all().order_by('-time', '-sequence').select_related('member', 'member__politician', 'member__riding', 'member__party')
-        paginator = Paginator(statements, PER_PAGE)
+    def _render_page(self, request, qs, per_page=10):
+        paginator = Paginator(qs, per_page)
 
         try:
             pagenum = int(request.GET.get('page', '1'))
         except ValueError:
             pagenum = 1
         try:
-            page = paginator.page(pagenum)
+            return paginator.page(pagenum)
         except (EmptyPage, InvalidPage):
-            page = paginator.page(paginator.num_pages)
+            return paginator.page(paginator.num_pages)
+
+    def get_html(self, request, session_id, bill_number):
+        bill = get_object_or_404(Bill, sessions=session_id, number=bill_number)
+
+        mentions = bill.statement_set.all().order_by('-time', '-sequence').select_related('member', 'member__politician', 'member__riding', 'member__party')
+        major_speeches = bill.get_major_speeches().order_by('-document__date', 'sequence').select_related(
+            'member', 'member__politician', 'member__riding', 'member__party')
+        meetings = bill.get_committee_meetings()
+
+        tab = request.GET.get('tab', 'major-speeches')
+
+        has_major_speeches = major_speeches.exists()
+        has_mentions = has_major_speeches or mentions.exists()
+        has_meetings = meetings.exists()
+
+        if tab == 'major-speeches' and not has_major_speeches:
+            tab = 'mentions'
+
+        if tab == 'mentions':
+            page = self._render_page(request, mentions)
+            page.querystring = 'tab=' + tab
+        elif tab == 'major-speeches':
+            page = self._render_page(request, major_speeches)
+            page.querystring = 'tab=' + tab
+        else:
+            page = None
 
         c = RequestContext(request, {
             'bill': bill,
-            'bill_summary': bill.get_summary(),
-            'page': page,
+            'has_major_speeches': has_major_speeches,
+            'has_mentions': has_mentions,
+            'has_meetings': has_meetings,
+            'committee_meetings': meetings,
             'votequestions': bill.votequestion_set.all().order_by('-date', '-number'),
-            'title': ('Bill %s' % bill.number) + (' (Historical)' if bill.session.end else ''), 
+            'page': page,
+            'tab': tab,
+            'title': ('Bill %s' % bill.number) + (' (Historical)' if bill.session.end else ''),
             'statements_full_date': True,
             'statements_context_link': True,
         })
         if request.is_ajax():
-            t = loader.get_template("hansards/statement_page.inc")
+            if tab == 'meetings':
+                t = loader.get_template("bills/related_meetings.inc")
+            else:
+                t = loader.get_template("hansards/statement_page.inc")
         else:
             t = loader.get_template("bills/bill_detail.html")
         return HttpResponse(t.render(c))

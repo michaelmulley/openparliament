@@ -52,7 +52,8 @@ def month_num(month):
     
 @register.filter(name='strip_act')
 def strip_act(value):
-    return re.sub(r'An Act (to )?([a-z])', lambda m: m.group(2).upper(), value)
+    value = re.sub(r'An Act (to )?([a-z])', lambda m: m.group(2).upper(), value)
+    return re.sub(r' Act$', '', value)
     
 @register.filter(name='time_since')
 def time_since(value):

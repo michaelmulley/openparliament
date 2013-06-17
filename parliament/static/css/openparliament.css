@@ -1,7 +1,7 @@
 /* GLOBAL SETTINGS */
 body{font-family:"Helvetica Neue",Arial,Helvetica,sans-serif;margin:0;padding:0;line-height:1.33333333333;font-size:15px;color: #111111;background-color:#DDDDDD;}
 p{margin:0 0 10px 0;}
-p.quiet{font-size: 13px;}
+.quiet { font-size: 12px; color: #555555;}
 h1{font-size:32px;font-weight:bold;color:#222222;margin:0 0 20px 0;padding:0;line-height:40px;}
 h2{font-size:24px;font-weight:normal;font-weight:300;margin:0 0 10px 0;color:#522D07;line-height:30px;}
 h3{margin:0 0 10px 0;font-weight:bold;color:#522D07;font-size: 17px;}
@@ -78,6 +78,7 @@ ul.tile{list-style-type:none;margin:0 0 10px 0;padding:0;}
 .twoline{height:40px;}
 .oneline{height:20px;}
 .threeline{height:60px;}
+.threeline.quiet{height: 48px;}
 #tooltip{position:absolute;z-index:3000;border:1px solid #111;background-color:#f9f7cd;padding:5px;max-width:350px;}
 #tooltip h3,#tooltip div{margin:0;font-size:12px;color:#222222;font-weight:normal;}
 .winner{font-weight:bold;}
@@ -243,6 +244,9 @@ p.share_link input{width:300px;padding-left:5px;}
 
 /* COMMITTEES */
 .committees .no_evidence a { color: #777777; }
+
+/* BILLS */
+ul.tile.meeting-attendees {padding: 10px 0 0 60px;}
 
 /* API BROWSER */
 .api_filters input[type=text] {
