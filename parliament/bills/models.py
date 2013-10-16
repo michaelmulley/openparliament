@@ -7,8 +7,10 @@ from django.core import urlresolvers
 from django.db import models
 from django.utils.safestring import mark_safe
 
+from parliament.committees.models import CommitteeMeeting
 from parliament.core.models import Session, ElectedMember, Politician, Party
 from parliament.core.utils import language_property
+from parliament.hansards.models import Document, Statement
 from parliament.activity import utils as activity
 
 import logging
@@ -160,20 +162,18 @@ class Bill(models.Model):
             return ''
 
     def get_related_debates(self):
-        from parliament.hansards.models import Document
         return Document.objects.filter(billinsession__bill=self)
 
     def get_committee_meetings(self):
-        from parliament.committees.models import CommitteeMeeting
         return CommitteeMeeting.objects.filter(billevent__bis__bill=self)
 
     def get_major_speeches(self):
         doc_ids = list(self.get_related_debates().values_list('id', flat=True))
-        return self.statement_set.filter(
-            document__in=doc_ids,
-            procedural=False,
-            wordcount__gt=125,
-            h2_en__endswith='Act')
+        if self.short_title_en:
+            qs = Statement.objects.filter(h2_en__iexact=self.short_title_en, wordcount__gt=50)
+        else:
+            qs = self.statement_set.filter(wordcount__gt=100)
+        return qs.filter(document__in=doc_ids, procedural=False)
 
     @property
     def latest_date(self):

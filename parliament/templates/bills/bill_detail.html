@@ -50,7 +50,7 @@ $(function () {
 
 {% if bill.status or bill.law %}
 <div class="clear"></div><div class="context"><h2>Status</h2></div>
-<div class="focus"><p>{% if bill.law %}This bill has received Royal Assent and is now <strong>law</strong>.{% else %}{{ bill.status }}, as of {{ bill.status_date }} {% if bill.session.end %}<br>(This bill <strong>did not</strong> become law.){% endif %}{% endif %}</p>
+<div class="focus"><p>{% if bill.law %}This bill has received Royal Assent and is now <strong>law</strong>.{% else %}{{ bill.status }}{% if bill.status_date %}, as of {{ bill.status_date }}{% endif %} {% if bill.session.end %}<br>(This bill <strong>did not</strong> become law.){% endif %}{% endif %}</p>
 {% if not bill.session.end and not bill.law %}<p>Subscribe to a <a href="{% url bill_feed bill_id=bill.id %}" class="feed">feed</a> of speeches and votes in the House related to Bill {{ bill.number }}.</p>{% endif %}
     </div>{% endif %}
 
@@ -103,3 +103,8 @@ $(function () {
 </div>
 
 {% endblock content %}
+
+{% block footer_text %}
+{% if single_page_link %}<p>View all speeches on a <a href="{{ single_page_link }}">single page</a>.</p>{% endif %}
+{{ block.super }}
+{% endblock %}

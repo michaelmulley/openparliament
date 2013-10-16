@@ -14,7 +14,6 @@ from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
 
 from parliament.core.models import Session, ElectedMember, Politician
-from parliament.bills.models import Bill
 from parliament.core import parsetools, text_utils
 from parliament.core.utils import memoize_property, language_property
 from parliament.activity import utils as activity
@@ -343,7 +342,7 @@ class Statement(models.Model):
     ))
     statement_type = models.CharField(max_length=35, blank=True)
     
-    bills = models.ManyToManyField(Bill, blank=True)
+    bills = models.ManyToManyField('bills.Bill', blank=True)
     mentioned_politicians = models.ManyToManyField(Politician, blank=True, related_name='statements_with_mentions')
         
     class Meta:
