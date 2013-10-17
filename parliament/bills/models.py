@@ -70,18 +70,19 @@ class Bill(models.Model):
     STATUS_CODES = {
         u'BillNotActive': 'Not active',
         u'WillNotBeProceededWith': 'Dead',
-        u'SenateAt2ndReading': 'Second reading (Senate)',
         u'RoyalAssentAwaiting': 'Awaiting royal assent',
         u'BillDefeated': 'Defeated',
-        u'HouseAt2ndReading': 'Second reading (House)',
         u'HouseAtReportStage': 'Report stage (House)',
         u'RoyalAssentGiven': 'Law (royal assent given)',
         u'SenateAt1stReading': 'First reading (Senate)',
+        u'HouseAt1stReading': 'First reading (House)',
+        u'HouseAt2ndReading': 'Second reading (House)',
+        u'SenateAt2ndReading': 'Second reading (Senate)',
+        u'SenateAt3rdReading': 'Third reading (Senate)',
+        u'HouseAt3rdReading': 'Third reading (House)',
         u'HouseInCommittee': 'In committee (House)',
         u'SenateInCommittee': 'In committee (Senate)',
         u'SenateConsiderationOfCommitteeReport': 'Considering committee report (Senate)',
-        u'SenateAt3rdReading': 'Third reading (Senate)',
-        u'HouseAt3rdReading': 'Third reading (House)',
         u'HouseConsiderationOfAmendments': 'Considering amendments (House)',
         u'Introduced': 'Introduced'
     }
