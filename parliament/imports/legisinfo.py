@@ -174,6 +174,20 @@ def _import_bill(lbill, session, previous_session=None):
         # Some older bills don't have status information
         pass
 
+    try:
+        _update(bill, 'text_docid', int(
+            lbill.xpath('Publications/Publication/@id')[-1]))
+    except IndexError:
+        pass
+
+    _update(bis, 'legisinfo_id', int(lbill.get('id')))
+
+    if getattr(bill, '_changed', False):
+        bill.save()
+    if getattr(bis, '_changed', False):
+        bis.bill = bis.bill # bizarrely, the django orm makes you do this
+        bis.save()        
+
     for levent in lbill.xpath('Events/LegislativeEvents/Event'):
         source_id = int(levent.get('id'))
         if BillEvent.objects.filter(source_id=source_id).exists():
@@ -208,20 +222,6 @@ def _import_bill(lbill, session, previous_session=None):
                     except ObjectDoesNotExist:
                         logger.exception("Could not import committee meetings: %s" % etree.tostring(lcommittee))
         event.save()
-
-    try:
-        _update(bill, 'text_docid', int(
-            lbill.xpath('Publications/Publication/@id')[-1]))
-    except IndexError:
-        pass
-
-    _update(bis, 'legisinfo_id', int(lbill.get('id')))
-
-    if getattr(bill, '_changed', False):
-        bill.save()
-    if getattr(bis, '_changed', False):
-        bis.bill = bis.bill # bizarrely, the django orm makes you do this
-        bis.save()
 
     if getattr(bill, '_newbill', False) and not session.end:
         bill.save_sponsor_activity()
