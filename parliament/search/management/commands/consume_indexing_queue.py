@@ -2,7 +2,7 @@ import itertools
 import logging
 
 from django.conf import settings
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 
 from haystack import site
 import pysolr
@@ -24,7 +24,7 @@ class Command(BaseCommand):
             IndexingTask.objects.filter(action='update').prefetch_related('content_object')
         )
 
-        solr = pysolr.Solr(settings.HAYSTACK_SOLR_URL)
+        solr = pysolr.Solr(settings.HAYSTACK_SOLR_URL, timeout=600)
 
         if update_tasks:
             update_objs = [t.content_object for t in update_tasks if t.content_object]
