@@ -318,7 +318,7 @@ class BillEvent(models.Model):
     status_fr = models.TextField(blank=True)
 
     debate = models.ForeignKey('hansards.Document', blank=True, null=True, on_delete=models.SET_NULL)
-    committee_meetings = models.ManyToManyField('committees.CommitteeMeeting')
+    committee_meetings = models.ManyToManyField('committees.CommitteeMeeting', blank=True)
 
     status = language_property('status')
 

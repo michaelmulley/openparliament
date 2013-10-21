@@ -2,7 +2,7 @@ import json
 import re
 
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist, ValidationError
 from django.http import HttpResponse, Http404, HttpResponseBadRequest
 from django.middleware.cache import FetchFromCacheMiddleware as DjangoFetchFromCacheMiddleware
 from django.shortcuts import render
@@ -167,9 +167,12 @@ class APIFilters(object):
                 val = None
             if filter_extra == 'range':
                 val = val.split(',')
-            return qs.filter(**{
-                (field_name if field_name else filter_name) + '__' + filter_extra: val
-            })
+            try:
+                return qs.filter(**{
+                    (field_name if field_name else filter_name) + '__' + filter_extra: val
+                })
+            except ValidationError as e:
+                raise BadRequest(unicode(e))
         inner.help = help
         return inner
 
