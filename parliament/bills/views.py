@@ -116,7 +116,7 @@ class BillListView(ModelListView):
             help="did it become law? True, False"),
         'private_member_bill': APIFilters.dbfield('bill__privatemember',
             help="is it a private member's bill? True, False"),
-        'status_code': APIFilters.dbfield('status_code'),
+        'status_code': APIFilters.dbfield('bill__status_code'),
         'sponsor_politician': APIFilters.politician('sponsor_politician'),
         'sponsor_politician_membership': APIFilters.fkey(lambda u: {'sponsor_member': u[-1]}),
     }
