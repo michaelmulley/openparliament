@@ -207,7 +207,7 @@ def _import_bill(lbill, session, previous_session=None):
             try:
                 event.debate = Document.debates.get(session=bis.session, number=hansard_num)
             except Document.DoesNotExist:
-                logger.warning(u"Could not associate BillEvent for %s with Hansard#%s" % (bill, hansard_num))
+                logger.info(u"Could not associate BillEvent for %s with Hansard#%s" % (bill, hansard_num))
                 continue
 
             for lcommittee in levent.xpath('Committee'):
