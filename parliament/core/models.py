@@ -278,7 +278,6 @@ class Politician(Person):
         if representation == 'detail':
             info = self.info_multivalued()
             members = list(self.electedmember_set.all().select_related(depth=1).order_by('-end_date'))
-            current = not members[0].end_date
             d.update(
                 given_name=self.name_given,
                 family_name=self.name_family,
@@ -293,11 +292,6 @@ class Politician(Person):
                 d['links'].append({
                     'url': self.parlpage,
                     'note': 'Page on parl.gc.ca'
-                })
-            if current:
-                d['links'].append({
-                    'url': urlresolvers.reverse('politician_activity_feed', kwargs={'pol_id': self.id}),
-                    'note': 'openparliament.ca RSS activity feed'
                 })
             if 'web_site' in info:
                 d['links'].append({

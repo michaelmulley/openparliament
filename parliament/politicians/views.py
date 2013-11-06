@@ -101,8 +101,8 @@ class PoliticianView(ModelDetailView):
             'speeches_url': urlresolvers.reverse('speeches') + pol_query,
             'ballots_url': urlresolvers.reverse('vote_ballots') + pol_query,
             'sponsored_bills_url': urlresolvers.reverse('bills') + '?' +
-                urlencode({'sponsor_politician': obj.identifier})
-
+                urlencode({'sponsor_politician': obj.identifier}),
+            'activity_rss_url': urlresolvers.reverse('politician_activity_feed', kwargs={'pol_id': obj.id})
         }
 
     def get_html(self, request, pol_id=None, pol_slug=None):

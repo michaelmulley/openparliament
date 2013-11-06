@@ -17,6 +17,13 @@ class APIView(View):
     # Set this to True to allow JSONP (cross-domain) requests
     allow_jsonp = False
 
+    # Set to False to disallow CORS on GET requests, and the origin to allow otherwise
+    allow_cors = '*'
+
+    # Temporary: will need to write an actual versioning system once we want to start
+    # preserving backwards compatibility
+    api_version = 'v1'
+
     # The list of API formats should be ordered by preferability
     api_formats = [
         ('apibrowser', 'text/html'),
@@ -86,7 +93,15 @@ class APIView(View):
             return HttpResponseBadRequest(escape(unicode(e)), content_type='text/plain')
 
         processor = getattr(self, 'process_' + format, self.process_default)
-        return processor(result, request, **kwargs)
+        resp = processor(result, request, **kwargs)
+
+        if self.allow_cors and method == 'get' and request.META.get('HTTP_ORIGIN'):
+            # CORS
+            resp['Access-Control-Allow-Origin'] = self.allow_cors
+
+        resp['API-Version'] = self.api_version
+
+        return resp
 
     def format_not_allowed(self, request):
         return HttpResponse("This resource is not available in the requested format.",
