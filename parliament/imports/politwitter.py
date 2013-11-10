@@ -58,7 +58,7 @@ def update_twitter_list():
     logger.warning("Users added to Twitter list: %r" % not_on_list)
     
 def get_id_from_screen_name(screen_name):
-    t = twitter.Twitter(auth=twitter.OAuth(**settings.TWITTER_OAUTH), domain='api.twitter.com/1')
+    t = twitter.Twitter(auth=twitter.OAuth(**settings.TWITTER_OAUTH), domain='api.twitter.com/1.1')
     return t.users.show(screen_name=screen_name)['id']
     
 def get_ids_from_screen_names():
