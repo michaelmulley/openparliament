@@ -1,7 +1,7 @@
 {% extends "committees/base.html" %}
 {% block pagetitle %}{{ commitee.short_name }} Committee on {{ meeting.date|date:"N jS, Y" }}{% endblock %}
 {% block pageheading %}{{ committee.short_name }} Committee on {{ meeting.date|date:"N jS, Y" }}{% endblock %}
-{% block breadcrumbs %}<a href="{% url "parliament.committees.views.committee_list" %}">Committees</a> <a href="{{ committee.get_absolute_url }}">{{ committee.short_name }}</a> <a href="{% url "committee_year_archive" slug=committee.slug,year=meeting.date.year %}">{{ meeting.date.year }}</a> {{ meeting.date|date:"N j" }}{% endblock %}
+{% block breadcrumbs %}<a href="{% url "parliament.committees.views.committee_list" %}">Committees</a> <a href="{{ committee.get_absolute_url }}">{{ committee.short_name }}</a> <a href="{% url "committee_year_archive" slug=committee.slug year=meeting.date.year %}">{{ meeting.date.year }}</a> {{ meeting.date|date:"N j" }}{% endblock %}
 
 {% block content %}
 <div class="focus">
