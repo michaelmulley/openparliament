@@ -1,5 +1,6 @@
+import json
+
 from django import template
-from django.core.serializers.json import simplejson as json
 from django.utils.safestring import mark_safe
 
 register = template.Library()

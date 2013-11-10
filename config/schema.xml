@@ -533,6 +533,9 @@
 			unknown fields indexed and/or stored by default -->
 	<!--dynamicField name="*" type="ignored" multiValued="true" /-->
 
+    <field name="_version_" type="long" indexed="true" stored="true"/>
+
+
 	<field name="id" type="string" indexed="true" stored="true" required="true" />
 
 	<field name="django_ct" type="string" indexed="false"  stored="true"  multiValued="false" />
