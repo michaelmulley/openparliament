@@ -92,6 +92,8 @@ MIDDLEWARE_CLASSES = [
 
 ROOT_URLCONF = 'parliament.urls'
 
+WSGI_APPLICATION = 'parliament.wsgi.application'
+
 TEMPLATE_DIRS = [
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
@@ -107,7 +109,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.admin',
     'django.contrib.humanize',
-    'django.contrib.markup',
     'django.contrib.flatpages',
     'django.contrib.sitemaps',
     'django.contrib.staticfiles',

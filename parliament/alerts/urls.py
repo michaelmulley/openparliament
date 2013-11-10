@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, include, url
 
 urlpatterns = patterns('parliament.alerts.views',
     url(r'^pol_hansard_signup/$', 'politician_hansard_signup', name='alerts_pol_signup'),

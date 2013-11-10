@@ -1,5 +1,5 @@
 {% extends "bills/index.html" %}
-{% block breadcrumbs %}<a href="{% url parliament.bills.views.index %}">Bills</a> {{ title }}{% endblock %}
+{% block breadcrumbs %}<a href="{% url "parliament.bills.views.index" %}">Bills</a> {{ title }}{% endblock %}
 
 {% block content %}
 <div class="focus"><p>This session began on {{ session.start|date:"F jS, Y" }}{% if session.end %} and ended on {{ session.end|date:"F jS, Y" }}{% endif %}.</p></div>

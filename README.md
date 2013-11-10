@@ -32,7 +32,7 @@ Environment setup
 
 You should have virtualenv and pip installed. Create a new virtualenv, and install dependencies:
 
-    pip install -r environment.txt
+    pip install -r requirements.txt
     
 Database
 -----------

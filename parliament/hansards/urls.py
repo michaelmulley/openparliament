@@ -1,4 +1,4 @@
-from django.conf.urls.defaults import *
+from django.conf.urls import patterns, include, url
 
 urlpatterns = patterns('parliament.hansards.views',
     url(r'^$', 'index', name='debates'),

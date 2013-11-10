@@ -6,8 +6,8 @@ from django.db import models
 
 import re, sys
 from django.core import urlresolvers
-from django.contrib.markup.templatetags.markup import markdown
 
+from parliament.core.templatetags.markup import markdown
 
 r_statement_affil = re.compile(r'<(bill|pol) id="(\d+)" name="(.*?)">(.+?)</\1>', re.UNICODE)
 def statement_affil_link(match):

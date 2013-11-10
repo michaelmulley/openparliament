@@ -61,14 +61,14 @@ window.OP = {
 <div id="navbar">
 	<a href="/"><img src="{{ STATIC_URL }}images/logotype_bar_v2.png" alt="openparliament.ca"></a>
     <ul id="navlinks">
-		<li {% block navlinks_mps %}{% endblock %}><a href="{% url parliament.politicians.views.current_mps %}">MPs</a></li>
-		<li {% block navlinks_bills %}{% endblock %}><a href="{% url parliament.bills.views.index %}">Bills</a></li>
-		<li {% block navlinks_debates %}{% endblock %}><a href="{% url parliament.hansards.views.index %}">Debates</a></li>
-		<li {% block navlinks_committees %}{% endblock %}><a href="{% url parliament.committees.views.committee_list %}">Committees</a></li>
+		<li {% block navlinks_mps %}{% endblock %}><a href="{% url "parliament.politicians.views.current_mps" %}">MPs</a></li>
+		<li {% block navlinks_bills %}{% endblock %}><a href="{% url "parliament.bills.views.index" %}">Bills</a></li>
+		<li {% block navlinks_debates %}{% endblock %}><a href="{% url "parliament.hansards.views.index" %}">Debates</a></li>
+		<li {% block navlinks_committees %}{% endblock %}><a href="{% url "parliament.committees.views.committee_list" %}">Committees</a></li>
 		<li {% block navlinks_about %}{% endblock %}><a href="/about/">About</a></li>
 		<li {% block navlinks_labs %}{% endblock %}><a href="/labs/">Labs</a></li>
 	</ul>
-	{% block navbar_search %}<form action="{% url search %}" method="GET" id="nav_searchform">{% include "search/searchbox.inc" with placeholder="Search" %}</form>{% endblock navbar_search %}
+	{% block navbar_search %}<form action="{% url "search" %}" method="GET" id="nav_searchform">{% include "search/searchbox.inc" with placeholder="Search" %}</form>{% endblock navbar_search %}
 </div>
 <div id="notifications">{% block notifications %}{# e.g. <div class="top-notification success"><div class="notification-inner">Hello!</div></div> #}{% endblock %}</div>
 <div id="content_wrap"><div id="content" class="{% block contentclass %}{% endblock %}" {% block contentdiv %}{% endblock %}>
@@ -84,14 +84,14 @@ window.OP = {
 
 <div class="col four">{% block footer_text %}<p><strong>This is not a government site.</strong><br> Not even sort of.</p>{% endblock footer_text %}</div>
 <div class="col three"><strong>Words</strong><br>
-<a href="{% url debates %}">Debates</a> (Hansard)<br>
-<a href="{% url committee_list %}">Committees</a><br>
-<a href="{% url search %}">Search</a><br>
-<a href="{% url alerts_list %}">Alerts</a>
+<a href="{% url "debates" %}">Debates</a> (Hansard)<br>
+<a href="{% url "committee_list" %}">Committees</a><br>
+<a href="{% url "search" %}">Search</a><br>
+<a href="{% url "alerts_list" %}">Alerts</a>
 </div>
 <div class="col three"><strong>Laws</strong><br>
-<a href="{% url bills %}">Bills</a><br>
-<a href="{% url votes %}">Votes</a></div>
+<a href="{% url "bills" %}">Bills</a><br>
+<a href="{% url "votes" %}">Votes</a></div>
 <div class="col three"><strong>More</strong><br>
 <a href="http://openparliament.uservoice.com/">Feedback</a> / <a class="maillink">Contact</a><br>
 <a href="/labs/haiku/">Haiku</a><br>

@@ -1,5 +1,5 @@
 {% extends "committees/base.html" %}
-{% block breadcrumbs %}<a href="{% url committee_list %}">Committees</a> <a href="{{ committee.get_absolute_url }}">{{ committee.short_name }}</a> {{ activity.type }}{% endblock %}
+{% block breadcrumbs %}<a href="{% url "committee_list" %}">Committees</a> <a href="{{ committee.get_absolute_url }}">{{ committee.short_name }}</a> {{ activity.type }}{% endblock %}
 
 {% block content %}
 <div class="focus">

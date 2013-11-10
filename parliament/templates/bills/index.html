@@ -2,19 +2,19 @@
 {% load ours %}
 {% block contentclass %}context_3{% endblock %}
 {% block breadcrumbs %}Bills{% endblock %}
-{% block headextra %}<link rel="alternate" type="application/rss+xml" title="New bills in the House" href="{% url bill_list_feed  %}">{% endblock headextra %}
+{% block headextra %}<link rel="alternate" type="application/rss+xml" title="New bills in the House" href="{% url "bill_list_feed"  %}">{% endblock headextra %}
 {% block content %}
 
 {% if votes %}
 <div class="context"><h2>{% if session_list %}Recent votes{% else %}Votes{% endif %}</h2></div>
-<div class="focus"><ul class="tile">{% for vote in votes %}<li class="six threeline overflowtip"><a href="{{ vote.get_absolute_url }}">#{{ vote.number }}</a> <span class="tag voteresult_{{ vote.result }}">{{ vote.get_result_display }}</span> {% if vote.bill %}<a href="{% url bill session_id=session.id bill_number=vote.bill.number %}">{{ vote.bill.number }}</a> {% endif %}{{ vote.description }}</li>{% endfor %}</ul><div class="clear"></div>{% if votes.0.number > 6 %}<p>See <a href="{% url parliament.bills.views.votes_for_session session_id=session.id %}">all {{ votes.0.number }} votes</a> for this session.</p>{% endif %}</div><div class="clear"></div>
+<div class="focus"><ul class="tile">{% for vote in votes %}<li class="six threeline overflowtip"><a href="{{ vote.get_absolute_url }}">#{{ vote.number }}</a> <span class="tag voteresult_{{ vote.result }}">{{ vote.get_result_display }}</span> {% if vote.bill %}<a href="{% url "bill" session_id=session.id bill_number=vote.bill.number %}">{{ vote.bill.number }}</a> {% endif %}{{ vote.description }}</li>{% endfor %}</ul><div class="clear"></div>{% if votes.0.number > 6 %}<p>See <a href="{% url "parliament.bills.views.votes_for_session" session_id=session.id %}">all {{ votes.0.number }} votes</a> for this session.</p>{% endif %}</div><div class="clear"></div>
 {% endif %}
 
 {% block recently_active %}{% if recently_active %}
 <div class="context"><h2>Recently active bills</h2></div>
 <div class="focus"><ul class="tile">
 	{# EDITING HERE? Copy changes to the same block below. #}
-	{% for bill in recently_active %}<li class="twoline six {% if bill.short_title %}tip" title="{{ bill.name|strip_act }}"{% else %}overflowtip"{# " #}{% endif %}><a href="{% url bill session_id=session.id bill_number=bill.number %}">{{ bill.number }}</a> {% if bill.law %}<span class="tag bill_law">Law</span> {% elif bill.dead and not session.end %}<span class="tag bill_dead">Dead</span> {% elif bill.dormant and not session.end %}<span class="tag bill_dormant" title="No change in status for five months">Dormant</span> {% endif %}{% if bill.short_title %}{{ bill.short_title|strip_act }}{% else %}{{ bill.name|strip_act }}{% endif %}</li>{% endfor %}
+	{% for bill in recently_active %}<li class="twoline six {% if bill.short_title %}tip" title="{{ bill.name|strip_act }}"{% else %}overflowtip"{# " #}{% endif %}><a href="{% url "bill" session_id=session.id bill_number=bill.number %}">{{ bill.number }}</a> {% if bill.law %}<span class="tag bill_law">Law</span> {% elif bill.dead and not session.end %}<span class="tag bill_dead">Dead</span> {% elif bill.dormant and not session.end %}<span class="tag bill_dormant" title="No change in status for five months">Dormant</span> {% endif %}{% if bill.short_title %}{{ bill.short_title|strip_act }}{% else %}{{ bill.name|strip_act }}{% endif %}</li>{% endfor %}
 </ul><div class="clear"></div></div>
 {% endif %}{% endblock %}
 
@@ -26,14 +26,14 @@
 <div class="clear"></div><div class="context"><h2>Sessions</h2></div>
 <div class="focus"><ul class="tile">
     {% for session in session_list %}{% if not forloop.first %}
-<li class="six oneline"><a href="{% url parliament.bills.views.bills_for_session session_id=session.id %}" class="tip" title="{{ session }}">{{ session.start|date:"F Y" }}&ndash;{{session.end|date:"F Y"}}</a></li>{% endif %}{% endfor %}
+<li class="six oneline"><a href="{% url "parliament.bills.views.bills_for_session" session_id=session.id %}" class="tip" title="{{ session }}">{{ session.start|date:"F Y" }}&ndash;{{session.end|date:"F Y"}}</a></li>{% endif %}{% endfor %}
 </ul><div class="clear"></div></div>
 {% endblock %}{% endif %}
 {% if pm.grouper %}<div class="focus"><p>Private members' bills are introduced by MPs who are not cabinet ministers&mdash;opposition members, or sometimes government backbenchers. They rarely become law.</p></div>{% endif %}
 <div class="clear"></div><div class="context"><h2>{% if pm.grouper %}Private members' bills{% else %}Government bills{% endif %}</h2></div><div class="focus">
     <ul class="tile">
     {# EDITING HERE? Copy changes to the same block above. #}
-    {% for bill in pm.list %}{% if bill.number_only != 1 %}<li class="twoline six {% if bill.short_title %}tip" title="{{ bill.name|strip_act }}"{% else %}overflowtip"{# " #}{% endif %}><a href="{% url bill session_id=session.id bill_number=bill.number %}">{{ bill.number }}</a> {% if bill.law %}<span class="tag bill_law">Law</span> {% elif bill.dead and not session.end %}<span class="tag bill_dead">Dead</span> {% elif bill.dormant and not session.end %}<span class="tag bill_dormant" title="No change in status for five months">Dormant</span> {% endif %}{% if bill.short_title %}{{ bill.short_title|strip_act }}{% else %}{{ bill.name|strip_act }}{% endif %}</li>{% endif %}{% endfor %}
+    {% for bill in pm.list %}{% if bill.number_only != 1 %}<li class="twoline six {% if bill.short_title %}tip" title="{{ bill.name|strip_act }}"{% else %}overflowtip"{# " #}{% endif %}><a href="{% url "bill" session_id=session.id bill_number=bill.number %}">{{ bill.number }}</a> {% if bill.law %}<span class="tag bill_law">Law</span> {% elif bill.dead and not session.end %}<span class="tag bill_dead">Dead</span> {% elif bill.dormant and not session.end %}<span class="tag bill_dormant" title="No change in status for five months">Dormant</span> {% endif %}{% if bill.short_title %}{{ bill.short_title|strip_act }}{% else %}{{ bill.name|strip_act }}{% endif %}</li>{% endif %}{% endfor %}
     </ul><div class="clear"></div>
 </div>
 {% endfor %}

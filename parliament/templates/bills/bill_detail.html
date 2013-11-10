@@ -29,10 +29,10 @@ $(function () {
 </script>
 {% endblock %}
 
-{% block breadcrumbs %}{{ block.super }}<a href="{% url parliament.bills.views.index %}">Bills</a>
-<a href="{% url parliament.bills.views.bills_for_session session_id=bill.session.id %}">{{ bill.session }}</a> {{ title }}{% endblock %}
+{% block breadcrumbs %}{{ block.super }}<a href="{% url "parliament.bills.views.index" %}">Bills</a>
+<a href="{% url "parliament.bills.views.bills_for_session" session_id=bill.session.id %}">{{ bill.session }}</a> {{ title }}{% endblock %}
 {% block headextra %}
-{% if not bill.session.end %}<link rel="alternate" type="application/rss+xml" title="Speeches about Bill {{ bill.number }}" href="{% url bill_feed bill_id=bill.id %}">{% endif %}
+{% if not bill.session.end %}<link rel="alternate" type="application/rss+xml" title="Speeches about Bill {{ bill.number }}" href="{% url "bill_feed" bill_id=bill.id %}">{% endif %}
 {% endblock %}
 {% block content %}
 
@@ -51,7 +51,7 @@ $(function () {
 {% if bill.status or bill.law %}
 <div class="clear"></div><div class="context"><h2>Status</h2></div>
 <div class="focus"><p>{% if bill.law %}This bill has received Royal Assent and is now <strong>law</strong>.{% else %}{{ bill.status }}{% if bill.status_date %}, as of {{ bill.status_date }}{% endif %} {% if bill.session.end %}<br>(This bill <strong>did not</strong> become law.){% endif %}{% endif %}</p>
-{% if not bill.session.end and not bill.law %}<p>Subscribe to a <a href="{% url bill_feed bill_id=bill.id %}" class="feed">feed</a> of speeches and votes in the House related to Bill {{ bill.number }}.</p>{% endif %}
+{% if not bill.session.end and not bill.law %}<p>Subscribe to a <a href="{% url "bill_feed" bill_id=bill.id %}" class="feed">feed</a> of speeches and votes in the House related to Bill {{ bill.number }}.</p>{% endif %}
     </div>{% endif %}
 
 {% with bill.get_summary as bill_summary %}{% if bill_summary %}

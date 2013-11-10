@@ -3,6 +3,8 @@ from default_settings import *
 
 DEBUG = True
 
+ALLOWED_HOSTS = ['.openparliament.ca']
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
