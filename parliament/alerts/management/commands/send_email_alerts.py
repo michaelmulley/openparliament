@@ -31,7 +31,7 @@ class Command(BaseCommand):
         for topic, subs in by_topic.items():
             documents = topic.get_new_items()
             logger.debug(u'%s documents for query %s' % (len(documents), topic))
-            time.sleep(0.3)
+            #time.sleep(0.3)
             if documents:
                 topics_sent += 1
                 for sub in subs:
