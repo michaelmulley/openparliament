@@ -4,9 +4,13 @@ import hashlib
 
 from django.utils.http import urlquote
 from BeautifulSoup import BeautifulSoup
-from django.utils.html import strip_tags, escape
+from django.utils.html import strip_tags
 
 from parliament.activity import utils as activity
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 GOOGLE_NEWS_URL = 'http://news.google.ca/news?pz=1&cf=all&ned=ca&hl=en&as_maxm=3&q=%s&as_qdr=a&as_drrb=q&as_mind=25&as_minm=2&cf=all&as_maxd=27&scoring=n&output=rss'
 def get_feed(pol):
@@ -38,8 +42,8 @@ def news_items_for_pol(pol):
         soup = BeautifulSoup(i.summary)
         try:
             item['summary'] = strip_tags(str(soup.findAll('font', size='-1')[1]))
-        except Exception, e:
-            print e
+        except Exception as e:
+            logger.exception("Error getting news for %s" % pol.slug)
             continue
         if pol.name not in item['summary']:
             continue
