@@ -41,7 +41,7 @@ def news_items_for_pol(pol):
         item['guid'] = 'gnews_%s_%s' % (pol.id, h.hexdigest())
         soup = BeautifulSoup(i.summary)
         try:
-            item['summary'] = strip_tags(str(soup.findAll('font', size='-1')[1]))
+            item['summary'] = strip_tags(unicode(soup.findAll('font', size='-1')[1]))
         except Exception as e:
             logger.exception("Error getting news for %s" % pol.slug)
             continue
