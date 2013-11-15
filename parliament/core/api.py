@@ -35,7 +35,7 @@ class APIView(View):
     # Alternatively, set this to a mimetype to be used
     # if there's no intersection between the Accept header
     # and our options.
-    default_mimetype = None
+    default_mimetype = 'application/json'
 
     resource_type = ''
 
@@ -68,8 +68,8 @@ class APIView(View):
 
         method = request.method.lower()
 
-        request.api_request = (request.get_host().lower().startswith(settings.PARLIAMENT_API_HOST)
-                               or request.GET.get('format'))
+        request.api_request = request.get_host().lower().startswith(settings.PARLIAMENT_API_HOST)
+                              # or request.GET.get('format'))
 
         if request.api_request:
             format = self.get_api_format(request)
