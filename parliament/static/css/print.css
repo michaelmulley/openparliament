@@ -1,0 +1,8 @@
+@media print {
+	.statement .morelink, .statement .fadeout {
+		display: none;
+	}
+	.statement .focus.truncated {
+		max-height: none;
+	}
+}
