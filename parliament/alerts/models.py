@@ -167,9 +167,8 @@ class Subscription(models.Model):
 
     def get_unsubscribe_url(self, full=False):
         key = Signer(salt='alerts_unsubscribe').sign(unicode(self.id))
-        return urlresolvers.reverse('alerts_unsubscribe',
-            kwargs={'key': key},
-            prefix=(settings.SITE_URL if full else '') + '/')
+        return (settings.SITE_URL if full else '') + urlresolvers.reverse(
+            'alerts_unsubscribe', kwargs={'key': key})
 
     def render_message(self, documents):
         ctx = {
