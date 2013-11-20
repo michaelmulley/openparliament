@@ -1,3 +1,4 @@
+import json
 import re
 
 from django.template import loader, RequestContext
@@ -200,3 +201,15 @@ def unsubscribe(request, key):
     c = RequestContext(request, ctx)
     t = loader.get_template("alerts/unsubscribe.html")
     return HttpResponse(t.render(c))
+
+
+def bounce_webhook(request):
+    """Simple view to process bounce reports delivered via webhook.
+    (uses the Mandrill API for the moment)"""
+    if 'mandrill_events' not in request.POST:
+        raise Http404
+
+    for event in json.loads(request.POST['mandrill_events']):
+        if 'bounce' in event['event']:
+            User.objects.filter(email=event['msg']['email']).update(email_bouncing=True)
+    return HttpResponse('OK')
