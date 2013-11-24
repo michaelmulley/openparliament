@@ -1,8 +1,8 @@
 /* GLOBAL SETTINGS */
-body{font-family:"Helvetica Neue",Arial,Helvetica,sans-serif;margin:0;padding:0;line-height:1.33333333333;font-size:15px;color: #111111;background-color:#DDDDDD;}
+body{font-family:"Helvetica Neue",Arial,Helvetica,sans-serif;margin:0;padding:0;line-height:1.33333333333;font-size:15px;color: #222222;background-color:#DDDDDD;}
 p{margin:0 0 10px 0;}
 .quiet { font-size: 12px; color: #555555;}
-h1{font-size:32px;font-weight:bold;color:#222222;margin:0 0 20px 0;padding:0;line-height:40px;}
+h1{font-size:38px;font-weight:bold;color:#222222;margin:10px 0 25px 0;padding:0;line-height:40px;}
 h2{font-size:24px;font-weight:normal;font-weight:300;margin:0 0 10px 0;color:#522D07;line-height:30px;}
 h3{margin:0 0 10px 0;font-weight:bold;color:#522D07;font-size: 17px;}
 a{color:#1A59C7;text-decoration:none;font-weight:bold;outline:none;}
@@ -24,7 +24,7 @@ div.context{clear:both;float:left;width:160px;margin-bottom:10px;}
 .context_2 div.focus{width:830px;}
 .context h2{position:relative;top:-2px;}
 .focus h1,.focus h2,.focus h3,.focus p{max-width:640px;}
-div.focus{float:right;width:770px;margin-bottom:20px;}
+div.focus{float:right;width:770px;margin-bottom:40px;}
 div.focus.pageheader{margin-bottom:0;}
 .clear{clear:both;}
 .clearafter:after{visibility:hidden;display:block;font-size:0;content:" ";clear:both;height:0;}
@@ -141,23 +141,24 @@ td.standard_form{width:520px;}
 #paginated_wrapped{margin-top:30px;}
 
 /* TAG BOXES */
-.tag{padding:2px 3px;background-color:#CCCCCC;}
-.voteresult_Y{background-color:#A9FA98;}
-.voteresult_N{background-color:#FF9093;}
-.partytag_liberal{background-color:#f6a7a5;}
-.partytag_bloc{background-color:#a7ecf6;}
-.partytag_cpc,.partytag_alliance, .partytag_canadian-alliance, .partytag_conservative, .partytag_progressive-conservative, .partytag_pc {background-color:#acd0f6;}
+.tag{padding:2px 5px;margin: 0 1px;background-color:#CCCCCC;border-radius: 4px;}
+.multitags .tag {display: inline-block; margin-bottom: 5px;}
+.voteresult_Y{background-color:#C4F492;}
+.voteresult_N{background-color:#FF9F9F;}
+.partytag_liberal{background-color:#FF9999;}
+.partytag_bloc{background-color:#8AC0DD;}
+.partytag_cpc,.partytag_alliance, .partytag_canadian-alliance, .partytag_conservative, .partytag_progressive-conservative, .partytag_pc {background-color:#AECBF4;}
 /* .partytag_progressive-conservative{background-color: #75acff;} */
 .partytag_reform, .partytag_green {background-color: #A9FA98;}
-.partytag_ndp{background-color:#f6cfa5;}
-.activity_news{background-color:#F1F28D;}
-.activity_statement{background-color:#ddb8a2;}
-.activity_twitter{background-color:#D9A5DF;}
-.activity_bill{background-color:#a4aede;}
-.activity_committee{background-color:#a4ded2;}
-.bill_law{background-color:#A9FA98;}
-.bill_dead{background-color:#FF9093;}
-.bill_dormant{background-color:#F1F28D;}
+.partytag_ndp{background-color:#F7B86D;}
+.activity_news{background-color:#EFEDA3;}
+.activity_statement{background-color:#D9B88E;}
+.activity_twitter{background-color:#92D9EA;}
+.activity_bill{background-color:#E2B8E8;}
+.activity_committee{background-color:#A4DED2;}
+.bill_law{background-color:#74E2BA;}
+.bill_dead{background-color:#D9D9FC;}
+.bill_dormant{background-color:#FFEFAE;}
 
 /* STATEMENTS */
 .statement .pol_name{font-weight:bold;}
@@ -167,11 +168,11 @@ padding-left:3px;color:#666666;}
 blockquote{/* border-left:3px solid #CCCCCC;*/
 margin:0 1em 0 2em;padding:0 0 0 1em;}
 .focus blockquote p{max-width:590px;}
-.statement{border-top:1px solid #CCCCCC;clear:both;padding-top:19px;width:870px;position:relative;}
+.statement{border-top:1px solid #CCCCCC;clear:both;padding-top:24px;width:870px;position:relative;}
 .statement.nocontext{width:680px;}
 .statement.first{border:none;}
 .statement.highlighted{background-color:#fff2b5;}
-div.statement div.focus{margin-bottom:10px;min-height:110px;overflow:hidden;width:680px;}
+div.statement div.focus{margin-bottom:15px;min-height:110px;overflow:hidden;width:680px;}
 .js .statement .focus {max-height:380px;}
 .js .disable_more_links .statement .focus {max-height: none;}
 .statement .focus.truncated{max-height:360px;}
@@ -230,13 +231,14 @@ p.search_options:hover { opacity: 1.0;}
 
 /* HOME */
 .home h1 {margin-bottom: 20px;}
+.home #nav_searchform {display: none;}
 #home_searchform .VS-search { width: 450px; float: left;}
 #home_searchbutton { float: left; position: relative; top: 1px; margin-left: 10px;}
 /*.js #home_searchbutton { display: none;}*/
 .heading_context{padding-left: 3px; color: #666666; font-weight: normal; font-weight: 300;}
 
 /* STATEMENT SHARING TOOLS */
-#statement-tools{position:absolute;z-index:5;}
+#statement-tools{position:absolute;z-index:5;padding-top: 10px;}
 #statement-tools img{padding:3px 3px;opacity:0.7;cursor:pointer;width: 16px; height: 16px;}
 #statement-tools img:hover{opacity:1.0;}
 p.share_link{font-weight:bold;}
