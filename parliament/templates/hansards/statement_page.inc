@@ -1,4 +1,4 @@
-{% load markup thumbnail %}
+{% load markup thumbnail pagination %}
 {% if highlight_statement or highlight_statement == 0 %}
 	<script type="text/javascript">
 		$(function () {
@@ -6,12 +6,11 @@
 		});
 	</script>
 {% endif %}
-{% if page.has_previous or page.has_next %}
-	<div class="focus">{% include "pagination.inc" %}</div>
-{% endif %}
+{% long_paginator as pagination %}
+{{ pagination }}
 {% for statement in page.object_list %}{% with statement.name_info as name_info %}
 	{% with statement.get_absolute_url as statementurl %}
-		<div class="statement{% if forloop.first %} first{% endif %}{% if highlight_statement == statement %} highlighted{% endif %}"
+		<div class="statement_browser statement{% if forloop.first %} first{% endif %}{% if highlight_statement == statement %} highlighted{% endif %}"
 			 {% if highlight_statement == statement %}id="hl"{% else %}id="s{{ statement.slug }}"{% endif %}
 			 data-url="{{ statementurl }}" {% if statement.content_fr and 0 %} data-francais="{{ statement.content_fr }}"{% endif %}>
 			<div class="context clearafter">
@@ -47,4 +46,4 @@
 			<div class="clear"></div>
 		</div>
 	{% endwith %}{% endwith %}{% endfor %}
-<div class="focus statement_browser">{% include "pagination.inc" %}</div>
+{{ pagination }}

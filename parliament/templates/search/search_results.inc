@@ -1,4 +1,4 @@
-{% load json %}
+{% load json pagination %}
 {% if page %}
 {#	<div class="focus">#}
 		<div class="search_header" data-years="{{ chart_years|join:"," }}" data-values="{{ chart_values|join:"," }}" data-sort="{{ sort }}" data-discontinuity="{{ discontinuity }}">
@@ -25,7 +25,7 @@
         <div class="focus"><p><a href="{{ result.url }}">Bill {{ result.number }}</a> <span class="pol_affil">{{ result.title }}</span></p><p>{{ result.text }}</p></div>{% endif %}</div>
     {% endfor %}
 	<div class="clear"></div>
-    {% include "pagination.inc" %}
+    {% long_paginator as pagination %}{{ pagination }}
 {#	</div>#}
 {% endif %}{# endif page #}
 <script type="text/javascript">

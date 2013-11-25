@@ -66,7 +66,7 @@ table {max-width: 100%; background-color: transparent; border-collapse: collapse
 #navbarbg{width:100%;position:absolute;left:0;top:0;height:60px;background-color:#2f6970;border-bottom:2px solid #999999;}
 .debates #navbarbg {background-color: #46567d;}
 .bills #navbarbg {background-color: #733a14;}
-.politicians #navbarbg {background-color: #6e295b;}
+.politicians #navbarbg {background-color: #563d7c;}
 .committees #navbarbg {background-color: #465f1b;}
 #navbar{position:relative;margin: 5px auto 0 auto;width:960px;height:55px;}
 #navbar img{position:absolute;top:2px;}
@@ -162,16 +162,45 @@ td.standard_form{width:520px;}
 
 /* PAGINATION */
 .pagination{text-align:center;width:640px;}
-.pagination .pagelink{display:inline-block;width:22px;height:23px;background:transparent url('../images/pagebuttons.png') no-repeat;}
-.pagination span{margin:0 14px;font-weight:bold;color:#333333;position:relative;bottom:5px;}
-.pagination.loading span{visibility:hidden;}
-.pagination.loading{background:transparent url('../images/loading.gif') no-repeat center center;}
-.pagination .pagelink.prev{background-position:0 -69px;}
-.pagination .pagelink.prev:hover{background-position:0 -46px;}
-.pagination .pagelink.next{background-position:0 -23px;}
-.pagination .pagelink.next:hover{background-position:0 0;}
+#paginated .pagination-container{margin-bottom: 20px;}
 #paginated{clear:both;}
 #paginated_wrapped{margin-top:30px;}
+.pagination.loading a.active {
+  background:transparent url('../images/loading.gif') no-repeat center center;
+  color: transparent;
+}
+.long-paginator {
+  text-align: center;
+  clear: both;
+  padding: .5em .75em;
+}
+.long-paginator:hover a{
+  background-color: #EEEEEE;
+  transition: background-color .5s;
+}
+.long-paginator a {
+  display: inline-block;
+  padding: 0.5em;
+  margin: 0 0.25em;
+  background-color: #f4f4f4;
+  font-weight: normal;
+}
+.long-paginator a.prev, .long-paginator a.next {
+  font-weight: bold;
+}
+.long-paginator a:hover {
+  text-decoration: none;
+  background-color: #CCCCCC;
+}
+.long-paginator a.ellipsis {
+  color: #555555;
+  background-color: transparent;
+}
+.long-paginator a.active {
+  background-color: transparent;
+  font-weight: bold;
+  color: #333333;
+}
 
 /* TAG BOXES */
 .tag{padding:2px 5px;margin: 0 1px;background-color:#CCCCCC;border-radius: 4px;}
@@ -239,7 +268,7 @@ div.headshot span{display: block;position: relative;font-size: 10px;color: #8888
 /* SEARCH */
 .search .search_header { padding-bottom: 30px; }
 .search .result {margin-bottom: 5px; padding-top: 5px;}
-.search .result .highlighted,.result em{background-color:yellow;font-style:normal;}
+.search .result .highlighted,.result em{background-color:#ffea80;font-style:normal;}
 .search .result div.focus {float: left; width: 620px; margin: 0;}
 .search .result div.focus p {max-width: 620px;}
 .search .result div.context {float: right; text-align: right; color: #555; font-size: 11px; padding-top: 2px; width: 140px;}

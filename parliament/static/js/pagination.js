@@ -1,12 +1,14 @@
 $(function() {
 
-    $('.pagelink').live('click', function(e) {
+    $('.pagination a').live('click', function(e) {
         e.preventDefault();
-        History.pushState(null, null, this.href);
-        if ($(this).hasClass('show_paginated_div')) {
-            $(this).html('Loading...');
+        if (this.href) {
+            History.pushState(null, null, this.href);
+            if ($(this).hasClass('show_paginated_div')) {
+                $(this).html('Loading...');
+            }
+            $('#paginated').find('.pagination').addClass('loading');
         }
-        $('#paginated').find('.pagination').addClass('loading');
     });
 
     $(window).bind('statechange', function(e) {

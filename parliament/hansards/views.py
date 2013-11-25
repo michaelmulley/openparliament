@@ -120,6 +120,7 @@ def document_view(request, document, meeting=None, slug=None):
         'page': statements,
         'highlight_statement': highlight_statement,
         'singlepage': 'singlepage' in request.GET,
+        'allow_single_page': True
     }
     if document.document_type == Document.DEBATE:
         ctx.update({

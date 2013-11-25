@@ -59,7 +59,7 @@ def search(request):
             chart_values=[c[1] for c in query_obj.date_counts],
             facet_fields=query_obj.facet_fields,
             page=SearchPaginator(query_obj.documents, query_obj.hits,
-                pagenum, PER_PAGE, request.GET)
+                pagenum, PER_PAGE)
         )
 
         ctx.update(query_obj.validated_user_params)

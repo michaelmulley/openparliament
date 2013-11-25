@@ -1,41 +1,40 @@
+from collections import namedtuple
 import math
 import re
 import urllib
 
 from django.utils.safestring import mark_safe
 
+_FakePaginator = namedtuple('FakePaginator', 'num_pages count')
 
 class SearchPaginator(object):
     """A dumb imitation of the Django Paginator."""
 
-    def __init__(self, object_list, hits, pagenum, perpage,
-            params, allowable_fields=None):
+    def __init__(self, object_list, hits, pagenum, perpage):
         self.object_list = object_list
-        if pagenum > 1:
-            self.has_previous = True
-            self.previous_page_number = pagenum - 1
-        else:
-            self.has_previous = False
         self.hits = hits
         self.num_pages = int(math.ceil(float(self.hits) / float(perpage)))
-        if pagenum < self.num_pages:
-            self.has_next = True
-            self.next_page_number = pagenum + 1
         self.number = pagenum
         self.start_index = ((pagenum - 1) * perpage) + 1
         self.end_index = self.start_index + perpage - 1
         if self.end_index > self.hits:
             self.end_index = self.hits
 
-        if allowable_fields:
-            good_params = dict([(k.encode('utf8'), v.encode('utf8')) for (k, v) in params.items() if k in allowable_fields])
-        else:
-            good_params = dict([(k.encode('utf8'), v.encode('utf8')) for (k, v) in params.items() if k not in ('page', 'partial')])
-        self.querystring = mark_safe(urllib.urlencode(good_params))
-
     @property
     def paginator(self):
-        return {'num_pages': self.num_pages, 'count': self.hits}
+        return _FakePaginator(self.num_pages, self.hits)
+
+    def has_previous(self):
+        return self.number > 1
+
+    def has_next(self):
+        return self.number < self.num_pages
+
+    def previous_page_number(self):
+        return self.number - 1
+
+    def next_page_number(self):
+        return self.number + 1
 
 
 class BaseSearchQuery(object):

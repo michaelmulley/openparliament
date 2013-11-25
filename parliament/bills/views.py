@@ -69,10 +69,8 @@ class BillDetailView(ModelDetailView):
 
         if tab == 'mentions':
             page = self._render_page(request, mentions, per_page=per_page)
-            page.querystring = 'tab=' + tab
         elif tab == 'major-speeches':
             page = self._render_page(request, major_speeches, per_page=per_page)
-            page.querystring = 'tab=' + tab
         else:
             page = None
 
@@ -84,13 +82,12 @@ class BillDetailView(ModelDetailView):
             'committee_meetings': meetings,
             'votequestions': bill.votequestion_set.all().order_by('-date', '-number'),
             'page': page,
+            'allow_single_page': True,
             'tab': tab,
             'title': ('Bill %s' % bill.number) + (' (Historical)' if bill.session.end else ''),
             'statements_full_date': True,
             'statements_context_link': True,
         })
-        if page and page.has_other_pages() and not request.GET.get('singlepage'):
-            c['single_page_link'] = '?tab=%s&singlepage=1' % tab
         if request.is_ajax():
             if tab == 'meetings':
                 t = loader.get_template("bills/related_meetings.inc")
