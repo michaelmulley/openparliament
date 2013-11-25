@@ -60,7 +60,7 @@ window.OP = {
 <body class="nojs {% block bodyclass %}{% endblock %}">
 <div id="navbarbg"></div>
 <div id="navbar">
-	<a href="/"><img src="{{ STATIC_URL }}images/logotype_bar_v2.png" alt="openparliament.ca"></a>
+	<a href="/"><img id="navbar_logotype" width="220" height="34" src="{{ STATIC_URL }}images/logotype-white-2x.png" alt="openparliament.ca"></a>
     <ul id="navlinks">
 		<li {% block navlinks_mps %}{% endblock %}><a href="{% url "parliament.politicians.views.current_mps" %}">MPs</a></li>
 		<li {% block navlinks_bills %}{% endblock %}><a href="{% url "parliament.bills.views.index" %}">Bills</a></li>
@@ -69,7 +69,7 @@ window.OP = {
 		<li {% block navlinks_about %}{% endblock %}><a href="/about/">About</a></li>
 		<li {% block navlinks_labs %}{% endblock %}><a href="/labs/">Labs</a></li>
 	</ul>
-	{% block navbar_search %}<form action="{% url "search" %}" method="GET" id="nav_searchform">{% include "search/searchbox.inc" with placeholder="Search" %}</form>{% endblock navbar_search %}
+	{% block navbar_search %}<form action="{% url "search" %}" method="GET" id="nav_searchform"><input type="text" name="q" placeholder="search"><span class="searchicon"></span></form>{% endblock navbar_search %}
 </div>
 <div id="notifications">{% block notifications %}{# e.g. <div class="top-notification success"><div class="notification-inner">Hello!</div></div> #}{% endblock %}</div>
 <div id="content_wrap"><div id="content" class="{% block contentclass %}{% endblock %}" {% block contentdiv %}{% endblock %}>

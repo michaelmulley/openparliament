@@ -169,6 +169,14 @@ $(function() {
         }
     });
     $('input[name=q]').val('');
+    $('#navbar .searchicon').click(function() {
+        if ($('#navbar form input').val()) {
+            $('#navbar form').submit();
+        }
+        else {
+            $('#navbar form input').focus();
+        }
+    });
 
     $('body').delegate('.top-notification a.close', 'click', function(e) {
         var $notification = $(this).closest('.top-notification');
