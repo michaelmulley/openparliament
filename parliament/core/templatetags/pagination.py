@@ -19,7 +19,10 @@ def long_paginator(context):
     '''
 
     page_obj = context['page']
-    paginator = page_obj.paginator
+    try:
+        paginator = page_obj.paginator
+    except AttributeError:
+        return ''
     pages = paginator.num_pages
     if pages <= 1:
         return ''
