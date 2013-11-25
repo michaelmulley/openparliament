@@ -4,7 +4,7 @@ p{margin:0 0 10px 0;}
 .quiet { font-size: 12px; color: #555555;}
 h1{font-size:38px;font-weight:bold;color:#222222;margin:10px 0 40px 0;padding:0;line-height:47px;}
 h2{font-size:24px;font-weight:normal;font-weight:300;margin:0 0 10px 0;color:#522D07;line-height:30px;}
-h3{margin:0 0 10px 0;font-weight:bold;color:#522D07;font-size: 17px;}
+h3{margin:20px 0 15px 0;font-weight:bold;color:#522D07;font-size: 17px;}
 a{color:#1A59C7;text-decoration:none;font-weight:bold;outline:none;}
 a.quiet{font-weight:normal;}
 a:hover{text-decoration:underline;color:#1A59C7;}
@@ -232,6 +232,7 @@ div.headshot span{display: block;position: relative;font-size: 10px;color: #8888
 #activity h3{border-bottom:1px dotted #AAAAAA;}
 #activity h3 span{position:relative;top:3px;}
 #activity .excerpt{display:block;border-left:1px dotted #AAAAAA;margin-left:2em;padding-left:1em;font-style:italic;margin-top:5px;}
+#activity p {margin-bottom: 15px;}
 #pol_restricted_search{margin: 15px 0;}
 #pol_restricted_search .VS-search {width: 640px;}
 
