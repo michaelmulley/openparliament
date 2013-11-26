@@ -57,9 +57,9 @@ table {max-width: 100%; background-color: transparent; border-collapse: collapse
 #breadcrumbs{width:960px;color:#555555;font-size:14px;font-weight:bold;margin-bottom: 15px;opacity: 0.6; transition: opacity 0.5s;}
 #breadcrumbs:hover{opacity: 1.0; transition: opacity .5s;}
 #breadcrumbs a{background:transparent url('../images/breadglyph.png') no-repeat right;padding-right:13px;font-weight:normal;}
-#navlinks{font-weight:bold;position:absolute;font-size:15px;top:19px;left:370px;list-style-type:none;margin:0;padding:0;letter-spacing: 0.1px;}
+#navlinks{position:absolute;font-size:16px;top:18px;left:367px;list-style-type:none;margin:0;padding:0;letter-spacing: 0.2px;}
 #navlinks li{padding:0;float:left;margin-right:12px;}
-#navlinks li a{color:#EEEEEE;}
+#navlinks li a{color:#EEEEEE; font-weight: normal;}
 #navlinks li.selected a{color:#FFC757;}
 #navlinks li a:hover{color:white;text-decoration:underline;}
 #navbar_logotype {padding-top: 5px;}
