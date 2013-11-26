@@ -5,7 +5,7 @@ from django.conf import settings
 from parliament.accounts.models import User
 from parliament.utils.views import JSONView
 
-def get_user_from_persona_assertion(assertion, audience=settings.SITE_URL):
+def get_user_from_persona_assertion(assertion, audience=settings.SITE_URL.replace('http://', '').replace('https://', '')):
     data = browserid.verify(assertion, audience)
     assert data['email']
     user, created = User.objects.get_or_create(email=data['email'].lower().strip())
