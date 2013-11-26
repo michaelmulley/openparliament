@@ -1,4 +1,4 @@
-/*! Raven.js 1.0.7 | github.com/getsentry/raven-js */
+/*! Raven.js 1.1.1 (c231352) | github.com/getsentry/raven-js */
 
 /*
  * Includes TraceKit
@@ -117,6 +117,7 @@ TraceKit.report = (function reportModuleWrapper() {
      * @param {Function} handler
      */
     function subscribe(handler) {
+        installGlobalHandler();
         handlers.push(handler);
     }
 
@@ -156,7 +157,7 @@ TraceKit.report = (function reportModuleWrapper() {
         }
     }
 
-    var _oldOnerrorHandler = window.onerror;
+    var _oldOnerrorHandler, _onErrorHandlerInstalled;
 
     /**
      * Ensures all global unhandled exceptions are recorded.
@@ -166,7 +167,7 @@ TraceKit.report = (function reportModuleWrapper() {
      * @param {(number|string)} lineNo The line number at which the error
      * occurred.
      */
-    window.onerror = function traceKitWindowOnError(message, url, lineNo) {
+    function traceKitWindowOnError(message, url, lineNo) {
         var stack = null;
 
         if (lastExceptionStack) {
@@ -197,7 +198,17 @@ TraceKit.report = (function reportModuleWrapper() {
         }
 
         return false;
-    };
+    }
+
+    function installGlobalHandler ()
+    {
+        if (_onErrorHandlerInstalled === true) {
+            return;
+        }
+        _oldOnerrorHandler = window.onerror;
+        window.onerror = traceKitWindowOnError;
+        _onErrorHandlerInstalled = true;
+    }
 
     /**
      * Reports an unhandled Error to TraceKit.
@@ -533,7 +544,7 @@ TraceKit.computeStackTrace = (function computeStackTraceWrapper() {
             re = new RegExp(escapeRegExp(code).replace(/\s+/g, '\\s+'));
         }
 
-        // not sure if this is really necessary, but I don’t have a test
+        // not sure if this is really necessary, but I donâ€™t have a test
         // corpus large enough to confirm that and it was in the original.
         else {
             var name = parts[1] ? '\\s+' + parts[1] : '',
@@ -1065,106 +1076,6 @@ TraceKit.computeStackTrace = (function computeStackTraceWrapper() {
     return computeStackTrace;
 }());
 
-/**
- * Extends support for global error handling for asynchronous browser
- * functions. Adopted from Closure Library's errorhandler.js
- */
-(function extendToAsynchronousCallbacks() {
-    var _helper = function _helper(fnName) {
-        var originalFn = window[fnName];
-        window[fnName] = function traceKitAsyncExtension() {
-            // Make a copy of the arguments
-            var args = _slice.call(arguments);
-            var originalCallback = args[0];
-            if (typeof (originalCallback) === 'function') {
-                args[0] = TraceKit.wrap(originalCallback);
-            }
-            // IE < 9 doesn't support .call/.apply on setInterval/setTimeout, but it
-            // also only supports 2 argument and doesn't care what "this" is, so we
-            // can just call the original function directly.
-            if (originalFn.apply) {
-                return originalFn.apply(this, args);
-            } else {
-                return originalFn(args[0], args[1]);
-            }
-        };
-    };
-
-    _helper('setTimeout');
-    _helper('setInterval');
-}());
-
-/**
- * Extended support for backtraces and global error handling for most
- * asynchronous jQuery functions.
- */
-(function traceKitAsyncForjQuery($) {
-
-    // quit if jQuery isn't on the page
-    if (!$) {
-        return;
-    }
-
-    var _oldEventAdd = $.event.add;
-    $.event.add = function traceKitEventAdd(elem, types, handler, data, selector) {
-        var _handler;
-
-        if (handler.handler) {
-            _handler = handler.handler;
-            handler.handler = TraceKit.wrap(handler.handler);
-        } else {
-            _handler = handler;
-            handler = TraceKit.wrap(handler);
-        }
-
-        // If the handler we are attaching doesn’t have the same guid as
-        // the original, it will never be removed when someone tries to
-        // unbind the original function later. Technically as a result of
-        // this our guids are no longer globally unique, but whatever, that
-        // never hurt anybody RIGHT?!
-        if (_handler.guid) {
-            handler.guid = _handler.guid;
-        } else {
-            handler.guid = _handler.guid = $.guid++;
-        }
-
-        return _oldEventAdd.call(this, elem, types, handler, data, selector);
-    };
-
-    var _oldReady = $.fn.ready;
-    $.fn.ready = function traceKitjQueryReadyWrapper(fn) {
-        return _oldReady.call(this, TraceKit.wrap(fn));
-    };
-
-    var _oldAjax = $.ajax;
-    $.ajax = function traceKitAjaxWrapper(url, options) {
-        var keys = ['complete', 'error', 'success'], key;
-
-        // Taken from https://github.com/jquery/jquery/blob/eee2eaf1d7a189d99106423a4206c224ebd5b848/src/ajax.js#L311-L318
-        // If url is an object, simulate pre-1.5 signature
-        if (typeof url === 'object') {
-            options = url;
-            url = undefined;
-        }
-
-        // Force options to be an object
-        options = options || {};
-
-        while(key = keys.pop()) {
-            if ($.isFunction(options[key])) {
-                options[key] = TraceKit.wrap(options[key]);
-            }
-        }
-
-        try {
-            return _oldAjax.call(this, url, options);
-        } catch (e) {
-            TraceKit.report(e);
-            throw e;
-        }
-    };
-
-}(window.jQuery));
 
 //Default options:
 if (!TraceKit.remoteFetching) {
@@ -1174,8 +1085,8 @@ if (!TraceKit.collectWindowErrors) {
   TraceKit.collectWindowErrors = true;
 }
 if (!TraceKit.linesOfContext || TraceKit.linesOfContext < 1) {
-  // 5 lines before, the offending line, 5 lines after
-  TraceKit.linesOfContext = 11;
+  // 3 lines before, the offending line, 3 lines after
+  TraceKit.linesOfContext = 7;
 }
 
 
@@ -1184,14 +1095,17 @@ if (!TraceKit.linesOfContext || TraceKit.linesOfContext < 1) {
 window.TraceKit = TraceKit;
 
 }(window));
+
 ;(function(window, undefined){
+
 'use strict';
 
 // First, check for JSON support
 // If there is no JSON, we no-op the core features of Raven
 // since JSON is required to encode the payload
 var _Raven = window.Raven,
-    hasJSON = !isUndefined(window.JSON),
+    hasJSON = !!(window.JSON && window.JSON.stringify),
+    lastCapturedException,
     globalServer,
     globalUser,
     globalKey,
@@ -1199,7 +1113,12 @@ var _Raven = window.Raven,
     globalOptions = {
         logger: 'javascript',
         ignoreErrors: [],
-        ignoreUrls: []
+        ignoreUrls: [],
+        whitelistUrls: [],
+        includePaths: [],
+        collectWindowErrors: true,
+        tags: {},
+        extra: {}
     };
 
 var TK = TraceKit.noConflict();
@@ -1213,7 +1132,23 @@ TK.remoteFetching = false;
  * @this {Raven}
  */
 var Raven = {
-    VERSION: '1.0.7',
+    VERSION: '1.1.1',
+
+    // Expose TraceKit to the Raven namespace
+    TraceKit: TK,
+
+    /*
+     * Allow Raven to be configured as soon as it is loaded
+     * It uses a global RavenConfig = {dsn: '...', config: {}}
+     *
+     * @return undefined
+     */
+    afterLoad: function() {
+        var globalConfig = window.RavenConfig;
+        if (globalConfig) {
+            this.config(globalConfig.dsn, globalConfig.config).install();
+        }
+    },
 
     /*
      * Allow multiple versions of Raven to be installed.
@@ -1234,13 +1169,9 @@ var Raven = {
      * @return {Raven}
      */
     config: function(dsn, options) {
-        var uri = parseUri(dsn),
+        var uri = parseDSN(dsn),
             lastSlash = uri.path.lastIndexOf('/'),
             path = uri.path.substr(1, lastSlash);
-
-        if (options && options.ignoreErrors && window.console && console.warn) {
-            console.warn('DeprecationWarning: `ignoreErrors` is going to be removed soon.');
-        }
 
         // merge in options
         if (options) {
@@ -1252,6 +1183,13 @@ var Raven = {
         // "Script error." is hard coded into browsers for errors that it can't read.
         // this is the result of a script being pulled in from an external domain and CORS.
         globalOptions.ignoreErrors.push('Script error.');
+        globalOptions.ignoreErrors.push('Script error');
+
+        // join regexp rules into one big rule
+        globalOptions.ignoreErrors = joinRegExp(globalOptions.ignoreErrors);
+        globalOptions.ignoreUrls = globalOptions.ignoreUrls.length ? joinRegExp(globalOptions.ignoreUrls) : false;
+        globalOptions.whitelistUrls = globalOptions.whitelistUrls.length ? joinRegExp(globalOptions.whitelistUrls) : false;
+        globalOptions.includePaths = joinRegExp(globalOptions.includePaths);
 
         globalKey = uri.user;
         globalProject = ~~uri.path.substr(lastSlash + 1);
@@ -1268,6 +1206,12 @@ var Raven = {
         if (globalOptions.fetchContext) {
             TK.remoteFetching = true;
         }
+
+        if (globalOptions.linesOfContext) {
+            TK.linesOfContext = globalOptions.linesOfContext;
+        }
+
+        TK.collectWindowErrors = !!globalOptions.collectWindowErrors;
 
         // return for chaining
         return Raven;
@@ -1304,7 +1248,7 @@ var Raven = {
             options = undefined;
         }
 
-        Raven.wrap(options, func).apply(this, args);
+        return Raven.wrap(options, func).apply(this, args);
     },
 
     /*
@@ -1315,20 +1259,55 @@ var Raven = {
      * @return {function} The newly wrapped functions with a context
      */
     wrap: function(options, func) {
+        // 1 argument has been passed, and it's not a function
+        // so just return it
+        if (isUndefined(func) && !isFunction(options)) {
+            return options;
+        }
+
         // options is optional
         if (isFunction(options)) {
             func = options;
             options = undefined;
         }
 
-        return function() {
+        // At this point, we've passed along 2 arguments, and the second one
+        // is not a function either, so we'll just return the second argument.
+        if (!isFunction(func)) {
+            return func;
+        }
+
+        // We don't wanna wrap it twice!
+        if (func.__raven__) {
+            return func;
+        }
+
+        function wrapped() {
+            var args = [], i = arguments.length;
+            // Recursively wrap all of a function's arguments that are
+            // functions themselves.
+            while(i--) args[i] = Raven.wrap(options, arguments[i]);
             try {
-                func.apply(this, arguments);
+                /*jshint -W040*/
+                return func.apply(this, args);
             } catch(e) {
                 Raven.captureException(e, options);
                 throw e;
             }
-        };
+        }
+
+        // copy over properties of the old function
+        for (var property in func) {
+            if (func.hasOwnProperty(property)) {
+                wrapped[property] = func[property];
+            }
+        }
+
+        // Signal that this function has been wrapped already
+        // for both debugging and to prevent it to being wrapped twice
+        wrapped.__raven__ = true;
+
+        return wrapped;
     },
 
     /*
@@ -1351,9 +1330,10 @@ var Raven = {
      */
     captureException: function(ex, options) {
         // If a string is passed through, recall as a message
-        if (typeof ex === 'string') {
-            return Raven.captureMessage(ex, options);
-        }
+        if (isString(ex)) return Raven.captureMessage(ex, options);
+
+        // Store the raw exception object for potential debugging and introspection
+        lastCapturedException = ex;
 
         // TraceKit.report will re-raise any exception passed to it,
         // which means you have to wrap it in try/catch. Instead, we
@@ -1399,21 +1379,61 @@ var Raven = {
        globalUser = user;
 
        return Raven;
+    },
+
+    /*
+     * Get the latest raw exception that was captured by Raven.
+     *
+     * @return {error}
+     */
+    lastException: function() {
+        return lastCapturedException;
     }
 };
 
-var uriKeys = 'source protocol authority userInfo user password host port relative path directory file query anchor'.split(' '),
-    uriPattern = /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/;
+function triggerEvent(eventType, options) {
+    var event, key;
+
+    options = options || {};
+
+    eventType = 'raven' + eventType.substr(0,1).toUpperCase() + eventType.substr(1);
+
+    if (document.createEvent) {
+        event = document.createEvent('HTMLEvents');
+        event.initEvent(eventType, true, true);
+    } else {
+        event = document.createEventObject();
+        event.eventType = eventType;
+    }
+
+    for (key in options) if (options.hasOwnProperty(key)) {
+        event[key] = options[key];
+    }
+
+    if (document.createEvent) {
+        // IE9 if standards
+        document.dispatchEvent(event);
+    } else {
+        // IE8 regardless of Quirks or Standards
+        // IE9 if quirks
+        try {
+            document.fireEvent('on' + event.eventType.toLowerCase(), event);
+        } catch(e) {}
+    }
+}
+
+var dsnKeys = 'source protocol user host port path'.split(' '),
+    dsnPattern = /^(?:(\w+):)?\/\/(\w+)@([\w\.-]+)(?::(\d+))?(\/.*)/;
 
 /**** Private functions ****/
-function parseUri(str) {
-    var m = uriPattern.exec(str),
-        uri = {},
-        i = 14;
+function parseDSN(str) {
+    var m = dsnPattern.exec(str),
+        dsn = {},
+        i = 6;
 
-    while (i--) uri[uriKeys[i]] = m[i] || '';
+    while (i--) dsn[dsnKeys[i]] = m[i] || '';
 
-    return uri;
+    return dsn;
 }
 
 function isUndefined(what) {
@@ -1422,6 +1442,10 @@ function isUndefined(what) {
 
 function isFunction(what) {
     return typeof what === 'function';
+}
+
+function isString(what) {
+    return typeof what === 'string';
 }
 
 function each(obj, callback) {
@@ -1434,8 +1458,11 @@ function each(obj, callback) {
             }
         }
     } else {
-        for (i = 0, j = obj.length; i < j; i++) {
-            callback.call(null, i, obj[i]);
+        j = obj.length;
+        if (j) {
+            for (i = 0; i < j; i++) {
+                callback.call(null, i, obj[i]);
+            }
         }
     }
 }
@@ -1446,7 +1473,7 @@ function getAuthQueryString() {
     if (cachedAuth) return cachedAuth;
 
     var qs = [
-        'sentry_version=2.0',
+        'sentry_version=4',
         'sentry_client=raven-js/' + Raven.VERSION
     ];
     if (globalKey) {
@@ -1458,18 +1485,21 @@ function getAuthQueryString() {
 }
 
 function handleStackInfo(stackInfo, options) {
-    var frames = [],
-        i = 0,
-        j, frame;
+    var frames = [];
 
-    if (stackInfo.stack && (j = stackInfo.stack.length)) {
-        for (; i < j; i++) {
-            frame = normalizeFrame(stackInfo.stack[i]);
+    if (stackInfo.stack && stackInfo.stack.length) {
+        each(stackInfo.stack, function(i, stack) {
+            var frame = normalizeFrame(stack);
             if (frame) {
                 frames.push(frame);
             }
-        }
+        });
     }
+
+    triggerEvent('handle', {
+        stackInfo: stackInfo,
+        options: options
+    });
 
     processException(
         stackInfo.name,
@@ -1490,14 +1520,22 @@ function normalizeFrame(frame) {
         lineno:     frame.line,
         colno:      frame.column,
         'function': frame.func || '?'
-    }, context = extractContextFromFrame(frame);
+    }, context = extractContextFromFrame(frame), i;
 
     if (context) {
-        var i = 3, keys = ['pre_context', 'context_line', 'post_context'];
+        var keys = ['pre_context', 'context_line', 'post_context'];
+        i = 3;
         while (i--) normalized[keys[i]] = context[i];
     }
 
-    normalized.in_app = !/(Raven|TraceKit)\./.test(normalized['function']);
+    normalized.in_app = !( // determine if an exception came from outside of our app
+        // first we check the global includePaths list.
+        !globalOptions.includePaths.test(normalized.filename) ||
+        // Now we check for fun, if the function name is Raven or TraceKit
+        /(Raven|TraceKit)\./.test(normalized['function']) ||
+        // finally, we do a last ditch effort and check for raven.min.js
+        /raven\.(min\.)js$/.test(normalized.filename)
+    );
 
     return normalized;
 }
@@ -1544,14 +1582,14 @@ function extractContextFromFrame(frame) {
 function processException(type, message, fileurl, lineno, frames, options) {
     var stacktrace, label, i;
 
-    // IE8 really doesn't have Array.prototype.indexOf
-    // Filter out a message that matches our ignore list
-    i = globalOptions.ignoreErrors.length;
-    while (i--) {
-        if (message === globalOptions.ignoreErrors[i]) {
-            return;
-        }
-    }
+    // Sometimes an exception is getting logged in Sentry as
+    // <no message value>
+    // This can only mean that the message was falsey since this value
+    // is hardcoded into Sentry itself.
+    // At this point, if the message is falsey, we bail since it's useless
+    if (!message) return;
+
+    if (globalOptions.ignoreErrors.test(message)) return;
 
     if (frames && frames.length) {
         stacktrace = {frames: frames};
@@ -1565,23 +1603,21 @@ function processException(type, message, fileurl, lineno, frames, options) {
         };
     }
 
-    i = globalOptions.ignoreUrls.length;
-    while (i--) {
-        if (globalOptions.ignoreUrls[i].test(fileurl)) {
-            return;
-        }
-    }
+    if (globalOptions.ignoreUrls && globalOptions.ignoreUrls.test(fileurl)) return;
+    if (globalOptions.whitelistUrls && !globalOptions.whitelistUrls.test(fileurl)) return;
 
     label = lineno ? message + ' at ' + lineno : message;
 
     // Fire away!
     send(
         arrayMerge({
-            'sentry.interfaces.Exception': {
+            // sentry.interfaces.Exception
+            exception: {
                 type: type,
                 value: message
             },
-            'sentry.interfaces.Stacktrace': stacktrace,
+            // sentry.interfaces.Stacktrace
+            stacktrace: stacktrace,
             culprit: fileurl,
             message: label
         }, options)
@@ -1600,14 +1636,14 @@ function arrayMerge(arr1, arr2) {
 
 function getHttpData() {
     var http = {
-        url: window.location.href,
+        url: document.location.href,
         headers: {
             'User-Agent': navigator.userAgent
         }
     };
 
-    if (window.document.referrer) {
-        http.headers.Referer = window.document.referrer;
+    if (document.referrer) {
+        http.headers.Referer = document.referrer;
     }
 
     return http;
@@ -1621,20 +1657,53 @@ function send(data) {
         logger: globalOptions.logger,
         site: globalOptions.site,
         platform: 'javascript',
-        'sentry.interfaces.Http': getHttpData()
+        // sentry.interfaces.Http
+        request: getHttpData()
     }, data);
 
-    if (globalUser) data['sentry.interfaces.User'] = globalUser;
+    // Merge in the tags and extra separately since arrayMerge doesn't handle a deep merge
+    data.tags = arrayMerge(globalOptions.tags, data.tags);
+    data.extra = arrayMerge(globalOptions.extra, data.extra);
+
+    // If there are no tags/extra, strip the key from the payload alltogther.
+    if (!data.tags) delete data.tags;
+    if (!data.extra) delete data.extra;
+
+    if (globalUser) {
+        // sentry.interfaces.User
+        data.user = globalUser;
+    }
 
     if (isFunction(globalOptions.dataCallback)) {
         data = globalOptions.dataCallback(data);
     }
 
+    // Check if the request should be filtered or not
+    if (isFunction(globalOptions.shouldSendCallback) && !globalOptions.shouldSendCallback(data)) {
+        return;
+    }
+
     makeRequest(data);
 }
 
+
 function makeRequest(data) {
-    new Image().src = globalServer + getAuthQueryString() + '&sentry_data=' + encodeURIComponent(JSON.stringify(data));
+    var img = new Image(),
+        src = globalServer + getAuthQueryString() + '&sentry_data=' + encodeURIComponent(JSON.stringify(data));
+
+    img.onload = function success() {
+        triggerEvent('success', {
+            data: data,
+            src: src
+        });
+    };
+    img.onerror = img.onabort = function failure() {
+        triggerEvent('failure', {
+            data: data,
+            src: src
+        });
+    };
+    img.src = src;
 }
 
 function isSetup() {
@@ -1648,12 +1717,139 @@ function isSetup() {
     return true;
 }
 
+function joinRegExp(patterns) {
+    // Combine an array of regular expressions and strings into one large regexp
+    // Be mad.
+    var sources = [], i = patterns.length;
+    while (i--) {
+        sources[i] = isString(patterns[i]) ?
+            // If it's a string, we need to escape it
+            // Taken from: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions
+            patterns[i].replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1") :
+            // If it's a regexp already, we want to extract the source
+            patterns[i].source;
+    }
+    return new RegExp(sources.join('|'), 'i');
+}
+
+Raven.afterLoad();
+
 // Expose Raven to the world
 window.Raven = Raven;
 
 // AMD
 if (typeof define === 'function' && define.amd) {
-    define(function() { return Raven; });
+    define('raven', [], function() { return Raven.noConflict(); });
 }
 
 })(window);
+
+/**
+ * jQuery plugin
+ *
+ * Patches event handler callbacks and ajax callbacks.
+ */
+;(function(window, Raven, $) {
+'use strict';
+
+// quit if jQuery isn't on the page
+if (!$) {
+    return;
+}
+
+var _oldEventAdd = $.event.add;
+$.event.add = function ravenEventAdd(elem, types, handler, data, selector) {
+    var _handler;
+
+    if (handler.handler) {
+        _handler = handler.handler;
+        handler.handler = Raven.wrap(handler.handler);
+    } else {
+        _handler = handler;
+        handler = Raven.wrap(handler);
+    }
+
+    // If the handler we are attaching doesnâ€™t have the same guid as
+    // the original, it will never be removed when someone tries to
+    // unbind the original function later. Technically as a result of
+    // this our guids are no longer globally unique, but whatever, that
+    // never hurt anybody RIGHT?!
+    if (_handler.guid) {
+        handler.guid = _handler.guid;
+    } else {
+        handler.guid = _handler.guid = $.guid++;
+    }
+
+    return _oldEventAdd.call(this, elem, types, handler, data, selector);
+};
+
+var _oldReady = $.fn.ready;
+$.fn.ready = function ravenjQueryReadyWrapper(fn) {
+    return _oldReady.call(this, Raven.wrap(fn));
+};
+
+var _oldAjax = $.ajax;
+$.ajax = function ravenAjaxWrapper(url, options) {
+    var keys = ['complete', 'error', 'success'], key;
+
+    // Taken from https://github.com/jquery/jquery/blob/eee2eaf1d7a189d99106423a4206c224ebd5b848/src/ajax.js#L311-L318
+    // If url is an object, simulate pre-1.5 signature
+    if (typeof url === 'object') {
+        options = url;
+        url = undefined;
+    }
+
+    // Force options to be an object
+    options = options || {};
+
+    /*jshint -W084*/
+    while(key = keys.pop()) {
+        if ($.isFunction(options[key])) {
+            options[key] = Raven.wrap(options[key]);
+        }
+    }
+    /*jshint +W084*/
+
+    try {
+        return _oldAjax.call(this, url, options);
+    } catch (e) {
+        Raven.captureException(e);
+        throw e;
+    }
+};
+
+}(this, Raven, window.jQuery));
+
+/**
+ * native plugin
+ *
+ * Extends support for global error handling for asynchronous browser
+ * functions. Adopted from Closure Library's errorhandler.js
+ */
+;(function extendToAsynchronousCallbacks(window, Raven) {
+"use strict";
+
+var _helper = function _helper(fnName) {
+    var originalFn = window[fnName];
+    window[fnName] = function ravenAsyncExtension() {
+        // Make a copy of the arguments
+        var args = [].slice.call(arguments);
+        var originalCallback = args[0];
+        if (typeof (originalCallback) === 'function') {
+            args[0] = Raven.wrap(originalCallback);
+        }
+        // IE < 9 doesn't support .call/.apply on setInterval/etTimeout, but it
+        // also only supports 2 argument and doesn't care what this" is, so we
+        // can just call the original function directly.
+        if (originalFn.apply) {
+            return originalFn.apply(this, args);
+        } else {
+            return originalFn(args[0], args[1]);
+        }
+    };
+};
+
+_helper('setTimeout');
+_helper('setInterval');
+
+}(this, Raven));

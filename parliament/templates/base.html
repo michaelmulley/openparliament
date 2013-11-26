@@ -106,14 +106,5 @@ window.OP = {
 <script type="text/javascript" src="{{ STATIC_URL }}ie6update/ie6update.js"></script>
 <![endif]--> <!--[if IE 7]><script type="text/javascript" src="{{ STATIC_URL }}js/libs/json2.js"></script>
 <style type="text/css">.VS-search.fake-VS input { left: -25px; }</style><![endif]-->
-{% comment %}<script type="text/javascript">
-  function _loadUserVoice() {
-    var s = document.createElement('script');
-    s.src = ("https:" == document.location.protocol ? "https://" : "http://") + "cdn.uservoice.com/javascripts/widgets/tab.js";
-    document.getElementsByTagName('head')[0].appendChild(s);
-  }
-  _loadSuper = window.onload;
-  window.onload = (typeof window.onload != 'function') ? _loadUserVoice : function() { _loadSuper(); _loadUserVoice(); };
-</script>{% endcomment %}
 </body>
 </html>
