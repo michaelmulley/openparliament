@@ -1,16 +1,13 @@
-import csv
 from decimal import Decimal
 import re
 import urllib2
 
 from BeautifulSoup import BeautifulSoup
-from django.contrib.localflavor.ca.ca_provinces import PROVINCES_NORMALIZED
 from django.db import transaction
-from django.db.models import Q
 
 from parliament.core import parsetools
-from parliament.core.models import *
-from parliament.elections.models import Election, Candidacy
+from parliament.core.models import Riding, Party, Politician, ElectedMember
+from parliament.elections.models import Candidacy
 
 @transaction.commit_on_success
 def import_ec_results(election, url="http://enr.elections.ca/DownloadResults.aspx",
@@ -52,6 +49,43 @@ def import_ec_results(election, url="http://enr.elections.ca/DownloadResults.asp
             votepercent=votepercent,
             elected=None
         )
+
+PROVINCES_NORMALIZED = {
+    'ab': 'AB',
+    'alberta': 'AB',
+    'bc': 'BC',
+    'b.c.': 'BC',
+    'british columbia': 'BC',
+    'mb': 'MB',
+    'manitoba': 'MB',
+    'nb': 'NB',
+    'new brunswick': 'NB',
+    'nf': 'NL',
+    'nl': 'NL',
+    'newfoundland': 'NL',
+    'newfoundland and labrador': 'NL',
+    'nt': 'NT',
+    'northwest territories': 'NT',
+    'ns': 'NS',
+    'nova scotia': 'NS',
+    'nu': 'NU',
+    'nunavut': 'NU',
+    'on': 'ON',
+    'ontario': 'ON',
+    'pe': 'PE',
+    'pei': 'PE',
+    'p.e.i.': 'PE',
+    'prince edward island': 'PE',
+    'pq': 'QC',
+    'qc': 'QC',
+    'quebec': 'QC',
+    'sk': 'SK',
+    'saskatchewan': 'SK',
+    'yk': 'YT',
+    'yt': 'YT',
+    'yukon': 'YT',
+    'yukon territory': 'YT',
+}        
 
 def import_parl_election(url, election, session=None, soup=None): # FIXME session none only for now
     """Import an election from parl.gc.ca results.
