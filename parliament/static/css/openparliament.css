@@ -65,7 +65,7 @@ table {max-width: 100%; background-color: transparent; border-collapse: collapse
 #navbar_logotype {padding-top: 5px;}
 #navbarbg{width:100%;position:absolute;left:0;top:0;height:60px;background-color:#2f6970;border-bottom:2px solid #999999;}
 .debates #navbarbg {background-color: #46567d;}
-.bills #navbarbg {background-color: #733a14;}
+.bills #navbarbg {background-color: #530909;}
 .politicians #navbarbg {background-color: #563d7c;}
 .committees #navbarbg {background-color: #465f1b;}
 #navbar{position:relative;margin: 5px auto 0 auto;width:960px;height:55px;}
