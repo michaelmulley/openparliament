@@ -15,6 +15,7 @@ class StatementIndex(SearchIndex):
     province = indexes.CharField(model_attr='member__riding__province', null=True)
     topic = indexes.CharField(model_attr='topic')
     url = indexes.CharField(model_attr='get_absolute_url', indexed=False)
+    doc_url = indexes.CharField(model_attr='document__get_absolute_url')
     committee = indexes.CharField(model_attr='committee_name')
     committee_slug = indexes.CharField(model_attr='committee_slug')
     doctype = indexes.CharField(null=True)

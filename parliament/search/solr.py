@@ -54,7 +54,8 @@ class SearchQuery(BaseSearchQuery):
         'Witness': 'who_hocid',
         'Committee': 'committee_slug',
         'Date': 'date',
-        'Type': 'type'
+        'Type': 'type',
+        'Document': 'doc_url'
     }
 
     def __init__(self, query, start=0, limit=15, user_params={},
@@ -100,8 +101,12 @@ class SearchQuery(BaseSearchQuery):
             if ' ' in filter_value and filter_name != 'date':
                 filter_value = u'"%s"' % filter_value
 
+            filter_value = filter_value.replace('/', r'\/')
+
             if filter_name in ['who_hocid', 'politician_id', 'politician']:
                 filter_tag = 'fperson'
+            elif filter_name == 'doc_url':
+                filter_tag = 'fdate'
             else:
                 filter_tag = 'f' + filter_name
 

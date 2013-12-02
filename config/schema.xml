@@ -570,6 +570,8 @@
 
 	<field name="party" type="string" indexed="true" stored="true" multiValued="false" />
 
+	<field name="doc_url" type="string" indexed="true" stored="false" multiValued="false" />
+
 	<field name="committee" type="string" indexed="false" stored="true" multiValued="false" />
 	<field name="committee_slug" type="string" indexed="true" stored="false" multiValued="false" />
 
