@@ -232,20 +232,6 @@ class Document(models.Model):
                         'wordcount': wordcount,
                     }, politician=pol, date=self.date, guid='cmte_%s' % url, variety='committee')
                 
-    def serializable(self):
-        return {
-            'date': self.date,
-            'url': self.get_absolute_url(),
-            'id': self.id,
-            'original_url': self.url,
-            'parliament': self.session.parliamentnum,
-            'session': self.session.sessnum,
-            'statements': [s.serializable()
-                for s in self.statement_set.all()
-                    .order_by('sequence')
-                    .select_related('member__politician', 'member__party', 'member__riding')]
-        }
-        
     def get_wordoftheday(self):
         if not self.most_frequent_word:
             self.most_frequent_word = text_utils.most_frequent_word(self.statement_set.filter(procedural=False))
@@ -430,26 +416,6 @@ class Statement(models.Model):
     def topic(self):
         return self.h2
         
-    def serializable(self):
-        v = {
-            'url': self.get_absolute_url(),
-            'heading': self.heading,
-            'topic': self.topic,
-            'time': self.time,
-            'attribution': self.who,
-            'text': self.text_plain()
-        }
-        if self.member:
-            v['politician'] = {
-                'id': self.member.politician.id,
-                'member_id': self.member.id,
-                'name': self.member.politician.name,
-                'url': self.member.politician.get_absolute_url(),
-                'party': self.member.party.short_name,
-                'riding': unicode(self.member.riding),
-            }
-        return v
-
     def to_api_dict(self, representation):
         d = dict(
             time=unicode(self.time) if self.time else None,

@@ -11,6 +11,8 @@ class JSONView(View):
     # Subclasses: set this to True to allow JSONP (cross-domain) requests
     allow_jsonp = False
 
+    wrap = True
+
     def __init__(self):
         super(JSONView, self).__init__()
         self.content_type = 'application/json'
@@ -26,7 +28,9 @@ class JSONView(View):
         if self.allow_jsonp and 'callback' in request.GET:
             callback = re.sub(r'[^a-zA-Z0-9_]', '', request.GET['callback'])
             resp.write(callback + '(')
-        json.dump({'status': 'ok', 'content': result}, resp, indent=indent_response)
+        if self.wrap:
+            result = {'status': 'ok', 'content': result}
+        json.dump(result, resp, indent=indent_response)
         if callback:
             resp.write(');')
 

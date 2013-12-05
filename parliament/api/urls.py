@@ -1,6 +1,5 @@
-from django.conf.urls import patterns, include, url
-
-urlpatterns = patterns('parliament.api.handlers',
-    (r'^hansards/(?P<hansard_id>\d+)/$', 'hansard_resource'),
-    (r'^hansards/$', 'hansardlist_resource'),   
+from django.conf.urls import patterns, url
+urlpatterns = patterns('parliament.api.views',
+    url(r'^hansards/(?P<hansard_id>\d+)/$', 'hansard', name='legacy_api_hansard'),
+    url(r'^hansards/$', 'hansard_list', name='legacy_api_hansard_list'),   
 )
