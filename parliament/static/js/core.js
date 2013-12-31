@@ -131,14 +131,14 @@ $(function() {
 
 
     // MARGINALIA
-    var $content = $('#content');
+    var $content = $('.content');
     var contentOffset = $content.offset();
     $.fn.marginalia = function(onEvent, offEvent, dataFunction) {
         if (this.length) {
             var $marginalia = $('#marginalia');
             if (!$marginalia.length) {
                 $marginalia = $('<div id="marginalia"></div>');
-                $marginalia.appendTo($('#content'));
+                $marginalia.appendTo($content);
             }
             $marginalia.hide();
             this.bind(onEvent, function() {
