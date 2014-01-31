@@ -236,6 +236,7 @@ class PoliticianManager(models.Manager):
                 raise Politician.DoesNotExist("Couldn't open " + (POL_LOOKUP_URL % parlid))
             polname = root.cssselect('title')[0].text_content()
             polriding = root.cssselect('.constituency a')[0].text_content()
+            polriding = polriding.replace(u'\xe2\x80\x94', '-') # replace unicode dash
                         
             try:
                 riding = Riding.objects.get_by_name(polriding)
