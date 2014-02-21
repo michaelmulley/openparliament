@@ -2,7 +2,7 @@
 
 {% load ours %}
 
-{% block breadcrumbs %}{{ block.super }}<a href="{% url "parliament.hansards.views.index" %}">Debates</a> {{ year }}{% endblock %}
+{% block breadcrumbs %}{{ block.super }}<a href="{% url "parliament.hansards.views.index" %}">Debates</a> {{ year|date:"Y" }}{% endblock %}
 {% block contentclass %}context_3{% endblock %}
 
 {% block content %}

@@ -14,6 +14,8 @@ from django.db import models
 from django.template.defaultfilters import slugify
 
 from BeautifulSoup import BeautifulSoup
+import lxml.html
+
 
 from parliament.core import parsetools, text_utils
 from parliament.core.utils import memoize_property, ActiveManager
@@ -227,16 +229,14 @@ class PoliticianManager(models.Manager):
                 return None # FIXME inconsistent behaviour: when should we return None vs. exception?
             #print "Unknown parlid %d... " % parlid,
             try:
-                soup = BeautifulSoup(urllib2.urlopen(POL_LOOKUP_URL % parlid))
+                resp = urllib2.urlopen(POL_LOOKUP_URL % parlid)
+                root = lxml.html.fromstring(resp.read())
             except urllib2.HTTPError:
                 cache.set(invalid_ID_cache_key, True, 300)
                 raise Politician.DoesNotExist("Couldn't open " + (POL_LOOKUP_URL % parlid))
-            if soup.find('table', id='MasterPage_BodyContent_PageContent_PageContent_pnlError'):
-                cache.set(invalid_ID_cache_key, True, 300)
-                raise Politician.DoesNotExist("Invalid page for parlid %s" % parlid)
-            polname = soup.find('span', id='MasterPage_MasterPage_BodyContent_PageContent_Content_TombstoneContent_TombstoneContent_ucHeaderMP_lblMPNameData').string
-            polriding = soup.find('a', id='MasterPage_MasterPage_BodyContent_PageContent_Content_TombstoneContent_TombstoneContent_ucHeaderMP_hlConstituencyProfile').string
-            parlinfolink = soup.find('a', id='MasterPage_MasterPage_BodyContent_PageContent_Content_TombstoneContent_TombstoneContent_ucHeaderMP_hlFederalExperience')
+            polname = root.cssselect('title')[0].text_content()
+            polriding = root.cssselect('.constituency a')[0].text_content()
+            polriding = polriding.replace(u'\xe2\x80\x94', '-') # replace unicode dash
                         
             try:
                 riding = Riding.objects.get_by_name(polriding)
@@ -249,9 +249,9 @@ class PoliticianManager(models.Manager):
             #print "found %s." % pol
             pol.save_parl_id(parlid)
             polid = pol.id
-            if parlinfolink:
-                match = re.search(r'Item=(.+?)&', parlinfolink['href'])
-                pol.save_parlinfo_id(match.group(1))
+            # if parlinfolink:
+            #     match = re.search(r'Item=(.+?)&', parlinfolink['href'])
+            #     pol.save_parlinfo_id(match.group(1))
             return self.get_query_set().get(pk=polid)
     getByParlID = get_by_parl_id
 
