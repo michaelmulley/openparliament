@@ -9,7 +9,7 @@ from django.shortcuts import render
 from django.utils.html import escape
 from django.views.generic import View
 
-from webob.acceptparse import Accept
+from webob.acceptparse import MIMEAccept
 
 
 class APIView(View):
@@ -56,7 +56,7 @@ class APIView(View):
         elif request.GET.get('format'):
             return None
 
-        mimetype = Accept(request.META.get('HTTP_ACCEPT', 'application/json')).best_match(
+        mimetype = MIMEAccept(request.META.get('HTTP_ACCEPT', 'application/json')).best_match(
             [f[1] for f in self.api_formats],
             default_match=self.default_mimetype
         )
