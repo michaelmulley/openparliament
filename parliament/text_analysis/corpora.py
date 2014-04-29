@@ -31,7 +31,7 @@ def generate_for_debates():
     generate_background_models('default', qs)
 
 def generate_for_old_debates():
-    from parliament.hansards.model import Statement
+    from parliament.hansards.models import Statement
     for year in range(1994, datetime.date.today().year):
         qs = Statement.objects.filter(document__document_type='D', time__year=year)
         generate_background_models('debates-%d' % year, qs)
