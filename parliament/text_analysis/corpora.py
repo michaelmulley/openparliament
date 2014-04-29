@@ -46,3 +46,8 @@ def generate_for_committees():
             'evidence_id', flat=True)
         qs = Statement.objects.filter(document__in=document_ids)
         generate_background_models(committee.slug, qs)
+
+def generate_all():
+    generate_for_debates()
+    generate_for_committees()
+    generate_for_old_debates()

@@ -3,6 +3,7 @@ import json
 from operator import itemgetter
 
 from django.conf import settings
+from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import models
 from django.template.defaultfilters import escapejs
@@ -22,7 +23,11 @@ class TextAnalysisManager(models.Manager):
         except ObjectDoesNotExist:
             analysis = TextAnalysis(key=key, lang=lang)
         if always_update or not analysis.probability_data_json:
-            if qs.exists():
+            # Set a cache value so we don't have multiple server process trying
+            # to do the same calculations at the same time
+            cache_key = 'text_analysis:' + key
+            if (not cache.get(cache_key)) and qs.exists():
+                cache.set(cache_key, True, 60)
                 analysis.probability_data_json = json.dumps(analyze_statements(qs, corpus_name))
                 if expiry_days:
                     analysis.expires = datetime.datetime.now() + datetime.timedelta(days=expiry_days)
