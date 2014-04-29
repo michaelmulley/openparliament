@@ -12,6 +12,8 @@ from django.views.decorators.vary import vary_on_headers
 from parliament.committees.models import CommitteeMeeting
 from parliament.core.api import ModelDetailView, ModelListView, APIFilters
 from parliament.hansards.models import Document, Statement
+from parliament.text_analysis.models import TextAnalysis
+from parliament.text_analysis.views import TextAnalysisView
 
 def _get_hansard(year, month, day):
     return get_object_or_404(Document.debates,
@@ -107,14 +109,6 @@ def document_view(request, document, meeting=None, slug=None):
         except IndexError:
             raise Http404
         
-    if request.is_ajax():
-        t = loader.get_template("hansards/statement_page.inc")
-    else:
-        if document.document_type == Document.DEBATE:
-            t = loader.get_template("hansards/hansard_detail.html")
-        elif document.document_type == Document.EVIDENCE:
-            t = loader.get_template("committees/meeting_evidence.html")
-
     ctx = {
         'document': document,
         'page': statements,
@@ -133,6 +127,17 @@ def document_view(request, document, meeting=None, slug=None):
             'committee': meeting.committee,
             'pagination_url': meeting.get_absolute_url(),
         })
+
+    if request.is_ajax():
+        t = loader.get_template("hansards/statement_page.inc")
+    else:
+        if document.document_type == Document.DEBATE:
+            t = loader.get_template("hansards/hansard_detail.html")
+        elif document.document_type == Document.EVIDENCE:
+            t = loader.get_template("committees/meeting_evidence.html")
+        ctx['wordcloud_js'] = TextAnalysis.objects.get_wordcloud_js(
+            key=document.get_text_analysis_url())
+
     return HttpResponse(t.render(RequestContext(request, ctx)))
 
 
@@ -278,3 +283,28 @@ class DebateMonthArchive(TitleAdder, MonthArchiveView, APIArchiveView):
     template_name = "hansards/hansard_archive_year.html"
     page_title = lambda self: 'Debates from %s' % self.get_year()
 by_month = DebateMonthArchive.as_view()
+
+class HansardAnalysisView(TextAnalysisView):
+
+    def get_corpus_name(self, request, year, **kwargs):
+        # Use a special corpus for old debates
+        if int(year) < (datetime.date.today().year - 1):
+            return 'debates-%s' % year
+        return 'debates'
+
+    def get_qs(self, request, **kwargs):
+        h = _get_hansard(**kwargs)
+        request.hansard = h
+        qs = h.statement_set.all()
+        # if 'party' in request.GET:
+            # qs = qs.filter(member__party__slug=request.GET['party'])
+        return qs
+
+    def get_analysis(self, request, **kwargs):
+        analysis = super(HansardAnalysisView, self).get_analysis(request, **kwargs)
+        word = analysis.top_word
+        if word and word != request.hansard.most_frequent_word:
+            Document.objects.filter(id=request.hansard.id).update(most_frequent_word=word)
+        return analysis
+
+hansard_analysis = HansardAnalysisView.as_view()

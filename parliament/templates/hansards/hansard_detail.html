@@ -10,7 +10,9 @@
 {% endblock %}
 {% block content %}
 <div class="focus"><p>House of Commons Hansard #{{ hansard.number }} of the {{ hansard.session }}. (The <a href="{{ hansard.url }}">original version</a> is on Parliament's site.)
-	{% with hansard.most_frequent_word as wotd %}{% if wotd %}The <span class="tip tipunderline" title="Most frequently spoken word, excluding a fixed list of extra-boring words (like 'the', or 'government').">word of the day</span> was {% if hansard.wordcloud %}<a href="{{ hansard.wordcloud.url }}" rel="lightbox">{{ wotd }}</a>{% else %}<strong>{{ wotd }}</strong>{% endif %}.{% endif %}{% endwith %}</p></div>
+	{% with hansard.most_frequent_word as wotd %}{% if wotd %}The <span class="tip tipunderline" title="Most frequently spoken word, compared to other recent debates.">word of the day</span> was <strong>{{ wotd }}</strong>.{% endif %}{% endwith %}</p></div>
+
+<div class="wordcloud"></div>
 
 <div class="clear"></div><div class="context"><h2>Topics</h2></div>
 <div class="focus"><ul class="tile clearafter">
@@ -19,9 +21,22 @@
 {% endwith %}
 </ul></div>
 
+
 <div id="paginated">
 
 {% include "hansards/statement_page.inc" %}
 
 </div>
+{% endblock %}
+
+{% block js_bottom %}
+<script>
+$(function() {
+	var document_url = "{{ hansard.get_absolute_url|escapejs }}";
+	var wordcloud_opts = {
+		searchURL: '/search/?q=Document:+%22' + document_url + '%22+'
+	};
+	{{ wordcloud_js }}
+});
+</script>
 {% endblock %}

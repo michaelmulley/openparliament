@@ -1,11 +1,8 @@
 # coding: utf-8
 
 import datetime
-from decimal import Decimal
-import gzip
-import os
 import re
-import urllib, urllib2
+import urllib2
 
 from django.conf import settings
 from django.core.cache import cache
@@ -13,11 +10,9 @@ from django.core import urlresolvers
 from django.db import models
 from django.template.defaultfilters import slugify
 
-from BeautifulSoup import BeautifulSoup
 import lxml.html
 
-
-from parliament.core import parsetools, text_utils
+from parliament.core import parsetools
 from parliament.core.utils import memoize_property, ActiveManager
 
 import logging
@@ -435,30 +430,17 @@ class Politician(Person):
 
     def del_info(self, key):
         self.politicianinfo_set.filter(schema=key).delete()
-        
-    def find_favourite_word(self, wordcloud=True):
-        statements = self.statement_set.filter(procedural=False, document__document_type='D')
+
+    def get_text_analysis_qs(self, debates_only=False):
+        """Return a QuerySet of Statements to be used in text corpus analysis."""
+        statements = self.statement_set.filter(procedural=False)
+        if debates_only:
+            statements = statements.filter(document__document_type='D')
         if self.current_member:
             # For current members, we limit to the last two years for better
-            # comparison, and require at least 2,500 total words.
+            # comparison.
             statements = statements.filter(time__gte=datetime.datetime.now() - datetime.timedelta(weeks=100))
-            min_words = 2500
-        else:
-            # For ex-members, we use everything they said
-            min_words = 5000
-        total_words = sum((s.wordcount for s in statements))
-        if total_words < min_words:
-            self.del_info('favourite_word')
-            self.del_info('wordcloud')
-            return
-        self.set_info('favourite_word', text_utils.most_frequent_word(statements))
-        if wordcloud:
-            image = text_utils.statements_to_cloud(statements)
-            path = os.path.join(self.WORDCLOUD_PATH, "%s.png" % (self.slug if self.slug else self.id))
-            fullpath = os.path.join(settings.MEDIA_ROOT, path)
-            with open(fullpath, 'wb') as f:
-                f.write(image)
-            self.set_info('wordcloud', path)
+        return statements
         
 class PoliticianInfoManager(models.Manager):
     """Custom manager ensures we always pull in the politician FK."""

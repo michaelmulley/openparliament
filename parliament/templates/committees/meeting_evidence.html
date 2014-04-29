@@ -6,12 +6,15 @@
 {% endblock %}
 {% block content %}
 <div class="focus">
-	<p>Evidence of meeting #{{ meeting.number }} for <a href="{{ committee.get_absolute_url }}">{{ committee.name }}</a> in the {{ meeting.session }}. (The <a href="{{ document.url }}">original version</a> is on Parliament&rsquo;s site{% if meeting.minutes_url %}, as are the <a href="{{ meeting.minutes_url }}">minutes</a>{% endif %}.) The <span class="tip tipunderline" title="Most frequently spoken word, excluding a fixed list of extra-boring words (like 'the', or 'government').">winning word</span> was {% if document.wordcloud %}<a href="{{ document.wordcloud.url }}" rel="lightbox">{{ document.get_wordoftheday }}</a>{% else %}<strong>{{ document.get_wordoftheday}}</strong>{% endif %}.</p>
+	<p>Evidence of meeting #{{ meeting.number }} for <a href="{{ committee.get_absolute_url }}">{{ committee.name }}</a> in the {{ meeting.session }}. (The <a href="{{ document.url }}">original version</a> is on Parliament&rsquo;s site{% if meeting.minutes_url %}, as are the <a href="{{ meeting.minutes_url }}">minutes</a>{% endif %}.)
+		{% if document.most_frequent_word %}The <span class="tip tipunderline" title="Most frequently spoken word, compared to other similar meetings.">winning word</span> was <strong>{{ document.most_frequent_word }}</strong>.{% endif %}</p>
 	{% if meeting.webcast %}<p>A <a href="{{ meeting.webcast_url }}" target="_blank">recording</a> is available from Parliament.</p>{% endif %}
 </div>
 
+<div class="clear"></div><div class="wordcloud"></div>
+
 {% if meeting.activities_list %}
-<div class="clear"></div><div class="context"><h2>On the agenda</h2></div>
+<div class="context"><h2>On the agenda</h2></div>
 <div class="focus"><ul class="tile">{% for activity in meeting.activities_list %}<li class="six twoline overflowtip"><a href="{{ activity.get_absolute_url }}">{{ activity }}</a></li>{% endfor %}</ul><div class="clear"></div></div>
 {% endif %}
 
@@ -35,4 +38,16 @@
 {% include "hansards/statement_page.inc" %}
 
 </div>
+{% endblock %}
+
+{% block js_bottom %}
+<script>
+$(function() {
+	var document_url = "{{ document.get_absolute_url|escapejs }}";
+	var wordcloud_opts = {
+		searchURL: '/search/?q=Document:+%22' + document_url + '%22+'
+	};
+	{{ wordcloud_js }}
+});
+</script>
 {% endblock %}

@@ -17,7 +17,7 @@
 <div class="clear"></div><div class="context"><h2>Recent</h2></div>
 <div class="focus">
 <ul class="tile clearafter">{% for hansard in latest|slice:":17" %}
-{% if not forloop.first %}<li class="three"><a href="{{ hansard.get_absolute_url }}" data-wotd="{{ hansard.get_wordoftheday }}">{{ hansard.date|date:"F jS" }}</a></li>{% endif %}
+{% if not forloop.first %}<li class="three"><a href="{{ hansard.get_absolute_url }}" data-wotd="{{ hansard.most_frequent_word }}">{{ hansard.date|date:"F jS" }}</a></li>{% endif %}
 {% endfor %}</ul></div>
 
 <div class="clear"></div><div class="context"><h2>Past</h2></div>

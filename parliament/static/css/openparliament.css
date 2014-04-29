@@ -13,7 +13,7 @@ body.nojs .jsonly { display: none;}
 input.placeholder { color: #AAAAAA !important;}
 
 /* LAYOUT */ 
-#content, .footer_content{width:960px;margin-left:auto;margin-right:auto;padding: 15px 0;position:relative;}
+.content {width:960px;margin-left:auto;margin-right:auto;padding: 15px 0;position:relative;}
 #content_wrap{clear:both;background-color:white;}
 div.context{clear:both;float:left;width:160px;margin-bottom:10px;}
 .context_4 div.context{width:220px;}
@@ -24,7 +24,7 @@ div.context{clear:both;float:left;width:160px;margin-bottom:10px;}
 .context_2 div.focus{width:830px;}
 .context h2{position:relative;top:-2px;}
 .focus h1,.focus h2,.focus h3,.focus p{max-width:640px;}
-div.focus{float:right;width:770px;margin-bottom:40px;}
+div.focus{float:right;width:770px;margin-bottom:30px;}
 div.focus.pageheader{margin-bottom:0;}
 .clear{clear:both;}
 .clearafter:after{visibility:hidden;display:block;font-size:0;content:" ";clear:both;height:0;}
@@ -330,7 +330,7 @@ ul.tile.meeting-attendees {padding: 10px 0 0 60px;}
 .api_filters .buttonrow .submit { text-align: right; padding-right: 40px;}
 
 /* SLIMBOX */
-#lbOverlay{position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background-color:#000;cursor:pointer;}
+/*#lbOverlay{position:fixed;z-index:9999;left:0;top:0;width:100%;height:100%;background-color:#000;cursor:pointer;}
 #lbCenter,#lbBottomContainer{position:absolute;z-index:9999;overflow:hidden;background-color:#fff;}
 .lbLoading{background:#fff url(../images/slimbox/loading.gif) no-repeat center;}
 #lbImage{position:absolute;left:0;top:0;border:10px solid #fff;background-repeat:no-repeat;}
@@ -342,4 +342,13 @@ ul.tile.meeting-attendees {padding: 10px 0 0 60px;}
 #lbBottom{font-family:sans-serif;font-size:10px;color:#666;line-height:1.4em;text-align:left;border:10px solid #fff;border-top-style:none;}
 #lbCloseLink{display:block;float:right;width:66px;height:22px;background:transparent url(../images/slimbox/closelabel.gif) no-repeat center;margin:5px 0;outline:none;}
 #lbCaption,#lbNumber{margin-right:71px;}
-#lbCaption{font-weight:bold;}
+#lbCaption{font-weight:bold;}*/
+
+/* WORDCLOUD */
+.wordcloud {
+  clear: both;
+  margin-bottom: 30px;
+}
+.politician .wordcloud {
+  margin: 30px 0 20px 0;
+}

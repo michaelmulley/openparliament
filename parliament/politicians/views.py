@@ -19,6 +19,8 @@ from parliament.core.api import ModelListView, ModelDetailView, APIFilters
 from parliament.core.models import Politician, ElectedMember
 from parliament.core.utils import feed_wrapper
 from parliament.hansards.models import Statement, Document
+from parliament.text_analysis.models import TextAnalysis
+from parliament.text_analysis.views import TextAnalysisView
 from parliament.utils.views import JSONView
 
 
@@ -138,7 +140,9 @@ class PoliticianView(ModelDetailView):
             'statements_politician_view': True,
             'show_statements': show_statements,
             'activities': activity.iter_recent(Activity.public.filter(politician=pol)),
-            'search_placeholder': u"Search %s in Parliament" % pol.name
+            'search_placeholder': u"Search %s in Parliament" % pol.name,
+            'wordcloud_js': TextAnalysis.objects.get_wordcloud_js(
+                key=pol.get_absolute_url() + 'text-analysis/')
         })
         if request.is_ajax():
             t = loader.get_template("hansards/statement_page_politician_view.inc")
@@ -288,3 +292,24 @@ class PoliticianActivityFeed(Feed):
 
     def item_pubdate(self, activity):
         return datetime.datetime(activity.date.year, activity.date.month, activity.date.day)
+
+class PoliticianTextAnalysisView(TextAnalysisView):
+
+    expiry_days = 14
+
+    def get_qs(self, request, pol_id=None, pol_slug=None):
+        if pol_slug:
+            pol = get_object_or_404(Politician, slug=pol_slug)
+        else:
+            pol = get_object_or_404(Politician, pk=pol_id)
+        request.pol = pol
+        return pol.get_text_analysis_qs()
+
+    def get_analysis(self, request, **kwargs):
+        analysis = super(PoliticianTextAnalysisView, self).get_analysis(request, **kwargs)
+        word = analysis.top_word
+        if word and word != request.pol.info['favourite_word']:
+            request.pol.set_info('favourite_word', word)
+        return analysis
+
+analysis = PoliticianTextAnalysisView.as_view()   

@@ -16,8 +16,12 @@
     <div class="focus">
     <p>Info on what your representatives are doing in Ottawa can be hard to find and use. <strong>We’re trying to make it easy.</strong></p>
     <p><strong>Find your MP</strong> by entering your postal code above. See what your representatives are <a href="{% url "parliament.hansards.views.index" %}">saying</a>, and what <a href="{% url "parliament.bills.views.index" %}">laws</a> they’re proposing. Poke around.</p></div>
-        <div class="clear"></div><div class="context"><h2>What they’re talking about</h2></div>
-        <div class="focus"><p>The latest House transcript is from <strong>{{ latest_hansard.date|date:"F jS"}}</strong>{% if latest_hansard.most_frequent_word %}, when the <span class="tip tipunderline" title="Most frequently spoken word, excluding a fixed list of extra-boring words (like 'the', or 'government').">word of the day</span> was {% if latest_hansard.wordcloud %}<a href="{{ latest_hansard.wordcloud.url }}" rel="lightbox">{{ latest_hansard.most_frequent_word }}</a>{% else %}{{ latest_hansard.most_frequent_word}}{% endif %}{% endif %}. These are the topics that were discussed.</p><div class="spacer"></div><ul class="tile clearafter">
+        <div class="clear"></div>
+        <div class="wordcloud"></div>
+        <div class="context"><h2>What they’re talking about</h2></div>
+
+        <div class="focus">
+        <p>The latest House transcript is from <strong>{{ latest_hansard.date|date:"F jS"}}</strong>{% if latest_hansard.most_frequent_word %}, when the <span class="tip tipunderline" title="Most frequently spoken word, compared to other recent debates.">word of the day</span> was <strong>{{ latest_hansard.most_frequent_word }}</strong>{% endif %}. These are the topics that were discussed.</p><div class="spacer"></div><ul class="tile clearafter">
         	{% with latest_hansard.get_absolute_url as latest_hansard_url %}
 				{% for topic in latest_hansard.topics_with_qp %}<li class="four oneline overflowtip"><a href="{{ latest_hansard_url }}{{ topic.1 }}/#hl">{{ topic.0 }}</a></li>{% endfor %}
 			{% endwith %}
@@ -32,14 +36,23 @@
 	{{ item.text|markdown }}{% endfor %}</div>
 {% endif %}
 {% endblock %}
-{% block headextra %}
-<script type="text/javascript">
-$(function() {
-   $('#home_searchform input').bind('focus', function() {
-	   $('#home_searchbutton').show();
-   });
+
+{% block js_bottom %}
+<script>
+    $(function() {
+       $('#home_searchform input').bind('focus', function() {
+       $('#home_searchbutton').show();
+    });
+    var document_url = "{{ latest_hansard.get_absolute_url|escapejs }}";
+    var wordcloud_opts = {
+        searchURL: '/search/?q=Document:+%22' + document_url + '%22+'
+    };
+    {{ wordcloud_js }}
 });
 </script>
+{% endblock %}
+
+{% block headextra %}
 <meta name="description" content="Info on what your representatives are doing in Ottawa can be hard to find and use. We're trying to make it easy.">
 <link rel="alternate" type="application/rss+xml" title="openparliament.ca: Site news" href="{% url "sitenews_feed" %}">
 {% endblock %}

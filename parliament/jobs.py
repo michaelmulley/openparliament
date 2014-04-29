@@ -10,6 +10,7 @@ from parliament.core.models import Politician, Session
 from parliament.hansards.models import Document
 from parliament.activity import utils as activityutils
 from parliament.activity.models import Activity
+from parliament.text_analysis import corpora
 
 import logging
 logger = logging.getLogger(__name__)
@@ -92,9 +93,8 @@ def hansards():
     hansards_load()
     hansards_parse()
     
-def wordcloud():
-    # FIXME
-    h = Document.objects.filter(document_type=Document.DEBATE)[0]
-    h.get_wordoftheday()
-    if not h.wordcloud:
-        h.generate_wordcloud()
+def corpus_for_debates():
+    corpora.generate_for_debates()
+
+def corpus_for_committees():
+    corpora.generate_for_committees()    

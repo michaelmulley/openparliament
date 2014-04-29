@@ -50,10 +50,9 @@
 
 {% if info.favourite_word %}
 <h3>Crucial Fact</h3>
-<ul class="bulleted"><li>{{ pol|hisher }} <span class="tip tipunderline" title="Most frequently spoken word in the House, excluding a fixed list of extra-boring words (like 'the', or 'government').">favourite word</span>
+<ul class="bulleted"><li>{{ pol|hisher }} <span class="tip tipunderline" title="Most frequently spoken word in Parliament, compared to other MPs.">favourite word</span>
     {% if member.current %}is{% else %}was{% endif %}
-    {% if info.wordcloud %}<a href="{{ MEDIA_URL }}{{ info.wordcloud }}" rel="lightbox">{{ info.favourite_word }}</a>.
-        {% else %}<strong>{{ info.favourite_word }}</strong>.{% endif %}</li></ul>
+    <strong>{{ info.favourite_word }}</strong>.</li></ul>
 {% endif %}
 
 {% endwith %}
@@ -70,6 +69,17 @@
 {% include "search/searchbox.inc" with placeholder=search_placeholder %}
 </form>
 
+<div class="wordcloud"></div>
+<script>
+$(function() {
+    var wordcloud_opts = {
+        searchURL: '/search/?q=MP:+%22{{ pol.identifier }}%22+',
+        size: [710, 200]
+    };
+    {{ wordcloud_js }}
+});
+</script>
+
 {% if not show_statements %}
 
 <div id="activity">
@@ -79,7 +89,7 @@
 {% endfor %}
 </div>
 
-{% if user.is_authenticated %}
+{% if user.is_staff %}
 <script type="text/javascript">
 $(function() {
     function hide_activity() {

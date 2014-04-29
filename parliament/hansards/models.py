@@ -14,7 +14,7 @@ from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
 
 from parliament.core.models import Session, ElectedMember, Politician
-from parliament.core import parsetools, text_utils
+from parliament.core import parsetools
 from parliament.core.utils import memoize_property, language_property
 from parliament.activity import utils as activity
 
@@ -93,6 +93,10 @@ class Document(models.Model):
             })
         elif self.document_type == self.EVIDENCE:
             return self.committeemeeting.get_absolute_url()
+
+    def get_text_analysis_url(self):
+        # Let's violate DRY!
+        return self.get_absolute_url() + 'text-analysis/'
 
     def to_api_dict(self, representation):
         d = dict(
@@ -231,18 +235,6 @@ class Document(models.Model):
                         'url': url,
                         'wordcount': wordcount,
                     }, politician=pol, date=self.date, guid='cmte_%s' % url, variety='committee')
-                
-    def get_wordoftheday(self):
-        if not self.most_frequent_word:
-            self.most_frequent_word = text_utils.most_frequent_word(self.statement_set.filter(procedural=False))
-            if self.most_frequent_word:
-                self.save()
-        return self.most_frequent_word
-        
-    def generate_wordcloud(self):
-        image = text_utils.statements_to_cloud_by_party(self.statement_set.filter(procedural=False))
-        self.wordcloud.save("%s-%s.png" % (self.source_id, settings.LANGUAGE_CODE), ContentFile(image), save=True)
-        self.save()
 
     def get_filename(self, language):
         assert self.source_id

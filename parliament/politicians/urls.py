@@ -13,5 +13,7 @@ urlpatterns = patterns('parliament.politicians.views',
     (r'^(?P<pol_id>\d+)/$', 'politician'),
     (r'^(?P<pol_slug>[a-z-]+)/contact/$', 'contact'),
     (r'^(?P<pol_id>\d+)/contact/$', 'contact'),
+    (r'^(?P<pol_slug>[a-z-]+)/text-analysis/$', 'analysis'),
+    (r'^(?P<pol_id>\d+)/text-analysis/$', 'analysis'),
     (r'^internal/hide_activity/$', 'hide_activity'),
 )

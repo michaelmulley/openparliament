@@ -12,16 +12,20 @@ from parliament.bills.models import VoteQuestion
 from parliament.hansards.models import Document
 from parliament.core.models import Session, SiteNews
 from parliament.core.templatetags.markup import markdown
+from parliament.text_analysis.models import TextAnalysis
 
 def home(request):
     
     t = loader.get_template("home.html")
+    latest_hansard = Document.debates.filter(date__isnull=False, public=True)[0]
     c = RequestContext(request, {
-        'latest_hansard': Document.debates.filter(date__isnull=False, public=True)[0],
+        'latest_hansard': latest_hansard,
         'sitenews': SiteNews.objects.filter(active=True,
             date__gte=datetime.datetime.now() - datetime.timedelta(days=60))[:6],
         'votes': VoteQuestion.objects.filter(session=Session.objects.current())\
             .select_related('bill')[:6],
+        'wordcloud_js': TextAnalysis.objects.get_wordcloud_js(
+            key=latest_hansard.get_text_analysis_url())
     })
     return HttpResponse(t.render(c))
     

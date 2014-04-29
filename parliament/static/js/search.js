@@ -105,9 +105,10 @@
             $('#search_content').prepend(dateFilter.$el);
             dateFilter.bind('sliderChange', function(values, fullRange) {
                 var textVal = values[0] + ' to ' + values[1];
-                var dateFacet = visualSearch.searchQuery.detect(function (f) {
-                    return f.get('category') === 'Date';
-                });
+                var dateFacet = OP.search.findFacet('Date');
+                if (OP.search.findFacet('Document')) {
+                    visualSearch.searchQuery.remove(OP.search.findFacet('Document'));
+                }
                 if (fullRange) {
                     if (dateFacet) {
                         visualSearch.searchQuery.remove(dateFacet);

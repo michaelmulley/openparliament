@@ -11,7 +11,8 @@ from parliament.committees.models import Committee, CommitteeMeeting, CommitteeA
 from parliament.core.api import ModelListView, ModelDetailView, APIFilters
 from parliament.core.models import Session
 from parliament.hansards.views import document_view, statement_permalink
-from parliament.hansards.models import Statement
+from parliament.hansards.models import Statement, Document
+from parliament.text_analysis.views import TextAnalysisView
 
 
 class CommitteeListView(ModelListView):
@@ -177,6 +178,30 @@ class CommitteeMeetingView(ModelDetailView):
                 'committee': meeting.committee
             })
 committee_meeting = CommitteeMeetingView.as_view()
+
+class EvidenceAnalysisView(TextAnalysisView):
+
+    def get_qs(self, request, **kwargs):
+        m = _get_meeting(**kwargs)
+        if not m.evidence:
+            raise Http404
+        qs = m.evidence.statement_set.all()
+        request.evidence = m.evidence
+        # if 'party' in request.GET:
+        #     qs = qs.filter(member__party__slug=request.GET['party'])
+        return qs
+
+    def get_corpus_name(self, request, committee_slug, **kwargs):
+        return committee_slug
+
+    def get_analysis(self, request, **kwargs):
+        analysis = super(EvidenceAnalysisView, self).get_analysis(request, **kwargs)
+        word = analysis.top_word
+        if word and word != request.evidence.most_frequent_word:
+            Document.objects.filter(id=request.evidence.id).update(most_frequent_word=word)
+        return analysis
+
+evidence_analysis = EvidenceAnalysisView.as_view()
 
 
 class CommitteeMeetingStatementView(ModelDetailView):
