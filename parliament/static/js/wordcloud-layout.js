@@ -81,7 +81,8 @@ OP.wordcloud.calculate = function(words, opts) {
 		i = 0;
 		var step = function() {
 			if (i >= words.length) {
-				return console.log(+new Date - start);
+				// console.log(+new Date - start);
+				return;
 			}
 			word = words[i];
 			doWord(word);
