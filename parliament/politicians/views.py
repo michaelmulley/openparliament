@@ -308,7 +308,7 @@ class PoliticianTextAnalysisView(TextAnalysisView):
     def get_analysis(self, request, **kwargs):
         analysis = super(PoliticianTextAnalysisView, self).get_analysis(request, **kwargs)
         word = analysis.top_word
-        if word and word != request.pol.info()['favourite_word']:
+        if word and word != request.pol.info().get('favourite_word'):
             request.pol.set_info('favourite_word', word)
         return analysis
 
