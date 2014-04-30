@@ -21,7 +21,7 @@ def home(request):
     c = RequestContext(request, {
         'latest_hansard': latest_hansard,
         'sitenews': SiteNews.objects.filter(active=True,
-            date__gte=datetime.datetime.now() - datetime.timedelta(days=60))[:6],
+            date__gte=datetime.datetime.now() - datetime.timedelta(days=90))[:6],
         'votes': VoteQuestion.objects.filter(session=Session.objects.current())\
             .select_related('bill')[:6],
         'wordcloud_js': TextAnalysis.objects.get_wordcloud_js(

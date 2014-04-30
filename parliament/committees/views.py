@@ -12,6 +12,7 @@ from parliament.core.api import ModelListView, ModelDetailView, APIFilters
 from parliament.core.models import Session
 from parliament.hansards.views import document_view, statement_permalink
 from parliament.hansards.models import Statement, Document
+from parliament.text_analysis.models import TextAnalysis
 from parliament.text_analysis.views import TextAnalysisView
 
 
@@ -91,7 +92,9 @@ class CommitteeView(ModelDetailView):
             'archive_years': meeting_years,
             'subcommittees': Committee.objects.filter(parent=cmte, display=True, sessions=Session.objects.current()),
             'include_year': newest_year != datetime.date.today().year,
-            'search_placeholder': u"Search %s transcripts" % cmte.short_name
+            'search_placeholder': u"Search %s transcripts" % cmte.short_name,
+            'wordcloud_js': TextAnalysis.objects.get_wordcloud_js(
+                urlresolvers.reverse('committee_analysis', kwargs={'committee_slug': slug})),
         })
         return HttpResponse(t.render(c))
 committee = CommitteeView.as_view()        
@@ -203,6 +206,21 @@ class EvidenceAnalysisView(TextAnalysisView):
 
 evidence_analysis = EvidenceAnalysisView.as_view()
 
+class CommitteeAnalysisView(TextAnalysisView):
+
+    expiry_days = 7
+
+    def get_corpus_name(self, request, committee_slug):
+        return committee_slug
+
+    def get_qs(self, request, committee_slug):
+        cmte = get_object_or_404(Committee, slug=committee_slug)
+        qs = Statement.objects.filter(
+            document__document_type='E',
+            time__gte=datetime.datetime.now() - datetime.timedelta(days=30 * 6),
+            document__committeemeeting__committee=cmte
+        )
+        return qs
 
 class CommitteeMeetingStatementView(ModelDetailView):
 

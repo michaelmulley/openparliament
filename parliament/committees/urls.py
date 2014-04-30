@@ -13,4 +13,5 @@ urlpatterns = patterns('parliament.committees.views',
     url(r'^(?P<committee_slug>[^/]+)/(?P<session_id>\d+-\d)/(?P<number>\d+)/(?P<slug>[a-zA-Z0-9-]+)/only/$', 'evidence_permalink', name='evidence_permalink'),
     (r'^(?P<committee_id>\d+)/', 'committee_id_redirect'),
     (r'^(?P<slug>[^/]+)/$', 'committee'),
+    url(r'^(?P<committee_slug>[^/]+)/analysis/$', CommitteeAnalysisView.as_view(), name='committee_analysis'),
 )
