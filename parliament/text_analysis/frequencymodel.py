@@ -30,7 +30,7 @@ STOPWORDS = frozenset(["i", "me", "my", "myself", "we", "our", "ours", "ourselve
 ])
 
 
-r_punctuation = re.compile(r"[^\s\w0-9'—-]", re.UNICODE)
+r_punctuation = re.compile(r"[^\s\w0-9'’—-]", re.UNICODE)
 r_whitespace = re.compile(r'[\s—]+')
 
 def text_token_iterator(text):

@@ -297,13 +297,16 @@ OP.wordcloud.drawSVG = function(words, opts) {
 
 	if (!words || !words.length) return;
 
-	var test_svg_support = function() {
-		var div = document.createElement('div');
-		div.innerHTML = '<svg/>';
-		return (div.firstChild && div.firstChild.namespaceURI) == 'http://www.w3.org/2000/svg';
+	var test_svg = function() {
+		return !!document.createElementNS && !!document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect;
 	};
 
-	if (!test_svg_support()) return false;
+	var test_canvas = function() {
+		var elem = document.createElement('canvas');
+		return !!(elem.getContext && elem.getContext('2d') && typeof elem.getContext('2d').fillText == 'function');
+	};
+
+	if (!test_svg() || !test_canvas()) return false;
 
 	var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 	var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
