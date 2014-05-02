@@ -39,7 +39,7 @@ def import_votes(session=None):
         if sum((votequestion.yea_total, votequestion.nay_total)) < 100:
             logger.error("Fewer than 100 votes on vote#%s" % votenumber)
         decision = vote.find('Decision').text
-        if decision == 'Agreed to':
+        if decision in ('Agreed to', 'Agreed To'):
             votequestion.result = 'Y'
         elif decision == 'Negatived':
             votequestion.result = 'N'
