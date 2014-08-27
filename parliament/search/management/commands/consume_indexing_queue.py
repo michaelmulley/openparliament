@@ -33,6 +33,8 @@ class Command(BaseCommand):
             for cls, objs in itertools.groupby(update_objs, lambda o: o.__class__):
                 logger.debug("Indexing %s" % cls)
                 index = site.get_index(cls)
+                if hasattr(index, 'should_obj_be_indexed'):
+                    objs = filter(index.should_obj_be_indexed, objs)
                 prepared_objs = [index.prepare(o) for o in objs]
                 solr.add(prepared_objs)
 

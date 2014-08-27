@@ -16,4 +16,9 @@ class PolIndex(SearchIndex):
     def get_queryset(self):
         return Politician.objects.elected()
 
+    def should_obj_be_indexed(self, obj):
+        # Currently used only in live updates, not batch indexing
+        return bool(obj.latest_member)
+
+
 site.register(Politician, PolIndex)
