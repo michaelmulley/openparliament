@@ -136,8 +136,8 @@ class Candidacy (models.Model):
             )
         if session:
             member.sessions.add(session)
-        if not self.politician.slug:
-            self.politician.add_slug()
+        if not self.candidate.slug:
+            self.candidate.add_slug()
         return member
     
     def __unicode__ (self):
