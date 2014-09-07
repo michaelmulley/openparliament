@@ -20,13 +20,9 @@ logger = logging.getLogger(__name__)
 def twitter():
     twit.save_tweets()
     return True
-    
-def twitter_ids():
-    from parliament.imports import politwitter
-    politwitter.import_twitter_ids()
 
 represent = update_mps_from_represent
-    
+
 def googlenews():
     for pol in Politician.objects.current():
         gnews.save_politician_news(pol)

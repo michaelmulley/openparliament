@@ -14,7 +14,7 @@ from parliament.core.models import Politician, Session, PoliticianInfo
 import logging
 logger = logging.getLogger(__name__)
 
-def update_mps_from_represent():
+def update_mps_from_represent(change_twitter=False, download_headshots=False):
 
     req = urllib2.urlopen('https://represent.opennorth.ca/representatives/house-of-commons/?limit=500')
     data = json.load(req)
@@ -54,7 +54,10 @@ def update_mps_from_represent():
             _update('constituency_offices', constituency_offices)
 
         if (not pol.headshot) and mp_info.get('photo_url'):
-            logger.warning("Photo available: %s for %s" % (mp_info.get('photo_url'), pol))
+            if download_headshots:
+                pol.download_headshot(mp_info['photo_url'])
+            else:
+                logger.warning("Photo available: %s for %s" % (mp_info.get('photo_url'), pol))
 
         if mp_info.get('extra') and mp_info['extra'].get('twitter'):
             screen_name = mp_info['extra']['twitter'].split('/')[-1]
@@ -63,8 +66,13 @@ def update_mps_from_represent():
                 pol.set_info('twitter_id', get_id_from_screen_name(screen_name))
                 twitter_updated = True
             elif pol.info().get('twitter') != screen_name:
-                logger.warning("Potential twitter change for %s: existing %s new %s" % (
-                    pol, pol.info()['twitter'], screen_name))
+                if change_twitter:
+                    pol.set_info('twitter', screen_name)
+                    pol.set_info('twitter_id', get_id_from_screen_name(screen_name))
+                    twitter_updated = True
+                else:
+                    logger.warning("Potential twitter change for %s: existing %s new %s" % (
+                        pol, pol.info()['twitter'], screen_name))
     
     if twitter_updated:
         update_twitter_list()
