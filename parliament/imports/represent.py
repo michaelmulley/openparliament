@@ -79,8 +79,8 @@ def update_twitter_list():
     list_names= set()
     cursor = -1
     while cursor:
-        result = t.user.listname.members(
-          user=settings.TWITTER_USERNAME, listname=settings.TWITTER_LIST_NAME,
+        result = t.lists.members(
+          owner_screen_name=settings.TWITTER_USERNAME, slug=settings.TWITTER_LIST_NAME,
           cursor=cursor)
         for u in result['users']:
             list_names.add(u['screen_name'])
@@ -90,7 +90,7 @@ def update_twitter_list():
         logger.error("Users on list, not in DB: %r" % not_in_db)
     
     not_on_list = (current_names - list_names)
-    t.user.listname.members.create_all(user=settings.TWITTER_USERNAME, listname=settings.TWITTER_LIST_NAME,
+    t.lists.members.create_all(owner_screen_name=settings.TWITTER_USERNAME, slug=settings.TWITTER_LIST_NAME,
         screen_name=','.join(not_on_list))
     logger.warning("Users added to Twitter list: %r" % not_on_list)
     
