@@ -49,9 +49,9 @@ def update_mps_from_represent(change_twitter=False, download_headshots=False):
                 formatted = office['postal']
                 if office.get('tel'):
                     formatted += '\nPhone: %s' % office['tel']
-                constituency_offices.append(formatted)
+                constituency_offices.append(formatted.replace('\n\n', '\n'))
         if constituency_offices:
-            _update('constituency_offices', constituency_offices)
+            _update('constituency_offices', '\n\n'.join(constituency_offices))
 
         if (not pol.headshot) and mp_info.get('photo_url'):
             if download_headshots:
