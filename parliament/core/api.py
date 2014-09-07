@@ -257,9 +257,10 @@ class ModelListView(APIView):
 
     def filter(self, request, qs):
         for (f, val) in request.GET.items():
-            filter_name, _, filter_extra = f.partition('__')
-            if filter_name in getattr(self, 'filters', {}):
-                qs = self.filters[filter_name](qs, self, filter_name, filter_extra, val)
+            if val:
+                filter_name, _, filter_extra = f.partition('__')
+                if filter_name in getattr(self, 'filters', {}):
+                    qs = self.filters[filter_name](qs, self, filter_name, filter_extra, val)
         return qs
 
     def get_json(self, request, **kwargs):
