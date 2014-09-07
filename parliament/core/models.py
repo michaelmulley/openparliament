@@ -2,10 +2,12 @@
 
 import datetime
 import re
+import urllib
 import urllib2
 
 from django.conf import settings
 from django.core.cache import cache
+from django.core.files import File
 from django.core import urlresolvers
 from django.db import models
 from django.template.defaultfilters import slugify
@@ -441,7 +443,13 @@ class Politician(Person):
             # comparison.
             statements = statements.filter(time__gte=datetime.datetime.now() - datetime.timedelta(weeks=100))
         return statements
-        
+
+    def download_headshot(self, url):
+        urllib2.urlopen(url)
+        content = urllib.urlretrieve(url)
+        self.headshot.save(str(self.id) + ".jpg", File(open(content[0])), save=True)
+        self.save()
+
 class PoliticianInfoManager(models.Manager):
     """Custom manager ensures we always pull in the politician FK."""
     
