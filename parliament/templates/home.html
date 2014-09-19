@@ -51,6 +51,18 @@
     {{ wordcloud_js }}
 });
 </script>
+<script type="application/ld+json">
+{
+   "@context": "http://schema.org",
+   "@type": "WebSite",
+   "url": "http://openparliament.ca/",
+   "potentialAction": {
+     "@type": "SearchAction",
+     "target": "http://openparliament.ca/search/?q={search_term}",
+     "query-input": "required name=search_term"
+   }
+}
+</script>
 {% endblock %}
 
 {% block headextra %}
