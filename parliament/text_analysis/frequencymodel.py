@@ -25,7 +25,7 @@ STOPWORDS = frozenset(["i", "me", "my", "myself", "we", "our", "ours", "ourselve
     'prime', 'one', 'parliament', 'us', 'bill', 'act', 'like', 'canadians', 'people',
     'said', 'want', 'could', 'issue', 'today', 'hon', 'order', 'party', 'canadian',
     'think', 'also', 'new', 'get', 'many', 'say', 'look', 'country', 'legislation',
-    'law', 'department', 'two', 'one', 'day', 'days', 'madam', 'must', "that's", "okay",
+    'law', 'department', 'two', 'day', 'days', 'madam', 'must', "that's", "okay",
     "thank", "really", "much", "there's", 'yes', 'no'
 ])
 
