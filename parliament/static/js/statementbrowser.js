@@ -36,7 +36,7 @@
             $('#paginated').after($statementTools);
             var $currentStatement;
             function currentStatementURL() {
-                return 'http://openparliament.ca' + $currentStatement.attr('data-url');
+                return 'https://openparliament.ca' + $currentStatement.attr('data-url');
             }
             function currentStatementDescription() {
                 var descr = $currentStatement.find('.pol_name').html();
