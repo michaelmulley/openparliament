@@ -25,7 +25,7 @@ def postcode_to_edid(postcode):
 
 
 def postcode_to_edid_represent(postcode):
-    url = 'http://represent.opennorth.ca/postcodes/%s/' % postcode
+    url = 'https://represent.opennorth.ca/postcodes/%s/' % postcode
     try:
         content = json.load(urllib2.urlopen(url))
     except urllib2.HTTPError as e:
