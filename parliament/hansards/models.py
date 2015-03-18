@@ -387,17 +387,16 @@ class Statement(models.Model):
                 r.append(e)
         return u"\n".join(r)
 
-            
-
     def text_html(self, language=settings.LANGUAGE_CODE):
         return mark_safe(getattr(self, 'content_' + language))
 
     def text_plain(self, language=settings.LANGUAGE_CODE):
-        return (strip_tags(getattr(self, 'content_' + language)
+        return strip_tags(
+            getattr(self, 'content_' + language)
             .replace('\n', '')
             .replace('<br>', '\n')
-            .replace('</p>', '\n\n'))
-            .strip())
+            .replace('</p>', '\n\n')
+        ).strip()
 
     # temp compatibility
     @property

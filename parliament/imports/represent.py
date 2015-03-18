@@ -31,10 +31,12 @@ def update_mps_from_represent(change_twitter=False, download_headshots=False):
             continue
 
         def _update(fieldname, value):
-            if not value:
+            if value == '':
+                value = None
+            if value == pol.info().get(fieldname):
                 return
-            if value == pol.info().get('fieldname'):
-                return
+            if value is None:
+                pol.del_info(fieldname)
             pol.set_info(fieldname, value)
 
         _update('email', mp_info.get('email'))

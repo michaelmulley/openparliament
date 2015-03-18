@@ -38,5 +38,4 @@ def analyze_statements(statements, corpus_name):
                     #"size": _log_scale(item[1], opts['range'])
                 })
     #results.sort(key=lambda r: r['size'], reverse=True)
-    return results;
-
+    return results

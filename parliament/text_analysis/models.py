@@ -38,10 +38,11 @@ class TextAnalysisManager(models.Manager):
         return self.get_or_create_from_statements(key, qs, corpus_name, lang, always_update=True)
 
     def get_wordcloud_js(self, key, lang=settings.LANGUAGE_CODE):
-        if getattr(settings, 'PARLIAMENT_DISABLE_WORDCLOUD', False): return ''
+        if getattr(settings, 'PARLIAMENT_DISABLE_WORDCLOUD', False):
+            return ''
         data = self.filter(key=key, lang=lang).values_list('probability_data_json', 'expires')
         if data and (data[0][1] is None or data[0][1] > datetime.datetime.now()):
-            js = 'OP.wordcloud.drawSVG(%s, wordcloud_opts);' % data[0][0];
+            js = 'OP.wordcloud.drawSVG(%s, wordcloud_opts);' % data[0][0]
         else:
             js = '$.getJSON("%s", function(data) { if (data) OP.wordcloud.drawSVG(data, wordcloud_opts); });' % escapejs(key)
         return mark_safe(js)
@@ -76,6 +77,7 @@ class TextAnalysis(models.Model):
     @property
     def top_word(self):
         d = self.probability_data
-        if d is None: return
+        if d is None:
+            return
         onegrams = (w for w in d if w['text'].count(' ') == 0)
         return max(onegrams, key=itemgetter('score'))['text']

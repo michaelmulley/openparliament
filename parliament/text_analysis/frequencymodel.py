@@ -64,7 +64,7 @@ class FrequencyModel(dict):
 
     def __init__(self, items, min_count=1):
         counts = defaultdict(int)
-        total_count = 0;
+        total_count = 0
         for item in items:
             if len(item) > 2 and '/' not in item:
                 counts[item] += 1
@@ -90,7 +90,7 @@ class FrequencyModel(dict):
                 r[k] = self[k] - other[k]
         return r
 
-    def most_common(self, n=None):    
+    def most_common(self, n=None):
         if n is None:
             return sorted(self.iteritems(), key=itemgetter(1), reverse=True)
         return nlargest(n, self.iteritems(), key=itemgetter(1))
@@ -123,7 +123,7 @@ class WordCounter(dict):
         if key not in self.stopwords:
             super(WordCounter, self).__setitem__(key, value)
 
-    def most_common(self, n=None):    
+    def most_common(self, n=None):
         if n is None:
             return sorted(self.iteritems(), key=itemgetter(1), reverse=True)
         return nlargest(n, self.iteritems(), key=itemgetter(1))
@@ -138,7 +138,7 @@ class WordAndAttributeCounter(object):
         if word not in self.stopwords and len(word) > 2:
             self.counter[word].add(attribute)
         
-    def most_common(self, n=None):    
+    def most_common(self, n=None):
         if n is None:
             return sorted(self.counter.iteritems(), key=lambda x: x[1].count, reverse=True)
         return nlargest(n, self.counter.iteritems(), key=lambda x: x[1].count)
