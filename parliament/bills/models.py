@@ -77,6 +77,7 @@ class Bill(models.Model):
         u'SenateAt1stReading': 'First reading (Senate)',
         u'HouseAt1stReading': 'First reading (House)',
         u'HouseAt2ndReading': 'Second reading (House)',
+        u'HouseAtReportStageAndSecondReading': 'Report stage and second reading (House)',
         u'SenateAt2ndReading': 'Second reading (Senate)',
         u'SenateAt3rdReading': 'Third reading (Senate)',
         u'HouseAt3rdReading': 'Third reading (House)',
