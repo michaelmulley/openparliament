@@ -84,6 +84,8 @@ class Bill(models.Model):
         u'HouseInCommittee': 'In committee (House)',
         u'SenateInCommittee': 'In committee (Senate)',
         u'SenateConsiderationOfCommitteeReport': 'Considering committee report (Senate)',
+        u'HouseConsiderationOfCommitteeReport': 'Considering committee report (House)',
+        u'SenateConsiderationOfAmendments': 'Considering amendments (Senate)',
         u'HouseConsiderationOfAmendments': 'Considering amendments (House)',
         u'Introduced': 'Introduced'
     }
