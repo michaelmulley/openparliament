@@ -24,7 +24,6 @@ def import_committee_list(session=None):
         session = Session.objects.current()
 
     def make_committee(namestring, parent=None):
-        #print namestring
         match = re.search(r'^(.+) \(([A-Z0-9]{3,5})\)$', namestring)
         (name, acronym) = match.groups()
         try:
@@ -87,7 +86,7 @@ def import_committee_meetings(committee, session):
         assert number > 0
         try:
             meeting = CommitteeMeeting.objects.select_related('evidence').get(
-                committee=committee,session=session, number=number)
+                committee=committee, session=session, number=number)
         except CommitteeMeeting.DoesNotExist:
             meeting = CommitteeMeeting(committee=committee,
                 session=session, number=number)
@@ -241,16 +240,15 @@ def import_committee_reports(committee, session):
                 report.name_en = report_name
             report.government_response = bool(report_link.xpath("../span[contains(., 'Government Response')]"))
         
-        match = re.search(r'Adopted by the Committee on ([a-zA-Z0-9, ]+)', report_link.tail)
+        match = re.search(r'Adopted by the Committee on ([a-zA-Z0-9, ]+)', report_link.tail or '')
         if match:
             report.adopted_date = _parse_date(match.group(1))
-        match = re.search(r'Presented to the House on ([a-zA-Z0-9, ]+)', report_link.tail)
+        match = re.search(r'Presented to the House on ([a-zA-Z0-9, ]+)', report_link.tail or '')
         if match:
             report.presented_date = _parse_date(match.group(1))
         report.save()
         return report
             
-    
     for item in tree.getroot().cssselect('.TocReportItemText'):
         report_link = item.xpath('./a')[0]
         report = _import_report(report_link)
