@@ -192,7 +192,7 @@ def get_activity_by_url(activity_url):
 
     if CommitteeActivityInSession.objects.exclude(source_id=activity_id).filter(
             session=session, activity=activity).exists():
-        logger.warning("Apparent duplicate activity ID for %s %s %s: %s" %
+        logger.info("Apparent duplicate activity ID for %s %s %s: %s" %
                      (activity, activity.committee, session, activity_id))
         return activity
     
