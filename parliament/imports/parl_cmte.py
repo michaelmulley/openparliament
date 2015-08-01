@@ -238,6 +238,7 @@ def import_committee_reports(committee, session):
                 report.name_en = match.group(2).strip()
             else:
                 report.name_en = report_name
+            report.name_en = report.name_en[:500]
             report.government_response = bool(report_link.xpath("../span[contains(., 'Government Response')]"))
         
         match = re.search(r'Adopted by the Committee on ([a-zA-Z0-9, ]+)', report_link.tail or '')
