@@ -42,6 +42,8 @@ def removeAccents(str):
     return u"".join([c for c in nkfd_form if not unicodedata.combining(c)])
     
 def stripHonorific(s):
+    for hon in ('The Honourable ', 'The Right Honourable ', 'The Rt. ', 'The '):
+        s = s.replace(hon, '')
     return re.sub(r'^[A-Z][a-z]+\. ', '', s)
     
 def isString(o):
