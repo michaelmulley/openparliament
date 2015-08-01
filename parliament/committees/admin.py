@@ -17,10 +17,12 @@ class MeetingAdmin(admin.ModelAdmin):
 class ReportAdmin(admin.ModelAdmin):
     list_display = ('committee', 'number', 'session', 'name', 'government_response')
     list_filter = ('committee', 'session', 'government_response')
+    search_fields = ('name_en', 'number')
     
 class ActivityAdmin(admin.ModelAdmin):
     list_display = ('name_en', 'committee', 'study')
     list_filter = ('committee', 'study')
+    saech_fields = ('name_en',)
 
 admin.site.register(Committee, CommitteeAdmin)
 admin.site.register(CommitteeInSession, CommitteeInSessionAdmin)
