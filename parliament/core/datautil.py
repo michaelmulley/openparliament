@@ -406,3 +406,11 @@ def export_statements(outfile, qs):
         if not s.speaker:
             outfile.write(s.text_plain().encode('utf8'))
             outfile.write("\n")
+
+def add_missing_genders():
+    for pol in Politician.objects.current().filter(gender=''):
+        print pol
+        gender = raw_input().strip().upper()
+        assert gender in ('M', 'F')
+        pol.gender = gender
+        pol.save()
