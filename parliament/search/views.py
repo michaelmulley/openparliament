@@ -1,7 +1,9 @@
-#coding: utf-8
+# coding: utf-8
 
+import logging
 import re
 import urllib
+from urlparse import urljoin
 
 from django.conf import settings
 from django.contrib.syndication.views import Feed
@@ -10,12 +12,15 @@ from django.template import loader, RequestContext
 from django.utils.safestring import mark_safe
 from django.views.decorators.vary import vary_on_headers
 
+import requests
+
 from parliament.core.models import Politician, Session, ElectedMember, Riding, InternalXref
-from parliament.core.utils import postcode_to_edid
 from parliament.core.views import closed, flatpage_response
 from parliament.search.solr import SearchQuery
 from parliament.search.utils import SearchPaginator
 from parliament.utils.views import adaptive_redirect
+
+logger = logging.getLogger(__name__)
 
 PER_PAGE = getattr(settings, 'SEARCH_RESULTS_PER_PAGE', 15)
 
@@ -80,29 +85,74 @@ def search(request):
 r_postcode = re.compile(r'^\s*([A-Z][0-9][A-Z])\s*([0-9][A-Z][0-9])\s*$')
 def try_postcode_first(request):
     match = r_postcode.search(request.GET['q'].upper())
-    if match:
-        postcode = match.group(1) + " " + match.group(2)
+    if not match:
+        return False
+    postcode = match.group(1) + match.group(2)
+    try:
+        x = InternalXref.objects.filter(schema='edid_postcode', text_value=postcode)[0]
+        edid = x.target_id
+    except IndexError:
         try:
-            x = InternalXref.objects.filter(schema='edid_postcode', text_value=postcode)[0]
-            edid = x.target_id
-        except IndexError:
-            edid = postcode_to_edid(postcode)
-            if edid:
-                InternalXref.objects.get_or_create(schema='edid_postcode', text_value=postcode, target_id=edid)
-        if edid:
-            try:
-                member = ElectedMember.objects.get(end_date__isnull=True, riding__edid=edid)
-                return adaptive_redirect(request, member.politician.get_absolute_url())
-            except ElectedMember.DoesNotExist:
-                return flatpage_response(request, u"Ain’t nobody lookin’ out for you",
-                    mark_safe(u"""It looks like that postal code is in the riding of %s. There is no current
-                    Member of Parliament for that riding. By law, a byelection must be called within
-                    180 days of a resignation causing a vacancy. (If you think we’ve got our facts
-                    wrong about your riding or MP, please send an <a class='maillink'>e-mail</a>.)"""
-                    % Riding.objects.get(edid=edid).dashed_name))
-            except ElectedMember.MultipleObjectsReturned:
-                raise Exception("Too many MPs for postcode %s" % postcode)
-    return False
+            edid = postcode_to_edid_ec(postcode)
+            assert edid
+            InternalXref.objects.get_or_create(schema='edid_postcode', text_value=postcode, target_id=edid)
+        except AmbiguousPostcodeException as e:
+            ec_url = e.ec_url if e.ec_url else 'http://elections.ca/'
+            return flatpage_response(request, u"You’ve got a confusing postcode",
+                mark_safe(u"""Some postal codes might cross riding boundaries. It looks like yours is one of them.
+                    If you need to find out who your MP is, visit <a href="%s">this Elections Canada page</a> and
+                    tell them your full address.""" % ec_url))
+        except Exception:
+            logger.exception("elections.ca problem")
+            edid = postcode_to_edid_represent(postcode)
+    if not edid:
+        return flatpage_response(request, u"Can’t find that postcode",
+            mark_safe(u"""We’re having trouble figuring out where that postcode is.
+                Try asking <a href="http://elections.ca/">Elections Canada</a> who your MP is."""))
+    try:
+        member = ElectedMember.objects.get(end_date__isnull=True, riding__edid=edid)
+        return adaptive_redirect(request, member.politician.get_absolute_url())
+    except ElectedMember.DoesNotExist:
+        return flatpage_response(request, u"Ain’t nobody lookin’ out for you",
+            mark_safe(u"""It looks like that postal code is in the riding of %s. There is no current
+            Member of Parliament for that riding. By law, a byelection must be called within
+            180 days of a resignation causing a vacancy. (If you think we’ve got our facts
+            wrong about your riding or MP, please send an <a class='maillink'>e-mail</a>.)"""
+            % Riding.objects.get(edid=edid).dashed_name))
+    except ElectedMember.MultipleObjectsReturned:
+        raise Exception("Too many MPs for postcode %s" % postcode)
+
+def postcode_to_edid_represent(postcode):
+    url = 'https://represent.opennorth.ca/postcodes/%s/' % postcode.replace(' ', '')
+    resp = requests.get(url)
+    if resp.status_code != 200:
+        return None
+    content = resp.json()
+    edid = [
+        b['external_id'] for b in
+        content.get('boundaries_concordance', []) + content.get('boundaries_centroid', [])
+        if b['boundary_set_name'] == 'Federal electoral district'
+    ]
+    return int(edid[0]) if edid else None
+
+class AmbiguousPostcodeException(Exception):
+
+    def __init__(self, postcode, ec_url=None):
+        self.postcode = postcode
+        self.ec_url = ec_url
+
+
+EC_POSTCODE_URL = 'http://www.elections.ca/Scripts/vis/FindED?L=e&QID=-1&PAGEID=20&PC=%s'
+r_ec_edid = re.compile(r'&ED=(\d{5})&')
+def postcode_to_edid_ec(postcode):
+    resp = requests.get(EC_POSTCODE_URL % postcode.replace(' ', ''), allow_redirects=False)
+    if resp.status_code != 302:
+        return None
+    redirect_url = resp.headers['Location']
+    match = r_ec_edid.search(redirect_url)
+    if match:
+        return int(match.group(1))
+    raise AmbiguousPostcodeException(postcode=postcode, ec_url=urljoin(EC_POSTCODE_URL, redirect_url))
 
 
 def try_politician_first(request):
