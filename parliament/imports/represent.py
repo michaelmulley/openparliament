@@ -40,7 +40,8 @@ def update_mps_from_represent(change_twitter=False, download_headshots=False):
                 return
             if value is None:
                 pol.del_info(fieldname)
-            pol.set_info(fieldname, value)
+            else:
+                pol.set_info(fieldname, value)
 
         _update('email', mp_info.get('email'))
         _update('web_site', mp_info.get('personal_url'))
