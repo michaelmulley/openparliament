@@ -585,10 +585,12 @@ PROVINCE_LOOKUP = dict(PROVINCE_CHOICES)
 class Riding(models.Model):
     "A federal riding."
     
-    name = models.CharField(max_length=60)
+    name = models.CharField(max_length=200)
+    name_fr = models.CharField(blank=True, max_length=200)
     province = models.CharField(max_length=2, choices=PROVINCE_CHOICES)
     slug = models.CharField(max_length=60, unique=True, db_index=True)
     edid = models.IntegerField(blank=True, null=True, db_index=True)
+    current = models.BooleanField(blank=True, default=False)
     
     objects = RidingManager()
     
@@ -605,7 +607,7 @@ class Riding(models.Model):
         return self.name.replace('--', u'—')
         
     def __unicode__(self):
-        return "%s (%s)" % (self.dashed_name, self.get_province_display())
+        return u"%s (%s)" % (self.dashed_name, self.get_province_display())
         
 class ElectedMemberManager(models.Manager):
     

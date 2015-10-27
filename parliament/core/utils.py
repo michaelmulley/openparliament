@@ -40,7 +40,7 @@ def postcode_to_edid_represent(postcode):
     return int(edid[0]) if edid else None
 
 
-EC_POSTCODE_URL = 'http://elections.ca/scripts/pss/FindED.aspx?L=e&PC=%s'
+EC_POSTCODE_URL = 'http://www.elections.ca/Scripts/vis/FindED?L=e&QID=-1&PAGEID=20&PC=%s'
 r_ec_edid = re.compile(r'&ED=(\d{5})&')
 def postcode_to_edid_ec(postcode):
     h = httplib2.Http(timeout=1)

@@ -10,9 +10,9 @@ class PoliticianOptions (admin.ModelAdmin):
     search_fields = ('name',)
     
 class RidingOptions (admin.ModelAdmin):
-    list_display = ('name', 'province', 'edid')
-    search_fields = ('name',)
-    list_filter = ('province',)
+    list_display = ('name', 'current', 'province', 'edid')
+    search_fields = ('name', 'edid')
+    list_filter = ('province', 'current')
     
 class SessionOptions (admin.ModelAdmin):
     list_display = ('name', 'start', 'end')

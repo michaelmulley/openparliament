@@ -4,12 +4,15 @@ Update MP biographical data from the lovely Represent API
 
 import json
 import urllib2
+from urlparse import urljoin
+from time import sleep
 
 from django.conf import settings
+from django.db import transaction
 
 import twitter
 
-from parliament.core.models import Politician, Session, PoliticianInfo
+from parliament.core.models import Politician, Session, PoliticianInfo, Riding
 
 import logging
 logger = logging.getLogger(__name__)
@@ -80,13 +83,12 @@ def update_mps_from_represent(change_twitter=False, download_headshots=False):
         update_twitter_list()
             
 
-
 def update_twitter_list():
     from twitter import twitter_globals
     twitter_globals.POST_ACTIONS.append('create_all')
     t = twitter.Twitter(auth=twitter.OAuth(**settings.TWITTER_OAUTH), domain='api.twitter.com/1.1')
     current_names = set(PoliticianInfo.objects.exclude(value='').filter(schema='twitter').values_list('value', flat=True))
-    list_names= set()
+    list_names = set()
     cursor = -1
     while cursor:
         result = t.lists.members(
@@ -106,9 +108,35 @@ def update_twitter_list():
     
 def get_id_from_screen_name(screen_name):
     t = twitter.Twitter(auth=twitter.OAuth(**settings.TWITTER_OAUTH), domain='api.twitter.com/1.1')
-    return t.users.show(screen_name=screen_name)['id']            
+    return t.users.show(screen_name=screen_name)['id']
 
+@transaction.atomic
+def update_ridings_from_represent(boundary_set='federal-electoral-districts'):
 
+    Riding.objects.filter(current=True).update(current=False)
+
+    base_url = 'http://represent.opennorth.ca/'
+    req = urllib2.urlopen(urljoin(base_url, '/boundaries/federal-electoral-districts/?limit=500'))
+    riding_list = json.load(req)
+    riding_urls = [r['url'] for r in riding_list['objects']]
+    for riding_url in riding_urls:
+        req = urllib2.urlopen(urljoin(base_url, riding_url))
+        riding_data = json.load(req)
+        edid = int(riding_data['external_id'])
+        name = riding_data['metadata']['ENNAME']
+        name_fr = riding_data['metadata']['FRNAME']
+        prov = riding_data['metadata']['PROVCODE']
+        try:
+            riding = Riding.objects.get_by_name(name)
+            riding.name = name # just in case of slight punctuation differences
+        except Riding.DoesNotExist:
+            riding = Riding(name=name)
+        riding.edid = edid
+        riding.name_fr = name_fr
+        riding.province = prov
+        riding.current = True
+        riding.save()
+        sleep(.1)
 
 
 
