@@ -24,7 +24,7 @@ POL_LOOKUP_URL = 'http://www.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=%
 
 class InternalXref(models.Model):
     """A general-purpose table for quickly storing internal links."""
-    text_value = models.CharField(max_length=50, blank=True, db_index=True)
+    text_value = models.CharField(max_length=250, blank=True, db_index=True)
     int_value = models.IntegerField(blank=True, null=True, db_index=True)
     target_id = models.IntegerField(db_index=True)
     

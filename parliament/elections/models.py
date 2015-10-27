@@ -46,14 +46,14 @@ class Election (models.Model):
             winner.save()
         candidacies.filter(elected=None).update(elected=False)
         
-    def create_members(self, session=None):
+    def create_members(self, session):
         for candidacy in self.candidacy_set.filter(elected=True):
             candidacy.create_member(session)
                 
 class CandidacyManager(models.Manager):
     
     def create_from_name(self, first_name, last_name, riding, party, election,
-        votetotal, elected, votepercent=None, occupation='', interactive=True):
+            votetotal, elected, votepercent=None, occupation='', interactive=True):
         """Create a Candidacy based on a candidate's name; checks for prior
         Politicians representing the same person.
         
@@ -72,7 +72,9 @@ class CandidacyManager(models.Manager):
         # Then, evaluate the possibilities in the list
         for posscand in candidates:
             # You're only a match if you've run for office for the same party in the same province
-            match = ElectedMember.objects.filter(riding__province=riding.province, party=party, politician=posscand).count() >= 1 or Candidacy.objects.filter(riding__province=riding.province, party=party, candidate=posscand).count() >= 1
+            match = (
+                ElectedMember.objects.filter(riding__province=riding.province, party=party, politician=posscand).exists()
+                or Candidacy.objects.filter(riding__province=riding.province, party=party, candidate=posscand).exists())
             if match:
                 if candidate is not None:
                     if interactive:
