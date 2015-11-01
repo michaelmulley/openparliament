@@ -1,3 +1,4 @@
+import datetime
 import time
 
 from django.db import transaction, models
@@ -16,7 +17,7 @@ from parliament.text_analysis import corpora
 import logging
 logger = logging.getLogger(__name__)
 
-@transaction.commit_on_success
+@transaction.atomic
 def twitter():
     twit.save_tweets()
     return True
@@ -34,7 +35,7 @@ def votes():
 def bills():
     legisinfo.import_bills(Session.objects.current())
 
-@transaction.commit_on_success
+@transaction.atomic
 def prune_activities():
     for pol in Politician.objects.current():
         activityutils.prune(Activity.public.filter(politician=pol))
@@ -52,6 +53,8 @@ def committee_evidence():
 def committees(sess=None):
     if sess is None:
         sess = Session.objects.current()
+        if sess.start_date >= datetime.date.today():
+            return
     parl_cmte.import_committee_list(session=sess)
     parl_cmte.import_committee_documents(sess)
 
@@ -59,7 +62,7 @@ def committees_full():
     committees()
     committee_evidence()
     
-@transaction.commit_on_success
+@transaction.atomic
 def hansards_load():
     parl_document.fetch_latest_debates()
     return True
@@ -96,4 +99,4 @@ def corpus_for_debates():
     corpora.generate_for_debates()
 
 def corpus_for_committees():
-    corpora.generate_for_committees()    
+    corpora.generate_for_committees()
