@@ -26,11 +26,14 @@ def update_mps_from_represent(change_twitter=False, download_headshots=False):
 
     twitter_updated = False
 
+    warnings = []
+    errors = []
+
     for mp_info in data['objects']:
         try:
             pol = Politician.objects.get_by_name(mp_info['name'], session=session)
         except Politician.DoesNotExist:
-            logger.error("Could not find politician %s from Represent" % mp_info['name'])
+            errors.append("Could not find politician %s from Represent" % mp_info['name'])
             continue
 
         def _update(fieldname, value):
@@ -63,7 +66,7 @@ def update_mps_from_represent(change_twitter=False, download_headshots=False):
             if download_headshots:
                 pol.download_headshot(mp_info['photo_url'])
             else:
-                logger.warning("Photo available: %s for %s" % (mp_info.get('photo_url'), pol))
+                warnings.append("Photo available: %s for %s" % (mp_info.get('photo_url'), pol))
 
         if mp_info.get('extra') and mp_info['extra'].get('twitter'):
             screen_name = mp_info['extra']['twitter'].split('/')[-1]
@@ -77,9 +80,13 @@ def update_mps_from_represent(change_twitter=False, download_headshots=False):
                     pol.set_info('twitter_id', get_id_from_screen_name(screen_name))
                     twitter_updated = True
                 else:
-                    logger.warning("Potential twitter change for %s: existing %s new %s" % (
+                    warnings.append("Potential twitter change for %s: existing %s new %s" % (
                         pol, pol.info()['twitter'], screen_name))
     
+    if errors:
+        logger.error('\n\n'.join(errors))
+    if warnings:
+        logger.warning('\n\n'.join(warnings)) 
     if twitter_updated:
         update_twitter_list()
             
