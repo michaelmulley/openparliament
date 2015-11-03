@@ -53,7 +53,7 @@ def committee_evidence():
 def committees(sess=None):
     if sess is None:
         sess = Session.objects.current()
-        if sess.start_date >= datetime.date.today():
+        if sess.start >= datetime.date.today():
             return
     parl_cmte.import_committee_list(session=sess)
     parl_cmte.import_committee_documents(sess)
