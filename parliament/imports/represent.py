@@ -31,7 +31,7 @@ def update_mps_from_represent(change_twitter=False, download_headshots=False):
 
     for mp_info in data['objects']:
         try:
-            pol = Politician.objects.get_by_name(mp_info['name'], session=session)
+            pol = Politician.objects.get_by_name(mp_info['name'], session=session, strictMatch=True)
         except Politician.DoesNotExist:
             errors.append("Could not find politician %s from Represent" % mp_info['name'])
             continue
@@ -86,7 +86,7 @@ def update_mps_from_represent(change_twitter=False, download_headshots=False):
     if errors:
         logger.error('\n\n'.join(errors))
     if warnings:
-        logger.warning('\n\n'.join(warnings)) 
+        logger.warning('\n\n'.join(warnings))
     if twitter_updated:
         update_twitter_list()
             
