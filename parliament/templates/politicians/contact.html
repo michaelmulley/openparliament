@@ -16,7 +16,7 @@
     <tr><td class="four"><p>{{ pol.name }}<br>House of Commons<br>Ottawa, ON<br>K1A 0A6</p><p>(No postage required!)</p>
         {% if info.phone %}<p>Phone: {{ info.phone }}
             {% if info.fax %}<br>Fax: {{ info.fax }}{% endif %}</p>{% endif %}</td><td></td>
-    <td class="five"><p>{% if info.constituency_offices %}{{ info.constituency_offices|linebreaksbr }}{% else %}Doesn't look like we have that address. Try the official <a href="{{ pol.parlpage }}">Parliament site</a>.{% endif %}</p></td></tr></table>
+    <td class="five"><p>{% if info.constituency_offices %}{{ info.constituency_offices|linebreaksbr }}{% else %}Doesn't look like we have that address. {% if pol.parlpage %}Try the official <a href="{{ pol.parlpage }}">Parliament site</a>.{% endif %}{% endif %}</p></td></tr></table>
 </div><div class="clear"></div>
 
 {% if info.email %}
