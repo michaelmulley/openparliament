@@ -76,7 +76,7 @@ def hansards_parse():
             parl_document.import_document(hansard, interactive=False)
         except Exception, e:
             transaction.rollback()
-            logger.error("Hansard parse failure on #%s: %r" % (hansard.id, e))
+            logger.exception("Hansard parse failure on #%s: %r" % (hansard.id, e))
             continue
         else:
             transaction.commit()
