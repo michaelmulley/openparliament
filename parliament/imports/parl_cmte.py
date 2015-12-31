@@ -8,6 +8,7 @@ from django.db import transaction
 
 from BeautifulSoup import BeautifulSoup
 import lxml.html
+import requests
 
 from parliament.committees.models import (Committee, CommitteeMeeting,
     CommitteeActivity, CommitteeActivityInSession,
@@ -17,32 +18,47 @@ from parliament.hansards.models import Document
 
 logger = logging.getLogger(__name__)
 
-COMMITTEE_LIST_URL = 'http://www2.parl.gc.ca/CommitteeBusiness/CommitteeList.aspx?Language=E&Parl=%d&Ses=%d&Mode=2'
+COMMITTEE_LIST_URL = 'http://www.parl.gc.ca/Committees/en/List?parl=%d&session=%d'
 @transaction.commit_on_success
 def import_committee_list(session=None):
     if session is None:
         session = Session.objects.current()
 
-    def make_committee(namestring, parent=None):
-        match = re.search(r'^(.+) \(([A-Z0-9]{3,5})\)$', namestring)
-        (name, acronym) = match.groups()
+    def make_committee(name_en, acronym, parent=None):
         try:
             return Committee.objects.get_by_acronym(acronym, session)
         except Committee.DoesNotExist:
-            committee, created = Committee.objects.get_or_create(name_en=name.strip(), parent=parent)
+            committee, created = Committee.objects.get_or_create(name_en=name_en.strip(), parent=parent)
             if created:
                 logger.warning(u"Creating committee: %s, %s" % (committee.name_en, committee.slug))
             CommitteeInSession.objects.get_or_create(
                 committee=committee, session=session, acronym=acronym)
             return committee
     
-    soup = BeautifulSoup(urllib2.urlopen(COMMITTEE_LIST_URL %
-        (session.parliamentnum, session.sessnum)))
-    for li in soup.findAll('li', 'CommitteeItem'):
-        com = make_committee(li.find('a').string)
-        for sub in li.findAll('li', 'SubCommitteeItem'):
-            make_committee(sub.find('a').string, parent=com)
-    
+    resp = requests.get(COMMITTEE_LIST_URL % (session.parliamentnum, session.sessnum))
+    resp.raise_for_status()
+    root = lxml.html.fromstring(resp.text)
+
+    found = False
+    for cmte_div in root.cssselect('.committees-list .accordion-item'):
+        acronym = cmte_div.cssselect('.accordion-bar-title .committee-acronym-cell')
+        assert len(acronym) == 1
+        acronym = acronym[0].text_content()
+
+        name = cmte_div.cssselect('.accordion-bar-title .committee-name')
+        assert len(name) == 1
+        name = name[0].text_content()
+        com = make_committee(name, acronym)
+        found = True
+
+        for sub in cmte_div.cssselect('.subcommittee-item .subcommittee-name'):
+            match = re.search(r'^(.+) \(([A-Z0-9]{3,5})\)$', sub.text_content())
+            (name, acronym) = match.groups()
+            make_committee(name, acronym, parent=com)
+
+    if not found:
+        logger.error("No committees in list")
+            
     return True
 
 def _docid_from_url(u):
