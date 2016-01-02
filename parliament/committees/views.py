@@ -28,7 +28,8 @@ class CommitteeListView(ModelListView):
         qs = Committee.objects.filter(
             parent__isnull=True, display=True).order_by('name_' + settings.LANGUAGE_CODE)
         if 'session' not in request.GET:
-            qs = qs.filter(sessions=Session.objects.current())
+            session = Session.objects.filter(committees__isnull=False).distinct().order_by('-start')[0]
+            qs = qs.filter(sessions=session)
         return qs
 
     def get_html(self, request):
