@@ -3,7 +3,7 @@
 
 {% block content %}
 <div class="focus">
-	<p>This is {% if activity.study %}a <strong>study</strong>{% else %}an <strong>activity</strong>{% endif %} of the House <a href="{{ committee.get_absolute_url }}">{{ committee }}</a> committee. See more on <a href="{{ activity.get_source_url }}">Parliament&rsquo;s site</a>.</p>
+	<p>This is {% if activity.study %}a <strong>study</strong>{% else %}an <strong>activity</strong>{% endif %} of the House <a href="{{ committee.get_absolute_url }}">{{ committee }}</a> committee. There&rsquo;s probably much more information available on <a href="{{ activity.get_source_url }}">Parliament&rsquo;s site</a>.</p>
 </div><div class="clear"></div>
 <div class="context"><h2>Meetings</h2></div>
 <div class="focus">

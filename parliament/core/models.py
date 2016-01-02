@@ -506,8 +506,8 @@ class SessionManager(models.Manager):
     def get_from_parl_url(self, url):
         """Given a parl.gc.ca URL with Parl= and Ses= query-string parameters,
         return the session."""
-        parlnum = re.search(r'Parl=(\d\d)', url).group(1)
-        sessnum = re.search(r'Ses=(\d)', url).group(1)
+        parlnum = re.search(r'[pP]arl=(\d\d)', url).group(1)
+        sessnum = re.search(r'(?:session|Ses)=(\d)', url).group(1)
         pk = parlnum + '-' + sessnum
         return self.get_query_set().get(pk=pk)
 

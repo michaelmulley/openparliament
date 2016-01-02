@@ -13,6 +13,7 @@ class MeetingAdmin(admin.ModelAdmin):
     list_display = ('committee', 'number', 'date', 'start_time', 'end_time', 'notice', 'minutes', 'evidence',
         'in_camera')
     list_filter = ('committee', 'date')
+    raw_id_fields = ('evidence', 'activities')
     
 class ReportAdmin(admin.ModelAdmin):
     list_display = ('committee', 'number', 'session', 'name', 'government_response')

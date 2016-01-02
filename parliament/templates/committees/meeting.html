@@ -12,7 +12,7 @@
 		{% else %}It can take ten days for transcripts to be published.{% endif %}
 	{% endif %}
 	</p>
-	{% if meeting.webcast %}<p>A <a href="{{ meeting.webcast_url }}" target="_blank">recording</a> is available from Parliament.</p>{% endif %}
+	{% if meeting.webcast_url %}<p>A <a href="{{ meeting.webcast_url }}" target="_blank">{% if meeting.televised %}video{% else %}recording{% endif %}</a> is available from Parliament.</p>{% endif %}
 </div><div class="clear"></div>
 
 {% if meeting.activities_list %}

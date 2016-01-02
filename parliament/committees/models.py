@@ -111,9 +111,9 @@ class CommitteeInSession(models.Model):
         return u"%s (%s) in %s" % (self.committee, self.acronym, self.session_id)
 
     def get_source_url(self):
-        return 'http://parl.gc.ca/CommitteeBusiness/CommitteeHome.aspx?Cmte=%(acronym)s&Language=%(lang)s&Mode=1&Parl=%(parliamentnum)s&Ses=%(sessnum)s' % {
+        return 'http://www.parl.gc.ca/Committees/%(lang)s/%(acronym)s?parl=%(parliamentnum)d&session=%(sessnum)d' % {
             'acronym': self.acronym,
-            'lang': settings.LANGUAGE_CODE.upper()[0],
+            'lang': settings.LANGUAGE_CODE[:2],
             'parliamentnum': self.session.parliamentnum,
             'sessnum': self.session.sessnum
         }
@@ -154,10 +154,10 @@ class CommitteeActivityInSession(models.Model):
     source_id = models.IntegerField(unique=True)
 
     def get_source_url(self):
-        return 'http://www.parl.gc.ca/CommitteeBusiness/StudyActivityHome.aspx?Stac=%(source_id)d&Parl=%(parliamentnum)d&Ses=%(sessnum)d' % {
+        return 'http://www.parl.gc.ca/Committees/%(lang)s/%(acronym)s/StudyActivity?studyActivityId=%(source_id)s' % {
             'source_id': self.source_id,
-            'parliamentnum': self.session.parliamentnum,
-            'sessnum': self.session.sessnum
+            'acronym': self.activity.committee.get_acronym(self.session),
+            'lang': settings.LANGUAGE_CODE[:2]
         }
 
     class Meta:
@@ -170,6 +170,7 @@ class CommitteeMeeting(models.Model):
     date = models.DateField(db_index=True)
     start_time = models.TimeField()
     end_time = models.TimeField(blank=True, null=True)
+    source_id = models.IntegerField(blank=True, null=True)
     
     committee = models.ForeignKey(Committee)
     number = models.SmallIntegerField()
@@ -243,13 +244,10 @@ class CommitteeMeeting(models.Model):
 
     @property
     def webcast_url(self):
-        return 'http://www.parl.gc.ca/CommitteeBusiness/CommitteeMeetings.aspx?Cmte=%(acronym)s&Mode=1&ControlCallback=pvuWebcast&Parl=%(parliamentnum)d&Ses=%(sessnum)d&Organization=%(acronym)s&MeetingNumber=%(meeting_number)d&Language=%(language)s&NoJavaScript=true' % {
-            'acronym': self.committee.get_acronym(self.session),
-            'parliamentnum': self.session.parliamentnum,
-            'sessnum': self.session.sessnum,
-            'meeting_number': self.number,
-            'language': settings.LANGUAGE_CODE[0].upper()
-        } if self.webcast else None
+        return 'http://www.parl.gc.ca/Committees/%(lang)s/Redirects/ParlVuMeetingPage?MeetingId=%(source_id)d' % {
+            'lang': settings.LANGUAGE_CODE[:2],
+            'source_id': self.source_id
+        } if (self.webcast and self.source_id) else None
 
     @property
     def datetime(self):
