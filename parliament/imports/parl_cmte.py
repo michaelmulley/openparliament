@@ -122,8 +122,6 @@ def import_committee_meetings(committee, session):
 
         date_string = mtg_row.cssselect('.meeting-title .date-label')[0].text
         meeting.date = _parse_date(date_string.partition(', ')[2]) # partition is to split off day of week
-
-        print meeting
         
         timestring = mtg_row.cssselect('.the-time')[0].text_content()
         match = re.search(r'(\d\d?):(\d\d) ([ap]m)(?: - (\d\d?):(\d\d) ([ap]m))?\s\(',
