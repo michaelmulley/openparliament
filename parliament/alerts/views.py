@@ -161,7 +161,7 @@ def politician_hansard_subscribe(request, signed_key):
         'key_error': False
     }
     try:
-        key = TimestampSigner(salt='alerts_pol_subscribe').unsign(signed_key, max_age=60*60*24*14)
+        key = TimestampSigner(salt='alerts_pol_subscribe').unsign(signed_key, max_age=60*60*24*90)
         politician_id, _, email = key.partition(',')
         pol = get_object_or_404(Politician, id=politician_id)
         if not pol.current_member:
