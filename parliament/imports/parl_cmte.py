@@ -121,7 +121,12 @@ def import_committee_meetings(committee, session):
                 meeting.save()
 
         date_string = mtg_row.cssselect('.meeting-title .date-label')[0].text
-        meeting.date = _parse_date(date_string.partition(', ')[2]) # partition is to split off day of week
+        if date_string == 'Today':
+            meeting.date = datetime.date.today()
+        elif date_string == 'Tomorrow':
+            meeting.date = datetime.date.today() + datetime.timedelta(days=1)
+        else:
+            meeting.date = _parse_date(date_string.partition(', ')[2]) # partition is to split off day of week
         
         timestring = mtg_row.cssselect('.the-time')[0].text_content()
         match = re.search(r'(\d\d?):(\d\d) ([ap]m)(?: - (\d\d?):(\d\d) ([ap]m))?\s\(',
