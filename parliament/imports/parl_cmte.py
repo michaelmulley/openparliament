@@ -120,7 +120,7 @@ def import_committee_meetings(committee, session):
             if meeting.id:
                 meeting.save()
 
-        date_string = mtg_row.cssselect('.meeting-title .date-label')[0]
+        date_string = mtg_row.cssselect('.meeting-title .date-label')[0].text_content().strip()
         if date_string in ('Earlier Today', 'Later Today', 'In Progress', 'Tomorrow'):
             match = re.search(r'-(20\d\d)-(\d\d)-(\d\d)', mtg_row.get('class'))
             assert match
