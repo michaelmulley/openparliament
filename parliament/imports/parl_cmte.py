@@ -120,11 +120,11 @@ def import_committee_meetings(committee, session):
             if meeting.id:
                 meeting.save()
 
-        date_string = mtg_row.cssselect('.meeting-title .date-label')[0].text
-        if date_string == 'Today':
-            meeting.date = datetime.date.today()
-        elif date_string == 'Tomorrow':
-            meeting.date = datetime.date.today() + datetime.timedelta(days=1)
+        date_string = mtg_row.cssselect('.meeting-title .date-label')[0]
+        if date_string in ('Earlier Today', 'Later Today', 'In Progress', 'Tomorrow'):
+            match = re.search(r'-(20\d\d)-(\d\d)-(\d\d)', mtg_row.get('class'))
+            assert match
+            meeting.date = datetime.date(int(match.group(1)), int(match.group(2)), int(match.group(3)))
         else:
             meeting.date = _parse_date(date_string.partition(', ')[2]) # partition is to split off day of week
         
