@@ -9,10 +9,6 @@ r_notamember = re.compile(r'^(The|A|Some|Acting|Santa|One|Assistant|An\.?|Le|La|
 r_mister = re.compile(r'^(Mr|Mrs|Ms|Miss|Hon|Right Hon|M|Mme)\.?\s+')
 r_parens = re.compile(r'\s*\(.+\)\s*$')
 
-def countWords(text):
-    # very quick-n-dirty for now
-    return text.count(' ') + int(text.count("\n") / 2) + 1
-
 def time(hour, minute):
     if hour >= 24:
         hour = hour % 24 # no, really. the house of commons is so badass they meet at 25 o'clock

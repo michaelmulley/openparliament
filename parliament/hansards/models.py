@@ -312,6 +312,8 @@ class Statement(models.Model):
     content_fr = models.TextField(blank=True)
     sequence = models.IntegerField(db_index=True)
     wordcount = models.IntegerField()
+    wordcount_en = models.PositiveSmallIntegerField(null=True,
+        help_text="# words originally spoken in English")
 
     procedural = models.BooleanField(default=False, db_index=True)
     written_question = models.CharField(max_length=1, blank=True, choices=(
@@ -336,10 +338,10 @@ class Statement(models.Model):
     who_context = language_property('who_context')
 
     def save(self, *args, **kwargs):
-        if not self.wordcount:
-            self.wordcount = parsetools.countWords(self.text_plain())
         self.content_en = self.content_en.replace('\n', '').replace('</p>', '</p>\n').strip()
         self.content_fr = self.content_fr.replace('\n', '').replace('</p>', '</p>\n').strip()
+        if self.wordcount_en is None:
+            self._generate_wordcounts()
         if ((not self.procedural) and self.wordcount <= 300
             and ( 
                 (parsetools.r_notamember.search(self.who) and re.search(r'(Speaker|Chair|président)', self.who))
@@ -391,12 +393,45 @@ class Statement(models.Model):
         return mark_safe(getattr(self, 'content_' + language))
 
     def text_plain(self, language=settings.LANGUAGE_CODE):
+        return self.html_to_text(getattr(self, 'content_' + language))
+
+    @staticmethod
+    def html_to_text(text):
         return strip_tags(
-            getattr(self, 'content_' + language)
+            text
             .replace('\n', '')
             .replace('<br>', '\n')
             .replace('</p>', '\n\n')
         ).strip()
+
+    def _generate_wordcounts(self):
+        paragraphs = [
+            [], # english
+            [], # french
+            [] # procedural
+        ]
+
+        for para in self.content_en.split('\n'):
+            idx = para.find('data-originallang="')
+            if idx == -1:
+                paragraphs[2].append(para)
+            else:
+                lang = para[idx+19:idx+21]
+                if lang == 'en':
+                    paragraphs[0].append(para)
+                elif lang == 'fr':
+                    paragraphs[1].append(para)
+                else:
+                    raise Exception("What kind of language is %s?" % lang)
+
+        counts = [
+            len(self.html_to_text(' '.join(p)).split())
+            for p in paragraphs
+        ]
+
+        self.wordcount = counts[0] + counts[1]
+        self.wordcount_en = counts[0]
+        #self.wordcount_procedural = counts[2]
 
     # temp compatibility
     @property
