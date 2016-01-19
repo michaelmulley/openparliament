@@ -7,12 +7,13 @@ import urllib2
 
 from django.conf import settings
 from django.core.cache import cache
-from django.core.files import File
+from django.core.files import ContentFile
 from django.core import urlresolvers
 from django.db import models
 from django.template.defaultfilters import slugify
 
 import lxml.html
+import requests
 
 from parliament.core import parsetools
 from parliament.core.utils import memoize_property, ActiveManager
@@ -445,9 +446,9 @@ class Politician(Person):
         return statements
 
     def download_headshot(self, url):
-        urllib2.urlopen(url)
-        content = urllib.urlretrieve(url)
-        self.headshot.save(str(self.id) + ".jpg", File(open(content[0])), save=True)
+        resp = requests.get(url)
+        resp.raise_for_status()
+        self.headshot.save(str(self.identifier) + ".jpg", ContentFile(resp.content))
         self.save()
 
 class PoliticianInfoManager(models.Manager):
