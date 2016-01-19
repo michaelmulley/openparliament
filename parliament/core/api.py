@@ -239,7 +239,6 @@ class APIFilters(object):
         return inner
 
 
-
 class ModelListView(APIView):
 
     default_limit = 20

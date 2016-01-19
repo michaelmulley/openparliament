@@ -90,6 +90,10 @@ def update_mps_from_represent(change_twitter=False, download_headshots=False):
     if twitter_updated:
         update_twitter_list()
             
+def _chunks(l, n):
+    """Yield successive n-sized chunks from l."""
+    for i in xrange(0, len(l), n):
+        yield l[i:i+n]
 
 def update_twitter_list():
     from twitter import twitter_globals
@@ -109,10 +113,12 @@ def update_twitter_list():
     if not_in_db:
         logger.error("Users on list, not in DB: %r" % not_in_db)
     
-    not_on_list = (current_names - list_names)
-    t.lists.members.create_all(owner_screen_name=settings.TWITTER_USERNAME, slug=settings.TWITTER_LIST_NAME,
-        screen_name=','.join(not_on_list))
-    logger.warning("Users added to Twitter list: %r" % not_on_list)
+    not_on_list = list(current_names - list_names)
+    if not_on_list:
+        for list_chunk in _chunks(not_on_list, 10):
+            t.lists.members.create_all(owner_screen_name=settings.TWITTER_USERNAME, slug=settings.TWITTER_LIST_NAME,
+                screen_name=','.join(list_chunk))
+        logger.warning("Users added to Twitter list: %r" % not_on_list)
     
 def get_id_from_screen_name(screen_name):
     t = twitter.Twitter(auth=twitter.OAuth(**settings.TWITTER_OAUTH), domain='api.twitter.com/1.1')
