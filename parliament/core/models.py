@@ -7,7 +7,7 @@ import urllib2
 
 from django.conf import settings
 from django.core.cache import cache
-from django.core.files import ContentFile
+from django.core.files.base import ContentFile
 from django.core import urlresolvers
 from django.db import models
 from django.template.defaultfilters import slugify
