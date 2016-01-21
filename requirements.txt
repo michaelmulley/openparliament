@@ -6,7 +6,7 @@ Django>1.8,<1.9
 Markdown==2.3.1
 PIL>=1.1.6
 django-extensions==1.2.5
-django-haystack==1.0.1-final
+django-haystack==2.4.1
 #psycopg2>=2.0.7
 pysolr==2.0.9
 sorl-thumbnail==3.2.5

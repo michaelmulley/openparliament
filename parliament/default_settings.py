@@ -10,9 +10,6 @@ MANAGERS = ADMINS
 
 PROJ_ROOT = os.path.dirname(os.path.realpath(__file__))
 
-HAYSTACK_SEARCH_ENGINE = 'solr'
-HAYSTACK_SITECONF = 'parliament.search_sites'
-
 CACHE_MIDDLEWARE_KEY_PREFIX = 'parl'
 CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 

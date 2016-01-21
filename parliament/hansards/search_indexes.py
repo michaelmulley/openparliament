@@ -1,10 +1,8 @@
-from haystack import site
 from haystack import indexes
 
-from parliament.search.index import SearchIndex
 from parliament.hansards.models import Statement
 
-class StatementIndex(SearchIndex):
+class StatementIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, model_attr='text_plain')
     searchtext = indexes.CharField(stored=False, use_template=True)
     date = indexes.DateTimeField(model_attr='time')
@@ -19,8 +17,11 @@ class StatementIndex(SearchIndex):
     committee = indexes.CharField(model_attr='committee_name')
     committee_slug = indexes.CharField(model_attr='committee_slug')
     doctype = indexes.CharField(null=True)
+
+    def get_model(self):
+        return Statement
     
-    def get_queryset(self):
+    def index_queryset(self):
         return Statement.objects.all().prefetch_related(
             'member__politician', 'member__party', 'member__riding', 'document',
             'document__committeemeeting__committee'
@@ -31,5 +32,3 @@ class StatementIndex(SearchIndex):
             return 'committee'
         else:
             return 'debate'
-
-site.register(Statement, StatementIndex)

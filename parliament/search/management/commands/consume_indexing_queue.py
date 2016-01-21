@@ -4,7 +4,7 @@ import logging
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from haystack import site
+from haystack import connections
 import pysolr
 
 logger = logging.getLogger(__name__)
@@ -24,7 +24,7 @@ class Command(BaseCommand):
             IndexingTask.objects.filter(action='update').prefetch_related('content_object')
         )
 
-        solr = pysolr.Solr(settings.HAYSTACK_SOLR_URL, timeout=600)
+        solr = pysolr.Solr(settings.HAYSTACK_CONNECTIONS['default']['URL'], timeout=600)
 
         if update_tasks:
             update_objs = [t.content_object for t in update_tasks if t.content_object]
@@ -32,7 +32,7 @@ class Command(BaseCommand):
             update_objs.sort(key=lambda o: o.__class__.__name__)
             for cls, objs in itertools.groupby(update_objs, lambda o: o.__class__):
                 logger.debug("Indexing %s" % cls)
-                index = site.get_index(cls)
+                index = connections['default'].get_unified_index().get_index(cls)
                 if hasattr(index, 'should_obj_be_indexed'):
                     objs = filter(index.should_obj_be_indexed, objs)
                 prepared_objs = [index.prepare(o) for o in objs]

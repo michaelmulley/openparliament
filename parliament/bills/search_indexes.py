@@ -1,14 +1,12 @@
 #coding: utf-8
 
-from haystack import site
 from haystack import indexes
 
-from parliament.search.index import SearchIndex
 from parliament.bills.models import Bill
 from parliament.core.models import Session
 
 
-class BillIndex(SearchIndex):
+class BillIndex(indexes.SearchIndex, indexes.Indexable):
     text = indexes.CharField(document=True, model_attr='get_text')
     searchtext = indexes.CharField(use_template=True)
     boosted = indexes.CharField(stored=False, use_template=True)
@@ -39,9 +37,10 @@ class BillIndex(SearchIndex):
         else:
             return obj.name[:140] + u'…'
 
-    def get_queryset(self):
+    def index_queryset(self):
         return Bill.objects.all().prefetch_related(
             'sponsor_politician', 'sponsor_member', 'sponsor_member__party'
         )
 
-site.register(Bill, BillIndex)
+    def get_model(self):
+        return Bill

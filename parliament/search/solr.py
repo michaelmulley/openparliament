@@ -35,7 +35,7 @@ def autohighlight(results):
                 doc[field] = mark_safe(r_hl.sub(r'<\1em>', val))
     return results
 
-solr = pysolr.Solr(settings.HAYSTACK_SOLR_URL)
+solr = pysolr.Solr(settings.HAYSTACK_CONNECTIONS['default']['URL'])
 
 
 class SearchQuery(BaseSearchQuery):
