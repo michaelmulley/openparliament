@@ -204,7 +204,7 @@ class PoliticianMembershipView(ModelDetailView):
     resource_name = 'Politician membership'
 
     def get_object(self, request, member_id):
-        return ElectedMember.objects.select_related(depth=1).get(id=member_id)
+        return ElectedMember.objects.select_related('party', 'riding', 'politician').get(id=member_id)
 
 
 class PoliticianMembershipListView(ModelListView):
@@ -212,7 +212,7 @@ class PoliticianMembershipListView(ModelListView):
     resource_name = 'Politician memberships'
 
     def get_qs(self, request):
-        return ElectedMember.objects.all().select_related(depth=1)
+        return ElectedMember.objects.all().select_related('party', 'riding', 'politician')
 
 
 class PoliticianStatementFeed(Feed):

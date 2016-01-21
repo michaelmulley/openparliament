@@ -197,7 +197,7 @@ class VoteListView(ModelListView):
         return super(VoteListView, self).get_json(request)
 
     def get_qs(self, request):
-        return VoteQuestion.objects.select_related(depth=1).order_by('-date', '-number')
+        return VoteQuestion.objects.select_related('bill').order_by('-date', '-number')
 
     def get_html(self, request, session_id=None):
         if session_id:

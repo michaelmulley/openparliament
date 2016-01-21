@@ -275,7 +275,7 @@ class Politician(Person):
         )
         if representation == 'detail':
             info = self.info_multivalued()
-            members = list(self.electedmember_set.all().select_related(depth=1).order_by('-end_date'))
+            members = list(self.electedmember_set.all().select_related('party', 'riding').order_by('-end_date'))
             d.update(
                 given_name=self.name_given,
                 family_name=self.name_family,
