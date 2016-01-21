@@ -48,7 +48,7 @@ class PartyManager(models.Manager):
         elif len(x) > 1:
             raise Exception("More than one party matched %s" % name.strip().lower())
         else:
-            return self.get_query_set().get(pk=x[0].target_id)
+            return self.get_queryset().get(pk=x[0].target_id)
             
 class Party(models.Model):
     """A federal political party."""
@@ -109,23 +109,23 @@ class PoliticianManager(models.Manager):
     
     def elected(self):
         """Returns a QuerySet of all politicians that were once elected to office."""
-        return self.get_query_set().annotate(
+        return self.get_queryset().annotate(
             electedcount=models.Count('electedmember')).filter(electedcount__gte=1)
             
     def never_elected(self):
         """Returns a QuerySet of all politicians that were never elected as MPs.
         
         (at least during the time period covered by our database)"""
-        return self.get_query_set().filter(electedmember__isnull=True)
+        return self.get_queryset().filter(electedmember__isnull=True)
         
     def current(self):
         """Returns a QuerySet of all current MPs."""
-        return self.get_query_set().filter(electedmember__end_date__isnull=True,
+        return self.get_queryset().filter(electedmember__end_date__isnull=True,
             electedmember__start_date__isnull=False).distinct()
         
     def elected_but_not_current(self):
         """Returns a QuerySet of former MPs."""
-        return self.get_query_set().exclude(electedmember__end_date__isnull=True)
+        return self.get_queryset().exclude(electedmember__end_date__isnull=True)
     
     def filter_by_name(self, name):
         """Returns a list of politicians matching a given name."""
@@ -178,7 +178,7 @@ class PoliticianManager(models.Manager):
             match = re.search(r'\s([A-Z][\w-]+)$', name.strip()) # very naive lastname matching
             if match:
                 lastname = match.group(1)
-                pols = self.get_query_set().filter(name_family=lastname, electedmember__sessions=session).distinct()
+                pols = self.get_queryset().filter(name_family=lastname, electedmember__sessions=session).distinct()
                 if riding:
                     pols = pols.filter(electedmember__riding=riding)
                 if len(pols) > 1:
@@ -250,7 +250,7 @@ class PoliticianManager(models.Manager):
             # if parlinfolink:
             #     match = re.search(r'Item=(.+?)&', parlinfolink['href'])
             #     pol.save_parlinfo_id(match.group(1))
-            return self.get_query_set().get(pk=polid)
+            return self.get_queryset().get(pk=polid)
     getByParlID = get_by_parl_id
 
 class Politician(Person):
@@ -454,8 +454,8 @@ class Politician(Person):
 class PoliticianInfoManager(models.Manager):
     """Custom manager ensures we always pull in the politician FK."""
     
-    def get_query_set(self):
-        return super(PoliticianInfoManager, self).get_query_set()\
+    def get_queryset(self):
+        return super(PoliticianInfoManager, self).get_queryset()\
             .select_related('politician')
 
 # Not necessarily a full list           
@@ -487,10 +487,10 @@ class PoliticianInfo(models.Model):
 class SessionManager(models.Manager):
     
     def with_bills(self):
-        return self.get_query_set().filter(bill__number_only__gt=1).distinct()
+        return self.get_queryset().filter(bill__number_only__gt=1).distinct()
     
     def current(self):
-        return self.get_query_set().order_by('-start')[0]
+        return self.get_queryset().order_by('-start')[0]
 
     def get_by_date(self, date):
         return self.filter(models.Q(end__isnull=True) | models.Q(end__gte=date))\
@@ -502,7 +502,7 @@ class SessionManager(models.Manager):
         if not match:
             raise ValueError(u"Could not find parl/session in %s" % string)
         pk = match.group(1) + '-' + match.group(2)
-        return self.get_query_set().get(pk=pk)
+        return self.get_queryset().get(pk=pk)
 
     def get_from_parl_url(self, url):
         """Given a parl.gc.ca URL with Parl= and Ses= query-string parameters,
@@ -510,7 +510,7 @@ class SessionManager(models.Manager):
         parlnum = re.search(r'[pP]arl=(\d\d)', url).group(1)
         sessnum = re.search(r'(?:session|Ses)=(\d)', url).group(1)
         pk = parlnum + '-' + sessnum
-        return self.get_query_set().get(pk=pk)
+        return self.get_queryset().get(pk=pk)
 
 class Session(models.Model):
     "A session of Parliament."
@@ -564,7 +564,7 @@ class RidingManager(models.Manager):
         slug = parsetools.slugify(name)
         if slug in RidingManager.FIX_RIDING:
             slug = RidingManager.FIX_RIDING[slug]
-        return self.get_query_set().get(slug=slug)
+        return self.get_queryset().get(slug=slug)
 
 PROVINCE_CHOICES = (
     ('AB', 'Alberta'),
@@ -613,13 +613,13 @@ class Riding(models.Model):
 class ElectedMemberManager(models.Manager):
     
     def current(self):
-        return self.get_query_set().filter(end_date__isnull=True)
+        return self.get_queryset().filter(end_date__isnull=True)
         
     def former(self):
-        return self.get_query_set().filter(end_date__isnull=False)
+        return self.get_queryset().filter(end_date__isnull=False)
     
     def on_date(self, date):
-        return self.get_query_set().filter(models.Q(start_date__lte=date)
+        return self.get_queryset().filter(models.Q(start_date__lte=date)
             & (models.Q(end_date__isnull=True) | models.Q(end_date__gte=date)))
     
     def get_by_pol(self, politician, date=None, session=None):
@@ -630,7 +630,7 @@ class ElectedMemberManager(models.Manager):
         else:
             # In the case of floor crossers, there may be more than one ElectedMember
             # We haven't been given a date, so just return the first EM
-            qs = self.get_query_set().filter(politician=politician, sessions=session).order_by('-start_date')
+            qs = self.get_queryset().filter(politician=politician, sessions=session).order_by('-start_date')
             if not len(qs):
                 raise ElectedMember.DoesNotExist("No elected member for %s, session %s" % (politician, session))
             return qs[0]

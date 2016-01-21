@@ -222,7 +222,7 @@ def get_activity_by_url(activity_url, committee, session):
 # The report scraper is for a previous version of parl.gc.ca, and has not been updated.
 #
 # COMMITTEE_REPORT_URL = 'http://www2.parl.gc.ca/CommitteeBusiness/ReportsResponses.aspx?Cmte=%(acronym)s&Language=E&Mode=1&Parl=%(parliamentnum)d&Ses=%(sessnum)d'
-# @transaction.commit_on_success
+# @transaction.atomic
 # def import_committee_reports(committee, session):
 #     # FIXME rework to parse out the single all-reports page?
 #     acronym = committee.get_acronym(session)

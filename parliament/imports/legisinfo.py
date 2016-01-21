@@ -29,7 +29,7 @@ def _get_previous_session(session):
     except IndexError:
         return None
 
-@transaction.commit_on_success
+@transaction.atomic
 def import_bills(session):
     """Import bill data from LegisInfo for the given session.
     

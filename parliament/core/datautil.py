@@ -274,7 +274,7 @@ def merge_polnames():
                     break
             print "Done!"
     
-@transaction.commit_on_success
+@transaction.atomic
 def merge_pols():
     print "Enter ID of primary pol object: "
     goodid = int(raw_input().strip())

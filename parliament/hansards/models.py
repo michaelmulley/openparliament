@@ -23,19 +23,19 @@ logger = logging.getLogger(__name__)
 
 class DebateManager(models.Manager):
 
-    def get_query_set(self):
-        return super(DebateManager, self).get_query_set().filter(document_type=Document.DEBATE)
+    def get_queryset(self):
+        return super(DebateManager, self).get_queryset().filter(document_type=Document.DEBATE)
 
 class EvidenceManager(models.Manager):
 
-    def get_query_set(self):
-        return super(EvidenceManager, self).get_query_set().filter(document_type=Document.EVIDENCE)
+    def get_queryset(self):
+        return super(EvidenceManager, self).get_queryset().filter(document_type=Document.EVIDENCE)
 
 class NoStatementManager(models.Manager):
     """Manager restricts to Documents that haven't had statements parsed."""
 
-    def get_query_set(self):
-        return super(NoStatementManager, self).get_query_set()\
+    def get_queryset(self):
+        return super(NoStatementManager, self).get_queryset()\
             .annotate(scount=models.Count('statement'))\
             .exclude(scount__gt=0)
 

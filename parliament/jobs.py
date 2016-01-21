@@ -65,31 +65,21 @@ def committees_full():
 @transaction.atomic
 def hansards_load():
     parl_document.fetch_latest_debates()
-    return True
         
-@transaction.commit_manually
 def hansards_parse():
     for hansard in Document.objects.filter(document_type=Document.DEBATE)\
       .annotate(scount=models.Count('statement'))\
       .exclude(scount__gt=0).exclude(skip_parsing=True).order_by('date').iterator():
-        try:
-            parl_document.import_document(hansard, interactive=False)
-        except Exception, e:
-            transaction.rollback()
-            logger.exception("Hansard parse failure on #%s: %r" % (hansard.id, e))
-            continue
-        else:
-            transaction.commit()
-        # now reload the Hansard to get the date
-        hansard = Document.objects.get(pk=hansard.id)
-        try:
+        with transaction.atomic():
+            try:
+                with transaction.atomic():
+                    parl_document.import_document(hansard, interactive=False)
+            except Exception, e:
+                logger.exception("Hansard parse failure on #%s: %r" % (hansard.id, e))
+                continue
+            # now reload the Hansard to get the date
+            hansard = Document.objects.get(pk=hansard.id)
             hansard.save_activity()
-        except Exception, e:
-            transaction.rollback()
-            raise e
-        else:
-            transaction.commit()
-    transaction.commit()
             
 def hansards():
     hansards_load()

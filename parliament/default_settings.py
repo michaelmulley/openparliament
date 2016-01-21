@@ -112,7 +112,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'haystack',
-    'south',
     'sorl.thumbnail',
     'compressor',
     'parliament.core',

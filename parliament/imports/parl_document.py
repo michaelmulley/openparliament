@@ -24,7 +24,7 @@ from parliament.hansards.models import Statement, Document, OldSequenceMapping
 import logging
 logger = logging.getLogger(__name__)
 
-@transaction.commit_on_success
+@transaction.atomic
 def import_document(document, interactive=True, reimport_preserving_sequence=False):
     old_statements = None
     if document.statement_set.all().exists():

@@ -97,8 +97,8 @@ def int64_decode(s):
         
 class ActiveManager(models.Manager):
 
-    def get_query_set(self):
-        return super(ActiveManager, self).get_query_set().filter(active=True)
+    def get_queryset(self):
+        return super(ActiveManager, self).get_queryset().filter(active=True)
 
 def feed_wrapper(feed_class):
     """Decorator that ensures django.contrib.syndication.Feed objects are created for
