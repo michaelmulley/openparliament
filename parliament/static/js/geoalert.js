@@ -23,7 +23,7 @@ $(function() {
 				animateIn: false,
 				hideAfter: 0,
 				allowHTML: true,
-				onClose: function() {console.log('hi'); save_province('NO');}
+				onClose: function() {save_province('NO');}
 			});
 		}
 	};
