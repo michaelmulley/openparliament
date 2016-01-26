@@ -56,16 +56,19 @@ OP.utils = {
         opts = opts || {};
         _.defaults(opts, {
             'animateIn': true,
-            //'allowHTML': false,
+            'allowHTML': false,
+            'onClose': null,
             'hideAfter': (tag == 'error' ? 10000 : 5000) // # of milliseconds after which to hide the message, 0 to require manual close
         });
         var $target = $('#notifications');
+
+        var escaper = opts.allowHTML ? '<%=' : '<%-';
         // if (!opts.allowHTML) {
         //     message = _.escape(message);
         // }
 
         var template = _.template('<div class="top-notification <%= tag %>"><div class="notification-inner">' +
-        '<a href="#" class="close">&times;</a><%- message %></div></div>');
+        '<a href="#" class="close">&times;</a>' + escaper + ' message %></div></div>');
         var $el = $(template({ message: message, tag: tag}));
         if ($(document).scrollTop() > $target.offset().top) {
             if (!$('#fixed-notification-container').length) {
@@ -79,6 +82,10 @@ OP.utils = {
         $target.append($el);
         if (opts.animateIn) {
             $el.slideDown();
+        }
+
+        if (opts.onClose) {
+            $el.find('a.close').click(opts.onClose);
         }
 
         var close = function() {
