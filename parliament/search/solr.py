@@ -1,5 +1,6 @@
 """Search tools that interface with Solr."""
 
+from calendar import monthrange
 import datetime
 import re
 
@@ -58,6 +59,9 @@ class SearchQuery(BaseSearchQuery):
         'Document': 'doc_url'
     }
 
+    DATE_FILTER_RE = re.compile(
+        r'^(?P<fy>\d{4})-(?P<fm>\d\d?)(?:-(?P<fd>\d\d?))?(?: to (?P<ty>\d{4})-(?P<tm>\d\d?)(?:-(<P<td>\d\d?))?)?')
+
     def __init__(self, query, start=0, limit=15, user_params={},
             facet=False, full_text=False, solr_params={}):
         super(SearchQuery, self).__init__(query)
@@ -85,15 +89,21 @@ class SearchQuery(BaseSearchQuery):
             filter_name = self.ALLOWABLE_FILTERS[filter_name]
 
             if filter_name == 'date':
-                match = re.search(r'^(\d{4})-(\d\d?) to (\d{4})-(\d\d?)', filter_value)
+                match = self.DATE_FILTER_RE.search(filter_value)
                 if not match:
-                    return ''
-                (fromyear, frommonth, toyear, tomonth) = [int(x) for x in match.groups()]
-                tomonth += 1
-                if tomonth == 13:
-                    tomonth = 1
-                    toyear += 1
-                filter_value = '[{0:02}-{1:02}-01T00:01:01.000Z TO {2:02}-{3:02}-01T00:01:01.000Z]'.format(fromyear, frommonth, toyear, tomonth)
+                    continue
+                g = match.groupdict()
+                start_date = datetime.date(int(g['fy']), int(g['fm']), int(g['fd']) if g['fd'] else 1)
+                if g['ty']:
+                    if g['td']:
+                        end_date = datetime.date(int(g['ty']), int(g['tm']), int(g['td']))
+                    else:
+                        end_date = datetime.date(int(g['ty']), int(g['tm']),
+                            monthrange(int(g['ty']), int(g['tm']))[1])
+                else:
+                    end_date = start_date
+                end_date += datetime.timedelta(days=1)
+                filter_value = '[%sT00:00:00.000Z TO %sT00:01:01.000Z]' % (start_date, end_date)
 
             elif filter_name == 'type':
                 filter_name = 'doctype'
