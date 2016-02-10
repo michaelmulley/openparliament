@@ -129,7 +129,7 @@ def import_committee_meetings(committee, session):
             meeting.date = _parse_date(date_string.partition(', ')[2]) # partition is to split off day of week
         
         timestring = mtg_row.cssselect('.the-time')[0].text_content()
-        match = re.search(r'(\d\d?):(\d\d) ([ap]m)(?: - (\d\d?):(\d\d) ([ap]m))?\s\(',
+        match = re.search(r'(\d\d?):(\d\d) ([ap]\.?m\.?)(?: - (\d\d?):(\d\d) ([ap]\.?m\.?))?\s\(',
             timestring, re.UNICODE)
         meeting.start_time = datetime.time(_12hr(match.group(1), match.group(3)), int(match.group(2)))
         if match.group(4):
