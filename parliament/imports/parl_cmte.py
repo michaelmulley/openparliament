@@ -172,9 +172,12 @@ def import_committee_meetings(committee, session):
         
         for study_link in mtg_row.cssselect('.meeting-card-study a'):
             name = study_link.text.strip()
-            study = get_activity_by_url(study_link.get('href'),
-                committee=committee, session=session)
-            meeting.activities.add(study)
+            try:
+                study = get_activity_by_url(study_link.get('href'),
+                    committee=committee, session=session)
+                meeting.activities.add(study)
+            except:
+                logger.exception("Error fetching committee activity for %r %s", committee, name)
     
     return True
 
