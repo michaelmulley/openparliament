@@ -103,7 +103,7 @@ def try_postcode_first(request):
                     If you need to find out who your MP is, visit <a href="%s">this Elections Canada page</a> and
                     tell them your full address.""" % ec_url))
         except Exception:
-            logger.exception("elections.ca problem")
+            logger.exception("elections.ca problem", extra={'request': request})
             edid = postcode_to_edid_represent(postcode)
     if not edid:
         return flatpage_response(request, u"Can’t find that postcode",
