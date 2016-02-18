@@ -104,6 +104,18 @@ def import_committee_meetings(committee, session):
 
         number = int(re.sub(r'\D', '', mtg_row.cssselect('.meeting-title .meeting-number')[0].text))
         assert number > 0
+
+        cancelled = bool(mtg_row.cssselect('.meeting-title .icon-cancel'))
+        if cancelled:
+            try:
+                mtg = CommitteeMeeting.objects.get(committee=committee, session=session,
+                    number=number, source_id=source_id)
+                mtg.delete()
+                logger.warning("Deleting %s cancelled meeting #%d source_id %s", committee, number, source_id)
+            except CommitteeMeeting.DoesNotExist:
+                pass
+            continue
+            
         try:
             meeting = CommitteeMeeting.objects.select_related('evidence').get(
                 committee=committee, session=session, number=number)
