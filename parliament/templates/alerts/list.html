@@ -1,7 +1,14 @@
 {% extends "alerts/base.html" %}
 
 {% block content %}
-<div class="focus"><p>You&rsquo;re signed in as <strong>{{ user.email }}</strong>. If that&rsquo;s not who you want to be today, <a href="#" class="persona-logout">sign out</a>.</p></div><div class="clear"></div>
+<div class="focus"><p>You&rsquo;re signed in as <strong>{{ alerts_user.email }}</strong>. If that&rsquo;s not who you want to be today, <a href="#" class="persona-logout">sign out</a>.</p>
+
+{% if alerts_user.email_bouncing %}
+<p class="inline-error">We've been having trouble delivering email to {{ alerts_user.email }}, and have disabled your account as a result. Please <a class="maillink">get in touch</a> and we'll try to figure out the problem.</p>
+{% endif %}
+
+</div><div class="clear"></div>
+
 {% if subscriptions %}
 <div class="context"><h2>Existing alerts</h2></div>
 <div class="focus">

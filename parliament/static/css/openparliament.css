@@ -153,8 +153,10 @@ td.standard_form{width:520px;}
 /* NOTIFICATIONS */
 .top-notification { width: 100%; padding-top: 5px; }
 .top-notification.warning { background-color: #fff1ae; border-bottom: 1px solid #d8c982; }
+.inline-warning { background-color: #fff1ae; border: 1px solid #d8c982; padding: 10px; }
 .top-notification.success { background-color: #e8fbd4; border-bottom: 1px solid #b4ca91; }
 .top-notification.error { background-color: #ffd2c7; border-bottom: 1px solid #be9b93; }
+.inline-error { background-color: #ffd2c7; border: 1px solid #be9b93; padding: 10px; }
 .notification-inner { width: 960px; margin: 0 auto; padding: 8px 0; color: #444444; text-align: center;}
 .top-notification .close {float: right; color: #000; font-size: 20px; font-weight: bold; line-height: 0.75; text-shadow: 0 1px 0 rgba(255,255,255,1); opacity: 0.25;}
 .top-notification .close:hover {color: #000; text-decoration: none; opacity: 0.4;}

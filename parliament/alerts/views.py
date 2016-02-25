@@ -100,17 +100,17 @@ def alerts_list(request):
 
     t = loader.get_template('alerts/list.html')
     c = RequestContext(request, {
-        'user': user,
+        'alerts_user': user,
         'subscriptions': subscriptions,
         'title': 'Your email alerts'
     })
     resp = HttpResponse(t.render(c))
-    resp.set_cookie(
-        key='enable-alerts',
-        value='y',
-        max_age=60*60*24*90,
-        httponly=False
-    )
+    # resp.set_cookie(
+    #     key='enable-alerts',
+    #     value='y',
+    #     max_age=60*60*24*90,
+    #     httponly=False
+    # )
     return resp
 
 
