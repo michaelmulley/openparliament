@@ -84,6 +84,7 @@ def politician_hansard_signup(request):
 
 
 @never_cache
+@disable_on_readonly_db
 def alerts_list(request):
     if not request.authenticated_email:
         return render(request, 'alerts/list_unauthenticated.html',

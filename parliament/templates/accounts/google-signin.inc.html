@@ -1,0 +1,24 @@
+{% if GOOGLE_CLIENT_ID %}
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<meta name="google-signin-client_id" content="{{ GOOGLE_CLIENT_ID }}">
+<div class="g-signin2" data-onsuccess="onGoogleSignIn" data-longtitle="true" data-width="220" style="margin-left: 210px; margin-bottom: 20px;"></div>
+
+<script>
+function onGoogleSignIn(googleUser) {
+	var id_token = googleUser.getAuthResponse().id_token;
+    $.ajax({
+        type: 'POST',
+        url: '/accounts/google/login/',
+        data: {token: id_token},
+        success: function(res, status, xhr) { 
+        	// Immediately sign you out of Google: we want to maintain state ourselves
+        	var auth = gapi.auth2.getAuthInstance();
+        	auth.signOut().then(function() { window.location.reload(); });
+        },
+        error: function(res, status, xhr) {
+            OP.utils.notify("Oops! There was a problem logging you in.", 'error');
+        }
+    });
+}
+</script>
+{% else %}Oops! Google signin isn't configured properly -- if you see this error, please let us know.{% endif %}

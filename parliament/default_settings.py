@@ -70,10 +70,26 @@ SESSION_COOKIE_AGE = 60*60*24*60  # 60 days
 
 PARLIAMENT_API_HOST = 'api.openparliament.ca'
 
-TEMPLATE_LOADERS = (
-    'django.template.loaders.filesystem.Loader',
-    'django.template.loaders.app_directories.Loader',
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'APP_DIRS': True,
+        'DIRS': [os.path.join(PROJ_ROOT, 'templates')],
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                "django.template.context_processors.i18n",
+                "django.template.context_processors.media",
+                "django.template.context_processors.static",
+                'parliament.accounts.context_processors.auth',
+            ],
+        },
+    },
+]
+
 
 MIDDLEWARE_CLASSES = [
     'django.middleware.cache.UpdateCacheMiddleware',
@@ -91,10 +107,6 @@ MIDDLEWARE_CLASSES = [
 ROOT_URLCONF = 'parliament.urls'
 
 WSGI_APPLICATION = 'parliament.wsgi.application'
-
-TEMPLATE_DIRS = [
-    os.path.join(PROJ_ROOT, 'templates'),
-]
 
 INSTALLED_APPS = [
     'django.contrib.auth',
@@ -136,16 +148,6 @@ THUMBNAIL_PROCESSORS = (
 SOUTH_TESTS_MIGRATE = False
 TEST_RUNNER = 'parliament.core.test_utils.TestSuiteRunner'
 TEST_APP_PREFIX = 'parliament'
-
-TEMPLATE_CONTEXT_PROCESSORS = (
-    "django.contrib.auth.context_processors.auth",
-    "django.core.context_processors.debug",
-    "django.core.context_processors.i18n",
-    "django.core.context_processors.media",
-    "django.core.context_processors.static",
-    "django.contrib.messages.context_processors.messages",
-    "django.core.context_processors.request",
-)
 
 LOGGING = {
     'version': 1,

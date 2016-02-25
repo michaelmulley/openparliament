@@ -20,5 +20,6 @@ cssselect==0.9.1
 #recaptcha-client==1.0.5
 -e git+git://github.com/rhymeswithcycle/alpheus.git#egg=alpheus
 PyBrowserID
+google-api-python-client==1.5.0
 # WebOb is used for Accept header parsing
 webob==1.2.2

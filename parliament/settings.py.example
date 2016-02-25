@@ -19,6 +19,9 @@ DATABASES = {
 HANSARD_CACHE_DIR = os.path.join(PROJ_ROOT, 'hansard-cache')
 SITE_URL='http://openparliament.ca'
 
+# You'll need this to allow Google login
+# GOOGLE_CLIENT_ID = "YOUR_ID"
+
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.dummy.DummyCache',

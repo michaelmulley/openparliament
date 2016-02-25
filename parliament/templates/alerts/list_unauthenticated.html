@@ -15,7 +15,9 @@
 	<p style="padding-left: 30px; position: relative;"><input style="position: absolute; left: 0;" type="checkbox" id="disclaimer_checkbox"><label for="disclaimer_checkbox"><strong>I understand this is a test service.</strong> It may disappear.
 		It may become a paid service. It may just not work very well. As a test user of the service, I understand I'll be asked to provide feedback.</label></p>
 	<div id="disclaimer_hidden" style="display:none">
-		<p>To take care of email verification, we use a service called Persona (from Mozilla, the lovely nonprofit that makes Firefox). Even if you&rsquo;ve never used it before, it takes only a few clicks to sign in:</p>
+		<p>If you have an account with Google, that&rsquo;s the easiest way to sign in. Just click the button below:</p>
+		{% include "accounts/google-signin.inc.html" %}
+		<p>Otherwise, verify your email with a service called Persona (from Mozilla, the lovely nonprofit that makes Firefox). Even if you&rsquo;ve never used it before, it takes only a few clicks to sign in:</p>
 		<p style="text-align:center"><a class="persona-button persona-login" href="#"><span>Sign in with your email</span></a></p>
 	</div>
 </div><div class="clear"></div>

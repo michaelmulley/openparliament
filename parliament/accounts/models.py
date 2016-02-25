@@ -7,6 +7,9 @@ class User(models.Model):
 
     email = models.EmailField(unique=True, db_index=True)
     email_bouncing = models.BooleanField(default=False)
+    email_bounce_reason = models.TextField(blank=True)
+
+    name = models.CharField(max_length=250, blank=True)
 
     created = models.DateTimeField(default=datetime.datetime.now)
     last_login = models.DateTimeField(blank=True, null=True)

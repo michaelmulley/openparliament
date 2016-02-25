@@ -86,10 +86,10 @@ $(function() {
         OP.auth.logout();
     });
 
-    if ($('a.persona-logout,a.persona-login').length || navigator.id) {
-        // If there's a sign in/out button on the page, we need to load the Persona JS right away.
-        OP.auth.callPersona(function() {});
-    }
+    // if ($('a.persona-logout,a.persona-login').length || navigator.id) {
+    //     // If there's a sign in/out button on the page, we need to load the Persona JS right away.
+    //     OP.auth.callPersona(function() {});
+    // }
 
     $(document).ajaxError(function(event, jqXHR, ajaxSettings, thrownError) {
         if (jqXHR.getResponseHeader('X-OP-Login-Required')) {
