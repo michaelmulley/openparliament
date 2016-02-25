@@ -34,7 +34,7 @@
 {% if not show_statements %}
 <h3>In Parliament</h3>
 <ul class="bulleted">
-	<li><a href="?page=1">Speeches</a> in House debates</li>
+	<li><a href="/search/?q=MP%3A%20%22{{ pol.identifier|urlencode }}%22%20Type%3A%20%22debate%22&amp;sort=date+desc">Speeches</a> in House debates</li>
 </ul>
 {% endif %}
 
