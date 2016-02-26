@@ -44,9 +44,6 @@ HAYSTACK_CONNECTIONS = {
 # data is added.
 #HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
 
-TWITTER_USERNAME = 'openparlca'
-TWITTER_LIST_NAME = 'mps'
-
 PARLIAMENT_SEND_EMAIL = False
 
 # Make this unique, and don't share it with anybody.

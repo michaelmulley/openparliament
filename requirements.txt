@@ -12,12 +12,11 @@ pysolr==2.0.9
 sorl-thumbnail==3.2.5
 wsgiref==0.1.2
 feedparser==4.1
-twitter==1.9.0
 django-compressor==1.6
 requests==2.8.1
+requests-oauthlib==0.6.1
 lxml==3.5.0
 cssselect==0.9.1
-#recaptcha-client==1.0.5
 -e git+git://github.com/rhymeswithcycle/alpheus.git#egg=alpheus
 PyBrowserID
 google-api-python-client==1.5.0

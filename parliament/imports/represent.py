@@ -2,29 +2,25 @@
 Update MP biographical data from the lovely Represent API
 """
 
-import json
-import urllib2
 from urlparse import urljoin
 from time import sleep
 
-from django.conf import settings
 from django.db import transaction
 
-import twitter
+import requests
 
-from parliament.core.models import Politician, Session, PoliticianInfo, Riding
+from parliament.core.models import Politician, Session, Riding
 
 import logging
 logger = logging.getLogger(__name__)
 
-def update_mps_from_represent(change_twitter=False, download_headshots=False):
+def update_mps_from_represent(download_headshots=False):
 
-    req = urllib2.urlopen('https://represent.opennorth.ca/representatives/house-of-commons/?limit=500')
-    data = json.load(req)
+    resp = requests.get('https://represent.opennorth.ca/representatives/house-of-commons/?limit=500')
+    resp.raise_for_status()
+    data = resp.json()
 
     session = Session.objects.current()
-
-    twitter_updated = False
 
     warnings = []
     errors = []
@@ -72,57 +68,15 @@ def update_mps_from_represent(change_twitter=False, download_headshots=False):
             screen_name = mp_info['extra']['twitter'].split('/')[-1]
             if not pol.info().get('twitter'):
                 pol.set_info('twitter', screen_name)
-                pol.set_info('twitter_id', get_id_from_screen_name(screen_name))
-                twitter_updated = True
             elif pol.info().get('twitter') != screen_name:
-                if change_twitter:
-                    pol.set_info('twitter', screen_name)
-                    pol.set_info('twitter_id', get_id_from_screen_name(screen_name))
-                    twitter_updated = True
-                else:
-                    warnings.append("Potential twitter change for %s: existing %s new %s" % (
-                        pol, pol.info()['twitter'], screen_name))
+                warnings.append("Potential twitter change for %s: existing %s new %s" % (
+                    pol, pol.info()['twitter'], screen_name))
     
     if errors:
         logger.error('\n\n'.join(errors))
     if warnings:
         logger.warning('\n\n'.join(warnings))
-    if twitter_updated:
-        update_twitter_list()
-            
-def _chunks(l, n):
-    """Yield successive n-sized chunks from l."""
-    for i in xrange(0, len(l), n):
-        yield l[i:i+n]
 
-def update_twitter_list():
-    from twitter import twitter_globals
-    twitter_globals.POST_ACTIONS.append('create_all')
-    t = twitter.Twitter(auth=twitter.OAuth(**settings.TWITTER_OAUTH), domain='api.twitter.com/1.1')
-    current_names = set(PoliticianInfo.objects.exclude(value='').filter(schema='twitter').values_list('value', flat=True))
-    list_names = set()
-    cursor = -1
-    while cursor:
-        result = t.lists.members(
-          owner_screen_name=settings.TWITTER_USERNAME, slug=settings.TWITTER_LIST_NAME,
-          cursor=cursor)
-        for u in result['users']:
-            list_names.add(u['screen_name'])
-        cursor = result['next_cursor']
-    not_in_db = (list_names - current_names)
-    if not_in_db:
-        logger.error("Users on list, not in DB: %r" % not_in_db)
-    
-    not_on_list = list(current_names - list_names)
-    if not_on_list:
-        for list_chunk in _chunks(not_on_list, 10):
-            t.lists.members.create_all(owner_screen_name=settings.TWITTER_USERNAME, slug=settings.TWITTER_LIST_NAME,
-                screen_name=','.join(list_chunk))
-        logger.warning("Users added to Twitter list: %r" % not_on_list)
-    
-def get_id_from_screen_name(screen_name):
-    t = twitter.Twitter(auth=twitter.OAuth(**settings.TWITTER_OAUTH), domain='api.twitter.com/1.1')
-    return t.users.show(screen_name=screen_name)['id']
 
 @transaction.atomic
 def update_ridings_from_represent(boundary_set='federal-electoral-districts'):
@@ -130,12 +84,10 @@ def update_ridings_from_represent(boundary_set='federal-electoral-districts'):
     Riding.objects.filter(current=True).update(current=False)
 
     base_url = 'http://represent.opennorth.ca/'
-    req = urllib2.urlopen(urljoin(base_url, '/boundaries/federal-electoral-districts/?limit=500'))
-    riding_list = json.load(req)
+    riding_list = requests.get(urljoin(base_url, '/boundaries/federal-electoral-districts/?limit=500')).json()
     riding_urls = [r['url'] for r in riding_list['objects']]
     for riding_url in riding_urls:
-        req = urllib2.urlopen(urljoin(base_url, riding_url))
-        riding_data = json.load(req)
+        riding_data = requests.get(urljoin(base_url, riding_url)).json()
         edid = int(riding_data['external_id'])
         name = riding_data['metadata']['ENNAME']
         name_fr = riding_data['metadata']['FRNAME']
@@ -151,9 +103,4 @@ def update_ridings_from_represent(boundary_set='federal-electoral-districts'):
         riding.current = True
         riding.save()
         sleep(.1)
-
-
-
-
-
 
