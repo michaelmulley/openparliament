@@ -46,7 +46,7 @@ def save_tweets():
         if timeline and timeline[0]['user']['screen_name'] != pol.info()['twitter']:
             # Changed screen name
             new_name = timeline[0]['user']['screen_name']
-            logger.warning("Screen name change: %s %s", new_name, pol.info()['twitter'])
+            logger.warning("Screen name change: new %s old %s", new_name, pol.info()['twitter'])
             pol.set_info('twitter', new_name)
 
         timeline.reverse()
@@ -83,7 +83,7 @@ def twitter_api_request(endpoint, params=None):
     elif resp.status_code == 429:
         # We're rate-limited
         limit_expires = int(resp.headers['x-rate-limit-reset'])
-        time.sleep(limit_expires - time.time())
+        time.sleep(max(limit_expires - time.time(), 10))
         return twitter_api_request(endpoint, params)
     elif resp.status_code == 404:
         raise ObjectDoesNotExist
