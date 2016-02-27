@@ -1,3 +1,4 @@
+import datetime
 import json
 import re
 
@@ -205,12 +206,44 @@ def unsubscribe(request, key):
 
 
 def bounce_webhook(request):
-    """Simple view to process bounce reports delivered via webhook.
-    (uses the Mandrill API for the moment)"""
-    if 'mandrill_events' not in request.POST:
+    """
+    Simple view to process bounce reports delivered via webhook.
+    
+    Currently support Mandrill and Amazon SES.
+    """
+    sns_message_type = request.META.get('HTTP_X_AMZ_SNS_MESSAGE_TYPE')
+
+    if sns_message_type:
+        if sns_message_type == 'Notification':
+            data = json.loads(request.body)
+            ntype = data['notificationType']
+            if ntype == 'Bounce':
+                recipients = [b['emailAddress'] for b in data['bounce']['bouncedRecipients']]
+            elif ntype == 'Complaint':
+                recipients = [b['emailAddress'] for b in data['complaint']['complainedRecipients']]
+            else:
+                mail_admins("Unhandled SES notification", request.body)
+            
+            for recipient in recipients:
+                if ntype == 'Bounce' and data['bounce']['bounceType'] == 'Transient':
+                    try:
+                        user = User.objects.get(email=recipient)
+                        user.data.setdefault('transient_bounces', []).append(
+                            "{} {}".format(datetime.date.today(), data['bounce']['bounceSubType']))
+                        user.save()
+                    except User.DoesNotExist:
+                        pass
+                else:
+                    User.objects.filter(email=recipient).update(email_bouncing=True,
+                        email_bounce_reason=request.body)
+        else:
+            mail_admins("Unhandled SES notification", request.body)
+    elif 'mandrill_events' in request.POST:
+        for event in json.loads(request.POST['mandrill_events']):
+            if 'bounce' in event['event']:
+                User.objects.filter(email=event['msg']['email']).update(email_bouncing=True,
+                    email_bounce_reason=json.dumps(event))
+    else:
         raise Http404
 
-    for event in json.loads(request.POST['mandrill_events']):
-        if 'bounce' in event['event']:
-            User.objects.filter(email=event['msg']['email']).update(email_bouncing=True)
     return HttpResponse('OK')

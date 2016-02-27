@@ -2,6 +2,8 @@ import datetime
 
 from django.db import models
 
+from jsonfield import JSONField
+
 
 class User(models.Model):
 
@@ -14,7 +16,7 @@ class User(models.Model):
     created = models.DateTimeField(default=datetime.datetime.now)
     last_login = models.DateTimeField(blank=True, null=True)
 
-    json_data = models.TextField(default='{}')
+    data = JSONField(default={})
 
     def __unicode__(self):
         return self.email

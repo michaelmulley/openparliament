@@ -1,7 +1,7 @@
 # Required Python libraries for openparliament
 # pip can install these libraries automatically by reading this file:
 # pip install -r requirements.txt
-BeautifulSoup>=3.2.0
+BeautifulSoup==3.2.0
 Django>1.8,<1.9
 Markdown==2.3.1
 PIL>=1.1.6
@@ -22,3 +22,4 @@ PyBrowserID
 google-api-python-client==1.5.0
 # WebOb is used for Accept header parsing
 webob==1.2.2
+jsonfield==1.0.3
