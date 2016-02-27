@@ -216,7 +216,7 @@ def bounce_webhook(request):
 
     if sns_message_type:
         try:
-            data = json.loads(request.body)['Message']
+            data = json.loads(json.loads(request.body)['Message'])
             ntype = data['notificationType']
             if ntype == 'Bounce':
                 recipients = [b['emailAddress'] for b in data['bounce']['bouncedRecipients']]
