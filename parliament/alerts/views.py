@@ -205,6 +205,7 @@ def unsubscribe(request, key):
     return HttpResponse(t.render(c))
 
 
+@disable_on_readonly_db
 def bounce_webhook(request):
     """
     Simple view to process bounce reports delivered via webhook.
@@ -214,7 +215,7 @@ def bounce_webhook(request):
     sns_message_type = request.META.get('HTTP_X_AMZ_SNS_MESSAGE_TYPE')
 
     if sns_message_type:
-        if sns_message_type == 'Notification':
+        try:
             data = json.loads(request.body)
             ntype = data['notificationType']
             if ntype == 'Bounce':
@@ -236,7 +237,7 @@ def bounce_webhook(request):
                 else:
                     User.objects.filter(email=recipient).update(email_bouncing=True,
                         email_bounce_reason=request.body)
-        else:
+        except KeyError:
             mail_admins("Unhandled SES notification", request.body)
     elif 'mandrill_events' in request.POST:
         for event in json.loads(request.POST['mandrill_events']):
