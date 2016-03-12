@@ -59,7 +59,7 @@
                 if (accache.committees) {
                     return callback(accache.committees, {preserveOrder: true});
                 }
-                $.getJSON('/committees/?format=json', function(data) {
+                $.getJSON('/committees/?format=json&limit=100', function(data) {
                     accache.committees = _.map(data.objects, function(i) { 
                         return {
                             value: i.slug,
