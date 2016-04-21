@@ -126,7 +126,8 @@ def import_committee_meetings(committee, session):
         
         if meeting.source_id:
             if meeting.source_id != source_id:
-                logger.error("Source ID mismatch for %s meeting %s %s" % (committee, number, source_id))
+                logger.error("Source ID mismatch for %s meeting %s (orig %s new %s)" % (
+                    committee, number, meeting.source_id, source_id))
                 continue
         else:
             meeting.source_id = source_id

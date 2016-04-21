@@ -14,6 +14,7 @@ class MeetingAdmin(admin.ModelAdmin):
         'in_camera')
     list_filter = ('committee', 'date')
     raw_id_fields = ('evidence', 'activities')
+    search_fields = ['number', 'committee__name_en', 'source_id']
     
 class ReportAdmin(admin.ModelAdmin):
     list_display = ('committee', 'number', 'session', 'name', 'government_response')
