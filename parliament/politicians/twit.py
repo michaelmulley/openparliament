@@ -87,4 +87,8 @@ def twitter_api_request(endpoint, params=None):
         return twitter_api_request(endpoint, params)
     elif resp.status_code == 404:
         raise ObjectDoesNotExist
+    elif resp.status_code == 401:
+        # Return empty list for protected accounts
+        return []
+
     resp.raise_for_status()
