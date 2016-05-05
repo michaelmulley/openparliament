@@ -126,9 +126,16 @@ def import_committee_meetings(committee, session):
         
         if meeting.source_id:
             if meeting.source_id != source_id:
-                logger.error("Source ID mismatch for %s meeting %s (orig %s new %s)" % (
-                    committee, number, meeting.source_id, source_id))
-                continue
+                if meeting.evidence_id:
+                    logger.error("Source ID mismatch for %s meeting %s (orig %s new %s)" % (
+                        committee, number, meeting.source_id, source_id))
+                    continue
+                else:
+                    # As long as there was no evidence loaded, just replace the old meeting
+                    # with the new one
+                    meeting.delete()
+                    meeting = CommitteeMeeting(committee=committee, source_id=source_id,
+                        session=session, number=number)
         else:
             meeting.source_id = source_id
             if meeting.id:
