@@ -198,7 +198,8 @@ def import_committee_meetings(committee, session):
                     committee=committee, session=session)
                 meeting.activities.add(study)
             except:
-                logger.exception("Error fetching committee activity for %r %s", committee, name)
+                logger.exception("Error fetching committee activity for %r %s %s",
+                    committee, name, study_link.get('href'))
     
     return True
 
