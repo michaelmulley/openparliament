@@ -206,7 +206,8 @@ class Subscription(models.Model):
             self.get_subject_line(documents),
             rendered['text'],
             'alerts@contact.openparliament.ca',
-            [self.user.email]
+            [self.user.email],
+            headers={'List-Unsubscribe': '<' + self.get_unsubscribe_url(full=True) + '>'}
         )
         if not self.topic.politician_hansard_alert:
             msg.bcc = ['michael@openparliament.ca']
