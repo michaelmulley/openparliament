@@ -68,7 +68,7 @@ class FormerMPView(ModelListView):
         former_members = ElectedMember.objects.exclude(end_date__isnull=True)\
             .order_by('riding__province', 'politician__name_family', '-start_date')\
             .select_related('politician', 'riding', 'party')
-        seen = set()
+        seen = set(Politician.objects.current().values_list('id', flat=True))
         object_list = []
         for member in former_members:
             if member.politician_id not in seen:
