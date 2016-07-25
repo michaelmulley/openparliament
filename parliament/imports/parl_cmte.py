@@ -183,7 +183,7 @@ def import_committee_meetings(committee, session):
                     document_type=Document.EVIDENCE)
         
         meeting.webcast = bool(mtg_row.cssselect('.btn-meeting-parlvu'))
-        meeting.in_camera = bool(mtg_row.cssselect('.meeting-title i[title*="in camera"]'))
+        meeting.in_camera = bool(mtg_row.cssselect('.meeting-title i[title*="In Camera"]'))
         if not meeting.televised:
             meeting.televised = bool(mtg_row.cssselect('.meeting-title .icon-television'))
         if not meeting.travel:
