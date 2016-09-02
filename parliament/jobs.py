@@ -45,10 +45,14 @@ def committee_evidence():
     for document in Document.evidence\
       .annotate(scount=models.Count('statement'))\
       .exclude(scount__gt=0).exclude(skip_parsing=True).order_by('date').iterator():
-        print document
-        parl_document.import_document(document, interactive=False)
-        if document.statement_set.all().count():
-            document.save_activity()
+        try:
+            print document
+            parl_document.import_document(document, interactive=False)
+            if document.statement_set.all().count():
+                document.save_activity()
+        except Exception, e:
+            logger.exception("Evidence parse failure on #%s: %r" % (document.id, e))
+            continue
     
 def committees(sess=None):
     if sess is None:
