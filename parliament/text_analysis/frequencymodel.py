@@ -90,6 +90,9 @@ class FrequencyModel(dict):
                 r[k] = self[k] - other[k]
         return r
 
+    def item_count(self, key):
+        return round(self[key] * self.count)
+
     def most_common(self, n=None):
         if n is None:
             return sorted(self.iteritems(), key=itemgetter(1), reverse=True)
