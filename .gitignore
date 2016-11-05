@@ -3,6 +3,9 @@
 *.gz
 *~
 *.tmproj
+*.pickle
+*.sublime-
+*.ipynb*
 .idea/
 .DS_Store
 models.dot
