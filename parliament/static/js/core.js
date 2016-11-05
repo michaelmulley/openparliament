@@ -114,6 +114,21 @@ OP.cookies = {
     }
 };
 
+OP.auth = {
+    email: OP.cookies.getItem('email'),
+
+    logout: function() {
+        $.ajax({
+            type: 'POST',
+            url: '/accounts/logout/',
+            success: function() { window.location.reload(); },
+            error: function (res, status, xhr) {
+                OP.utils.notify("Oops! There was a problem logging you out.", 'error');
+            }
+        });
+    }
+};
+
 // TOOLTIPS
 jQuery.fn.overflowtip = function() {
     return this.each(function() {
@@ -197,6 +212,15 @@ $(function() {
         $notification.slideUp(function() {
             $notification.remove(); // We won't need it again after it's been closed
         });
+    }).delegate('a.auth-logout', 'click', function(e) {
+        e.preventDefault();
+        OP.auth.logout();
+    });;
+
+    $(document).ajaxError(function(event, jqXHR, ajaxSettings, thrownError) {
+        if (jqXHR.getResponseHeader('X-OP-Redirect')) {
+            window.location.href = jqXHR.getResponseHeader('X-OP-Redirect');
+        }
     });
     
     // This event is to be triggered on AJAX loads too
