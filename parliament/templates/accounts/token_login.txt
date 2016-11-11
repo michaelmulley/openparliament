@@ -1,0 +1,15 @@
+Hi,
+
+Someone -- hopefully you! -- wants to log in to openparliament.ca using
+this email address.
+
+To finish logging in, just click on the following link, or paste it
+into your Web browser:
+
+https://openparliament.ca{{ login_url }}
+
+If you didn't request this or don't actually want to log in, 
+you can safely ignore this message.
+
+Thanks,
+openparliament.ca

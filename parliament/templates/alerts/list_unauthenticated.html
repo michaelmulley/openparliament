@@ -10,37 +10,23 @@
 {% endif %}
 <div class="context"><h2>Get started</h2></div>
 <noscript><div class="focus"><p>You need to enable JavaScript.</p></div></noscript>
-<div class="focus jsonly"><p>You need to <!-- <a class="persona-login" href="#">sign in</a> --> sign in, so that we can send the email to the right place.</p>
-	<p>Read and check off the following to get started:</p>
-	<p style="padding-left: 30px; position: relative;"><input style="position: absolute; left: 0;" type="checkbox" id="disclaimer_checkbox"><label for="disclaimer_checkbox"><strong>I understand this is a test service.</strong> It may disappear.
-		It may become a paid service. It may just not work very well. As a test user of the service, I understand I'll be asked to provide feedback.</label></p>
-	<div id="disclaimer_hidden" style="display:none">
+<div class="focus jsonly">
 		<p>If you have an account with Google, that&rsquo;s the easiest way to sign in. Just click the button below:</p>
 		{% include "accounts/google-signin.inc.html" %}
-		<p>Otherwise, verify your email with a service called Persona (from Mozilla, the lovely nonprofit that makes Firefox). Even if you&rsquo;ve never used it before, it takes only a few clicks to sign in:</p>
-		<p style="text-align:center"><a class="persona-button persona-login" href="#"><span>Sign in with your email</span></a></p>
-	</div>
+		<p>Otherwise, enter your email address below, and we'll email a link that allows you to sign in:</p>
+		{% include "accounts/email-signin.inc.html" %}
 </div><div class="clear"></div>
 {% endblock %}
 
 {% block javascript %}
 {{ block.super }}
+{% if request.session.pending_alert %}
 <script type="text/javascript">
 $(function() {
-	$('#disclaimer_checkbox').change(function() {
-		if ($('#disclaimer_checkbox').is(':checked')) {
-			$('#disclaimer_hidden').slideDown();
-		}
-		else {
-			$('#disclaimer_hidden').hide();
-		}
-	});
-
-	{% if request.session.pending_alert %}
 	OP.utils.notify("Sign in below to create your alert for {{ request.session.pending_alert|escapejs }}", 'warning', { hideAfter: 0});
-	{% endif %}
 });
 </script>
+{% endif %}
 {% endblock %}
 
 {% block breadcrumbs_all %}{% endblock %}
