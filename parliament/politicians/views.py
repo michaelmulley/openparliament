@@ -37,20 +37,32 @@ class CurrentMPView(ModelListView):
         'include': APIFilters.noop(help="'former' to show former MPs (since 94), 'all' for current and former")
     }
 
-    def get_qs(self, request):
-        if request.GET.get('include') == 'former':
-            qs = Politician.objects.elected_but_not_current()
-        elif request.GET.get('include') == 'all':
-            qs = Politician.objects.elected()
+    def get_qs(self, request=None):
+        if request and request.GET.get('include') == 'former':
+            qs = Politician.objects.elected_but_not_current().order_by('name_family')
+        elif request and request.GET.get('include') == 'all':
+            qs = Politician.objects.elected().order_by('name_family')
         else:
-            qs = Politician.objects.current()
-        return qs.order_by('name_family')
+            qs = ElectedMember.objects.current().order_by(
+                'riding__province', 'politician__name_family').select_related('politician', 'riding', 'party')
+        return qs
+
+    def object_to_dict(self, obj):
+        if isinstance(obj, ElectedMember):
+            return dict(
+                name=obj.politician.name,
+                url=obj.politician.get_absolute_url(),
+                current_party={"short_name": {"en": obj.party.short_name}},
+                current_riding={"province": obj.riding.province, "name": {"en": obj.riding.dashed_name}},
+                image=obj.politician.headshot.url if obj.politician.headshot else None,
+            )
+        else:
+            return super(CurrentMPView, self).object_to_dict(obj)
 
     def get_html(self, request):
         t = loader.get_template('politicians/electedmember_list.html')
         c = RequestContext(request, {
-            'object_list': ElectedMember.objects.current().order_by(
-                'riding__province', 'politician__name_family').select_related('politician', 'riding', 'party'),
+            'object_list': self.get_qs(),
             'title': 'Current Members of Parliament'
         })
         return HttpResponse(t.render(c))
