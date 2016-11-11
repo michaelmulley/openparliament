@@ -1,0 +1,25 @@
+<p style="text-align:center" id="email_login"><input type="email" placeholder="Your email"> &nbsp;<button class="btn btn-primary">Continue</button></p>
+
+<script>
+$(function() {
+	var request_token = function(e) {
+		e.preventDefault();
+		$('#email_login button').text('Working...').removeClass('btn-primary');
+		var email = $('#email_login input').val();
+        $.ajax({
+            type: 'POST',
+            url: '/accounts/email_token/',
+            data: {'email': email},
+            success: function() { 
+            	$('#email_login').children().remove();
+            	$('#email_login').addClass('success').append("<b>Okay!</b> We've sent an email to " + email + ". Follow the link there to log in.");
+            },
+            error: function (res, status, xhr) {
+                OP.utils.notify("Oops! Please check that this is a valid email.", 'error');
+        		$('#email_login button').text('Continue').addClass('btn-primary');
+            }
+        });
+	};
+	$('#email_login button').click(request_token);
+});
+</script>
