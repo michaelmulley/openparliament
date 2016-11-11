@@ -126,7 +126,7 @@ jQuery.fn.overflowtip = function() {
 
 if (window.Raven) {
     Raven.config(
-        'http://dd5ba91c44624714b48f16324b0301b3@sentry.oconnect.ca/3',
+        'https://b5fd50dac5844b9a872b9fb5718ae980@sentry.io/113972',
         {
             whitelistUrls: [ /openparliament\.ca/ ],
             ignoreUrls: [  /extensions\//i, /^chrome:\/\//i ]
