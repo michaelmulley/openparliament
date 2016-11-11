@@ -27,8 +27,8 @@ logout = never_cache(LogoutView.as_view())
 
 def _get_ip(request):
     ip = request.META['REMOTE_ADDR']
-    if ip == '127.0.0.1' and 'X_REAL_IP' in request.META:
-        ip = request.META['X_REAL_IP']
+    if ip == '127.0.0.1' and 'HTTP_X_REAL_IP' in request.META:
+        ip = request.META['HTTP_X_REAL_IP']
     return ip
 
 class LoginTokenCreateView(JSONView):
