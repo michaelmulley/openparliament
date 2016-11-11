@@ -30,10 +30,22 @@ class CurrentMPView(ModelListView):
 
     default_limit = 308
 
+    # The API stuff here is a bit of a hack: because of the database schema, it makes sense
+    # to internally use ElectedMembers in order to add more fields to the default response,
+    # but for former politicians we use Politician objects, so... hacking.
+    def _politician_prepend_filter(field_name, help):
+        def inner(qs, *args, **kwargs):
+            if qs.model == Politician:
+                return APIFilters.dbfield(field_name)(qs, *args, **kwargs)
+            else:
+                return APIFilters.dbfield('politician__' + field_name)(qs, *args, **kwargs)
+        inner.help = help
+        return inner
+
     filters = {
-        'name': APIFilters.dbfield(help='e.g. Stephen Harper'),
-        'family_name': APIFilters.dbfield('name_family', help='e.g. Harper'),
-        'given_name': APIFilters.dbfield('name_given', help='e.g. Stephen'),
+        'name': _politician_prepend_filter('name', help='e.g. Stephen Harper'),
+        'family_name': _politician_prepend_filter('name_family', help='e.g. Harper'),
+        'given_name': _politician_prepend_filter('name_given', help='e.g. Stephen'),
         'include': APIFilters.noop(help="'former' to show former MPs (since 94), 'all' for current and former")
     }
 
