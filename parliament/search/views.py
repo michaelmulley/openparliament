@@ -118,7 +118,7 @@ def try_postcode_first(request):
             Member of Parliament for that riding. By law, a byelection must be called within
             180 days of a resignation causing a vacancy. (If you think we’ve got our facts
             wrong about your riding or MP, please send an <a class='maillink'>e-mail</a>.)"""
-            % Riding.objects.get(edid=edid).dashed_name))
+            % Riding.objects.get(current=True, edid=edid).dashed_name))
     except ElectedMember.MultipleObjectsReturned:
         raise Exception("Too many MPs for postcode %s" % postcode)
 
