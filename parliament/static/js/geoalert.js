@@ -6,8 +6,14 @@ $(function() {
 	var province = null;
 
 	var save_province = function(province) {
-		var expires = now + (60 * 60 * 24 * 10);
-		window.localStorage.setItem(KEY, expires + ',' + province);
+		var expires = now + (60 * 60 * 24 * 20);
+		try {
+			window.localStorage.setItem(KEY, expires + ',' + province);
+		}
+		catch (error) {
+			// iOS loves throwing localStorage errors, e.g. whenever in private browsing
+			return false;
+		}
 	};
 
 	var show_province_alert = function(province) {
