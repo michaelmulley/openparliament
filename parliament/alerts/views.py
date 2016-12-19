@@ -224,6 +224,7 @@ def bounce_webhook(request):
                 recipients = [b['emailAddress'] for b in data['complaint']['complainedRecipients']]
             else:
                 mail_admins("Unhandled SES notification", request.body)
+                return HttpResponse('OK')
             
             for recipient in recipients:
                 if ntype == 'Bounce' and data['bounce']['bounceType'] == 'Transient':
