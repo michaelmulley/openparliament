@@ -21,7 +21,7 @@ class User(models.Model):
     created = models.DateTimeField(default=datetime.datetime.now)
     last_login = models.DateTimeField(blank=True, null=True)
 
-    data = JSONField(default={})
+    data = JSONField(blank=True, default={})
 
     def __unicode__(self):
         return self.email
@@ -49,7 +49,7 @@ class LoginToken(models.Model):
     login_ip = models.GenericIPAddressField(blank=True, null=True)
     post_login_url = models.TextField(blank=True)
 
-    MAX_TOKEN_AGE = datetime.timedelta(seconds=60*60)
+    MAX_TOKEN_AGE = datetime.timedelta(seconds=60 * 60 * 8)
 
     def __unicode__(self):
         return "%s for %s" % (self.token, self.email)
@@ -79,7 +79,7 @@ class LoginToken(models.Model):
                 email=lt.email)
 
         if (datetime.datetime.now() - lt.created) > cls.MAX_TOKEN_AGE:
-            raise TokenError("That login code has expired. Please enter your email again, then click the link within an hour.", email=lt.email)
+            raise TokenError("That login code has expired. Please enter your email again, then click the link within a few hours.", email=lt.email)
 
         lt.login_ip = login_ip
         lt.used = True
