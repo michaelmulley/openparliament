@@ -5,7 +5,7 @@ import os
 from django.core import urlresolvers
 from django.core.mail import send_mail
 from django.db import models
-from django.template import loader, Context
+from django.template import loader
 
 from jsonfield import JSONField
 
@@ -58,7 +58,7 @@ class LoginToken(models.Model):
     def generate(cls, email, requesting_ip):
         lt = cls.objects.create(email=email, requesting_ip=requesting_ip)
         login_url = urlresolvers.reverse('token_login', kwargs={'token': lt.token})
-        ctx = Context({'login_url': login_url})
+        ctx = {'login_url': login_url}
         t = loader.get_template("accounts/token_login.txt")
         send_mail(subject=u'Log in to openparliament.ca',
             message=t.render(ctx),

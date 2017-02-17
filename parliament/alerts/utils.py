@@ -1,10 +1,7 @@
-from collections import defaultdict
-
-from django.template import Context, loader, RequestContext
+from django.template import loader
 from django.core.mail import send_mail
 
 from parliament.alerts.models import PoliticianAlert
-from parliament.core.templatetags.ours import english_list
 
 import logging
 logger = logging.getLogger(__name__)
@@ -21,11 +18,11 @@ def clear_former_mp_alerts(qs=None):
         riding = alert.politician.latest_member.riding
         new_politician = ElectedMember.objects.get(riding=riding, end_date__isnull=True).politician
         t = loader.get_template("alerts/former_mp.txt")
-        c = Context({
+        c = {
             'politician': alert.politician,
             'riding': riding,
             'new_politician': new_politician
-        })
+        }
         msg = t.render(c)
         subj = u'Your alerts for %s from openparliament.ca' % alert.politician.name
         try:

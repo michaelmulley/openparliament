@@ -1,15 +1,15 @@
 #coding: utf-8
 
-import gzip, os, re
-from collections import defaultdict
+from collections import defaultdict, OrderedDict
 import datetime
+import gzip
+import os
+import re
 
 from django.db import models
 from django.conf import settings
 from django.core import urlresolvers
-from django.core.files.base import ContentFile
 from django.template.defaultfilters import slugify
-from django.utils.datastructures import SortedDict
 from django.utils.html import strip_tags
 from django.utils.safestring import mark_safe
 
@@ -163,7 +163,7 @@ class Document(models.Model):
             description: Short title or affiliation
         """
         ids_seen = set()
-        speakers = SortedDict()
+        speakers = OrderedDict()
         for st in self.statement_set.filter(who_hocid__isnull=False).values_list(
                 'who_' + settings.LANGUAGE_CODE,            # 0
                 'who_context_' + settings.LANGUAGE_CODE,    # 1
@@ -190,13 +190,13 @@ class Document(models.Model):
 
     def outside_speaker_summary(self):
         """Same as speaker_summary, but only non-MPs."""
-        return SortedDict(
+        return OrderedDict(
             [(k, v) for k, v in self.speaker_summary().items() if not v['politician']]
         )
 
     def mp_speaker_summary(self):
         """Same as speaker_summary, but only MPs."""
-        return SortedDict(
+        return OrderedDict(
             [(k, v) for k, v in self.speaker_summary().items() if v['politician']]
         )
     

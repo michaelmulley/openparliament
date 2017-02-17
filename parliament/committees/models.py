@@ -59,8 +59,7 @@ class Committee(models.Model):
     
     @models.permalink
     def get_absolute_url(self):
-        return ('parliament.committees.views.committee', [],
-            {'slug': self.slug})
+        return ('committee', [], {'slug': self.slug})
 
     def get_source_url(self):
         return self.committeeinsession_set.order_by('-session__start')[0].get_source_url()

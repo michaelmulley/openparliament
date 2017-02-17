@@ -49,7 +49,7 @@ def update_mps_from_represent(download_headshots=False):
         for office in mp_info['offices']:
             if office['type'] == 'legislature':
                 _update('phone', office.get('tel'))
-                _update('fax', office.get('fax'))
+                _update('fax', office.get(' fax'))
             elif office.get('postal'):
                 formatted = office['postal']
                 if office.get('tel'):

@@ -1,8 +1,8 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import url
 
-from parliament.search.views import SearchFeed
+from parliament.search.views import SearchFeed, search
 
-urlpatterns = patterns('parliament.search.views',
-    url(r'^$', 'search', name='search'),
+urlpatterns = [
+    url(r'^$', search, name='search'),
     url(r'^feed/$', SearchFeed(), name='search_feed'),
-)
+]

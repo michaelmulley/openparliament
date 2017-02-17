@@ -3,31 +3,29 @@ import datetime
 from django.conf import settings
 from django.contrib.syndication.views import Feed
 from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
-from django.template import Context, loader, RequestContext
+from django.template import loader
 from django.utils.html import conditional_escape
 from django.views.decorators.cache import never_cache
 
 from parliament.core.models import Session, SiteNews
 from parliament.bills.models import VoteQuestion
 from parliament.hansards.models import Document
-from parliament.core.models import Session, SiteNews
 from parliament.core.templatetags.markup import markdown
 from parliament.text_analysis.models import TextAnalysis
 
 def home(request):
-    
     t = loader.get_template("home.html")
     latest_hansard = Document.debates.filter(date__isnull=False, public=True)[0]
-    c = RequestContext(request, {
+    c = {
         'latest_hansard': latest_hansard,
         'sitenews': SiteNews.objects.filter(active=True,
             date__gte=datetime.datetime.now() - datetime.timedelta(days=90))[:6],
-        'votes': VoteQuestion.objects.filter(session=Session.objects.current())\
+        'votes': VoteQuestion.objects.filter(session=Session.objects.current())
             .select_related('bill')[:6],
         'wordcloud_js': TextAnalysis.objects.get_wordcloud_js(
             key=latest_hansard.get_text_analysis_url())
-    })
-    return HttpResponse(t.render(c))
+    }
+    return HttpResponse(t.render(c, request))
     
 @never_cache
 def closed(request, message=None):
@@ -53,12 +51,13 @@ def disable_on_readonly_db(view):
     
 def flatpage_response(request, title, message):
     t = loader.get_template("flatpages/default.html")
-    c = RequestContext(request, {
+    c = {
         'flatpage': {
             'title': title,
-            'content': """<div class="focus"><p>%s</p></div>""" % conditional_escape(message)},
-    })
-    return HttpResponse(t.render(c))
+            'content': """<div class="focus"><p>%s</p></div>""" % conditional_escape(message)
+        },
+    }
+    return HttpResponse(t.render(c, request))
     
 class SiteNewsFeed(Feed):
     

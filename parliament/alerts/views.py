@@ -2,7 +2,7 @@ import datetime
 import json
 import re
 
-from django.template import loader, RequestContext
+from django.template import loader
 from django.http import HttpResponse, HttpResponseRedirect, Http404
 from django.shortcuts import get_object_or_404, render
 from django import forms
@@ -55,13 +55,13 @@ def politician_hansard_signup(request):
             signed_key = TimestampSigner(salt='alerts_pol_subscribe').sign(key)
             activate_url = urlresolvers.reverse('alerts_pol_subscribe',
                 kwargs={'signed_key': signed_key})
-            activation_context = RequestContext(request, {
+            activation_context = {
                 'pol': pol,
                 'activate_url': activate_url,
-            })
+            }
             t = loader.get_template("alerts/activate.txt")
             send_mail(subject=u'Confirmation required: Email alerts about %s' % pol.name,
-                message=t.render(activation_context),
+                message=t.render(activation_context, request),
                 from_email='alerts@contact.openparliament.ca',
                 recipient_list=[form.cleaned_data['email']])
 
@@ -74,14 +74,14 @@ def politician_hansard_signup(request):
             initial['email'] = request.authenticated_email
         form = PoliticianAlertForm(initial=initial)
         
-    c = RequestContext(request, {
+    c = {
         'form': form,
         'success': success,
         'pol': pol,
         'title': 'Email alerts for %s' % pol.name,
-    })
+    }
     t = loader.get_template("alerts/signup.html")
-    return HttpResponse(t.render(c))
+    return HttpResponse(t.render(c, request))
 
 
 @never_cache
@@ -100,12 +100,12 @@ def alerts_list(request):
     subscriptions = Subscription.objects.filter(user=user).select_related('topic')
 
     t = loader.get_template('alerts/list.html')
-    c = RequestContext(request, {
+    c = {
         'alerts_user': user,
         'subscriptions': subscriptions,
         'title': 'Your email alerts'
-    })
-    resp = HttpResponse(t.render(c))
+    }
+    resp = HttpResponse(t.render(c, request))
     # resp.set_cookie(
     #     key='enable-alerts',
     #     value='y',
@@ -200,9 +200,8 @@ def unsubscribe(request, key):
         ctx['query'] = subscription.topic
     except BadSignature:
         ctx['key_error'] = True
-    c = RequestContext(request, ctx)
     t = loader.get_template("alerts/unsubscribe.html")
-    return HttpResponse(t.render(c))
+    return HttpResponse(t.render(ctx, request))
 
 
 @disable_on_readonly_db

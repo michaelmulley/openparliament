@@ -1,52 +1,56 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.conf import settings
 from django.contrib import admin
-admin.autodiscover()
+from django.contrib.sitemaps.views import sitemap as sitemap_view
+from django.views.static import serve as static_serve
 
+from parliament.core.api import docs as api_docs
+from parliament.core.api import no_robots
 from parliament.core.sitemap import sitemaps
-from parliament.core.views import SiteNewsFeed
+from parliament.core.views import SiteNewsFeed, home, closed
+from parliament.hansards.views import document_redirect, speeches
 
-urlpatterns = patterns('',
-    (r'^search/', include('parliament.search.urls')),
-    (r'^debates/', include('parliament.hansards.urls')),
-    url(r'^documents/(?P<document_id>\d+)/$', 'parliament.hansards.views.document_redirect', name='document_redirect'),
-    url(r'^documents/(?P<document_id>\d+)/(?P<slug>[a-zA-Z0-9-]+)/$', 'parliament.hansards.views.document_redirect', name='document_redirect'),
-    (r'^politicians/', include('parliament.politicians.urls')),
-    (r'^bills/', include('parliament.bills.urls')),
-    (r'^votes/', include('parliament.bills.vote_urls')),
-    (r'^alerts/', include('parliament.alerts.urls')),
-    (r'^committees/', include('parliament.committees.urls')),
-    url(r'^speeches/', 'parliament.hansards.views.speeches', name='speeches'),
+urlpatterns = [
+    url(r'^search/', include('parliament.search.urls')),
+    url(r'^debates/', include('parliament.hansards.urls')),
+    url(r'^documents/(?P<document_id>\d+)/$', document_redirect, name='document_redirect'),
+    url(r'^documents/(?P<document_id>\d+)/(?P<slug>[a-zA-Z0-9-]+)/$', document_redirect, name='document_redirect'),
+    url(r'^politicians/', include('parliament.politicians.urls')),
+    url(r'^bills/', include('parliament.bills.urls')),
+    url(r'^votes/', include('parliament.bills.vote_urls')),
+    url(r'^alerts/', include('parliament.alerts.urls')),
+    url(r'^committees/', include('parliament.committees.urls')),
+    url(r'^speeches/', speeches, name='speeches'),
     #url(r'^about/$', 'django.views.generic.simple.direct_to_template', {'template': 'about/about.html'}, name='about'),
-    url(r'^api/$', 'parliament.core.api.docs'),
-    (r'^api/', include('parliament.api.urls')),
-    (r'^accounts/', include('parliament.accounts.urls')),
-    (r'^$', 'parliament.core.views.home'),
-    (r'^sitemap\.xml$', 'django.contrib.sitemaps.views.sitemap', {'sitemaps': sitemaps}),
+    url(r'^api/$', api_docs),
+    url(r'^api/', include('parliament.api.urls')),
+    url(r'^accounts/', include('parliament.accounts.urls')),
+    url(r'^$', home),
+    url(r'^sitemap\.xml$', sitemap_view, {'sitemaps': sitemaps}),
     url(r'^sitenews/rss/$', SiteNewsFeed(), name='sitenews_feed'),
-    (r'^robots\.txt$', 'parliament.core.api.no_robots'),
-    (r'', include('parliament.legacy_urls')),
-)
+    url(r'^robots\.txt$', no_robots),
+    url(r'', include('parliament.legacy_urls')),
+]
 
 if settings.DEBUG:
-    urlpatterns += patterns('',
-        (r'^admin/', include(admin.site.urls)),
-        (r'^static/(?P<path>.*)$', 'django.views.static.serve',
-                {'document_root': settings.MEDIA_ROOT}),
-    )
+    urlpatterns += [
+        url(r'^admin/', include(admin.site.urls)),
+        # url(r'^static/(?P<path>.*)$', static_serve,
+        #         {'document_root': settings.MEDIA_ROOT}),
+    ]
 
 if getattr(settings, 'ADMIN_URL', False):
-    urlpatterns += patterns('',
-        (settings.ADMIN_URL, include(admin.site.urls)),
-        (r'^memcached-status/$', 'parliament.core.maint.memcached_status'),
-    )
+    urlpatterns += [
+        url(settings.ADMIN_URL, include(admin.site.urls))
+    ]
     
 if getattr(settings, 'PARLIAMENT_SITE_CLOSED', False):
-    urlpatterns = patterns('',
-        (r'.*', 'parliament.core.views.closed')
-    ) + urlpatterns
+    urlpatterns = [
+        url(r'.*', closed)
+    ] + urlpatterns
     
-if getattr(settings, 'EXTRA_URLS', False):
-    urlpatterns += patterns('', *settings.EXTRA_URLS)
+if getattr(settings, 'EXTRA_URL_INCLUDES', False):
+    for url_include in settings.EXTRA_URL_INCLUDES:
+        urlpatterns.append(url(r'', include(url_include)))
     
 handler500 = 'parliament.core.errors.server_error'

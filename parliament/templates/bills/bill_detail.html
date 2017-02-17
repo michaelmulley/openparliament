@@ -29,8 +29,8 @@ $(function () {
 </script>
 {% endblock %}
 
-{% block breadcrumbs %}{{ block.super }}<a href="{% url "parliament.bills.views.index" %}">Bills</a>
-<a href="{% url "parliament.bills.views.bills_for_session" session_id=bill.session.id %}">{{ bill.session }}</a> {{ title }}{% endblock %}
+{% block breadcrumbs %}{{ block.super }}<a href="{% url "bills" %}">Bills</a>
+<a href="{% url "bills_for_session" session_id=bill.session.id %}">{{ bill.session }}</a> {{ title }}{% endblock %}
 {% block headextra %}
 {% if not bill.session.end %}<link rel="alternate" type="application/rss+xml" title="Speeches about Bill {{ bill.number }}" href="{% url "bill_feed" bill_id=bill.id %}">{% endif %}
 {% endblock %}

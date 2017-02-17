@@ -3,10 +3,10 @@
 # pip install -r requirements.txt
 BeautifulSoup==3.2.0
 Django>1.8,<1.9
-Markdown==2.3.1
+Markdown==2.6.8
 Pillow
-django-extensions==1.2.5
-django-haystack==2.4.1
+django-extensions==1.7.6
+django-haystack==2.6.0
 #psycopg2>=2.0.7
 pysolr==2.0.9
 sorl-thumbnail==3.2.5
@@ -18,7 +18,6 @@ requests-oauthlib==0.6.1
 lxml==3.5.0
 cssselect==0.9.1
 -e git+git://github.com/rhymeswithcycle/alpheus.git#egg=alpheus
-PyBrowserID
 google-api-python-client==1.5.0
 # WebOb is used for Accept header parsing
 webob==1.2.2

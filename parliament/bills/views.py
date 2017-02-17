@@ -6,7 +6,7 @@ from django.core import urlresolvers
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.shortcuts import get_object_or_404
-from django.template import Context, loader, RequestContext
+from django.template import loader
 from django.template.defaultfilters import date as format_date
 from django.utils.safestring import mark_safe
 from django.views.decorators.vary import vary_on_headers
@@ -19,7 +19,7 @@ from parliament.hansards.models import Statement, Document
 def bill_pk_redirect(request, bill_id):
     bill = get_object_or_404(Bill, pk=bill_id)
     return HttpResponsePermanentRedirect(
-        urlresolvers.reverse('parliament.bills.views.bill', kwargs={
+        urlresolvers.reverse('bill', kwargs={
         'session_id': bill.get_session().id, 'bill_number': bill.number}))
 
 
@@ -74,7 +74,7 @@ class BillDetailView(ModelDetailView):
         else:
             page = None
 
-        c = RequestContext(request, {
+        c = {
             'bill': bill,
             'has_major_speeches': has_major_speeches,
             'has_mentions': has_mentions,
@@ -87,7 +87,7 @@ class BillDetailView(ModelDetailView):
             'title': ('Bill %s' % bill.number) + (' (Historical)' if bill.session.end else ''),
             'statements_full_date': True,
             'statements_context_link': True,
-        })
+        }
         if request.is_ajax():
             if tab == 'meetings':
                 t = loader.get_template("bills/related_meetings.inc")
@@ -95,7 +95,7 @@ class BillDetailView(ModelDetailView):
                 t = loader.get_template("hansards/statement_page.inc")
         else:
             t = loader.get_template("bills/bill_detail.html")
-        return HttpResponse(t.render(c))
+        return HttpResponse(t.render(c, request))
 bill = vary_on_headers('X-Requested-With')(BillDetailView.as_view())
     
 class BillListView(ModelListView):
@@ -128,16 +128,16 @@ class BillListView(ModelListView):
         votes = VoteQuestion.objects.select_related('bill').filter(session=sessions[0])[:6]
 
         t = loader.get_template('bills/index.html')
-        c = RequestContext(request, {
+        c = {
             'object_list': bills,
             'session_list': sessions,
             'votes': votes,
             'session': sessions[0],
             'title': 'Bills & Votes',
             'recently_active': Bill.objects.recently_active()
-        })
+        }
 
-        return HttpResponse(t.render(c))
+        return HttpResponse(t.render(c, request))
 index = BillListView.as_view()
 
 
@@ -153,13 +153,13 @@ class BillSessionListView(ModelListView):
         votes = VoteQuestion.objects.select_related('bill').filter(session=session)[:6]
 
         t = loader.get_template('bills/bill_list.html')
-        c = RequestContext(request, {
+        c = {
             'object_list': bills,
             'session': session,
             'votes': votes,
             'title': 'Bills for the %s' % session
-        })
-        return HttpResponse(t.render(c))
+        }
+        return HttpResponse(t.render(c, request))
 bills_for_session = BillSessionListView.as_view()
 
 
@@ -206,18 +206,18 @@ class VoteListView(ModelListView):
             session = Session.objects.current()
 
         t = loader.get_template('bills/votequestion_list.html')
-        c = RequestContext(request, {
+        c = {
             'object_list': self.get_qs(request).filter(session=session),
             'session': session,
             'title': 'Votes for the %s' % session
-        })
-        return HttpResponse(t.render(c))
+        }
+        return HttpResponse(t.render(c, request))
 votes_for_session = VoteListView.as_view()
         
 def vote_pk_redirect(request, vote_id):
     vote = get_object_or_404(VoteQuestion, pk=vote_id)
     return HttpResponsePermanentRedirect(
-        urlresolvers.reverse('parliament.bills.views.vote', kwargs={
+        urlresolvers.reverse('vote', kwargs={
         'session_id': vote.session_id, 'number': vote.number}))
 
 
@@ -244,14 +244,14 @@ class VoteDetailView(ModelDetailView):
             .select_related('member', 'member__party', 'member__politician')
         partyvotes = vote.partyvote_set.select_related('party').all()
 
-        c = RequestContext(request, {
+        c = {
             'vote': vote,
             'membervotes': membervotes,
             'parties_y': [pv.party for pv in partyvotes if pv.vote == 'Y'],
             'parties_n': [pv.party for pv in partyvotes if pv.vote == 'N']
-        })
+        }
         t = loader.get_template("bills/votequestion_detail.html")
-        return HttpResponse(t.render(c))
+        return HttpResponse(t.render(c, request))
 vote = VoteDetailView.as_view()
 
 

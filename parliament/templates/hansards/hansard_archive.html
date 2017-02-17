@@ -23,6 +23,6 @@
 <div class="clear"></div><div class="context"><h2>Past</h2></div>
 <div class="focus">
 <ul class="tile clearafter">{% for year in date_list %}
-<li class="three"><a href="{% url "parliament.hansards.views.by_year" year=year.year %}">{{ year.year }}</a></li>
+<li class="three"><a href="{% url "debates_by_year" year=year.year %}">{{ year.year }}</a></li>
 {% endfor %}</ul></div>
 {% endblock content %}

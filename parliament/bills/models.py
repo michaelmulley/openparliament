@@ -126,7 +126,7 @@ class Bill(models.Model):
         return self.url_for_session(self.session)
 
     def url_for_session(self, session):
-        return urlresolvers.reverse('parliament.bills.views.bill', kwargs={
+        return urlresolvers.reverse('bill', kwargs={
             'session_id': session.id, 'bill_number': self.number})
         
     def get_legisinfo_url(self, lang='E'):
@@ -459,7 +459,7 @@ class VoteQuestion(models.Model):
             
     @models.permalink
     def get_absolute_url(self):
-        return ('parliament.bills.views.vote', [],
+        return ('vote', [],
             {'session_id': self.session_id, 'number': self.number})
 
 VOTE_CHOICES = [

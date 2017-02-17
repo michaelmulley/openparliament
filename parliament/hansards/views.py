@@ -5,7 +5,7 @@ from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.core import urlresolvers
 from django.http import HttpResponse, Http404, HttpResponsePermanentRedirect, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-from django.template import loader, RequestContext
+from django.template import loader
 from django.views.generic.dates import (ArchiveIndexView, YearArchiveView, MonthArchiveView)
 from django.views.decorators.vary import vary_on_headers
 
@@ -138,7 +138,7 @@ def document_view(request, document, meeting=None, slug=None):
         ctx['wordcloud_js'] = TextAnalysis.objects.get_wordcloud_js(
             key=document.get_text_analysis_url())
 
-    return HttpResponse(t.render(RequestContext(request, ctx)))
+    return HttpResponse(t.render(ctx, request))
 
 
 class SpeechesView(ModelListView):
@@ -228,7 +228,7 @@ def statement_permalink(request, doc, statement, template, **kwargs):
         #'statements_context_link': True
     }
     ctx.update(kwargs)
-    return HttpResponse(t.render(RequestContext(request, ctx)))
+    return HttpResponse(t.render(ctx, request))
     
 def document_cache(request, document_id, language):
     document = get_object_or_404(Document, pk=document_id)

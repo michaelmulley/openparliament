@@ -1,6 +1,6 @@
 {% extends "hansards/base.html" %}
 {% load compress %}
-{% block breadcrumbs %}<a href="{% url "parliament.hansards.views.index" %}">Debates</a> <a href="{% url "parliament.hansards.views.by_year" year=hansard.date.year %}">{{ hansard.date.year }}</a> <a href="{{ statement_url }}">{{ hansard.date|date:"F jS, Y" }}</a> Statement by {{ who }}{% endblock %}
+{% block breadcrumbs %}<a href="{% url "debates" %}">Debates</a> <a href="{% url "debates_by_year" year=hansard.date.year %}">{{ hansard.date.year }}</a> <a href="{{ statement_url }}">{{ hansard.date|date:"F jS, Y" }}</a> Statement by {{ who }}{% endblock %}
 {% block content %}
 <div class="focus"><p>In the House of Commons on {{ doc.date|date:"F jS, Y" }}. <a href="{{ statement_url }}">See this statement in context</a>.</p></div><div class="clear"></div>
 <div id="paginated" class="disable_more_links">

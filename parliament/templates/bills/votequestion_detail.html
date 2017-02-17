@@ -4,9 +4,9 @@
 {% block contentclass %}context_3{% endblock %}
 {% block pagetitle %}Vote #{{ vote.number }} on {{ vote.date|date:"F jS, Y" }}{% endblock %}
 {% block pageheading %}Vote #{{ vote.number }} on {{ vote.date|date:"F jS, Y" }}{% endblock %}
-{% block breadcrumbs %}{{ block.super }}<a href="{% url "parliament.bills.views.index" %}">Bills</a>
-<a href="{% url "parliament.bills.views.bills_for_session" session_id=vote.session.id %}">{{ vote.session }}</a>
-<a href="{% url "parliament.bills.views.votes_for_session" session_id=vote.session.id %}">Votes</a> #{{ vote.number }}{% endblock %}
+{% block breadcrumbs %}{{ block.super }}<a href="{% url "bills" %}">Bills</a>
+<a href="{% url "bills_for_session" session_id=vote.session.id %}">{{ vote.session }}</a>
+<a href="{% url "votes_for_session" session_id=vote.session.id %}">Votes</a> #{{ vote.number }}{% endblock %}
 
 {% block content %}
 {% if vote.bill %}<div class="clear"></div><div class="context"><h2>Bill</h2></div>

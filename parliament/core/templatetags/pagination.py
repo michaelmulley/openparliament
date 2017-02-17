@@ -71,5 +71,5 @@ def long_paginator(context):
         'allow_single_page': context.get('allow_single_page')
     }
 
-    return template.loader.get_template("long_paginator.html").render(template.Context(pagination_ctx))
+    return template.loader.get_template("long_paginator.html").render(pagination_ctx)
 

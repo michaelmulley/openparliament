@@ -8,7 +8,7 @@ from urlparse import urljoin
 from django.conf import settings
 from django.contrib.syndication.views import Feed
 from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
-from django.template import loader, RequestContext
+from django.template import loader
 from django.utils.safestring import mark_safe
 from django.views.decorators.vary import vary_on_headers
 
@@ -74,12 +74,11 @@ def search(request):
             'query': '',
             'page': None,
         }
-    c = RequestContext(request, ctx)
     if request.is_ajax():
         t = loader.get_template("search/search_results.inc")
     else:
         t = loader.get_template("search/search.html")
-    return HttpResponse(t.render(c))
+    return HttpResponse(t.render(ctx, request))
 
 
 r_postcode = re.compile(r'^\s*([A-Z][0-9][A-Z])\s*([0-9][A-Z][0-9])\s*$')

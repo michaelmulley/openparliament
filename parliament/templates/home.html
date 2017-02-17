@@ -1,5 +1,4 @@
 {% extends "base.html" %}
-{% load markup %}
 
 {% block pagetitle %}Keeping tabs on Canada’s Parliament{% endblock %}
 {% block breadcrumbs_all %}{% endblock %}
@@ -15,7 +14,7 @@
     <div class="clear"></div><div class="context"><h2>What we’re doing</h2></div>
     <div class="focus">
     <p>Info on what your representatives are doing in Ottawa can be hard to find and use. <strong>We’re trying to make it easy.</strong></p>
-    <p><strong>Find your MP</strong> by entering your postal code above. See what your representatives are <a href="{% url "parliament.hansards.views.index" %}">saying</a>, and what <a href="{% url "parliament.bills.views.index" %}">laws</a> they’re proposing. Poke around.</p></div>
+    <p><strong>Find your MP</strong> by entering your postal code above. See what your representatives are <a href="{% url "debates" %}">saying</a>, and what <a href="{% url "bills" %}">laws</a> they’re proposing. Poke around.</p></div>
         <div class="clear"></div>
         <div class="wordcloud"></div>
         <div class="context"><h2>What they’re talking about</h2></div>
@@ -34,7 +33,7 @@
 	<div class="focus" style="position: relative"><p>Subscribe to our <a href="{% url "sitenews_feed" %}" class="feed">site news feed</a>, or follow <a href="http://twitter.com/openparlca">@openparlca</a> on Twitter.</p>
         <!-- <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fopenparliament.ca%2F&amp;layout=button_count&amp;show_faces=false&amp;width=120&amp;action=like&amp;font&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:120px; height:21px; position: absolute; right: 30px;top: 0;" allowTransparency="true"></iframe> -->{% for item in sitenews %}
 	<h3 id="n{{ item.id }}">{{ item.title }} <span class="heading_context">{{ item.date|date:"F jS"}}</span></h3>
-	{{ item.text|markdown }}{% endfor %}</div>
+	{{ item.html }}{% endfor %}</div>
 {% endif %}
 {% endblock %}
 

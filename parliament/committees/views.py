@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core import urlresolvers
 from django.http import HttpResponse, HttpResponsePermanentRedirect, Http404
 from django.shortcuts import get_object_or_404, render
-from django.template import loader, RequestContext
+from django.template import loader
 
 from parliament.committees.models import Committee, CommitteeMeeting, CommitteeActivity
 from parliament.core.api import ModelListView, ModelDetailView, APIFilters
@@ -85,7 +85,7 @@ class CommitteeView(ModelDetailView):
             title += u' Committee'
 
         t = loader.get_template("committees/committee_detail.html")
-        c = RequestContext(request, {
+        c = {
             'title': title,
             'committee': cmte,
             'meetings': recent_meetings,
@@ -96,8 +96,8 @@ class CommitteeView(ModelDetailView):
             'search_placeholder': u"Search %s transcripts" % cmte.short_name,
             'wordcloud_js': TextAnalysis.objects.get_wordcloud_js(
                 urlresolvers.reverse('committee_analysis', kwargs={'committee_slug': slug})),
-        })
-        return HttpResponse(t.render(c))
+        }
+        return HttpResponse(t.render(c, request))
 committee = CommitteeView.as_view()        
 
 def committee_year_archive(request, slug, year):

@@ -2,7 +2,7 @@ import datetime
 from hashlib import sha1
 
 from django.conf import settings
-from django.template import Context, loader, RequestContext
+from django.template import loader
 
 from parliament.activity.models import Activity
 
@@ -18,7 +18,7 @@ def save_activity(obj, politician, date, guid=None, variety=None):
     if Activity.objects.filter(guid=guid).exists():
         return False
     t = loader.get_template("activity/%s.html" % variety.lower())
-    c = Context({'obj': obj, 'politician': politician})
+    c = {'obj': obj, 'politician': politician}
     Activity(variety=variety,
         date=date,
         politician=politician,

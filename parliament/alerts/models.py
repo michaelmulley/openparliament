@@ -8,7 +8,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.core.signing import Signer
 from django.core import urlresolvers
 from django.db import models
-from django.template import loader, Context
+from django.template import loader
 
 from parliament.core.models import Politician
 from parliament.core.templatetags.ours import english_list
@@ -179,14 +179,14 @@ class Subscription(models.Model):
         if self.topic.politician_hansard_alert:
             ctx['person_name'] = documents[0]['politician']
             t = loader.get_template('alerts/mp_hansard_alert.txt')
-            text = t.render(Context(ctx))
+            text = t.render(ctx)
             return dict(text=text)
 
         ctx.update(
             topic=self.topic
         )
         t = loader.get_template('alerts/search_alert.txt')
-        text = t.render(Context(ctx))
+        text = t.render(ctx)
         return dict(text=text)
 
     def get_subject_line(self, documents):
@@ -239,10 +239,6 @@ class PoliticianAlert(models.Model):
         h.update(self.email)
         h.update(settings.SECRET_KEY)
         return base64.urlsafe_b64encode(h.digest()).replace('=', '')
-        
-    @models.permalink
-    def get_unsubscribe_url(self):
-        return ('parliament.alerts.views.unsubscribe_old', [], {'alert_id': self.id, 'key': self.get_key()})
     
     def __unicode__(self):
         return u"%s for %s (%s)" % \

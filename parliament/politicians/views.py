@@ -10,7 +10,7 @@ from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import HttpResponse, Http404, HttpResponsePermanentRedirect
 from django.shortcuts import get_object_or_404
-from django.template import loader, RequestContext
+from django.template import loader
 from django.views.decorators.vary import vary_on_headers
 
 from parliament.activity.models import Activity
@@ -73,11 +73,11 @@ class CurrentMPView(ModelListView):
 
     def get_html(self, request):
         t = loader.get_template('politicians/electedmember_list.html')
-        c = RequestContext(request, {
+        c = {
             'object_list': self.get_qs(),
             'title': 'Current Members of Parliament'
-        })
-        return HttpResponse(t.render(c))
+        }
+        return HttpResponse(t.render(c, request))
 current_mps = CurrentMPView.as_view()
 
 
@@ -99,12 +99,12 @@ class FormerMPView(ModelListView):
                 object_list.append(member)
                 seen.add(member.politician_id)
 
-        c = RequestContext(request, {
+        c = {
             'object_list': object_list,
             'title': 'Former MPs (since 1994)'
-        })
+        }
         t = loader.get_template("politicians/former_electedmember_list.html")
-        return HttpResponse(t.render(c))
+        return HttpResponse(t.render(c, request))
 former_mps = FormerMPView.as_view()
 
 
@@ -155,7 +155,7 @@ class PoliticianView(ModelDetailView):
         else:
             statement_page = None
 
-        c = RequestContext(request, {
+        c = {
             'pol': pol,
             'member': pol.latest_member,
             'candidacies': pol.candidacy_set.all().order_by('-election__date'),
@@ -167,12 +167,12 @@ class PoliticianView(ModelDetailView):
             'search_placeholder': u"Search %s in Parliament" % pol.name,
             'wordcloud_js': TextAnalysis.objects.get_wordcloud_js(
                 key=pol.get_absolute_url() + 'text-analysis/')
-        })
+        }
         if request.is_ajax():
             t = loader.get_template("hansards/statement_page_politician_view.inc")
         else:
             t = loader.get_template("politicians/politician.html")
-        return HttpResponse(t.render(c))
+        return HttpResponse(t.render(c, request))
 politician = vary_on_headers('X-Requested-With')(PoliticianView.as_view())
 
 
@@ -185,13 +185,13 @@ def contact(request, pol_id=None, pol_slug=None):
     if not pol.current_member:
         raise Http404
 
-    c = RequestContext(request, {
+    c = {
         'pol': pol,
         'info': pol.info(),
         'title': u'Contact %s' % pol.name
-    })
+    }
     t = loader.get_template("politicians/contact.html")
-    return HttpResponse(t.render(c))
+    return HttpResponse(t.render(c, request))
 
 
 def hide_activity(request):

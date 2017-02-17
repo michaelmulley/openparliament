@@ -269,7 +269,7 @@ def _process_related_link(match, statement):
         except VoteQuestion.DoesNotExist:
             # We'll just operate on faith that the vote will soon
             # be created
-            url = urlresolvers.reverse('parliament.bills.views.vote',
+            url = urlresolvers.reverse('vote',
                 kwargs={'session_id': statement.document.session_id, 'number': params['number']})
             title = None
     else:

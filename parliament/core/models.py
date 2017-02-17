@@ -11,8 +11,10 @@ from django.core.files.base import ContentFile
 from django.core import urlresolvers
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.utils.safestring import mark_safe
 
 import lxml.html
+from markdown import markdown
 import requests
 
 from parliament.core import parsetools
@@ -371,8 +373,8 @@ class Politician(Person):
     @models.permalink
     def get_absolute_url(self):
         if self.slug:
-            return 'parliament.politicians.views.politician', [], {'pol_slug': self.slug}
-        return ('parliament.politicians.views.politician', [], {'pol_id': self.id})
+            return 'politician', [], {'pol_slug': self.slug}
+        return ('politician', [], {'pol_id': self.id})
 
     @property
     def identifier(self):
@@ -393,8 +395,8 @@ class Politician(Person):
     @models.permalink
     def get_contact_url(self):
         if self.slug:
-            return ('parliament.contact.views.contact_politician', [], {'pol_slug': self.slug})
-        return ('parliament.contact.views.contact_politician', [], {'pol_id': self.id})
+            return ('politician_contact', [], {'pol_slug': self.slug})
+        return ('politician_contact', [], {'pol_id': self.id})
             
     @memoize_property
     def info(self):
@@ -688,6 +690,9 @@ class SiteNews(models.Model):
     
     objects = models.Manager()
     public = ActiveManager()
+
+    def html(self):
+        return mark_safe(markdown(self.text))
     
     class Meta:
         ordering = ('-date',)

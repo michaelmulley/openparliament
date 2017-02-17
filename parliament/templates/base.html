@@ -60,10 +60,10 @@ window.OP = {
 <div id="navbar">
 	<a href="/"><img id="navbar_logotype" width="220" height="34" src="{{ STATIC_URL }}images/logotype-white-2x.png" alt="openparliament.ca"></a>
     <ul id="navlinks">
-		<li {% block navlinks_mps %}{% endblock %}><a href="{% url "parliament.politicians.views.current_mps" %}">MPs</a></li>
-		<li {% block navlinks_bills %}{% endblock %}><a href="{% url "parliament.bills.views.index" %}">Bills</a></li>
-		<li {% block navlinks_debates %}{% endblock %}><a href="{% url "parliament.hansards.views.index" %}">Debates</a></li>
-		<li {% block navlinks_committees %}{% endblock %}><a href="{% url "parliament.committees.views.committee_list" %}">Committees</a></li>
+		<li {% block navlinks_mps %}{% endblock %}><a href="{% url "politicians" %}">MPs</a></li>
+		<li {% block navlinks_bills %}{% endblock %}><a href="{% url "bills" %}">Bills</a></li>
+		<li {% block navlinks_debates %}{% endblock %}><a href="{% url "debates" %}">Debates</a></li>
+		<li {% block navlinks_committees %}{% endblock %}><a href="{% url "committee_list" %}">Committees</a></li>
 		<li {% block navlinks_about %}{% endblock %}><a href="/about/">About</a></li>
 		<li {% block navlinks_labs %}{% endblock %}><a href="/labs/">Labs</a></li>
 	</ul>

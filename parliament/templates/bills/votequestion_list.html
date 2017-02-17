@@ -1,8 +1,8 @@
 {% extends "bills/base.html" %}
 {% load ours %}
 {% block contentclass %}context_3{% endblock %}
-{% block breadcrumbs %}{{ block.super }}<a href="{% url "parliament.bills.views.index" %}">Bills</a>
-<a href="{% url "parliament.bills.views.bills_for_session" session_id=session.id %}">{{ session }}</a> Votes{% endblock %}
+{% block breadcrumbs %}{{ block.super }}<a href="{% url "bills" %}">Bills</a>
+<a href="{% url "bills_for_session" session_id=session.id %}">{{ session }}</a> Votes{% endblock %}
 {% block content %}
 <div class="focus"><p>This session began on {{ session.start|date:"F jS, Y" }}{% if session.end %} and ended on {{ session.end|date:"F jS, Y" }}{% endif %}.</p></div>
 {% regroup object_list by date.month as months %}
