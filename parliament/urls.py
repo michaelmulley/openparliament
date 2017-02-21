@@ -50,7 +50,7 @@ if getattr(settings, 'PARLIAMENT_SITE_CLOSED', False):
     ] + urlpatterns
     
 if getattr(settings, 'EXTRA_URL_INCLUDES', False):
-    for url_include in settings.EXTRA_URL_INCLUDES:
-        urlpatterns.append(url(r'', include(url_include)))
+    for url_pattern, url_include in settings.EXTRA_URL_INCLUDES:
+        urlpatterns.append(url(url_pattern, include(url_include)))
     
 handler500 = 'parliament.core.errors.server_error'
