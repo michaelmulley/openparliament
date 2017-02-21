@@ -4,7 +4,7 @@
 BeautifulSoup==3.2.0
 Django>=1.10.5,<1.11.0
 Markdown==2.6.8
-Pillow
+Pillow==4.0.0
 django-extensions==1.7.6
 django-haystack==2.6.0
 #psycopg2>=2.0.7
@@ -15,10 +15,11 @@ feedparser==4.1
 django-compressor==1.6
 requests==2.8.1
 requests-oauthlib==0.6.1
-lxml==3.5.0
+lxml==3.7.3
 cssselect==0.9.1
 -e git+git://github.com/rhymeswithcycle/alpheus.git#egg=alpheus
 google-api-python-client==1.5.0
 # WebOb is used for Accept header parsing
 webob==1.2.2
 jsonfield==1.0.3
+python-memcached==1.58
