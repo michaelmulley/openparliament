@@ -11,7 +11,7 @@ class PolIndex(indexes.SearchIndex, indexes.Indexable):
     url = indexes.CharField(model_attr='get_absolute_url', indexed=False)
     doctype = indexes.CharField(default='mp')
     
-    def index_queryset(self):
+    def index_queryset(self, using=None):
         return Politician.objects.elected()
 
     def get_model(self):

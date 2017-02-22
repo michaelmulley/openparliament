@@ -37,7 +37,7 @@ class BillIndex(indexes.SearchIndex, indexes.Indexable):
         else:
             return obj.name[:140] + u'…'
 
-    def index_queryset(self):
+    def index_queryset(self, using=None):
         return Bill.objects.all().prefetch_related(
             'sponsor_politician', 'sponsor_member', 'sponsor_member__party'
         )

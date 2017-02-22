@@ -21,7 +21,7 @@ class StatementIndex(indexes.SearchIndex, indexes.Indexable):
     def get_model(self):
         return Statement
     
-    def index_queryset(self):
+    def index_queryset(self, using=None):
         return Statement.objects.all().prefetch_related(
             'member__politician', 'member__party', 'member__riding', 'document',
             'document__committeemeeting__committee'
