@@ -8,12 +8,12 @@ Pillow==4.0.0
 django-extensions==1.7.6
 django-haystack==2.6.0
 #psycopg2>=2.0.7
-pysolr==2.0.9
+pysolr==3.6.0
 sorl-thumbnail==3.2.5
 wsgiref==0.1.2
 feedparser==4.1
 django-compressor==1.6
-requests==2.8.1
+requests==2.13.0
 requests-oauthlib==0.6.1
 lxml==3.7.3
 cssselect==0.9.1
