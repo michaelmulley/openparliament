@@ -1,7 +1,7 @@
 Hi,
 
 Someone -- hopefully you! -- wants to log in to openparliament.ca using
-this email address.
+this email address ({{ email }}).
 
 To finish logging in, just click on the following link, or paste it
 into your Web browser:

@@ -58,7 +58,7 @@ class LoginToken(models.Model):
     def generate(cls, email, requesting_ip):
         lt = cls.objects.create(email=email, requesting_ip=requesting_ip)
         login_url = urlresolvers.reverse('token_login', kwargs={'token': lt.token})
-        ctx = {'login_url': login_url}
+        ctx = {'login_url': login_url, 'email': email}
         t = loader.get_template("accounts/token_login.txt")
         send_mail(subject=u'Log in to openparliament.ca',
             message=t.render(ctx),
