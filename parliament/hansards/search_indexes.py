@@ -11,7 +11,7 @@ class StatementIndex(indexes.SearchIndex, indexes.Indexable):
     who_hocid = indexes.IntegerField(model_attr='who_hocid', null=True)
     party = indexes.CharField(model_attr='member__party__short_name', null=True)
     province = indexes.CharField(model_attr='member__riding__province', null=True)
-    topic = indexes.CharField(model_attr='topic')
+    topic = indexes.CharField(model_attr='topic', null=True)
     url = indexes.CharField(model_attr='get_absolute_url', indexed=False)
     doc_url = indexes.CharField(model_attr='document__get_absolute_url')
     committee = indexes.CharField(model_attr='committee_name')
