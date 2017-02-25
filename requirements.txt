@@ -16,7 +16,10 @@ pysolr==3.6.0
 sorl-thumbnail==3.2.5
 wsgiref==0.1.2
 feedparser==4.1
-django-compressor==2.1.1
+# Using this commit of django-compressor because the fix for
+# https://github.com/django-compressor/django-compressor/issues/611 hasn't been 
+# released as of 2017-02
+-e git+https://github.com/django-compressor/django-compressor.git@bb10c45#egg=django-compressor
 requests==2.13.0
 requests-oauthlib==0.6.1
 lxml==3.7.3
