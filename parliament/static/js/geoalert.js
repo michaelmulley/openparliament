@@ -52,7 +52,7 @@ $(function() {
 				save_province(data.region_code);
 				show_province_alert(data.region_code);
 			}
-			else if (data.country_code && data.country_code !== 'CA') {
+			else if (data.country_code) {
 				save_province('NO');
 			}
 		}
