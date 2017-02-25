@@ -46,7 +46,7 @@ $(function() {
 		return show_province_alert(province);
 	}
 
-	$.getJSON('https://freegeoip.net/json/', function(data) {
+	$.getJSON('https://freegeoip.tahini.michaelmulley.com/json/', function(data) {
 		if (data) {
 			if (data.country_code == 'CA' && data.region_code) {
 				save_province(data.region_code);
