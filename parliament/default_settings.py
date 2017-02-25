@@ -55,7 +55,7 @@ STATICFILES_FINDERS = [
 
 COMPRESS_CSS_FILTERS = [
     'compressor.filters.css_default.CssAbsoluteFilter',
-    'compressor.filters.cssmin.CSSMinFilter'
+    'compressor.filters.cssmin.CSSCompressorFilter'
 ]
 COMPRESS_JS_FILTERS = []
 COMPRESS_OFFLINE = True
