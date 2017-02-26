@@ -146,10 +146,6 @@ THUMBNAIL_PROCESSORS = (
     'sorl.thumbnail.processors.filters',
 )
 
-SOUTH_TESTS_MIGRATE = False
-TEST_RUNNER = 'parliament.core.test_utils.TestSuiteRunner'
-TEST_APP_PREFIX = 'parliament'
-
 LOGGING = {
     'version': 1,
     'formatters': {

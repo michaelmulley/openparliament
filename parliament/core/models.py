@@ -624,7 +624,7 @@ class Riding(models.Model):
     
     objects = RidingManager()
 
-    name = language_property('namefieldname')
+    name = language_property('name')
     
     class Meta:
         ordering = ('province', 'name_en')
