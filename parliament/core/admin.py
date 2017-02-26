@@ -10,16 +10,16 @@ class PoliticianOptions (admin.ModelAdmin):
     search_fields = ('name',)
     
 class RidingOptions (admin.ModelAdmin):
-    list_display = ('name', 'current', 'province', 'edid')
-    search_fields = ('name', 'edid')
+    list_display = ('name_en', 'current', 'province', 'edid', 'name_fr')
+    search_fields = ('name_en', 'edid')
     list_filter = ('province', 'current')
     
 class SessionOptions (admin.ModelAdmin):
     list_display = ('name', 'start', 'end')
     
 class ElectedMemberOptions(admin.ModelAdmin):
-    list_display=('politician', 'riding', 'party', 'start_date', 'end_date')
-    list_filter=('party',)
+    list_display = ('politician', 'riding', 'party', 'start_date', 'end_date')
+    list_filter = ('party',)
     search_fields = ('politician__name',)
     
 class InternalXrefOptions(admin.ModelAdmin):
@@ -28,7 +28,7 @@ class InternalXrefOptions(admin.ModelAdmin):
     list_editable = ('text_value', 'int_value', 'target_id')
     
 class PartyOptions(admin.ModelAdmin):
-    list_display = ('name', 'short_name', 'slug')
+    list_display = ('name_en', 'short_name', 'name_fr', 'short_name_fr')
     
 class PoliticianInfoOptions(admin.ModelAdmin):
     list_display = ('politician', 'schema', 'value')

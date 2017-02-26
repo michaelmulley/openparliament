@@ -2,7 +2,6 @@
 
 import datetime
 import re
-import urllib
 import urllib2
 
 from django.conf import settings
@@ -18,7 +17,7 @@ from markdown import markdown
 import requests
 
 from parliament.core import parsetools
-from parliament.core.utils import memoize_property, ActiveManager
+from parliament.core.utils import memoize_property, ActiveManager, language_property
 
 import logging
 logger = logging.getLogger(__name__)
@@ -54,27 +53,38 @@ class PartyManager(models.Manager):
             
 class Party(models.Model):
     """A federal political party."""
-    name = models.CharField(max_length=100)
-    slug = models.CharField(max_length=10, blank=True)
-    short_name = models.CharField(max_length=100, blank=True)
+    name_en = models.CharField(max_length=100)
+    name_fr = models.CharField(max_length=100, blank=True)
     
+    short_name_en = models.CharField(max_length=100, blank=True)
+    short_name_fr = models.CharField(max_length=100, blank=True)
+
+    slug = models.CharField(max_length=10, blank=True)
+    
+    name = language_property('name')
+    short_name = language_property('short_name')
+
     objects = PartyManager()
     
     class Meta:
         verbose_name_plural = 'Parties'
-        ordering = ('name',)
-        
+
     def __init__(self, *args, **kwargs):
         # If we're creating a new object, set a flag to save the name to the alternate-names table.
         super(Party, self).__init__(*args, **kwargs)
         self._saveAlternate = True
 
     def save(self):
-        if not getattr(self, 'short_name', None):
-            self.short_name = self.name
+        if not self.name_fr:
+            self.name_fr = self.name_en
+        if not self.short_name_en:
+            self.short_name_en = self.name_en
+        if not self.short_name_fr:
+            self.short_name_fr = self.name_fr
         super(Party, self).save()
         if getattr(self, '_saveAlternate', False):
-            self.add_alternate_name(self.name)
+            self.add_alternate_name(self.name_en)
+            self.add_alternate_name(self.name_fr)
 
     def delete(self):
         InternalXref.objects.filter(schema='party_names', target_id=self.id).delete()
@@ -568,27 +578,44 @@ class RidingManager(models.Manager):
             slug = RidingManager.FIX_RIDING[slug]
         return self.get_queryset().get(slug=slug)
 
-PROVINCE_CHOICES = (
-    ('AB', 'Alberta'),
-    ('BC', 'B.C.'),
-    ('SK', 'Saskatchewan'),
-    ('MB', 'Manitoba'),
-    ('ON', 'Ontario'),
-    ('QC', 'Québec'),
-    ('NB', 'New Brunswick'),
-    ('NS', 'Nova Scotia'),
-    ('PE', 'P.E.I.'),
-    ('NL', 'Newfoundland & Labrador'),
-    ('YT', 'Yukon'),
-    ('NT', 'Northwest Territories'),
-    ('NU', 'Nunavut'),
-)
+if settings.LANGUAGE_CODE.startswith('fr'):
+    PROVINCE_CHOICES = (
+        ('AB', 'Alberta'),
+        ('BC', 'C.-B.'),
+        ('SK', 'Saskatchewan'),
+        ('MB', 'Manitoba'),
+        ('ON', 'Ontario'),
+        ('QC', 'Québec'),
+        ('NB', 'Nouveau-Brunswick'),
+        ('NS', 'Nouvelle-Écosse'),
+        ('PE', 'Île-du-Prince-Édouard'),
+        ('NL', 'Terre-Neuve & Labrador'),
+        ('YT', 'Yukon'),
+        ('NT', 'Territories du Nord-Ouest'),
+        ('NU', 'Nunavut'),
+    )
+else:
+    PROVINCE_CHOICES = (
+        ('AB', 'Alberta'),
+        ('BC', 'B.C.'),
+        ('SK', 'Saskatchewan'),
+        ('MB', 'Manitoba'),
+        ('ON', 'Ontario'),
+        ('QC', 'Québec'),
+        ('NB', 'New Brunswick'),
+        ('NS', 'Nova Scotia'),
+        ('PE', 'P.E.I.'),
+        ('NL', 'Newfoundland & Labrador'),
+        ('YT', 'Yukon'),
+        ('NT', 'Northwest Territories'),
+        ('NU', 'Nunavut'),
+    )
 PROVINCE_LOOKUP = dict(PROVINCE_CHOICES)
 
 class Riding(models.Model):
     "A federal riding."
     
-    name = models.CharField(max_length=200)
+    name_en = models.CharField(max_length=200)
     name_fr = models.CharField(blank=True, max_length=200)
     province = models.CharField(max_length=2, choices=PROVINCE_CHOICES)
     slug = models.CharField(max_length=60, unique=True, db_index=True)
@@ -596,13 +623,15 @@ class Riding(models.Model):
     current = models.BooleanField(blank=True, default=False)
     
     objects = RidingManager()
+
+    name = language_property('namefieldname')
     
     class Meta:
-        ordering = ('province', 'name')
+        ordering = ('province', 'name_en')
         
     def save(self):
         if not self.slug:
-            self.slug = parsetools.slugify(self.name)
+            self.slug = parsetools.slugify(self.name_en)
         super(Riding, self).save()
         
     @property
@@ -660,8 +689,8 @@ class ElectedMember(models.Model):
             start_date=unicode(self.start_date),
             end_date=unicode(self.end_date) if self.end_date else None,
             party={
-                'name': {'en':self.party.name},
-                'short_name': {'en':self.party.short_name}
+                'name': {'en':self.party.name_en},
+                'short_name': {'en':self.party.short_name_en}
             },
             label={'en': u"%s MP for %s" % (self.party.short_name, self.riding.dashed_name)},
             riding={
