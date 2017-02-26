@@ -1,3 +1,5 @@
+from django.conf import settings
+
 from haystack import indexes
 
 from parliament.hansards.models import Statement
@@ -22,10 +24,13 @@ class StatementIndex(indexes.SearchIndex, indexes.Indexable):
         return Statement
     
     def index_queryset(self, using=None):
-        return Statement.objects.all().prefetch_related(
+        qs = Statement.objects.all().prefetch_related(
             'member__politician', 'member__party', 'member__riding', 'document',
             'document__committeemeeting__committee'
         ).order_by('-date')
+        if settings.LANGUAGE_CODE.startswith('fr'):
+            qs = qs.exclude(content_fr='')
+        return qs
 
     def prepare_doctype(self, obj):
         if obj.committee_name:
