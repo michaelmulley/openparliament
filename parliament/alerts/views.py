@@ -28,7 +28,8 @@ class PoliticianAlertForm(forms.Form):
 @disable_on_readonly_db
 def politician_hansard_signup(request):
     try:
-        politician_id = int(re.sub(r'\D', '', request.REQUEST.get('politician', '')))
+        politician_id = int(re.sub(r'\D', '',
+            (request.POST if request.method == 'POST' else request.GET).get('politician', '')))
     except ValueError:
         raise Http404
  
