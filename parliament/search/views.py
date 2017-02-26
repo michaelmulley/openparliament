@@ -174,7 +174,7 @@ class SearchFeed(Feed):
         return '"%s" | openparliament.ca' % query
 
     def link(self, query):
-        return "http://openparliament.ca/search/?" + urllib.urlencode({'q': query.encode('utf8'), 'sort': 'date desc'})
+        return "https://openparliament.ca/search/?" + urllib.urlencode({'q': query.encode('utf8'), 'sort': 'date desc'})
 
     def description(self, query):
         return "From openparliament.ca, search results for '%s'" % query
@@ -185,7 +185,7 @@ class SearchFeed(Feed):
             query_obj.documents)
 
     def item_title(self, item):
-        return "%s / %s" % (item['topic'], item['politician'])
+        return "%s / %s" % (item.get('topic', ''), item['politician'])
 
     def item_link(self, item):
         return item['url']
