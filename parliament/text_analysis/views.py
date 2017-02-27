@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.http import HttpResponse, Http404
 from django.views.generic import View
 
@@ -10,6 +11,8 @@ class TextAnalysisView(View):
     expiry_days = None
 
     def get(self, request, **kwargs):
+        if not settings.PARLIAMENT_GENERATE_TEXT_ANALYSIS:
+            raise Http404
         try:
             analysis = self.get_analysis(request, **kwargs)
         except IOError:
