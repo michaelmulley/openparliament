@@ -1,0 +1,95 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-02-27 02:23-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: parliament/templates/base.html:6
+msgid "openparliament.ca"
+msgstr "parlementouvert.ca"
+
+#: parliament/templates/base.html:63
+msgid "MPs"
+msgstr "Députés"
+
+#: parliament/templates/base.html:64 parliament/templates/base.html:92
+msgid "Bills"
+msgstr "Projets de loi"
+
+#: parliament/templates/base.html:65 parliament/templates/base.html:86
+msgid "Debates"
+msgstr "Débats"
+
+#: parliament/templates/base.html:66 parliament/templates/base.html:87
+msgid "Committees"
+msgstr "Comités"
+
+#: parliament/templates/base.html:67
+msgid "About"
+msgstr "À propos"
+
+#: parliament/templates/base.html:68
+msgid "Labs"
+msgstr "Labo"
+
+#: parliament/templates/base.html:70
+msgid "search"
+msgstr "rechercher"
+
+#: parliament/templates/base.html:74
+msgid "Home"
+msgstr "Accueil"
+
+#: parliament/templates/base.html:82
+msgid "supported by"
+msgstr "soutenu par"
+
+#: parliament/templates/base.html:84
+msgid "This is not a government site."
+msgstr "Ceci n'est pas un site gouvernemental."
+
+#: parliament/templates/base.html:84
+msgid "Not even sort of."
+msgstr "Pas même un peu."
+
+#: parliament/templates/base.html:85
+msgid "Words"
+msgstr "Mots"
+
+#: parliament/templates/base.html:86
+msgid "Hansard"
+msgstr "Hansard"
+
+#: parliament/templates/base.html:88
+msgid "Search"
+msgstr "Recherche"
+
+#: parliament/templates/base.html:89
+msgid "Alerts"
+msgstr "Alertes"
+
+#: parliament/templates/base.html:91
+msgid "Laws"
+msgstr "Lois"
+
+#: parliament/templates/base.html:93
+msgid "Votes"
+msgstr "Votes"
+
+#: parliament/templates/home.html:5
+msgid "Keep tabs on Parliament."
+msgstr "Gardez un œil sur le Parlement."
