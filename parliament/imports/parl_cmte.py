@@ -18,43 +18,77 @@ from parliament.hansards.models import Document
 
 logger = logging.getLogger(__name__)
 
-COMMITTEE_LIST_URL = 'http://www.parl.gc.ca/Committees/en/List?parl=%d&session=%d'
+COMMITTEE_LIST_URL = 'http://www.parl.gc.ca/Committees/{lang}/List?parl={parl}&session={sess}'
 @transaction.atomic
 def import_committee_list(session=None):
     if session is None:
         session = Session.objects.current()
 
-    def make_committee(name_en, acronym, parent=None):
+    def make_committee(name_en, name_fr, acronym, parent=None):
         try:
-            return Committee.objects.get_by_acronym(acronym, session)
+            cmte = Committee.objects.get_by_acronym(acronym, session)
+            if name_fr and cmte.name_fr != name_fr:
+                cmte.name_fr = name_fr
+                cmte.short_name_fr = name_fr
+                cmte.save()
+            return cmte
         except Committee.DoesNotExist:
-            committee, created = Committee.objects.get_or_create(name_en=name_en.strip(), parent=parent)
+            committee, created = Committee.objects.get_or_create(name_en=name_en,
+                name_fr=name_fr, parent=parent)
             if created:
                 logger.warning(u"Creating committee: %s, %s" % (committee.name_en, committee.slug))
             CommitteeInSession.objects.get_or_create(
                 committee=committee, session=session, acronym=acronym)
             return committee
     
-    resp = requests.get(COMMITTEE_LIST_URL % (session.parliamentnum, session.sessnum))
+    resp = requests.get(COMMITTEE_LIST_URL.format(
+        lang='en', parl=session.parliamentnum, sess=session.sessnum))
     resp.raise_for_status()
     root = lxml.html.fromstring(resp.text)
+
+    resp = requests.get(COMMITTEE_LIST_URL.format(
+        lang='fr', parl=session.parliamentnum, sess=session.sessnum))
+    resp.raise_for_status()
+    root_fr = lxml.html.fromstring(resp.text)
 
     found = False
     for cmte_div in root.cssselect('.committees-list .accordion-item'):
         acronym = cmte_div.cssselect('.accordion-bar-title .committee-acronym-cell')
         assert len(acronym) == 1
-        acronym = acronym[0].text_content()
+        acronym = acronym[0].text_content().strip()
 
         name = cmte_div.cssselect('.accordion-bar-title .committee-name')
         assert len(name) == 1
-        name = name[0].text_content()
-        com = make_committee(name, acronym)
+        name = name[0].text_content().strip()
+        name_fr = root_fr.xpath(
+            '//span[@class="committee-acronym-cell"][text()="%s"]/following-sibling::span/text()'
+            % acronym.upper()
+        )
+        if name_fr:
+            name_fr = name_fr[0].strip()
+        else:
+            logger.error("Could not find French name for committee %s" % acronym)
+        com = make_committee(name, name_fr, acronym)
         found = True
 
-        for sub in cmte_div.cssselect('.subcommittee-item .subcommittee-name'):
+        sub_names = cmte_div.cssselect('.subcommittee-item .subcommittee-name')
+        sub_names_fr = root_fr.xpath(
+            '//span[@class="committee-acronym-cell"][text()="%s"]/'
+            'ancestor::div[@class="accordion-item"][1]/'
+            'descendant::div[@class="subcommittee-name"]/text()' % acronym)
+        if len(sub_names) != len(sub_names_fr):
+            logger.error("Couldn't get French subcommittee names for %s" % acronym)
+            sub_names_fr = [''] * len(sub_names)
+        for sub, sub_fr in zip(sub_names, sub_names_fr):
             match = re.search(r'^(.+) \(([A-Z0-9]{3,5})\)$', sub.text_content())
-            (name, acronym) = match.groups()
-            make_committee(name, acronym, parent=com)
+            (name_en, acronym) = match.groups()
+            if sub_fr:
+                match = re.search(r'^(.+) \(([A-Z0-9]{3,5})\)$', sub_fr)
+                (name_fr, acronym_fr) = match.groups()
+                assert acronym == acronym_fr
+            else:
+                name_fr = ''
+            make_committee(name_en.strip(), name_fr.strip(), acronym, parent=com)
 
     if not found:
         logger.error("No committees in list")
