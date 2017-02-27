@@ -109,3 +109,6 @@ def feed_wrapper(feed_class):
         feed_instance.request = request
         return feed_instance(request, *args, **kwargs)
     return call_feed
+
+def lang_context(request):
+    return {'fr': settings.LANGUAGE_CODE.startswith('fr')}

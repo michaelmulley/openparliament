@@ -1,9 +1,9 @@
-{% load compress %}<!DOCTYPE html>
+{% load compress i18n %}<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>{% block pagetitle %}{% if pagetitle %}{{ pagetitle }}{% else %}{{ title }}{% endif %}{% endblock pagetitle %} | openparliament.ca</title>
+    <title>{% block pagetitle %}{% if pagetitle %}{{ pagetitle }}{% else %}{{ title }}{% endif %}{% endblock pagetitle %} | {% trans "openparliament.ca" %}</title>
 <link rel="icon" type="image/png" href="{{ STATIC_URL }}images/favicon.png">
 {% compress css %}
 <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/openparliament.css">
@@ -55,23 +55,23 @@ window.OP = {
 
 </script>
 </head>
-<body class="nojs {% block bodyclass %}{% endblock %}">
+<body class="nojs {% if fr %}fr{% else %}en{% endif %} {% block bodyclass %}{% endblock %}">
 <div id="navbarbg"></div>
 <div id="navbar">
-	<a href="/"><img id="navbar_logotype" width="220" height="34" src="{{ STATIC_URL }}images/logotype-white-2x.png" alt="openparliament.ca"></a>
+	<a href="/"><img id="navbar_logotype" width="{% if fr %}231{% else %}220{% endif %}" height="34" src="{{ STATIC_URL }}images/logotype-white-2x{% if fr %}-fr{% endif %}.png" alt="openparliament.ca"></a>
     <ul id="navlinks">
-		<li {% block navlinks_mps %}{% endblock %}><a href="{% url "politicians" %}">MPs</a></li>
-		<li {% block navlinks_bills %}{% endblock %}><a href="{% url "bills" %}">Bills</a></li>
-		<li {% block navlinks_debates %}{% endblock %}><a href="{% url "debates" %}">Debates</a></li>
-		<li {% block navlinks_committees %}{% endblock %}><a href="{% url "committee_list" %}">Committees</a></li>
-		<li {% block navlinks_about %}{% endblock %}><a href="/about/">About</a></li>
-		<li {% block navlinks_labs %}{% endblock %}><a href="/labs/">Labs</a></li>
+		<li {% block navlinks_mps %}{% endblock %}><a href="{% url "politicians" %}">{% trans "MPs" %}</a></li>
+		<li {% block navlinks_bills %}{% endblock %}><a href="{% url "bills" %}">{% trans "Bills" %}</a></li>
+		<li {% block navlinks_debates %}{% endblock %}><a href="{% url "debates" %}">{% trans "Debates" %}</a></li>
+		<li {% block navlinks_committees %}{% endblock %}><a href="{% url "committee_list" %}">{% trans "Committees" %}</a></li>
+		<li {% block navlinks_about %}{% endblock %}><a href="/about/">{% trans "About" %}</a></li>
+		<li {% block navlinks_labs %}{% endblock %}><a href="/labs/">{% trans "Labs" %}</a></li>
 	</ul>
-	{% block navbar_search %}<form action="{% url "search" %}" method="GET" id="nav_searchform"><input type="text" name="q" placeholder="search"><span class="searchicon"></span></form>{% endblock navbar_search %}
+	{% block navbar_search %}<form action="{% url "search" %}" method="GET" id="nav_searchform"><input type="text" name="q" placeholder="{% trans "search" %}"><span class="searchicon"></span></form>{% endblock navbar_search %}
 </div>
-<div id="notifications">{% block notifications %}{# e.g. <div class="top-notification success"><div class="notification-inner">Hello!</div></div> #}{% endblock %}{% if LANGUAGE_CODE == "fr" %}<div class="top-notification warning"><div class="notification-inner">Ceci est un site <strong>expérimental</strong> et <strong>incomplet</strong>. Voir <a href="https://openparliament.ca/">openparliament.ca</a>, en anglais, pour un site plus fiable.</div></div>{% endif %}</div>
+<div id="notifications">{% block notifications %}{# e.g. <div class="top-notification success"><div class="notification-inner">Hello!</div></div> #}{% endblock %}{% if fr %}<div class="top-notification warning"><div class="notification-inner">Ceci est un site <strong>expérimental</strong> et <strong>incomplet</strong>. Voir <a href="https://openparliament.ca/">openparliament.ca</a>, en anglais, pour un site plus fiable.</div></div>{% endif %}</div>
 <div id="content_wrap" class="{% block contentclass %}{% endblock %}" {% block contentdiv %}{% endblock %}><div class="content">
-	<div id="breadcrumbs">{% block breadcrumbs_all %}<a href="/">Home</a> {% block breadcrumbs %}{% endblock breadcrumbs %}{% endblock breadcrumbs_all %}</div>
+	<div id="breadcrumbs">{% block breadcrumbs_all %}<a href="/">{% trans "Home" %}</a> {% block breadcrumbs %}{% endblock breadcrumbs %}{% endblock breadcrumbs_all %}</div>
 	{% block pageheading_override %}<div class="focus pageheader"><h1>{% block pageheading %}{{ title }}{% endblock pageheading %}</h1></div><div class="clear"></div>{% endblock pageheading_override %}
 {% block content %}
 
@@ -79,18 +79,18 @@ window.OP = {
 </div><div class="clear"></div></div>
 {% block javascript %}{% endblock %}
 <div id="footer"><div class="content">{% block footer %}
-  <div class="col three" style="padding-left: 0; padding-right: 20px"><div style="text-align: center">supported by<a class="opennorth_logo" href="http://www.opennorth.ca/"></a></div></div>
+  <div class="col three" style="padding-left: 0; padding-right: 20px"><div style="text-align: center">{% trans "supported by" %}<a class="opennorth_logo" href="http://www.opennorth.ca/"></a></div></div>
 
-<div class="col four">{% block footer_text %}<p><strong>This is not a government site.</strong><br> Not even sort of.</p>{% endblock footer_text %}</div>
-<div class="col three"><strong>Words</strong><br>
-<a href="{% url "debates" %}">Debates</a> (Hansard)<br>
-<a href="{% url "committee_list" %}">Committees</a><br>
-<a href="{% url "search" %}">Search</a><br>
-<a href="{% url "alerts_list" %}">Alerts</a>
+<div class="col four">{% block footer_text %}<p><strong>{% trans "This is not a government site." %}</strong><br> {% trans "Not even sort of." %}</p>{% endblock footer_text %}</div>
+<div class="col three"><strong>{% trans "Words" %}</strong><br>
+<a href="{% url "debates" %}">{% trans "Debates" %}</a> ({% trans "Hansard" %})<br>
+<a href="{% url "committee_list" %}">{% trans "Committees" %}</a><br>
+<a href="{% url "search" %}">{% trans "Search" %}</a><br>
+<a href="{% url "alerts_list" %}">{% trans "Alerts" %}</a>
 </div>
-<div class="col three"><strong>Laws</strong><br>
-<a href="{% url "bills" %}">Bills</a><br>
-<a href="{% url "votes" %}">Votes</a></div>
+<div class="col three"><strong>{% trans "Laws" %}</strong><br>
+<a href="{% url "bills" %}">{% trans "Bills" %}</a><br>
+<a href="{% url "votes" %}">{% trans "Votes" %}</a></div>
 <div class="col three"><strong>More</strong><br>
 <a href="/about/#contact">Feedback / Contact</a><br>
 <a href="/labs/haiku/">Haiku</a><br>

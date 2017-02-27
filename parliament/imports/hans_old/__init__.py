@@ -1,4 +1,4 @@
-# coding: utf8
+# coding: utf-8
 """This module parses the Hansards of the House from HTML
 
 There are two parsers, for two different HTML formats (1994-2006, 2006-).

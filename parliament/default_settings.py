@@ -30,6 +30,8 @@ SITE_ID = 1
 # to load the internationalization machinery.
 USE_I18N = True
 
+LOCALE_PATHS = [os.path.join(PROJ_ROOT, 'locale')]
+
 # If you set this to False, Django will not format dates, numbers and
 # calendars according to the current locale
 USE_L10N = True
@@ -86,6 +88,7 @@ TEMPLATES = [
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
                 'parliament.accounts.context_processors.auth',
+                'parliament.core.utils.lang_context',
             ],
         },
     },
