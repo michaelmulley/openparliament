@@ -59,8 +59,8 @@ table {max-width: 100%; background-color: transparent; border-collapse: collapse
 #breadcrumbs a{background:transparent url('../images/breadglyph.png') no-repeat right;padding-right:13px;font-weight:normal;}
 #navlinks{position:absolute;font-size:16px;top:18px;left:367px;list-style-type:none;margin:0;padding:0;letter-spacing: 0.2px;}
 #navlinks li{padding:0;float:left;margin-right:12px;}
-.fr #navlinks {left: 320px;}
-.fr #navlinks li {margin-right: 19px;}
+.fr #navlinks {left: 305px;}
+.fr #navlinks li {margin-right: 17px;}
 #navlinks li a{color:#EEEEEE; font-weight: normal;}
 #navlinks li.selected a{color:#FFC757;}
 #navlinks li a:hover{color:white;text-decoration:underline;}
@@ -74,6 +74,7 @@ table {max-width: 100%; background-color: transparent; border-collapse: collapse
 #navbar img{position:absolute;top:2px;}
 #nav_searchform { position: absolute; right: 0px; top: 10px; text-align: right;}
 #nav_searchform input {background-color: transparent; border: none; color: #eeeeee; font-size: 15px; text-align: right;padding: 5px; width: 180px;}
+.fr #nav_searchform input {width: 150px;}
 /*#nav_searchform input:focus {outline: 1px dotted #bbbbbb;}*/
 #nav_searchform input:focus { outline: none; background-color: rgba(255, 255, 255, 0.1);}
 #nav_searchform input::-webkit-input-placeholder {
