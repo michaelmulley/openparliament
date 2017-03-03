@@ -202,7 +202,10 @@ class APIFilters(object):
         """
         def inner(qs, view, filter_name, filter_extra, val):
             url_bits = val.rstrip('/').split('/')
-            return qs.filter(**(query_func(url_bits)))
+            try:
+                return qs.filter(**(query_func(url_bits)))
+            except ValueError as e:
+                raise BadRequest(e)
         inner.help = help
         return inner
 
