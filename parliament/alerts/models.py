@@ -209,8 +209,8 @@ class Subscription(models.Model):
             [self.user.email],
             headers={'List-Unsubscribe': '<' + self.get_unsubscribe_url(full=True) + '>'}
         )
-        if not self.topic.politician_hansard_alert:
-            msg.bcc = ['michael@openparliament.ca']
+        if getattr(settings, 'PARLIAMENT_ALERTS_BCC'):
+            msg.bcc = [settings.PARLIAMENT_ALERTS_BCC]
         if rendered.get('html'):
             msg.attach_alternative(rendered['html'], 'text/html')
         if getattr(settings, 'PARLIAMENT_SEND_EMAIL', False):
