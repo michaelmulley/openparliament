@@ -209,7 +209,7 @@ class Subscription(models.Model):
             [self.user.email],
             headers={'List-Unsubscribe': '<' + self.get_unsubscribe_url(full=True) + '>'}
         )
-        if getattr(settings, 'PARLIAMENT_ALERTS_BCC'):
+        if getattr(settings, 'PARLIAMENT_ALERTS_BCC', ''):
             msg.bcc = [settings.PARLIAMENT_ALERTS_BCC]
         if rendered.get('html'):
             msg.attach_alternative(rendered['html'], 'text/html')
