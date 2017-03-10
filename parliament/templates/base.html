@@ -18,7 +18,8 @@
 
 <script type="text/javascript">
 window.OP = {
-  'STATIC_URL': "{{ STATIC_URL|escapejs }}"
+  'STATIC_URL': "{{ STATIC_URL|escapejs }}",
+  'LANG': "{% if fr %}fr{% else %}en{% endif %}"
 };
 </script>
 
