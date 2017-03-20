@@ -17,3 +17,6 @@ pip-log.txt
 logs/
 media/
 collected_static/
+fabfile
+*.sublime-*
+language_models/
