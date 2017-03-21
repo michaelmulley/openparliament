@@ -69,9 +69,11 @@ $navbar_background_default: #2f6970;
       color: #EEEEEE;
       &:hover {
         text-decoration: none;
-        color: white;
-        svg {
-          fill: white;
+        &:not(.active) {
+          color: white;
+          svg {
+            fill: white;
+          }
         }
         span {
           text-decoration: underline;

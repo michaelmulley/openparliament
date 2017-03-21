@@ -21,8 +21,8 @@ $(function() {
 		else {
 			$searchbar.slideDown('fast', function() {
 				$searchbar.find('input').focus();
-				$('#navbar-buttons-search').addClass('active');
 			});
+			$('#navbar-buttons-search').addClass('active');
 		}
 	});
 });
