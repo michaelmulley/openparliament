@@ -56,11 +56,18 @@ STATICFILES_FINDERS = [
 ]
 
 COMPRESS_CSS_FILTERS = [
+    'parliament.core.utils.AutoprefixerFilter',
     'compressor.filters.css_default.CssAbsoluteFilter',
     'compressor.filters.cssmin.rCSSMinFilter'
 ]
 COMPRESS_JS_FILTERS = []
 COMPRESS_OFFLINE = True
+COMPRESS_ENABLED = False
+COMPRESS_PRECOMPILERS = (
+    ('text/x-scss', 'django_libsass.SassCompiler'),
+    ('es6', 'cat {infile} | ./node_modules/.bin/babel > {outfile}'),
+)
+COMPRESS_CACHEABLE_PRECOMPILERS = ['es6']
 
 PARLIAMENT_LANGUAGE_MODEL_PATH = os.path.realpath(os.path.join(PROJ_ROOT, '..', '..', 'language_models'))
 PARLIAMENT_GENERATE_TEXT_ANALYSIS = False

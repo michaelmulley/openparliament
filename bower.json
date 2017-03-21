@@ -1,0 +1,21 @@
+{
+  "name": "openparliament",
+  "description": "",
+  "main": "",
+  "authors": [
+    "Michael Mulley <michael@michaelmulley.com>"
+  ],
+  "license": "AGPL-3.0",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "foundation-sites": "^6.3.1",
+  }
+}

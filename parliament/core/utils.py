@@ -8,6 +8,8 @@ from django.conf import settings
 from django.core import urlresolvers
 from django.http import HttpResponsePermanentRedirect
 
+from compressor.filters import CompilerFilter
+
 import logging
 logger = logging.getLogger(__name__)
 
@@ -112,3 +114,12 @@ def feed_wrapper(feed_class):
 
 def lang_context(request):
     return {'fr': settings.LANGUAGE_CODE.startswith('fr')}
+
+class AutoprefixerFilter(CompilerFilter):
+    command = "{binary} {args} -o {outfile} {infile}"
+    options = (
+        ("binary", getattr(settings, "COMPRESS_AUTOPREFIXER_BINARY",
+            './node_modules/.bin/postcss')),
+        ("args", getattr(settings, "COMPRESS_AUTOPREFIXER_ARGS",
+           '--use autoprefixer --autoprefixer.browsers "> 1%"')),
+    )

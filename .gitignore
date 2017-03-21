@@ -20,3 +20,4 @@ collected_static/
 fabfile
 *.sublime-*
 language_models/
+node_modules/
