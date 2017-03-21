@@ -1,8 +1,8 @@
 {% extends "bills/index.html" %}
-{% block breadcrumbs %}<a href="{% url "bills" %}">Bills</a> {{ title }}{% endblock %}
+{% block breadcrumbs %}<li><a href="{% url "bills" %}">Bills</a></li><li>{{ title }}</li>{% endblock %}
 
 {% block content %}
-<div class="focus"><p>This session began on {{ session.start|date:"F jS, Y" }}{% if session.end %} and ended on {{ session.end|date:"F jS, Y" }}{% endif %}.</p></div>
+<div class="row align-right"><div class="basic-main-col"><p>This session began on {{ session.start|date:"F jS, Y" }}{% if session.end %} and ended on {{ session.end|date:"F jS, Y" }}{% endif %}.</p></div></div>
 {{ block.super }}
 {% endblock %}
 

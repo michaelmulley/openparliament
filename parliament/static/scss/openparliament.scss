@@ -39,7 +39,7 @@
 // @include foundation-tabs;
 // @include foundation-thumbnail;
 // @include foundation-title-bar;
-// @include foundation-tooltip;
+@include foundation-tooltip;
 // @include foundation-top-bar;
 @include foundation-visibility-classes;
 // @include foundation-float-classes;
@@ -69,6 +69,20 @@ p {
   max-width: 700px;
 }
 
+.oneline {
+  max-height: ($paragraph_lineheight * 1rem);
+  overflow: hidden;
+}
+.twoline {
+  max-height: ($paragraph_lineheight * 2rem);
+  overflow: hidden;
+}
+.threeline {
+  max-height: ($paragraph_lineheight * 3rem);
+  overflow: hidden;
+}
+
+
 .content {
   width: 100%;
   padding-top: .5rem;
@@ -76,12 +90,21 @@ p {
   background-color: #ffffff;
   .row {
     margin-bottom: 1.5rem;
+    &.tile {
+      margin-bottom: 0;
+    }
+  }
+  nav.row {
+    margin-bottom: 0;
   }
 }
 
 .heading-col {
   @include flex-grid-column(12);
   @include breakpoint(medium) {
+    @include flex-grid-size(3);
+  }
+  @include breakpoint(large) {
     @include flex-grid-size(2);
   }
 }
@@ -89,8 +112,15 @@ p {
 .basic-main-col {
   @include flex-grid-column(12);
   @include breakpoint(medium) {
+    @include flex-grid-size(9);
+  }
+  @include breakpoint(large) {
     @include flex-grid-size(10);
   }
 }
 
+.tooltip {
+  max-width: 20rem;
+}
 @import 'navigation';
+@import 'tag_boxes';

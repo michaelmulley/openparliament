@@ -1,3 +1,17 @@
+
+
+jQuery.fn.overflowtip = function() {
+    return this.each(function() {
+        if (this.clientWidth < this.scrollWidth
+            || (this.clientHeight + 5) < this.scrollHeight) {
+            $(this).attr('title', $(this).text());
+        	$(this).attr('data-tooltip', true);
+        	$(this).addClass('has-tip');
+        }
+    });
+};
+
+$('.overflowtip').overflowtip();
 $(document).foundation();
 
 $(function() {
@@ -25,4 +39,5 @@ $(function() {
 			$('#navbar-buttons-search').addClass('active');
 		}
 	});
+
 });

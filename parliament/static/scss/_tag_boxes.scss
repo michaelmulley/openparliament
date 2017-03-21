@@ -1,0 +1,21 @@
+.tag{padding:2px 5px;margin: 0 1px;background-color:#CCCCCC;border-radius: 4px;}
+.winner .tag {
+	font-weight: bold;
+}
+.multitags .tag {display: inline-block; margin-bottom: 5px;}
+.voteresult_Y{background-color:#C4F492;}
+.voteresult_N{background-color:#FF9F9F;}
+.partytag_liberal{background-color:#FF9999;}
+.partytag_bloc{background-color:#8AC0DD;}
+.partytag_cpc,.partytag_alliance, .partytag_canadian-alliance, .partytag_conservative, .partytag_progressive-conservative, .partytag_pc {background-color:#AECBF4;}
+/* .partytag_progressive-conservative{background-color: #75acff;} */
+.partytag_reform, .partytag_green {background-color: #A9FA98;}
+.partytag_ndp{background-color:#F7B86D;}
+.activity_news{background-color:#EFEDA3;}
+.activity_statement{background-color:#D9B88E;}
+.activity_twitter{background-color:#92D9EA;}
+.activity_bill{background-color:#E2B8E8;}
+.activity_committee{background-color:#A4DED2;}
+.bill_law{background-color:#74E2BA;}
+.bill_dead{background-color:#D9D9FC;}
+.bill_dormant{background-color:#FFEFAE;}

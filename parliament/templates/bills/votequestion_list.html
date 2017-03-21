@@ -1,13 +1,15 @@
-{% extends "bills/base.html" %}
+{% extends "bills/responsive_base.html" %}
 {% load ours %}
-{% block contentclass %}context_3{% endblock %}
-{% block breadcrumbs %}{{ block.super }}<a href="{% url "bills" %}">Bills</a>
-<a href="{% url "bills_for_session" session_id=session.id %}">{{ session }}</a> Votes{% endblock %}
+{% block breadcrumbs %}{{ block.super }}<li><a href="{% url "bills" %}">Bills</a></li>
+<li><a href="{% url "bills_for_session" session_id=session.id %}">{{ session }}</a></li> <li>Votes</li>{% endblock %}
 {% block content %}
-<div class="focus"><p>This session began on {{ session.start|date:"F jS, Y" }}{% if session.end %} and ended on {{ session.end|date:"F jS, Y" }}{% endif %}.</p></div>
+<div class="row align-right"><div class="basic-main-col"><p>This session began on {{ session.start|date:"F jS, Y" }}{% if session.end %} and ended on {{ session.end|date:"F jS, Y" }}{% endif %}.</p></div></div>
 {% regroup object_list by date.month as months %}
 {% for month in months %}
-<div class="clear"></div><div class="context"><h2>{{ month.grouper|month_num }}</h2></div>
-<div class="focus"><ul class="tile">{% for vote in month.list %}<li class="six twoline overflowtip"><a href="{{ vote.get_absolute_url }}">#{{ vote.number }}</a> <span class="tag voteresult_{{ vote.result }}">{{ vote.get_result_display }}</span> {% if vote.bill %}<a href="{% url "bill" session_id=session.id bill_number=vote.bill.number %}">{{ vote.bill.number }}</a> {% endif %}{{ vote.description }}</li>{% endfor %}</ul><div class="clear"></div></div>{% endfor %}
+<div class="row">
+	<div class="heading-col"><h2>{{ month.grouper|month_num }}</h2></div>
+	<div class="columns"><div class="row tile small-up-1 medium-up-2">{% for vote in month.list %}<div class="column column-block threeline overflowtip"><a href="{{ vote.get_absolute_url }}">#{{ vote.number }}</a> <span class="tag voteresult_{{ vote.result }}">{{ vote.get_result_display }}</span> {% if vote.bill %}<a href="{% url "bill" session_id=session.id bill_number=vote.bill.number %}">{{ vote.bill.number }}</a> {% endif %}{{ vote.description }}</div>{% endfor %}</div></div>
+</div>
+{% endfor %}
 
 {% endblock %}
