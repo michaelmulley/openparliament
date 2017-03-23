@@ -2,7 +2,8 @@
 {% block breadcrumbs %}<a href="{% url "bills" %}">Bills</a> {{ title }}{% endblock %}
 
 {% block content %}
-<div class="focus"><p>This session began on {{ session.start|date:"F jS, Y" }}{% if session.end %} and ended on {{ session.end|date:"F jS, Y" }}{% endif %}.</p></div>
+<div class="row align-right"><div class="main-col"><p>This session began on {{ session.start|date:"F jS, Y" }}{% if session.end %} and ended on {{ session.end|date:"F jS, Y" }}{% endif %}.</p></div></div>
+
 {{ block.super }}
 {% endblock %}
 

@@ -3,7 +3,7 @@
 
 OP.wordcloud = {
 	defaultOpts: {
-		size: [960, 175],
+		size: [null, 175],
 		font: '"Helvetica Neue", Helvetica, sans serif',
 		weight: 'bold',
 		padding: '0.5',
@@ -307,6 +307,16 @@ OP.wordcloud.drawSVG = function(words, opts) {
 	};
 
 	if (!test_svg() || !test_canvas()) return false;
+
+	if (!opts.size[0]) {
+		// Calculate width
+		if (opts.appendTo) {
+			opts.size[0] = $(opts.appendTo).width();
+		}
+		else {
+			opts.size[0] = 960;
+		}
+	}
 
 	var g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
 	var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');

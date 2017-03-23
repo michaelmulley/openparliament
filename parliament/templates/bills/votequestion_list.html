@@ -4,7 +4,8 @@
 {% block breadcrumbs %}{{ block.super }}<a href="{% url "bills" %}">Bills</a>
 <a href="{% url "bills_for_session" session_id=session.id %}">{{ session }}</a> Votes{% endblock %}
 {% block content %}
-<div class="focus"><p>This session began on {{ session.start|date:"F jS, Y" }}{% if session.end %} and ended on {{ session.end|date:"F jS, Y" }}{% endif %}.</p></div>
+<div class="row align-right"><div class="main-col"><p>This session began on {{ session.start|date:"F jS, Y" }}{% if session.end %} and ended on {{ session.end|date:"F jS, Y" }}{% endif %}.</p></div></div>
+
 {% regroup object_list by date.month as months %}
 {% for month in months %}
 <div class="clear"></div><div class="context"><h2>{{ month.grouper|month_num }}</h2></div>

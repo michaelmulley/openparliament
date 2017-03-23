@@ -27,7 +27,7 @@
 // @include foundation-media-object;
 // @include foundation-off-canvas;
 // @include foundation-orbit;
-// @include foundation-pagination;
+@include foundation-pagination;
 // @include foundation-progress-bar;
 // @include foundation-progress-element;
 // @include foundation-meter-element;
@@ -45,11 +45,14 @@
 // @include foundation-float-classes;
 @include foundation-flex-classes;
 
+$max_text_width: 35rem;
+$link_color: #1A59C7;
+
 body {
   background-color: #DDDDDD;
 }
 a {
-  color: #1A59C7;
+  color: $link_color;
   text-decoration:none;
   font-weight:bold;
   outline:none;
@@ -66,7 +69,7 @@ h2 {
   color: #522D07;
 }
 p {
-  max-width: 700px;
+  max-width: $max_text_width;
 }
 
 .content {
@@ -74,23 +77,53 @@ p {
   padding-top: .5rem;
   padding-bottom: 1rem;
   background-color: #ffffff;
+  border-top: 2px solid #999999;
+
   .row {
     margin-bottom: 1.5rem;
+    &.tile {
+      margin-bottom: 0;
+      &.dense .column-block {
+        margin-bottom: .8rem;
+      }
+    }
+  }
+  nav.row {
+    margin-bottom: 0;
   }
 }
 
 .heading-col {
   @include flex-grid-column(12);
   @include breakpoint(medium) {
-    @include flex-grid-size(2);
+    @include flex-grid-size(3);
   }
+
+}
+.content:not(.wide-heading-col) .heading-col {
+  @include breakpoint(large) {
+    @include flex-grid-size(2);
+  }  
 }
 
-.basic-main-col {
+.main-col {
   @include flex-grid-column(12);
   @include breakpoint(medium) {
-    @include flex-grid-size(10);
+    @include flex-grid-size(9);
   }
 }
+.content:not(.wide-heading-col) .main-col {
+  @include breakpoint(large) {
+    @include flex-grid-size(10);
+  }  
+}
 
+.tooltip {
+  max-width: 20rem;
+}
+a.has-tip {
+  cursor: pointer;
+}
 @import 'navigation';
+@import 'tag_boxes';
+@import 'hansard';

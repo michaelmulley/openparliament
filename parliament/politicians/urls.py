@@ -15,5 +15,5 @@ urlpatterns = [
     url(r'^(?P<pol_id>\d+)/contact/$', contact, name='politician_contact'),
     url(r'^(?P<pol_slug>[a-z-]+)/text-analysis/$', analysis),
     url(r'^(?P<pol_id>\d+)/text-analysis/$', analysis),
-    url(r'^internal/hide_activity/$', hide_activity),
+    url(r'^internal/hide_activity/$', hide_activity, name='hide_politician_activity'),
 ]

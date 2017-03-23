@@ -1,0 +1,123 @@
+.statement {
+  border-top: 1px solid #CCCCCC;
+  overflow: hidden;
+
+  // Layout
+  .l-ctx-col {
+    @include flex-grid-column(12);
+    @include breakpoint(medium) {
+      @include flex-grid-size(3);
+    }
+  }
+  .r-ctx-col {
+    @include flex-grid-column(2);
+  }
+  .text-col {
+    @include flex-grid-column(12);
+    @include breakpoint(medium) {
+      @include flex-grid-size(7);
+    }
+  }
+
+  &.row {
+    margin-bottom: 0;
+    margin-top: 0;
+    padding-top: 1rem;
+    padding-bottom: .5rem;
+  }
+
+  .pol_name { font-weight: bold; }
+  .pol_affil {
+    padding-left: .2rem;
+    color: #666666;
+  }
+  p.procedural {
+    color: #666;
+    font-style: italic;
+  }
+
+  &.highlighted {
+    background-color: #fff2b5;
+  }
+
+  .l-ctx-col {
+    font-size: .7rem;
+    color: #555555;
+    text-align: right;
+    .partytag {
+      font-weight: bold;
+    }
+  }
+  .text-col {
+    font-size: .92rem;
+  }
+
+  // Responsive content changes
+  span.br {
+    display: block;
+  }
+  @include breakpoint(small only) {
+    .l-ctx-col {
+      text-align: left;
+      p {
+        margin-bottom: 0;
+      }
+      span.br {
+        display: inline;
+        &:after {
+          content: ' / ';
+        }
+      }
+      .partytag {
+        display: none;
+      }
+      margin-bottom: 1rem;
+    }
+  }
+  @include breakpoint(medium) {
+    .text-col .partytag {
+      display: none;
+    }
+  }
+
+  // Long statement truncation
+  .text-col {
+    max-height: $paragraph_lineheight * 15rem;
+    position: relative;
+    overflow-y: hidden;
+  }
+  .no-js & .text-col, .disable_more_links & .text-col, .text-col.displayall {
+    max-height: none;
+  }
+  .text-col.truncated:before {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: $paragraph_lineheight * 3rem;
+    bottom: 0;
+    pointer-events: none;
+    background: linear-gradient(rgba(255,255,255,0), white);
+  }
+  .text-col.truncated .morelink {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    max-width: $max_text_width;
+    height: $paragraph_lineheight * 1rem;
+    text-align: center;
+    color: $link_color;
+    cursor: pointer;
+
+    &:before {
+      content: 'see more ';
+    }
+
+    &:hover {
+      font-weight: bold;
+    }
+  }
+
+}
+.pagination.active {
+  opacity: 0.4;
+}

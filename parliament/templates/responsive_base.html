@@ -17,6 +17,8 @@
       'LANG': "{% if fr %}fr{% else %}en{% endif %}"
     };
   </script>
+  <script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+
 </head>
 <body class="{% if fr %}fr{% else %}en{% endif %} {% block bodyclass %}{% endblock %}">
 
@@ -57,7 +59,7 @@
 <div id="notifications">{% block notifications %}{# e.g. <div class="top-notification success"><div class="notification-inner">Hello!</div></div> #}{% endblock %}{% if fr %}<div class="top-notification warning"><div class="notification-inner">Ceci est un site <strong>expérimental</strong> et <strong>incomplet</strong>. Voir <a href="https://openparliament.ca/">openparliament.ca</a>, en anglais, pour un site plus fiable.</div></div>{% endif %}</div>
 {% endcomment %}
 
-<div class="content">
+<div class="content {% block contentclass %}{% endblock %}" {% block contentdiv %}{% endblock %}>
 
   <nav aria-label="You are here:" role="navigation" class="row">
     <ul class="breadcrumbs small-12 columns">{% block breadcrumbs_all %}
@@ -66,7 +68,7 @@
     </ul>
   </nav>
 
-  {% block pageheading_override %}<div class="row align-right"><div class="pageheader basic-main-col"><h1>{% block pageheading %}{{ title }}{% endblock pageheading %}</h1></div></div>{% endblock pageheading_override %}
+  {% block pageheading_override %}<div class="row align-right"><div class="pageheader main-col"><h1>{% block pageheading %}{{ title }}{% endblock pageheading %}</h1></div></div>{% endblock pageheading_override %}
 
   {% block content %}{% endblock %}
 
@@ -95,7 +97,6 @@
   </div>
 </footer>
 
-<script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
 {% compress js %}
   <script type="es6" src="{% static 'bower_components/foundation-sites/js/foundation.core.js' %}"></script>
   <script type="es6" src="{% static 'bower_components/foundation-sites/js/foundation.util.triggers.js' %}"></script>
@@ -103,10 +104,15 @@
   <script type="es6" src="{% static 'bower_components/foundation-sites/js/foundation.responsiveMenu.js' %}"></script>
   <script type="es6" src="{% static 'bower_components/foundation-sites/js/foundation.responsiveToggle.js' %}"></script>
 
+  <script type="text/javascript" src="{% static 'js/libs/underscore.js' %}"></script>
+
   <script type="text/javascript" src="{% static 'jsnew/core.js' %}"></script>
+  <script type="text/javascript" src="{% static 'jsnew/statementbrowser.js' %}"></script>
+  <script type="text/javascript" src="{% static 'jsnew/pagination.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/wordcloud-layout.js' %}"></script>
 {% endcompress %}
 
-
+{% block js_bottom %}{% endblock %}
 
 </body>
 </html>

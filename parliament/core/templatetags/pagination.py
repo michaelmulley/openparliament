@@ -10,14 +10,15 @@ ADJACENT_PAGES = 2
 
 @register.assignment_tag(takes_context=True)
 def long_paginator(context):
-    '''
-    To be used in conjunction with the object_list generic view.
+    return template.loader.get_template("long_paginator.html").render(
+        _get_pagination_context(context))
 
-    Adds pagination context variables for use in displaying leading, adjacent and
-    trailing page links in addition to those created by the object_list generic
-    view.
-    '''
+@register.assignment_tag(takes_context=True)
+def foundation_paginator(context):
+    return template.loader.get_template("foundation_paginator.html").render(
+        _get_pagination_context(context))    
 
+def _get_pagination_context(context):
     page_obj = context['page']
     try:
         paginator = page_obj.paginator
@@ -40,7 +41,7 @@ def long_paginator(context):
         in_trailing_range = True
         page_range = [n for n in range(pages - TRAILING_PAGE_RANGE_DISPLAYED + 1, pages + 1) if n > 0 and n <= pages]
         pages_outside_trailing_range = [n + 1 for n in range(0, NUM_PAGES_OUTSIDE_RANGE)]
-    else: 
+    else:
         page_range = [n for n in range(page - ADJACENT_PAGES, page + ADJACENT_PAGES + 1) if n > 0 and n <= pages]
         pages_outside_leading_range = [n + pages for n in range(0, -NUM_PAGES_OUTSIDE_RANGE, -1)]
         pages_outside_trailing_range = [n + 1 for n in range(0, NUM_PAGES_OUTSIDE_RANGE)]
@@ -55,7 +56,7 @@ def long_paginator(context):
         del params['partial']
     get_params = params.urlencode()
 
-    pagination_ctx = {
+    return {
         'pages': pages,
         'page': page,
         'previous': page_obj.previous_page_number() if page_obj.has_previous() else None,
@@ -70,6 +71,3 @@ def long_paginator(context):
         'get_params': get_params,
         'allow_single_page': context.get('allow_single_page')
     }
-
-    return template.loader.get_template("long_paginator.html").render(pagination_ctx)
-

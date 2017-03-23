@@ -96,7 +96,7 @@ $(function() {
         var $p = $(this).parent('p')
         $.ajax({
             type: 'POST',
-            url: '{% url "parliament.politicians.views.hide_activity" %}',
+            url: '{% url "hide_politician_activity" %}',
             data: {'activity_id': $p.data('id')},
             success: function() {
                 $p.fadeOut();

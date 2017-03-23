@@ -129,7 +129,7 @@ def document_view(request, document, meeting=None, slug=None):
         })
 
     if request.is_ajax():
-        t = loader.get_template("hansards/statement_page.inc")
+        t = loader.get_template("hansards/statement_page_responsive.inc")
     else:
         if document.document_type == Document.DEBATE:
             t = loader.get_template("hansards/hansard_detail.html")

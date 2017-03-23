@@ -22,16 +22,24 @@
 {% for pm in pmem %}
 
 {% if forloop.counter == 2 %}{% block sessions_list %}
-<div class="focus"><p>Bills are separated according to the parliamentary session during which they were introduced. The bills above have been introduced (or reintroduced) in the current session.</p></div>
-<div class="clear"></div><div class="context"><h2>Sessions</h2></div>
-<div class="focus"><ul class="tile">
-    {% for session in session_list %}{% if not forloop.first %}
-<li class="six oneline"><a href="{% url "bills_for_session" session_id=session.id %}" class="tip" title="{{ session }}">{{ session.start|date:"F Y" }}&ndash;{{session.end|date:"F Y"}}</a></li>{% endif %}{% endfor %}
-</ul><div class="clear"></div></div>
+<div class="row align-right">
+<div class="main-col"><p>Bills are separated according to the parliamentary session during which they were introduced. The bills above have been introduced (or reintroduced) in the current session.</p></div>
+</div>
+
+<div class="row">
+	<div class="heading-col"><h2>Sessions</h2></div>
+	<div class="columns"><div class="row tile small-up-1 medium-up-2 large-up-3">
+	    {% for session in session_list %}{% if not forloop.first %}
+	<div class="column column-block oneline"><a href="{% url "bills_for_session" session_id=session.id %}" data-tooltip title="{{ session }}">{{ session.start|date:"F Y" }}&ndash;{{session.end|date:"F Y"}}</a></div>{% endif %}{% endfor %}
+	</div></div>
+</div>
 {% endblock %}{% endif %}
-{% if pm.grouper %}<div class="focus"><p>Private members' bills are introduced by MPs who are not cabinet ministers&mdash;opposition members, or sometimes government backbenchers. They rarely become law.</p></div>{% endif %}
-<div class="clear"></div><div class="context"><h2>{% if pm.grouper %}Private members' bills{% else %}Government bills{% endif %}</h2></div><div class="focus">
-    <ul class="tile">
+
+{% if pm.grouper %}<div class="row align-right"><div class="main-col"><p>Private members' bills are introduced by MPs who are not cabinet ministers&mdash;opposition members, or sometimes government backbenchers. They rarely become law.</p></div></div>{% endif %}
+
+<div class="row">
+	<div class="heading-col"><h2>{% if pm.grouper %}Private members' bills{% else %}Government bills{% endif %}</h2></div>
+	<div class="columns"><div class="row tile small-up-1 medium-up-2">
     {# EDITING HERE? Copy changes to the same block above. #}
     {% for bill in pm.list %}{% if bill.number_only != 1 %}<li class="twoline six {% if bill.short_title %}tip" title="{{ bill.name|strip_act }}"{% else %}overflowtip"{# " #}{% endif %}><a href="{% url "bill" session_id=session.id bill_number=bill.number %}">{{ bill.number }}</a> {% if bill.law %}<span class="tag bill_law">Law</span> {% elif bill.dead and not session.end %}<span class="tag bill_dead">Dead</span> {% elif bill.dormant and not session.end %}<span class="tag bill_dormant" title="No change in status for five months">Dormant</span> {% endif %}{% if bill.short_title %}{{ bill.short_title|strip_act }}{% else %}{{ bill.name|strip_act }}{% endif %}</li>{% endif %}{% endfor %}
     </ul><div class="clear"></div>

@@ -1,0 +1,38 @@
+{% load i18n %}{% spaceless %}
+<div class="row columns pagination-container">
+<ul class="long-paginator pagination text-center" role="navigation">
+  {% if has_previous or has_next %}
+  {% if has_previous %}
+    <li class="pagination-previous"><a href="{% if get_params %}?{{ get_params }}&amp;{% else %}?{% endif %}page={{ previous }}">{% trans "Previous" %}</a>
+  {% else %}<li class="pagination-previous disabled">{% trans "Previous" %}</li>
+  {% endif %}
+  {% if not in_leading_range %}
+    {% for p in pages_outside_trailing_range %}
+      <li><a href="{% if get_params %}?{{ get_params }}&amp;{% else %}?{% endif %}page={{ p }}">{{ p }}</a></li>
+    {% endfor %}
+    <li class="ellipsis"></li>
+  {% endif %}
+  {% for p in page_range %}
+    {% if p == page %}
+      <li class="current">{{ p }}</li>
+    {% else %}
+      <li><a href="{% if get_params %}?{{ get_params }}&amp;{% else %}?{% endif %}page={{ p }}">{{ p }}</a></li>
+    {% endif %}
+  {% endfor %}
+  {% if not in_trailing_range %}
+    <li class="ellipsis"></li>
+    {% for p in pages_outside_leading_range reversed %}
+      <li><a href="{% if get_params %}?{{ get_params }}&amp;{% else %}?{% endif %}page={{ p }}">{{ p }}</a></li>
+    {% endfor %}
+  {% endif %}
+  {% if allow_single_page %}
+    <li><a href="?{% if get_params %}{{ get_params }}&amp;{% endif %}singlepage=1">{% trans "All" %}</a></li>
+  {% endif %}
+  {% if has_next %}
+    <li class="pagination-next"><a href="{% if get_params %}?{{ get_params }}&amp;{% else %}?{% endif %}page={{ next }}">Next </a></li>
+  {% else %}<li class="pagination-next disabled">{% trans "Next" %}</li>
+  {% endif %}
+  {% endif %}
+</ul>
+</div>
+{% endspaceless %}

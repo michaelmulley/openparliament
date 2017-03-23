@@ -5,10 +5,26 @@ $navbar_background_default: #2f6970;
   width: 100%;
   padding: 0.5rem 0;
 
+  .bills & {
+    background-color: $navbar_background_bills;
+  }
+  .debates & {
+    background-color: $navbar_background_debates;
+  }
+  .politicians & {
+    background-color: $navbar_background_politicians;
+  }
+  .committees & {
+    background-color: $navbar_background_committees;
+  }
+
   .logo-col {
     @include flex-grid-column(8);
+    @include breakpoint(medium) {
+      @include flex-grid-size(6);
+    }
     @include breakpoint(large) {
-      @include flex-grid-size(4);
+      @include flex-grid-size(3);
     }
     img {
       height: 34px;
@@ -33,7 +49,9 @@ $navbar_background_default: #2f6970;
     @include breakpoint(large) {
       text-align: center;
       order: 2;
-      @include flex-grid-size(6);
+      @include flex-grid-size(7);
+      position: relative;
+      left: 20px;
       li a {
         padding-left: 1rem;
         padding-right: 1rem;
@@ -43,6 +61,9 @@ $navbar_background_default: #2f6970;
   .button-col {
     @include flex-grid-column(4);
     order: 2;
+    @include breakpoint(medium) {
+      @include flex-grid-size(6);
+    }
     @include breakpoint(large) {
       order: 3;
       @include flex-grid-size(2);
@@ -90,6 +111,21 @@ $navbar_background_default: #2f6970;
         text-decoration: underline;
         color: #FFFFFF;
       }
+    }
+  }
+}
+
+.no-js {
+  .navbar .menu-col {
+    display: none;
+  }
+
+  @include breakpoint(large) {
+    .navbar .menu-col {
+      display: block;
+    }
+    .button-col .menu {
+      display: none;
     }
   }
 }

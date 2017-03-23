@@ -9,10 +9,22 @@
 <a href="{% url "votes_for_session" session_id=vote.session.id %}">Votes</a> #{{ vote.number }}{% endblock %}
 
 {% block content %}
+<<<<<<< Updated upstream
 {% if vote.bill %}<div class="clear"></div><div class="context"><h2>Bill</h2></div>
 <div class="focus"><p><a href="{{ vote.bill.get_absolute_url }}">{{ vote.bill.number }}</a> {{ vote.bill.name }}</p></div>{% endif %}
 <div class="clear"></div><div class="context"><h2>Vote topic</h2></div>
 <div class="focus">{{ vote.description|markdown }}
+=======
+{% if vote.bill %}
+<div class="row">
+	<div class="heading-col"><h2>Bill</h2></div>
+	<div class="main-col"><p><a href="{{ vote.bill.get_absolute_url }}">{{ vote.bill.number }}</a> {{ vote.bill.name }}</p></div>
+</div>
+{% endif %}
+<div class="row">
+	<div class="heading-col"><h2>Vote topic</h2></div>
+	<div class="main-col">{{ vote.description|markdown }}
+>>>>>>> Stashed changes
     {% if vote.context_statement %}<p><a href="{{ vote.context_statement.get_absolute_url }}">See context in the Debates.</a></p>{% endif %}
 </div>
 <div class="clear"></div><div class="context"><h2>Result</h2></div>
@@ -26,9 +38,18 @@
 </ul><div class="clear"></div></div>
 {% regroup membervotes by member.party.short_name as parties %}
 {% for party in parties %}
+<<<<<<< Updated upstream
 <div class="clear"></div><div class="context"><h2>{{ party.grouper }}</h2></div>
 <div class="focus"><ul class="tile">
 {% for membervote in party.list %}<li class="four oneline overflowtip"><span class="tag voteresult_{{ membervote.vote }}">{{ membervote.get_vote_display }}</span> <a href="{{ membervote.member.politician.get_absolute_url }}">{{ membervote.member.politician.name }}</a></li>{% endfor %}
 </ul><div class="clear"></div></div>
+=======
+<div class="row">
+	<div class="heading-col"><h2>{{ party.grouper }}</h2></div>
+	<div class="columns"><div class="row tile dense small-up-1 medium-up-2 large-up-3">
+		{% for membervote in party.list %}<div class="column column-block oneline overflowtip"><span class="tag voteresult_{{ membervote.vote }}">{{ membervote.get_vote_display }}</span> <a href="{{ membervote.member.politician.get_absolute_url }}">{{ membervote.member.politician.name }}</a></div>{% endfor %}
+	</div></div>
+</div>
+>>>>>>> Stashed changes
 {% endfor %}
 {% endblock content %}

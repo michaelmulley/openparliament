@@ -1,30 +1,37 @@
-{% extends "hansards/base.html" %}
+{% extends "hansards/responsive_base.html" %}
 {% load markup thumbnail compress %}
 {% block pagetitle %}{% if highlight_statement %}{{ highlight_statement.name_info.display_name }}, &quot;{{ highlight_statement.topic }}&quot; on {% else %}Debates of {% endif %}{{ hansard.date|date:"N jS, Y" }}{% endblock %}
 {% block pageheading %}Debates of {{ hansard.date|date:"N jS, Y" }}{% endblock %}
-{% block breadcrumbs %}<a href="{% url "debates" %}">Debates</a> <a href="{% url "debates_by_year" year=hansard.date.year %}">{{ hansard.date.year }}</a> {{ hansard.date|date:"F jS" }}{% endblock %}
+
+{% block breadcrumbs %}<li><a href="{% url "debates" %}">Debates</a></li> <li><a href="{% url "debates_by_year" year=hansard.date.year %}">{{ hansard.date.year }}</a></li> <li>{{ hansard.date|date:"F jS" }}</li>{% endblock %}
+
 {% block headextra %}
+
 	{% if highlight_statement or highlight_statement == 0%}
 		<link rel="canonical" href="{{ request.path }}only/">
 	{% endif %}
 {% endblock %}
+
 {% block content %}
-<div class="focus"><p>House of Commons Hansard #{{ hansard.number }} of the {{ hansard.session }}. (The <a href="{{ hansard.url }}">original version</a> is on Parliament's site.)
+<div class="row align-right">
+	<div class="main-col"><p>House of Commons Hansard #{{ hansard.number }} of the {{ hansard.session }}. (The <a href="{{ hansard.url }}">original version</a> is on Parliament's site.)
 	{% with hansard.most_frequent_word as wotd %}{% if wotd %}The <span class="tip tipunderline" title="Most frequently spoken word, compared to other recent debates.">word of the day</span> was <strong>{{ wotd }}</strong>.{% endif %}{% endwith %}</p></div>
+</div>
 
-<div class="wordcloud"></div>
+<div class="row columns wordcloud"></div>
 
-<div class="clear"></div><div class="context"><h2>Topics</h2></div>
-<div class="focus"><ul class="tile clearafter">
+<div class="row">
+	<div class="heading-col"><h2>Topics</h2></div>
+	<div class="main-col"><div class="row tile dense small-up-2 medium-up-3 large-up-4">
 {% with hansard.get_absolute_url as my_url %}
-	{% for topic in hansard.topics_with_qp %}<li class="four oneline overflowtip"><a href="{% if singlepage %}#s{{ topic.1 }}{% else %}{{ my_url }}{{ topic.1 }}/#hl{% endif %}">{{ topic.0 }}</a></li>{% endfor %}
+	{% for topic in hansard.topics_with_qp %}<div class="column column-block oneline overflowtip"><a href="{% if singlepage %}#s{{ topic.1 }}{% else %}{{ my_url }}{{ topic.1 }}/#hl{% endif %}">{{ topic.0 }}</a></div>{% endfor %}
 {% endwith %}
-</ul></div>
-
+	</div></div>
+</div>
 
 <div id="paginated">
 
-{% include "hansards/statement_page.inc" %}
+{% include "hansards/statement_page_responsive.inc" %}
 
 </div>
 {% endblock %}
