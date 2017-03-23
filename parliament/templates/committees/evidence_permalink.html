@@ -1,11 +1,16 @@
 {% extends "committees/base.html" %}
-{% block breadcrumbs %}<a href="{% url "committee_list" %}">Committees</a> <a href="{{ committee.get_absolute_url }}">{{ committee.short_name }}</a> <a href="{% url "committee_year_archive" slug=committee.slug year=meeting.date.year %}">{{ meeting.date.year }}</a> <a href="{{ statement.get_absolute_url }}">{{ meeting.date|date:"N j" }}</a> {{ who }}{% endblock %}
+{% block breadcrumbs %}<li><a href="{% url "committee_list" %}">Committees</a></li> <li><a href="{{ committee.get_absolute_url }}">{{ committee.short_name }}</a></li> <li><a href="{% url "committee_year_archive" slug=committee.slug year=meeting.date.year %}">{{ meeting.date.year }}</a></li> <li><a href="{{ statement.get_absolute_url }}">{{ meeting.date|date:"N j" }}</a></li> <li>{{ who }}</li>{% endblock %}
 {% block content %}
-	<div class="focus"><p>On {{ doc.date|date:"F jS, Y" }}. <a href="{{ statement_url }}">See this statement in context</a>.</p></div><div class="clear"></div>
-	<div id="paginated" class="disable_more_links">
-		{% include "hansards/statement_page.inc" %}
+<div class="row align-right">
+	<div class="main-col"><p>On {{ doc.date|date:"F jS, Y" }}. <a href="{{ statement_url }}">See this statement in context</a>.</p></div>
+</div>
+<div id="paginated" class="disable_more_links">
+	{% include "hansards/statement_page_responsive.inc" %}
+</div>
+<div class="row align-right">
+	<div class="main-col">
+		<p><a href="{{ statement_url }}">See context</a> to find out what was said next.</p>
 	</div>
-	<div class="focus">
-		<p><a href="{{ statement_url }}">See context</a> to find out what was said next.</p></div>
+</div>
 {% endblock content %}
 

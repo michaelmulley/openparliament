@@ -1,10 +1,11 @@
 {% extends "committees/base.html" %}
 {% block pagetitle %}{{ committee.short_name }} Committee on {{ meeting.date|date:"N jS, Y" }}{% endblock %}
 {% block pageheading %}{{ committee.short_name }} Committee on {{ meeting.date|date:"N jS, Y" }}{% endblock %}
-{% block breadcrumbs %}<a href="{% url "committee_list" %}">Committees</a> <a href="{{ committee.get_absolute_url }}">{{ committee.short_name }}</a> <a href="{% url "committee_year_archive" slug=committee.slug year=meeting.date.year %}">{{ meeting.date.year }}</a> {{ meeting.date|date:"N j" }}{% endblock %}
+{% block breadcrumbs %}<li><a href="{% url "committee_list" %}">Committees</a></li> <li><a href="{{ committee.get_absolute_url }}">{{ committee.short_name }}</a></li> <li><a href="{% url "committee_year_archive" slug=committee.slug year=meeting.date.year %}">{{ meeting.date.year }}</a></li> <li>{{ meeting.date|date:"N j" }}</li>{% endblock %}
 
 {% block content %}
-<div class="focus">
+<div class="row align-right">
+<div class="main-col">
 	<p>This is meeting #{{ meeting.number }} for <a href="{{ committee.get_absolute_url }}">{{ committee.name }}</a> in the {{ meeting.session }}.</p>
 	<p>The transcript is not {% if not meeting.in_camera %}yet{% endif %} available{% if meeting.minutes_url %}, though the <a href="{{ meeting.minutes_url }}">minutes</a> are (on Parliament&rsquo;s site){% endif %}.
 	{% if meeting.in_camera %}That&rsquo;s because the meeting {% if meeting.future %}is scheduled to be{% else %}was{% endif %} held <em>in camera</em>&mdash;that is, the majority of the members chose to <strong>exclude the public</strong> from the meeting.
@@ -13,10 +14,13 @@
 	{% endif %}
 	</p>
 	{% if meeting.webcast_url %}<p>A <a href="{{ meeting.webcast_url }}" target="_blank">{% if meeting.televised %}video{% else %}recording{% endif %}</a> is available from Parliament.</p>{% endif %}
-</div><div class="clear"></div>
+</div>
+</div>
 
 {% if meeting.activities_list %}
-	<div class="clear"></div><div class="context"><h2>On the agenda</h2></div>
-	<div class="focus"><ul class="tile">{% for activity in meeting.activities_list %}<li class="six twoline overflowtip"><a href="{{ activity.get_absolute_url }}">{{ activity }}</a></li>{% endfor %}</ul><div class="clear"></div></div>
+	<div class="row">
+		<div class="heading-col"><h2>On the agenda</h2></div>
+		<div class="main-col"><div class="row tile dense small-up-1 medium-up-2">{% for activity in meeting.activities_list %}<div class="column column-block threeline overflowtip"><a href="{{ activity.get_absolute_url }}">{{ activity }}</a></div>{% endfor %}</div></div>
+	</div>
 {% endif %}
 {% endblock %}

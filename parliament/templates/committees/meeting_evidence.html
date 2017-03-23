@@ -5,37 +5,44 @@
 {% if highlight_statement or highlight_statement == 0%}<link rel="canonical" href="{{ highlight_statement.get_absolute_url }}only/">{% endif %}
 {% endblock %}
 {% block content %}
-<div class="focus">
+<div class="row align-right">
+<div class="main-col">
 	<p>Evidence of meeting #{{ meeting.number }} for <a href="{{ committee.get_absolute_url }}">{{ committee.name }}</a> in the {{ meeting.session }}. (The <a href="{{ document.url }}">original version</a> is on Parliament&rsquo;s site{% if meeting.minutes_url %}, as are the <a href="{{ meeting.minutes_url }}">minutes</a>{% endif %}.)
-		{% if document.most_frequent_word %}The <span class="tip tipunderline" title="Most frequently spoken word, compared to other similar meetings.">winning word</span> was <strong>{{ document.most_frequent_word }}</strong>.{% endif %}</p>
+		{% if document.most_frequent_word %}The <span class="tipunderline" data-tooltip title="Most frequently spoken word, compared to other similar meetings.">winning word</span> was <strong>{{ document.most_frequent_word }}</strong>.{% endif %}</p>
 {% if meeting.webcast_url %}<p>A <a href="{{ meeting.webcast_url }}" target="_blank">{% if meeting.televised %}video{% else %}recording{% endif %}</a> is available from Parliament.</p>{% endif %}
 </div>
+</div>
 
-<div class="clear"></div><div class="wordcloud"></div>
+<div class="wordcloud"></div>
 
 {% if meeting.activities_list %}
-<div class="context"><h2>On the agenda</h2></div>
-<div class="focus"><ul class="tile">{% for activity in meeting.activities_list %}<li class="six twoline overflowtip"><a href="{{ activity.get_absolute_url }}">{{ activity }}</a></li>{% endfor %}</ul><div class="clear"></div></div>
+	<div class="row">
+		<div class="heading-col"><h2>On the agenda</h2></div>
+		<div class="main-col"><div class="row tile dense small-up-1 medium-up-2">{% for activity in meeting.activities_list %}<div class="column column-block threeline overflowtip"><a href="{{ activity.get_absolute_url }}">{{ activity }}</a></div>{% endfor %}</div></div>
+	</div>
 {% endif %}
 
-<div class="clear"></div>
-<div class="context"><h2>MPs speaking</h2></div>
-<div class="focus">
-	<ul class="tile">
-		{% for speaker_name, speaker_info in document.mp_speaker_summary.items %}<li class="four oneline overflowtip"><a href="{{ document.get_absolute_url }}{{ speaker_info.slug }}/" data-marginalia="{{ speaker_info.description }}">{{ speaker_name }}</a></li>{% endfor %}
-	</ul>
-</div><div class="clear"></div>
+<div class="row">
+	<div class="heading-col"><h2>MPs speaking</h2></div>
+	<div class="main-col">
+		<div class="row tile dense small-up-1 medium-up-2 large-up-3">
+			{% for speaker_name, speaker_info in document.mp_speaker_summary.items %}<div class="column column-block"><a href="{{ document.get_absolute_url }}{{ speaker_info.slug }}/" {# data-marginalia="{{ speaker_info.description }}" #}>{{ speaker_name }}</a></div>{% endfor %}
+		</div>
+	</div>
+</div>
 
-<div class="context"><h2>Also speaking</h2></div>
-<div class="focus">
-	<ul class="tile">
-		{% for speaker_name, speaker_info in document.outside_speaker_summary.items %}<li class="six threeline overflowtip"><a href="{{ document.get_absolute_url }}{{ speaker_info.slug }}/">{{ speaker_name }}</a> &nbsp;{{ speaker_info.description }}</li>{% endfor %}
-	</ul>
+<div class="row">
+	<div class="heading-col"><h2>Also speaking</h2></div>
+	<div class="main-col">
+		<div class="row tile dense small-up-1 medium-up-2">
+			{% for speaker_name, speaker_info in document.outside_speaker_summary.items %}<div class="column column-block"><a href="{{ document.get_absolute_url }}{{ speaker_info.slug }}/">{{ speaker_name }}</a> &nbsp;{{ speaker_info.description }}</div>{% endfor %}
+		</div>
+	</div>
 </div>
 
 <div id="paginated">
 
-{% include "hansards/statement_page.inc" %}
+{% include "hansards/statement_page_responsive.inc" %}
 
 </div>
 {% endblock %}

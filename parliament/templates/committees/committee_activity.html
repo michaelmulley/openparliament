@@ -1,12 +1,17 @@
 {% extends "committees/base.html" %}
-{% block breadcrumbs %}<a href="{% url "committee_list" %}">Committees</a> <a href="{{ committee.get_absolute_url }}">{{ committee.short_name }}</a> {{ activity.type }}{% endblock %}
+{% block breadcrumbs %}<li><a href="{% url "committee_list" %}">Committees</a></li> <li><a href="{{ committee.get_absolute_url }}">{{ committee.short_name }}</a></li> <li>{{ activity.type }}</li>{% endblock %}
 
 {% block content %}
-<div class="focus">
+<div class="row align-right">
+<div class="main-col">
 	<p>This is {% if activity.study %}a <strong>study</strong>{% else %}an <strong>activity</strong>{% endif %} of the House <a href="{{ committee.get_absolute_url }}">{{ committee }}</a> committee. There&rsquo;s probably much more information available on <a href="{{ activity.get_source_url }}">Parliament&rsquo;s site</a>.</p>
-</div><div class="clear"></div>
-<div class="context"><h2>Meetings</h2></div>
-<div class="focus">
+</div>
+</div>
+
+<div class="row">
+<div class="heading-col"><h2>Meetings</h2></div>
+<div class="main-col">
 	{% include "committees/meeting_list.html.inc" with include_year=1 %}
-</div><div class="clear"></div>
+</div>
+</div>
 {% endblock %}

@@ -1,19 +1,23 @@
 {% extends "committees/base.html" %}
 
-{% block breadcrumbs %}Committees{% endblock %}
+{% block breadcrumbs %}<li>Committees</li>{% endblock %}
 
 {% block content %}
-<div class="context"><h2>Current committees</h2></div>
-<div class="focus">
-    <ul class="tile">{% for committee in object_list %}
-        <li class="six oneline overflowtip"><a href="{{ committee.get_absolute_url }}">{{ committee.name }}</a></li>{% endfor %}
-    </ul>
-</div><div class="clear"></div>
+<div class="row">
+	<div class="heading-col"><h2>Current committees</h2></div>
+	<div class="main-col">
+	    <div class="row tile dense small-up-1 medium-up-2">{% for committee in object_list %}
+	        <div class="column column-block"><a href="{{ committee.get_absolute_url }}">{{ committee.name }}</a></div>{% endfor %}
+	    </div>
+	</div>
+</div>
 
-<div class="context"><h2>Recent studies</h2></div>
-<div class="focus">
-	<ul class="tile">
-		{% for study in recent_studies %}<li class="six twoline overflowtip"><a href="{{ study.get_absolute_url }}">{{ study }}</a></li>{% endfor %}
-	</ul>
-</div><div class="clear"></div>
+<div class="row">
+	<div class="heading-col	"><h2>Recent studies</h2></div>
+	<div class="main-col">
+		<div class="row tile dense small-up-1 medium-up-2">
+			{% for study in recent_studies %}<div class="column column-block twoline overflowtip"><a href="{{ study.get_absolute_url }}">{{ study }}</a></div>{% endfor %}
+		</div>
+	</div>
+</div>
 {% endblock %}
