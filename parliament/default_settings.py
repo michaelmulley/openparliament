@@ -65,7 +65,7 @@ COMPRESS_OFFLINE = True
 COMPRESS_ENABLED = False
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
-    ('es6', 'cat {infile} | ./node_modules/.bin/babel > {outfile}'),
+    ('es6', 'cat {infile} | ./node_modules/.bin/babel --presets es2015 > {outfile}'),
 )
 COMPRESS_CACHEABLE_PRECOMPILERS = ['es6']
 

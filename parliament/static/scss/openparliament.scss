@@ -39,7 +39,7 @@
 // @include foundation-tabs;
 // @include foundation-thumbnail;
 // @include foundation-title-bar;
-// @include foundation-tooltip;
+@include foundation-tooltip;
 // @include foundation-top-bar;
 @include foundation-visibility-classes;
 // @include foundation-float-classes;
@@ -72,6 +72,20 @@ p {
   max-width: $max_text_width;
 }
 
+.oneline {
+  max-height: ($paragraph_lineheight * 1rem);
+  overflow: hidden;
+}
+.twoline {
+  max-height: ($paragraph_lineheight * 2rem);
+  overflow: hidden;
+}
+.threeline {
+  max-height: ($paragraph_lineheight * 3rem);
+  overflow: hidden;
+}
+
+
 .content {
   width: 100%;
   padding-top: .5rem;
@@ -83,6 +97,7 @@ p {
     margin-bottom: 1.5rem;
     &.tile {
       margin-bottom: 0;
+
       &.dense .column-block {
         margin-bottom: .8rem;
       }
@@ -127,3 +142,4 @@ a.has-tip {
 @import 'navigation';
 @import 'tag_boxes';
 @import 'hansard';
+

@@ -1,9 +1,27 @@
 $navbar_background_default: #2f6970;
+$navbar_background_debates: #46567d;
+$navbar_background_bills: #530909;
+$navbar_background_politicians: #563d7c;
+$navbar_background_committees: #465f1b;
 
 .navbar {
   background-color: $navbar_background_default;
   width: 100%;
   padding: 0.5rem 0;
+  border-bottom: 2px solid #999999;
+
+  .bills & {
+    background-color: $navbar_background_bills;
+  }
+  .debates & {
+    background-color: $navbar_background_debates;
+  }
+  .politicians & {
+    background-color: $navbar_background_politicians;
+  }
+  .committees & {
+    background-color: $navbar_background_committees;
+  }
 
   .bills & {
     background-color: $navbar_background_bills;
@@ -90,9 +108,11 @@ $navbar_background_default: #2f6970;
       color: #EEEEEE;
       &:hover {
         text-decoration: none;
-        color: white;
-        svg {
-          fill: white;
+        &:not(.active) {
+          color: white;
+          svg {
+            fill: white;
+          }
         }
         span {
           text-decoration: underline;
@@ -104,6 +124,9 @@ $navbar_background_default: #2f6970;
 
   .menu {
     display: inline-block;
+    li.active a {
+      color: $menu-item-color-active;
+    }
     a {
       color: #EEEEEE;
       font-weight: bold;
