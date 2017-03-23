@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="row">
-	<div class="heading-col"><h2>Meetings</h2></div>
+	<div class="context-col"><h2>Meetings</h2></div>
 	<div class="main-col">
 		{% include "committees/meeting_list.html.inc" %}
 	</div>
@@ -12,7 +12,7 @@
 
 {% if studies %}
 <div class="row">
-	<div class="heading-col"><h2>Studies</h2></div>
+	<div class="context-col"><h2>Studies</h2></div>
 	<div class="main-col">
 		<div class="row tile dense small-up-1 medium-up-2">
 			{% for study in studies %}<div class="column column-block threeline overflowtip"><a href="{{ study.get_absolute_url }}">{{ study }}</a></div>{% endfor %}

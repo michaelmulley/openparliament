@@ -9,14 +9,13 @@
 .idea/
 .DS_Store
 models.dot
-polpics/
-autoimg/
 local/
+design/
 settings.py
 pip-log.txt
 logs/
-media/
-collected_static/
+mediafiles/
+staticfiles/
 fabfile
 *.sublime-*
 language_models/

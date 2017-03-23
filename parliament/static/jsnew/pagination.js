@@ -10,12 +10,12 @@ $(function() {
                 $(this).html('Loading...');
             }
             $('#paginated').find('.pagination').addClass('loading');
-            navigateTo(this.href);
+            window.OP.AJAXNavigate(this.href);
         }
     });
 
     $(window).on('popstate', function(e) {
-        navigateTo(document.location.href);
+        window.OP.AJAXNavigate(document.location.href);
     });
 
     var getURLParts = function(url) {
@@ -34,7 +34,7 @@ $(function() {
         };
     };
 
-    var navigateTo = function(url) {
+    window.OP.AJAXNavigate = function(url) {
         last_navigated_url = url;
         var $paginated = $('#paginated');
         $paginated.find('.pagination').addClass('loading');

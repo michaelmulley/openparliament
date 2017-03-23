@@ -1,97 +1,115 @@
-{% extends "bills/base.html" %}
-{% load ours compress %}
-{% block contentclass %}context_3{% endblock %}
+{% extends "bills/responsive_base.html" %}
+{% load ours compress static %}
 
-{% block javascript %}
+{% block js %}
 {{ block.super }}
+<script type="text/javascript" src="{% static 'bower_components/jquery-expander/jquery.expander.min.js' %}"></script>
 <script type="text/javascript">
 $(function () {
 	$('.bill_summary').expander({slicePoint: 400, widow: 60});
 
 	$('#bill-tabs a').click(function(e) {
-		e.preventDefault();
-    	History.pushState(null, null, this.href);
+    e.preventDefault();
+  	window.history.pushState(null, null, this.href);
+    window.OP.AJAXNavigate(this.href);
 	});
 
-	$(window).bind('statechange', function() {
-        var newStateURL = History.getState().url;
-        var tab = OP.utils.getQueryParam('tab');
+	$(window).on('contentLoad', function() {
+    // General pagination code takes care of most of the work; we just need to update
+    // the active tab
+    var tab = OP.utils.getQueryParam('tab');
 
-		$('#bill-tabs li').removeClass('active')
-        if (tab) {
-        	$('#bill-tabs li.' + tab).addClass('active');
-        }
-        else {
-        	$('#bill-tabs li').first().addClass('active');
-        }
+		$('#bill-tabs li a').attr('aria-selected', 'false');
+    (tab ? $('#bill-tabs li.' + tab + ' a') : $('#bill-tabs li a').first()).attr('aria-selected', 'true');
 	});
 });
 </script>
 {% endblock %}
 
-{% block breadcrumbs %}{{ block.super }}<a href="{% url "bills" %}">Bills</a>
-<a href="{% url "bills_for_session" session_id=bill.session.id %}">{{ bill.session }}</a> {{ title }}{% endblock %}
+{% block breadcrumbs %}<li><a href="{% url "bills" %}">Bills</a></li>
+<li><a href="{% url "bills_for_session" session_id=bill.session.id %}">{{ bill.session }}</a></li> <li>{{ title }}</li>{% endblock %}
 {% block headextra %}
 {% if not bill.session.end %}<link rel="alternate" type="application/rss+xml" title="Speeches about Bill {{ bill.number }}" href="{% url "bill_feed" bill_id=bill.id %}">{% endif %}
 {% endblock %}
 {% block content %}
 
-<div class="focus">
-{% if bill.short_title %}<h2>{{ bill.short_title }}</h2>{% endif %}    
-<h3>{{ bill.name }}</h3>
-{% if bill.session.end %}<p>This bill was last introduced in the {{ bill.session }}, which ended in {{ bill.session.end|date:"F Y"}}.</p>{% endif %}
-{% with bill.sessions.all as sessions %}{% if sessions|length > 1 %}<p>This bill was previously introduced in {{ sessions|list_filter:bill.session|list_prefix:"the "|english_list:"; " }}.</p>{% endif %}{% endwith %}
-{% if bill.number_only == 1 %}<p>This bill, the first introduced in any session, is a <a href="http://en.wikipedia.org/wiki/Bills_C-1_and_S-1">formal tradition</a> rather than proposed legislation. {% if bill.institution == 'S' %}It doesn't actually have anything to do with railways.{% else %}(It has nothing to do with oaths of office. The Senate equivalent is called <em>An Act relating to Railways</em> and&mdash;you guessed it!&mdash;in no way relates to railways.){% endif %}</p>{% endif %}
+<div class="row align-right">
+  <div class="main-col">
+  {% if bill.short_title %}<h2>{{ bill.short_title }}</h2>{% endif %}    
+  <h3>{{ bill.name }}</h3>
+  {% if bill.session.end %}<p>This bill was last introduced in the {{ bill.session }}, which ended in {{ bill.session.end|date:"F Y"}}.</p>{% endif %}
+  {% with bill.sessions.all as sessions %}{% if sessions|length > 1 %}<p>This bill was previously introduced in {{ sessions|list_filter:bill.session|list_prefix:"the "|english_list:"; " }}.</p>{% endif %}{% endwith %}
+  {% if bill.number_only == 1 %}<p>This bill, the first introduced in any session, is a <a href="http://en.wikipedia.org/wiki/Bills_C-1_and_S-1">formal tradition</a> rather than proposed legislation. {% if bill.institution == 'S' %}It doesn't actually have anything to do with railways.{% else %}(It has nothing to do with oaths of office. The Senate equivalent is called <em>An Act relating to Railways</em> and&mdash;you guessed it!&mdash;in no way relates to railways.){% endif %}</p>{% endif %}
+  </div>
 </div>
 {% if bill.sponsor_politician %}
-<div class="clear"></div><div class="context"><h2>Sponsor</h2></div>
-<div class="focus"><p><a href="{{ bill.sponsor_politician.get_absolute_url }}">{{ bill.sponsor_politician.name }}</a> {% if bill.sponsor_member %}&nbsp;<span class="tag partytag_{{ bill.sponsor_member.party.slug|lower }}">{{ bill.sponsor_member.party.short_name }}</span>{% endif %}</p>
-{% if bill.privatemember %}<p>Introduced as a <strong>private member’s bill</strong>. {% if not bill.law %}(These don’t often become law.){% endif %}</p>{% endif %}</div>{% endif %}
+<div class="row">
+  <div class="context-col"><h2>Sponsor</h2></div>
+  <div class="main-col"><p><a href="{{ bill.sponsor_politician.get_absolute_url }}">{{ bill.sponsor_politician.name }}</a> {% if bill.sponsor_member %}&nbsp;<span class="tag partytag_{{ bill.sponsor_member.party.slug|lower }}">{{ bill.sponsor_member.party.short_name }}</span>{% endif %}</p>
+  {% if bill.privatemember %}<p>Introduced as a <strong>private member’s bill</strong>. {% if not bill.law %}(These don’t often become law.){% endif %}</p>{% endif %}</div>
+</div>
+{% endif %}
 
 {% if bill.status or bill.law %}
-<div class="clear"></div><div class="context"><h2>Status</h2></div>
-<div class="focus"><p>{% if bill.law %}This bill has received Royal Assent and {% if bill.session.end %}is now{% else %}is, or will soon become,{% endif %} <strong>law</strong>.{% else %}{{ bill.status }}{% if bill.status_date %}, as of {{ bill.status_date }}{% endif %} {% if bill.session.end %}<br>(This bill <strong>did not</strong> become law.){% endif %}{% endif %}</p>
-{% if not bill.session.end and not bill.law %}<p>Subscribe to a <a href="{% url "bill_feed" bill_id=bill.id %}" class="feed">feed</a> of speeches and votes in the House related to Bill {{ bill.number }}.</p>{% endif %}
-    </div>{% endif %}
+<div class="row">
+  <div class="context-col"><h2>Status</h2></div>
+  <div class="main-col">
+    <p>{% if bill.law %}This bill has received Royal Assent and {% if bill.session.end %}is now{% else %}is, or will soon become,{% endif %} <strong>law</strong>.{% else %}{{ bill.status }}{% if bill.status_date %}, as of {{ bill.status_date }}{% endif %} {% if bill.session.end %}<br>(This bill <strong>did not</strong> become law.){% endif %}{% endif %}</p>
+    {% if not bill.session.end and not bill.law %}<p>Subscribe to a <a href="{% url "bill_feed" bill_id=bill.id %}" class="feed">feed</a> of speeches and votes in the House related to Bill {{ bill.number }}.</p>{% endif %}
+  </div>
+</div>
+{% endif %}
 
 {% with bill.get_summary as bill_summary %}{% if bill_summary %}
-<div class="clear"></div><div class="context"><h2>Summary</h2>
-<p class="quiet">This is from the published bill. The <a href="{{ bill.legisinfo_url }}">Library of Parliament</a> often publishes better independent summaries.</p>
-</div>
-<div class="focus"><div class="bill_summary">{{ bill_summary }}</div>
+<div class="row">
+  <div class="context-col">
+    <h2>Summary</h2>
+    <p class="quiet">This is from the published bill. The <a href="{{ bill.legisinfo_url }}">Library of Parliament</a> often publishes better independent summaries.</p>
+  </div>
+  <div class="main-col"><div class="bill_summary">{{ bill_summary }}</div></div>
 </div>
 {% endif %}{% endwith %}
 
 {% if bill.name %}
-<div class="clear"></div><div class="context"><h2>Elsewhere</h2></div>
-<div class="focus"><p>All sorts of information on this bill is available at <a href="{{ bill.legisinfo_url }}">LEGISinfo</a>, provided by the Library of Parliament.{% if bill.text_docid %} You can also read the <a href="{{ bill.get_billtext_url }}">full text of the bill</a>.{% endif %}</p></div>{% endif %}
-
-{% if votequestions %}
-<div class="clear"></div><div class="context"><h2>Votes</h2></div>
-<div class="focus"><ul class="tile">
-{% for vote in votequestions %}<li class="six twoline overflowtip"><a href="{{ vote.get_absolute_url }}">{{ vote.date|date:"N j, Y" }}</a> <span class="tag voteresult_{{ vote.result }}">{{ vote.get_result_display }}</span> {{ vote.description }}</li>{% endfor %}
-</ul></div>
+<div class="row">
+  <div class="context-col"><h2>Elsewhere</h2></div>
+  <div class="main-col"><p>All sorts of information on this bill is available at <a href="{{ bill.legisinfo_url }}">LEGISinfo</a>, provided by the Library of Parliament.{% if bill.text_docid %} You can also read the <a href="{{ bill.get_billtext_url }}">full text of the bill</a>.{% endif %}</p></div>
+</div>
 {% endif %}
 
-<div class="clear"></div><div class="focus">
-	<ul class="nav nav-tabs" id="bill-tabs">
-  {% if has_major_speeches %}
-  <li class="{% if tab == 'major-speeches' %}active {% endif %}major-speeches">
-    <a href="?tab=major-speeches">House debate</a>
-  </li>
-  {% endif %}
-  {% if has_mentions %}
-  <li class="{% if tab == 'mentions' %}active {% endif %}mentions">
-    <a href="?tab=mentions">All House mentions</a>
-  </li>
-  {% endif %}
-  {% if has_meetings %}
-  <li class="{% if tab == 'meetings' %}active {% endif %}meetings">
-    <a href="?tab=meetings">Committee meetings</a>
-  </li>
-  {% endif %}
-</ul>
+{% if votequestions %}
+<div class="row">
+  <div class="context-col"><h2>Votes</h2></div>
+  <div class="main-col">
+    <div class="row tile small-up-1 medium-up-2">
+      {% for vote in votequestions %}<div class="column column-block threeline overflowtip"><a href="{{ vote.get_absolute_url }}">{{ vote.date|date:"N j, Y" }}</a> <span class="tag voteresult_{{ vote.result }}">{{ vote.get_result_display }}</span> {{ vote.description }}</div>{% endfor %}
+    </div>
+  </div>
 </div>
+{% endif %}
+
+<div class="row align-right">
+  <div class="main-col">
+  	<ul class="tabs" id="bill-tabs">
+      {% if has_major_speeches %}
+      <li class="tabs-title major-speeches">
+        <a href="?tab=major-speeches" {% if tab == 'major-speeches' %}aria-selected="true"{% endif %}>House debate</a>
+      </li>
+      {% endif %}
+      {% if has_mentions %}
+      <li class="tabs-title mentions">
+        <a href="?tab=mentions" {% if tab == 'mentions' %}aria-selected="true"{% endif %}>All House mentions</a>
+      </li>
+      {% endif %}
+      {% if has_meetings %}
+      <li class="tabs-title meetings">
+        <a href="?tab=meetings" {% if tab == 'meetings' %}aria-selected="true"{% endif %}>Committee meetings</a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+</div>
+
 <div id="paginated">
     
 {% if page %}

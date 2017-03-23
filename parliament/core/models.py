@@ -17,6 +17,7 @@ from markdown import markdown
 import requests
 
 from parliament.core import parsetools
+from parliament.core import thumbnail # importing so it'll register a tag
 from parliament.core.utils import memoize_property, ActiveManager, language_property
 
 import logging
@@ -398,7 +399,8 @@ class Politician(Person):
     @property
     def parlpage(self):
         try:
-            return "http://www.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=%s&Language=E" % self.info()['parl_id']
+            return "http://www.parl.gc.ca/Parliamentarians/{}/members/{}({})".format(
+                settings.LANGUAGE_CODE, self.identifier, self.info()['parl_id'])
         except KeyError:
             return None
         

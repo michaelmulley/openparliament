@@ -133,6 +133,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'haystack',
     'sorl.thumbnail',
+    'imagekit',
     'compressor',
     'parliament.core',
     'parliament.accounts',
@@ -151,7 +152,6 @@ THUMBNAIL_SUBDIR = '_thumbs'
 THUMBNAIL_PROCESSORS = (
     'sorl.thumbnail.processors.colorspace',
     'sorl.thumbnail.processors.autocrop',
-    'parliament.core.thumbnail.crop_first',
     'sorl.thumbnail.processors.scale_and_crop',
     'sorl.thumbnail.processors.filters',
 )

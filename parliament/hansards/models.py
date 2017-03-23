@@ -307,7 +307,6 @@ class Statement(models.Model):
     who_context_en = models.CharField(max_length=300, blank=True)
     who_context_fr = models.CharField(max_length=500, blank=True)
 
-
     content_en = models.TextField()
     content_fr = models.TextField(blank=True)
     sequence = models.IntegerField(db_index=True)
@@ -371,8 +370,6 @@ class Statement(models.Model):
     def __unicode__ (self):
         return u"%s speaking about %s around %s" % (self.who, self.topic, self.time)
 
-    @property
-    @memoize_property
     def content_floor(self):
         if not self.content_fr:
             return self.content_en
@@ -388,6 +385,19 @@ class Statement(models.Model):
             else:
                 r.append(e)
         return u"\n".join(r)
+
+    def content_floor_if_necessary(self):
+        """Returns text spoken in the original language(s), but only if that would
+        be different than the content in the default language."""
+        if not self.content_en and self.content_fr:
+            return ''
+
+        lang_matches = re.finditer(r'data-originallang="(\w\w)"',
+            getattr(self, 'content_' + settings.LANGUAGE_CODE))
+        if any(m.group(1) != settings.LANGUAGE_CODE for m in lang_matches):
+            return self.content_floor()
+
+        return ''
 
     def text_html(self, language=settings.LANGUAGE_CODE):
         return mark_safe(getattr(self, 'content_' + language))

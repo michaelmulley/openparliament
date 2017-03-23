@@ -1,12 +1,16 @@
-{% extends "hansards/base.html" %}
-{% load compress %}
-{% block breadcrumbs %}<a href="{% url "debates" %}">Debates</a> <a href="{% url "debates_by_year" year=hansard.date.year %}">{{ hansard.date.year }}</a> <a href="{{ statement_url }}">{{ hansard.date|date:"F jS, Y" }}</a> Statement by {{ who }}{% endblock %}
+{% extends "hansards/responsive_base.html" %}
+{% block breadcrumbs %}<li><a href="{% url "debates" %}">Debates</a></li> <li><a href="{% url "debates_by_year" year=hansard.date.year %}">{{ hansard.date.year }}</a></li> <li><a href="{{ statement_url }}">{{ hansard.date|date:"F jS, Y" }}</a></li> <li>Statement by {{ who }}</li>{% endblock %}
 {% block content %}
-<div class="focus"><p>In the House of Commons on {{ doc.date|date:"F jS, Y" }}. <a href="{{ statement_url }}">See this statement in context</a>.</p></div><div class="clear"></div>
+<div class="row align-right">
+	<div class="main-col"><p>In the House of Commons on {{ doc.date|date:"F jS, Y" }}. <a href="{{ statement_url }}">See this statement in context</a>.</p></div>
+</div>
 <div id="paginated" class="disable_more_links">
 {% include "hansards/statement_page.inc" %}
 </div>
-<div class="focus">
-<p><a href="{{ statement_url }}">See context</a> to find out what was said next.</p></div>
+<div class="row align-right">
+<div class="main-col">
+<p><a href="{{ statement_url }}">See context</a> to find out what was said next.</p>
+</div>
+</div>
 {% endblock content %}
 

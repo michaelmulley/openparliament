@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="row">
-	<div class="heading-col"><h2>Current committees</h2></div>
+	<div class="context-col"><h2>Current committees</h2></div>
 	<div class="main-col">
 	    <div class="row tile dense small-up-1 medium-up-2">{% for committee in object_list %}
 	        <div class="column column-block"><a href="{{ committee.get_absolute_url }}">{{ committee.name }}</a></div>{% endfor %}
@@ -13,7 +13,7 @@
 </div>
 
 <div class="row">
-	<div class="heading-col	"><h2>Recent studies</h2></div>
+	<div class="context-col	"><h2>Recent studies</h2></div>
 	<div class="main-col">
 		<div class="row tile dense small-up-1 medium-up-2">
 			{% for study in recent_studies %}<div class="column column-block twoline overflowtip"><a href="{{ study.get_absolute_url }}">{{ study }}</a></div>{% endfor %}

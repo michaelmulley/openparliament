@@ -75,7 +75,7 @@ def document_redirect(request, document_id, slug=None):
 @vary_on_headers('X-Requested-With')
 def document_view(request, document, meeting=None, slug=None):
 
-    per_page = 15
+    per_page = 25
     if 'singlepage' in request.GET:
         per_page = 50000
     
@@ -129,7 +129,7 @@ def document_view(request, document, meeting=None, slug=None):
         })
 
     if request.is_ajax():
-        t = loader.get_template("hansards/statement_page_responsive.inc")
+        t = loader.get_template("hansards/statement_page.inc")
     else:
         if document.document_type == Document.DEBATE:
             t = loader.get_template("hansards/hansard_detail.html")

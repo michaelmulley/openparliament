@@ -20,7 +20,7 @@
 	<div class="wordcloud"></div>
 
 <div class="row">
-    <div class="heading-col"><h2>Meetings</h2></div>
+    <div class="context-col"><h2>Meetings</h2></div>
     <div class="main-col">
 	{% include "committees/meeting_list.html.inc" %}
 	</div>
@@ -28,7 +28,7 @@
 
 	{% if subcommittees %}
 		<div class="row">
-			<div class="heading-col"><h2>Subcommittee{{ subcommittees|pluralize }}</h2></div>
+			<div class="context-col"><h2>Subcommittee{{ subcommittees|pluralize }}</h2></div>
 			<div class="main-col">
 				<ul class="row tile dense small-up-1 medium-up-2">
 					{% for subc in subcommittees %}<div class="column column-block"><a href="{{ subc.get_absolute_url }}">{{ subc }}</a></div>{% endfor %}
@@ -39,7 +39,7 @@
 
 	{% if recent_studies %}
 	<div class="row">
-		<div class="heading-col"><h2>Recent studies</h2></div>
+		<div class="context-col"><h2>Recent studies</h2></div>
 		<div class="main-col">
 			<div class="row tile dense small-up-1 medium-up-2">
 				{% for study in recent_studies %}<div class="column column-block twoline overflowtip"><a href="{{ study.get_absolute_url }}">{{ study }}</a></div>{% endfor %}
@@ -49,7 +49,7 @@
 	{% endif %}
 	{% if archive_years %}
 	<div class="row">
-		<div class="heading-col"><h2>Archive</h2></div>
+		<div class="context-col"><h2>Archive</h2></div>
 		<div class="main-col">
 			<div class="row tile dense small-up-2 medium-up-4">
 				{% for year in archive_years %}<div class="column column-block"><a href="{% url "committee_year_archive" slug=committee.slug year=year %}">{{ year }}</a></div>{% endfor %}
@@ -59,7 +59,7 @@
 	{% endif %}
 {% endblock %}
 
-{% block js_bottom %}
+{% block js %}
 <script>
 $(function() {
 	var wordcloud_opts = {

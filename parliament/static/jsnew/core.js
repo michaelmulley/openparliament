@@ -8,7 +8,23 @@ OP.utils = {
             else if (cc >= 48 && cc <= 57) cc = 48 + ((cc - 43) % 10);
             return String.fromCharCode(cc);
         });
-    }
+    },
+
+    getQueryParam: function(name, qs) {
+
+        if (!qs) {
+            qs = window.location.search;
+        }
+        else {
+            qs = '?' + qs.split('?')[1];
+        }
+
+        var match = RegExp('[?&]' + name + '=([^&]*)')
+            .exec(qs);
+
+        return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
+
+    },    
 
 };
 

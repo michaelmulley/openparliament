@@ -1,8 +1,8 @@
 from django.conf.urls import include, url
+from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap as sitemap_view
-from django.views.static import serve as static_serve
 
 from parliament.core.api import docs as api_docs
 from parliament.core.api import no_robots
@@ -35,9 +35,8 @@ urlpatterns = [
 if settings.DEBUG:
     urlpatterns += [
         url(r'^admin/', include(admin.site.urls)),
-        # url(r'^static/(?P<path>.*)$', static_serve,
-        #         {'document_root': settings.MEDIA_ROOT}),
     ]
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if getattr(settings, 'ADMIN_URL', False):
     urlpatterns += [

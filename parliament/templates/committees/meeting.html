@@ -19,7 +19,7 @@
 
 {% if meeting.activities_list %}
 	<div class="row">
-		<div class="heading-col"><h2>On the agenda</h2></div>
+		<div class="context-col"><h2>On the agenda</h2></div>
 		<div class="main-col"><div class="row tile dense small-up-1 medium-up-2">{% for activity in meeting.activities_list %}<div class="column column-block threeline overflowtip"><a href="{{ activity.get_absolute_url }}">{{ activity }}</a></div>{% endfor %}</div></div>
 	</div>
 {% endif %}

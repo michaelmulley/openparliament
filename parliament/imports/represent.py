@@ -14,7 +14,7 @@ from parliament.core.models import Politician, Session, Riding
 import logging
 logger = logging.getLogger(__name__)
 
-def update_mps_from_represent(download_headshots=False):
+def update_mps_from_represent(download_headshots=False, update_all_headshots=False):
 
     resp = requests.get('https://represent.opennorth.ca/representatives/house-of-commons/?limit=500')
     resp.raise_for_status()
@@ -63,6 +63,8 @@ def update_mps_from_represent(download_headshots=False):
                 pol.download_headshot(mp_info['photo_url'])
             else:
                 warnings.append("Photo available: %s for %s" % (mp_info.get('photo_url'), pol))
+        elif mp_info.get('photo_url') and update_all_headshots:
+            pol.download_headshot(mp_info['photo_url'])
 
         if mp_info.get('extra') and mp_info['extra'].get('twitter'):
             screen_name = mp_info['extra']['twitter'].split('/')[-1]

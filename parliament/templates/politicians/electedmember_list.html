@@ -2,7 +2,7 @@
 {% load ours %}
 
 {% block breadcrumbs %}{{ block.super }}<li>Current MPs</li>{% endblock %}
-{% block contentclass %}wide-heading-col{% endblock %}
+{% block contentclass %}wide-context-col{% endblock %}
 {% block content %}
 {% block formerlink %}
 <div class="row align-right">
@@ -13,7 +13,7 @@
 {% regroup object_list by riding.province as province_list %}
 {% for province in province_list %}
 <div class="row">
-	<div class="heading-col"><a name="{{ province.grouper }}"></a><h2>{{ province.grouper|expand_province }}</h2></div>
+	<div class="context-col"><a name="{{ province.grouper }}"></a><h2>{{ province.grouper|expand_province }}</h2></div>
 	<div class="columns"><div class="row tile dense small-up-2 medium-up-3 large-up-4">
 		{% for member in province.list %}
 		<div class="column column-block"><a href="{{ member.politician.get_absolute_url }}" data-tooltip title="{{ member.party.short_name }} for {{ member.riding.dashed_name }}">{{ member.politician }}</a></div>

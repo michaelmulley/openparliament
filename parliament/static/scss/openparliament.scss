@@ -36,7 +36,7 @@
 // @include foundation-reveal;
 // @include foundation-switch;
 // @include foundation-table;
-// @include foundation-tabs;
+@include foundation-tabs;
 // @include foundation-thumbnail;
 // @include foundation-title-bar;
 @include foundation-tooltip;
@@ -62,6 +62,7 @@ a {
 }
 h1 {
   font-weight: bold;
+  max-width: $max_text_width * 1.2;
 }
 h2 {
   font-weight: normal;
@@ -71,6 +72,15 @@ h2 {
 p {
   max-width: $max_text_width;
 }
+.tipunderline{
+  border-bottom: 1px dashed #333333;
+}
+.quiet {
+  font-size: .75rem;
+  color: #555;
+}
+a.quiet {font-weight: normal;}
+
 
 .oneline {
   max-height: ($paragraph_lineheight * 1rem);
@@ -99,7 +109,7 @@ p {
       margin-bottom: 0;
 
       &.dense .column-block {
-        margin-bottom: .8rem;
+        margin-bottom: .6rem;
       }
     }
   }
@@ -108,14 +118,14 @@ p {
   }
 }
 
-.heading-col {
+.context-col {
   @include flex-grid-column(12);
   @include breakpoint(medium) {
     @include flex-grid-size(3);
   }
 
 }
-.content:not(.wide-heading-col) .heading-col {
+.content:not(.wide-context-col) .context-col {
   @include breakpoint(large) {
     @include flex-grid-size(2);
   }  
@@ -127,7 +137,7 @@ p {
     @include flex-grid-size(9);
   }
 }
-.content:not(.wide-heading-col) .main-col {
+.content:not(.wide-context-col) .main-col {
   @include breakpoint(large) {
     @include flex-grid-size(10);
   }  
