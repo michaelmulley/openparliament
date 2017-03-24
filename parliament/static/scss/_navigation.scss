@@ -43,13 +43,6 @@ $navbar_background_committees: #465f1b;
     @include breakpoint(large) {
       @include flex-grid-size(3);
     }
-    img {
-      height: 34px;
-      width: 220px;
-      .fr & {
-        width: 231px;
-      }
-    }
     align-self: flex-start;
     order: 1;
   }
