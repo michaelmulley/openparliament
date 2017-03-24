@@ -67,7 +67,16 @@
 </div>
 
 <div class="navbar-search" id="navbar-search" style="display: none">
-  <div class="row columns small-12"><form action="{% url 'search' %}" method="GET"><input type="text" name="q" placeholder="{% trans 'Enter a word, name, or postal code' %}"><button type="submit" class="button">{% trans "Search" %}</button></form></div>
+  <div class="row columns small-12">
+    <form action="{% url 'search' %}" method="GET">
+    <div class="input-group">
+      <input type="text" class="input-group-field" name="q" placeholder="{% trans 'Enter a word, name, or postal code' %}">
+      <div class="input-group-button">
+        <button type="submit" class="button">{% trans "Search" %}</button>
+      </div>
+    </div>
+    </form>
+  </div>
 </div>
 
 

@@ -153,26 +153,11 @@ $navbar_background_committees: #465f1b;
 }
 
 .navbar-search {
-  // background-color: #1b7fa7;
   background-color: #153033;
-  div {
-    text-align: center;
-    padding: 1.5rem;
-    input {
-      // font-size: 2rem;
-      padding: 1rem;
-      width: 75%;
-      max-width: 30rem;
-      min-width: 14rem;
-      display: inline-block;
-      margin: 0;
-    }
-    button {
-      vertical-align: inherit;
-      height: 2.4375rem;
-      margin: 0;
-      // background-color: $navbar_background_default;
-    }
+  .input-group {
+    margin: 0 auto;
+    max-width: 500px;
+    padding: 1.5rem 0;
   }
 }
 
