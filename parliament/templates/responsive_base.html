@@ -7,7 +7,7 @@
   <title>{% block pagetitle %}{% if pagetitle %}{{ pagetitle }}{% else %}{{ title }}{% endif %}{% endblock pagetitle %} | {% trans "openparliament.ca" %}</title>
   <link rel="icon" type="image/png" href="{{ STATIC_URL }}images/favicon.png">
 
-  {% compress css inline %}
+  {% compress css %}
     <link rel="stylesheet" type="text/x-scss" href="{% static 'scss/openparliament.scss' %}">
   {% endcompress %}
 
