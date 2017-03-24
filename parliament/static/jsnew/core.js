@@ -37,7 +37,58 @@ OP.utils = {
         window.open(url, "openparliament_share", "width=" + width +
             ",height=" + height + ",left=" + left, ",top=" + top +
             "personalbar=no,toolbar=no,scrollbars=yes,location=yes,resizable=yes");
-    }
+    },
+
+    notify: function(message, tag, opts) {
+        /** Display a notification to the user.
+         * tag should be 'warning', 'success', or 'error'
+         * see defaults for options
+         */
+        tag = tag || 'warning';
+        opts = opts || {};
+        _.defaults(opts, {
+            'animateIn': true,
+            'allowHTML': false,
+            'onClose': null,
+            'hideAfter': (tag == 'error' ? 10000 : 5000) // # of milliseconds after which to hide the message, 0 to require manual close
+        });
+        var $target = $('#notifications');
+
+        var escaper = opts.allowHTML ? '<%=' : '<%-';
+        // if (!opts.allowHTML) {
+        //     message = _.escape(message);
+        // }
+
+        var template = _.template('<div class="top-notification <%= tag %>"><div class="row columns">' +
+        '<a class="close">&times;</a>' + escaper + ' message %></div></div>');
+        var $el = $(template({ message: message, tag: tag}));
+        if ($(document).scrollTop() > $target.offset().top) {
+            if (!$('#fixed-notification-container').length) {
+                $('body').append('<div id="fixed-notification-container"></div>');
+            }
+            $target = $('#fixed-notification-container');
+        }
+        if (opts.animateIn) {
+            $el.hide();
+        }
+        $target.append($el);
+        if (opts.animateIn) {
+            $el.slideDown();
+        }
+
+        if (opts.onClose) {
+            $el.find('a.close').click(opts.onClose);
+        }
+
+        var close = function() {
+            $el.find('a.close').click();
+        };
+
+        if (opts.hideAfter) {
+            setTimeout(close, opts.hideAfter);
+        }
+        return { close: close};
+    }    
 
 };
 
@@ -80,6 +131,24 @@ $(function() {
 			$('#navbar-buttons-search').addClass('active');
 		}
 	});
+
+    $('body').on('click', '.top-notification a.close', function(e) {
+        e.preventDefault();
+        var $notification = $(e.target).closest('.top-notification');
+        
+        $notification.slideUp(function() {
+            $notification.remove(); // We won't need it again after it's been closed
+        });
+    }).on('click', 'a.auth-logout', function(e) {
+        e.preventDefault();
+        OP.auth.logout();
+    });;
+
+    $(document).ajaxError(function(event, jqXHR, ajaxSettings, thrownError) {
+        if (jqXHR.getResponseHeader('X-OP-Redirect')) {
+            window.location.href = jqXHR.getResponseHeader('X-OP-Redirect');
+        }
+    });    
 
     // This event is to be triggered on AJAX loads too
     $(document).bind('contentLoad', function() {

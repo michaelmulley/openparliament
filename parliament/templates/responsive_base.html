@@ -71,9 +71,10 @@
 </div>
 
 
-{% comment %}
-<div id="notifications">{% block notifications %}{# e.g. <div class="top-notification success"><div class="notification-inner">Hello!</div></div> #}{% endblock %}{% if fr %}<div class="top-notification warning"><div class="notification-inner">Ceci est un site <strong>expérimental</strong> et <strong>incomplet</strong>. Voir <a href="https://openparliament.ca/">openparliament.ca</a>, en anglais, pour un site plus fiable.</div></div>{% endif %}</div>
-{% endcomment %}
+<div id="notifications">
+  {% block notifications %}{# e.g. <div class="top-notification success"><div class="row columns">Hello!</div></div> #}{% endblock %}{% if fr %}<div class="top-notification warning"><div class="row columns">Ceci est un site <strong>expérimental</strong> et <strong>incomplet</strong>. Voir <a href="https://openparliament.ca/">openparliament.ca</a>, en anglais, pour un site plus fiable.</div></div>{% endif %}
+</div>
+
 
 <div class="content {% block contentclass %}{% endblock %}" {% block contentdiv %}{% endblock %}>
 
