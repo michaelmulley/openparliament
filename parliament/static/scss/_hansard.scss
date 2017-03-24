@@ -118,16 +118,21 @@
 
   .r-ctx-col {
     text-align: right;
-    h6 {
+    div {
       font-size: 0.7rem;
-      color: #999;
+      color: #888;
       text-transform: uppercase;
+      margin-bottom: .3rem;
+      display: inline-block;
     }
   }
 
-  &.lang-switchable .lang-control {
-    color: $link_color;
+  &.lang-switchable .lang-control, div.sharing-tools {
+    border-bottom: 1px dotted;
     cursor: pointer;
+    &:hover {
+      color: $link_color;
+    }
   }
 
 
@@ -154,7 +159,7 @@
     }
     .r-ctx-col {
       text-align: left;
-      h6 {
+      div {
         display: inline;
         margin-right: 1.5rem;
       }

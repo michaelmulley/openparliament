@@ -48,8 +48,8 @@
 			</div>
 	
 			<div class="r-ctx-col">
-				<h6 class="sharing-tools">Links &amp; Sharing</h6>
-				<h6 class="lang-control"></h6>
+				<div class="sharing-tools">Links &amp; Sharing</div>
+				<div class="lang-control"></div>
 			</div>
 		</div>
 	{% endwith %}{% endwith %}{% endfor %}

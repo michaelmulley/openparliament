@@ -4,7 +4,7 @@
     $anchor,
     $statement;
 
-  $('body').on('click', '.statement h6.sharing-tools', function(e) {
+  $('body').on('click', '.statement .sharing-tools', function(e) {
     e.preventDefault();
     $element = $('#sharing-tools-dropdown');
 
@@ -103,7 +103,6 @@
     })
     .on('click', '.copy-statement-url', function(e) {
       e.preventDefault();
-      $element.find('.statement-url').select();
       var manual_copy = function() {
         window.prompt(
           "To copy, press Ctrl-C (Command-C on Mac), then Enter",
@@ -111,6 +110,7 @@
         );
       };
       try {
+        $element.find('.statement-url').select();
         if (document.execCommand('copy')) {
           $element.addClass('copy-success');
         }
