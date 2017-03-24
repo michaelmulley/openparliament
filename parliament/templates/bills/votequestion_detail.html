@@ -40,7 +40,7 @@
 {% for party in parties %}
 <div class="row">
 	<div class="context-col"><h2>{{ party.grouper }}</h2></div>
-	<div class="columns"><div class="row tile small-up-1 medium-up-2 large-up-3">
+	<div class="columns"><div class="row tile dense small-up-1 medium-up-2 large-up-3">
 		{% for membervote in party.list %}<div class="column column-block oneline overflowtip"><span class="tag voteresult_{{ membervote.vote }}">{{ membervote.get_vote_display }}</span> <a href="{{ membervote.member.politician.get_absolute_url }}">{{ membervote.member.politician.name }}</a></div>{% endfor %}
 	</div></div>
 </div>

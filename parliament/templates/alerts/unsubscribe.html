@@ -1,8 +1,10 @@
 {% extends "alerts/base.html" %}
 
 {% block content %}
-<div class="focus">
+<div class="row align-right">
+<div class="main-col">
     {% if key_error %}<p>There was a problem with your link. Try copying and pasting it from your e-mail program to the address bar above.</p>{% else %}<h3>You're off the list</h3><p>You shouldn't get any more e-mails from us for the topic <em>{{ query }}</em>.</p>{% endif %}
+</div>
 </div>
 {% endblock %}
 

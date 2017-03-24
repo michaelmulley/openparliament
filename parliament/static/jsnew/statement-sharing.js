@@ -101,7 +101,7 @@
         + $.param({'u': $element.find('.statement-url').val(),
         't': _statementDescription()}));
     })
-    .on('click', '.copy-statement-url', function(e) {
+    .on('click', '.statement-url-group', function(e) {
       e.preventDefault();
       var manual_copy = function() {
         window.prompt(

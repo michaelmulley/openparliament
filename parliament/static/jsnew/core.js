@@ -92,6 +92,36 @@ OP.utils = {
 
 };
 
+// https://developer.mozilla.org/en-US/docs/DOM/document.cookie
+OP.cookies = {
+    getItem: function (sKey) {
+        if (!sKey || !this.hasItem(sKey)) { return null; }
+        var ck = unescape(document.cookie.replace(new RegExp("(?:^|.*;\\s*)" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*((?:[^;](?!;))*[^;]?).*"), "$1"));
+        if (ck.substr(0, 1) === '"' && ck.substr(-1, 1) === '"') {
+            return ck.substr(1, ck.length-2);
+        }
+        return ck;
+    },
+    hasItem: function (sKey) {
+        return (new RegExp("(?:^|;\\s*)" + escape(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);
+    }
+};
+
+OP.auth = {
+    email: OP.cookies.getItem('email'),
+
+    logout: function() {
+        $.ajax({
+            type: 'POST',
+            url: '/accounts/logout/',
+            success: function() { window.location.reload(); },
+            error: function (res, status, xhr) {
+                OP.utils.notify("Oops! There was a problem logging you out.", 'error');
+            }
+        });
+    }
+};
+
 jQuery.fn.overflowtip = function() {
     return this.each(function() {
         if (this.clientWidth < this.scrollWidth

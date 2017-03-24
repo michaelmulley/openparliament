@@ -1,7 +1,9 @@
 {% extends "alerts/signup.html" %}
 
 {% block content %}
-<div class="focus">
-    {% if key_error %}<p>There was a problem with your activation link. Try copying and pasting it from your e-mail program to the address bar above.</p>{% else %}<h3>You're signed up.</h3><p>We've confirmed your e-mail, and we'll send you a message when <a href="{{ pol.get_absolute_url }}">{{ pol.name }}</a> speaks in the House.</p><p>Thanks!</p>{% endif %}
+<div class="row align-right">
+	<div class="main-col">
+	    {% if key_error %}<p>There was a problem with your activation link. Try copying and pasting it from your e-mail program to the address bar above.</p>{% else %}<h3>You're signed up.</h3><p>We've confirmed your e-mail, and we'll send you a message when <a href="{{ pol.get_absolute_url }}">{{ pol.name }}</a> speaks in the House.</p><p>Thanks!</p>{% endif %}
+	</div>
 </div>
 {% endblock %}
