@@ -13,7 +13,7 @@
 
 {% block content %}
 <div class="row align-right">
-	<div class="main-col"><p>House of Commons Hansard #{{ hansard.number }} of the {{ hansard.session }}. (The <a href="{{ hansard.url }}">original version</a> is on Parliament's site.)
+	<div class="main-col"><p>House of Commons Hansard #{{ hansard.number }} of the {{ hansard.session }}. (The <a href="{{ hansard.url }}" data-hoc-doc-url>original version</a> is on Parliament's site.)
 	{% with hansard.most_frequent_word as wotd %}{% if wotd %}The <span class="tipunderline" data-tooltip title="Most frequently spoken word, compared to other recent debates.">word of the day</span> was <strong>{{ wotd }}</strong>.{% endif %}{% endwith %}</p></div>
 </div>
 

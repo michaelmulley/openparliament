@@ -168,6 +168,28 @@
 
 }
 
+#sharing-tools-dropdown {
+  span.copy-success {
+    display: none;
+  }
+  &.copy-success {
+    span.copy-initial {
+      display: none;
+    }
+    span.copy-success {
+      display: inline;
+    }
+    button {
+      background-color: #3adb76;
+      color: #000;
+    }
+  }
+}
+
+#paginated {
+  position: relative;
+}
+
 .pagination.active {
   opacity: 0.4;
 }

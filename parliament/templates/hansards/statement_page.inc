@@ -12,7 +12,7 @@
 	{% with statement.get_absolute_url as statementurl %}
 		<div class="row statement_browser statement{% if forloop.first %} first{% endif %}{% if highlight_statement == statement %} highlighted{% endif %}"
 			 {% if highlight_statement == statement %}id="hl"{% else %}id="s{{ statement.slug }}"{% endif %}
-			 data-url="{{ statementurl }}" data-floor="{{ statement.content_floor_if_necessary }}">
+			 data-url="{{ statementurl }}" data-floor="{{ statement.content_floor_if_necessary }}" {% if statement.source_id and statement.source_id.isdigit %}data-hocid="{{ statement.source_id }}"{% endif %}>
 			<div class="l-ctx-col">
 				<noscript><p><a href="{{ statementurl }}only/">Permalink</a></p></noscript>
 				{% if statement.who %}
@@ -48,9 +48,20 @@
 			</div>
 	
 			<div class="r-ctx-col">
-				<h6>Links &amp; Sharing</h6>
+				<h6 class="sharing-tools">Links &amp; Sharing</h6>
 				<h6 class="lang-control"></h6>
 			</div>
 		</div>
 	{% endwith %}{% endwith %}{% endfor %}
 {{ pagination }}
+<div class="dropdown-pane large" id="sharing-tools-dropdown">
+	<div class="input-group">
+		<input type="text" class="input-group-field statement-url" readonly="true">
+		<div class="input-group-button">
+			<button type="button" class="button copy-statement-url"><span class="copy-initial">Copy</span><span class="copy-success">Copied</span></button>
+		</div>
+	</div>
+	<p>Share on <a class="twitter">Twitter</a> or <a class="facebook">Facebook</a></p>
+	<!-- <p class="parl-links">Go to Parliament&rsquo;s site: <a class="transcript">transcript</a> or <a class="video">video</a>.</p> -->
+	<p class="parl-links">View on <a target="_blank" class="transcript">Parliament&rsquo;s site</a></p>
+</div>

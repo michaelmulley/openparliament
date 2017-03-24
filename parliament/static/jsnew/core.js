@@ -24,7 +24,20 @@ OP.utils = {
 
         return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
 
-    },    
+    },
+
+    openShareWindow: function(url) {
+        var width = 550;
+        var height = 450;
+        var left = Math.round((screen.width / 2) - (width / 2));
+        var top = 0;
+        if (screen.height > height) {
+            top = Math.round((screen.height / 2) - (height / 2));
+        }
+        window.open(url, "openparliament_share", "width=" + width +
+            ",height=" + height + ",left=" + left, ",top=" + top +
+            "personalbar=no,toolbar=no,scrollbars=yes,location=yes,resizable=yes");
+    }
 
 };
 

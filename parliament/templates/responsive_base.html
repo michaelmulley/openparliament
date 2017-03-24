@@ -14,7 +14,8 @@
   <script type="text/javascript">
     window.OP = {
       'STATIC_URL': "{{ STATIC_URL|escapejs }}",
-      'LANG': "{% if fr %}fr{% else %}en{% endif %}"
+      'LANG': "{% if fr %}fr{% else %}en{% endif %}",
+      'BASE_URL': "https://{% if fr %}parlementouvert{% else %}openparliament{% endif %}.ca"
     };
   </script>
   <script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
@@ -125,6 +126,7 @@
 
   <script type="text/javascript" src="{% static 'jsnew/core.js' %}"></script>
   <script type="text/javascript" src="{% static 'jsnew/statementbrowser.js' %}"></script>
+  <script type="text/javascript" src="{% static 'jsnew/statement-sharing.js' %}"></script>
   <script type="text/javascript" src="{% static 'jsnew/pagination.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/wordcloud-layout.js' %}"></script>
 {% endcompress %}
