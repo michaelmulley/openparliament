@@ -54,7 +54,7 @@
 		</div>
 	{% endwith %}{% endwith %}{% endfor %}
 {{ pagination }}
-<div class="dropdown-pane large" id="sharing-tools-dropdown">
+<div class="dropdown-pane" id="sharing-tools-dropdown">
 	<div class="input-group">
 		<input type="text" class="input-group-field statement-url" readonly="true">
 		<div class="input-group-button">

@@ -1,10 +1,9 @@
 (function () {
-  // Hackily assembled from foundation.dropdown.js, which doesn't support multiple anchors
-  // for the same dropdown. Most of the code here is probably unnecessary.
   
   var $element,
     $anchor,
     $statement;
+
   $('body').on('click', '.statement h6.sharing-tools', function(e) {
     e.preventDefault();
     $element = $('#sharing-tools-dropdown');
@@ -25,79 +24,18 @@
     _addDropdownBodyHandler();
   });
 
-  var _vOffset = 1,
-    _hOffset = 1,
-    _dropdownCounter = 4,
-    _usedPositions = [];
+  var _setDropdownPosition = function() {
+    // First, try positioning the dropdown to the bottom left of the anchor.
+    $element
+      .css({'width': '400px', 'height': 'auto'})
+      .offset(Foundation.Box.GetOffsets($element, $anchor, 'right bottom', 1, 1));
 
-  var _setDropdownPosition = function($parent) {
-    // if(this.$anchor.attr('aria-expanded') === 'false'){ return false; }
-    var position = 'right bottom',
-        $eleDims = Foundation.Box.GetDimensions($element),
-        $anchorDims = Foundation.Box.GetDimensions($anchor),
-        direction = (position === 'left' ? 'left' : ((position === 'right') ? 'left' : 'top')),
-        param = (direction === 'top') ? 'height' : 'width',
-        offset = (param === 'height') ? _vOffset : _hOffset;
-
-    if(($eleDims.width >= $eleDims.windowDims.width) || (!_dropdownCounter && !Foundation.Box.ImNotTouchingYou($element, $parent))){
-      var newWidth = $eleDims.windowDims.width,
-          parentHOffset = 0;
-      if($parent){
-        var $parentDims = Foundation.Box.GetDimensions($parent),
-            parentHOffset = $parentDims.offset.left;
-        if ($parentDims.width < newWidth){
-          newWidth = $parentDims.width;
-        }
-      }
-
-      $element.offset(Foundation.Box.GetOffsets($element, $anchor, 'center bottom', _vOffset, _hOffset + parentHOffset, true)).css({
-        'width': newWidth - (_hOffset * 2),
-        'height': 'auto'
-      });
-      // this.classChanged = true;
-      return false;
+    if (!Foundation.Box.ImNotTouchingYou($element, null, true)) {
+      // If that doesn't work, set it to screen width
+      $element
+        .css({'width': Foundation.Box.GetDimensions($element).windowDims.width - 2})
+        .offset(Foundation.Box.GetOffsets($element, $anchor, 'center bottom', 1, 1, true));
     }
-
-    $element.offset(Foundation.Box.GetOffsets($element, $anchor, position, _vOffset, _hOffset));
-
-    while(!Foundation.Box.ImNotTouchingYou($element, null, true) && _dropdownCounter){
-      _dropdownReposition(position);
-      _setDropdownPosition($parent);
-    }
-  };
-
-  var _dropdownReposition = function(position) {
-    _usedPositions.push(position ? position : 'bottom');
-    //default, try switching to opposite side
-    if(!position && (_usedPositions.indexOf('top') < 0)){
-      $element.addClass('top');
-    }else if(position === 'top' && (_usedPositions.indexOf('bottom') < 0)){
-      $element.removeClass(position);
-    }else if(position === 'left' && (_usedPositions.indexOf('right') < 0)){
-      $element.removeClass(position)
-          .addClass('right');
-    }else if(position === 'right' && (_usedPositions.indexOf('left') < 0)){
-      $element.removeClass(position)
-          .addClass('left');
-    }
-
-    //if default change didn't work, try bottom or left first
-    else if(!position && (_usedPositions.indexOf('top') > -1) && (_usedPositions.indexOf('left') < 0)){
-      $element.addClass('left');
-    }else if(position === 'top' && (_usedPositions.indexOf('bottom') > -1) && (_usedPositions.indexOf('left') < 0)){
-      $element.removeClass(position)
-          .addClass('left');
-    }else if(position === 'left' && (_usedPositions.indexOf('right') > -1) && (_usedPositions.indexOf('bottom') < 0)){
-      $element.removeClass(position);
-    }else if(position === 'right' && (_usedPositions.indexOf('left') > -1) && (_usedPositions.indexOf('bottom') < 0)){
-      $element.removeClass(position);
-    }
-    //if nothing cleared, set to bottom
-    else{
-      $element.removeClass(position);
-    }
-    // this.classChanged = true;
-    _dropdownCounter--;
   };
 
   var _addDropdownBodyHandler = function() {
