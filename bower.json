@@ -18,6 +18,7 @@
   "dependencies": {
     "foundation-sites": "^6.3.1",
     "jquery-expander": "^1.7.0",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "raven-js": "^3.13.1"
   }
 }
