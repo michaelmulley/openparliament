@@ -3,7 +3,7 @@
 
     var dateFilterTemplate = _.template(
         '<div class="searchdatefilter" style="display:none">' +
-            '<div class="chart" style="width: <%= width %>px; height: <%= chartHeight %>px;">' +
+            '<div class="chart" style="width: 100%; height: <%= chartHeight %>px;">' +
                 '<div class="hover-label" style="display:none; height: <%= chartHeight %>px;">' +
                     '<div class="highlight"></div>' +
                     '<div class="label"><span class="date"></span><br><span class="value"></span><br><span class="note"></span></div>' +
@@ -18,7 +18,6 @@
     OP.SearchDateFilter = function(opts) {
         opts = opts || {};
         _.defaults(opts, {
-            width: 770,
             chartHeight: 75,
             strokeStyle: '#ff9900',
             fillStyle: '#e6f2fa',
@@ -83,12 +82,15 @@
                 return self.chartHeight - Math.round((v - ymin) * scaler);
             });
 
+            this.$el.show();
+            var chart_width = this.$el.width();
+
             this.xSegments = [0];
             for (i = 1; i < (this.values.length); i++) {
                 this.xSegments.push(this.xSegments[i-1] + 12);
             }
             this.xSegments.push(this.xSegments[this.xSegments.length-1] + this.currentMonth + 1);
-            var xScaler = this.width / this.xSegments[this.xSegments.length-1];
+            var xScaler = chart_width / this.xSegments[this.xSegments.length-1];
             this.xSegments = _.map(this.xSegments, function(x) {
                 return Math.round(x * xScaler)
             });
@@ -98,27 +100,22 @@
                 xvals.push(this.xSegments[i] +
                     Math.round((this.xSegments[i+1] - this.xSegments[i]) / 2));
             }
-            xvals.push(this.width);
+            xvals.push(chart_width);
 
-            this.$el.show();
 
             if (!this.canvasContext) {
                 // Initialize the canvas. We do it in this slightly laborious way
                 // because, well, it works in IE.
                 var canvas = document.createElement('canvas');
-                canvas.width = this.width;
+                canvas.width = chart_width;
                 canvas.height = this.chartHeight;
                 this.$el.find('.chart').prepend(canvas);
-                if (window.G_vmlCanvasManager) {
-                    // Initialize IE 7-8 canvas shim
-                    window.G_vmlCanvasManager.initElement(canvas);
-                }
                 this.canvasContext = canvas.getContext('2d');
             }
 
             var ctx = this.canvasContext;
 
-            ctx.clearRect(0, 0, this.width, this.chartHeight);
+            ctx.clearRect(0, 0, chart_width, this.chartHeight);
 
             ctx.beginPath();
             ctx.strokeStyle = this.strokeStyle;
@@ -129,7 +126,7 @@
                 ctx.lineTo(xvals[i], yvals[i]);
             }
             ctx.stroke();
-            ctx.lineTo(this.width, this.chartHeight);
+            ctx.lineTo(chart_width, this.chartHeight);
             ctx.lineTo(0, this.chartHeight);
             ctx.lineTo(xvals[0], yvals[0]);
             ctx.fill();

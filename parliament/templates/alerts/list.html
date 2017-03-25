@@ -32,19 +32,19 @@
 	<div class="context-col"><h2>Creating alerts</h2></div>
 	<div class="main-col"><p>To create an alert, use our <a href="/search/">search</a> to look for something like:</p>
 	{% include "alerts/search_examples.inc.html" %}
-	<p>Then click the green <strong>Create an alert</strong> button on the left of the search page.</p>
+	<p>Then click the <strong>Create an alert</strong> button on the left of the search page.</p>
 	</div>
 </div>
 {% endblock %}
 
 {% block breadcrumbs %}<li>Alerts</li>{% endblock %}
 
-{% block javascript %}
+{% block js %}
 {{ block.super }}
 <script type="text/javascript">
 $(function() {
-	$('table#subscriptions').on('click', 'button', function() {
-		var $button = $(this);
+	$('table#subscriptions').on('click', 'button', function(e) {
+		var $button = $(e.target);
 		var $row = $button.closest('tr');
 		var subscription = $row.data('subscription-id');
 		if (!subscription) {
@@ -58,10 +58,10 @@ $(function() {
 			url: url,
 			success: function(data) {
 				if (action === 'enable') {
-					$button.attr('data-action', 'disable').removeClass('btn-success').text('Pause');
+					$button.attr('data-action', 'disable').removeClass('success').text('Pause');
 				}
 				else if (action === 'disable') {
-					$button.attr('data-action', 'enable').addClass('btn-success').text('Enable');
+					$button.attr('data-action', 'enable').addClass('success').text('Enable');
 				}
 				else if (action === 'delete') {
 					$row.fadeOut();

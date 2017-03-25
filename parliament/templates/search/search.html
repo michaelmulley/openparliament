@@ -1,42 +1,56 @@
-{% extends "base.html" %}
-{% load compress %}
+{% extends "responsive_base.html" %}
+{% load static compress %}
 {% block breadcrumbs %}{{ block.super }}Search{% endblock %}
 {% block pagetitle %}Search: {{ query }}{% endblock %}
 {% block pageheading_override %}{% endblock %}
 {% block content %}
-<div class="focus" id="main_search_controls">
-	<noscript>
-		<form method="get" action="."><div>
-			<input type="text" id="page_searchbox" name="q" value="{{ query }}"><input type="submit" class="btn" id="searchbutton" value="Search">
-		</div></form>
-	</noscript>
-	<div id="visual_search"></div>
-	<p class="search_options jsonly">Refine by <a data-add-facet="MP" href="#">MP</a>, <a data-add-facet="Party" href="#">party</a>, <a data-add-facet="Committee" href="#">committee</a>, <a data-add-facet="Province" href="#">province</a>, or <a data-add-facet="Type" href="#">result type</a>.</p>
-</div><div class="clear"></div>
-<div class="context" id="search_leftbar">
-<div id="add_alert" style="display:none;padding-bottom: 20px;"><p><strong>Get email</strong> when new items match this search:</p> <div style="text-align: center"><button class="btn btn-success">Create an alert</button></div></div>
+<div class="row align-right">
+	<div class="main-col" id="main_search_controls">
+		<noscript>
+			<form method="get" action="."><div>
+				<input type="text" id="page_searchbox" name="q" value="{{ query }}"><input type="submit" class="btn" id="searchbutton" value="Search">
+			</div></form>
+		</noscript>
+		<div id="visual_search"></div>
+		<p class="search_options jsonly">Refine by <a data-add-facet="MP">MP</a>, <a data-add-facet="Party">party</a>, <a data-add-facet="Committee">committee</a>, <a data-add-facet="Province">province</a>, or <a data-add-facet="Type">result type</a>.</p>
+	</div>
 </div>
-<div class="focus" id="search_content">
-        <div id="paginated">
-{% include "search/search_results.inc" %}
-        </div>
+<div class="row">
+	<div class="context-col">
+		<ul class="accordion" id="search_leftbar_toggler"><li class="accordion-item"><a class="accordion-title">Tools</a></li></ul>
+		<div id="search_leftbar">
+			<div id="add_alert" style="display:none;padding-bottom: 20px;">
+				<p><strong>Get email</strong> when new items match this search:</p> 
+				<div style="text-align: center"><button class="button" type="button">Create an alert</button></div>
+			</div>
+		</div>
+	</div>
+	<div class="main-col" id="search_content">
+	        <div id="paginated">
+	{% include "search/search_results.inc" %}
+	        </div>
+	</div>
 </div>
 {% endblock %}
 {% block headextra %}
 	{% compress css %}
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/jquery-ui-aristo.css">
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/datefilter.css">
-	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/facets.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/vendor/visualsearch-datauri.css' %}">
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/vendor/jquery-ui.structure.css">
+	<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/vendor/jquery-ui.theme.css">
 	{% endcompress %}
 
-	{% include "search/visualsearch-jsdeps.html.inc" %}
+{% endblock headextra %}
+{% block js %}
+{{ block.super }}
+{% include "search/visualsearch-jsdeps.html.inc" %}
 	<script type="text/javascript">
 	$(function() {
 		OP.search.init("{{ query|escapejs }}");
 	});
 	</script>
-{% endblock headextra %}
+{% endblock %}
 {% block bodyclass %}search{% endblock %}
+{# {% block contentclass %}wide-context-col{% endblock %} #}
 {% block navbar_search %}{# Suppress top-of-the-page search box #}{% endblock %}
 {% block notifications %}{# {% include "beggary.inc" %} #}{% endblock %}
 {% block breadcrumbs_all %}{% endblock %}

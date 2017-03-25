@@ -1,0 +1,235 @@
+$searchbar_max_width: 100%;
+.VS-search {
+	input:focus {
+		// Override Foundation input styles
+		border: none;
+		background-color: transparent;
+		box-shadow: none;
+	}
+
+	max-width: $searchbar_max_width;
+
+	// These are pixel hacks where I don't understand the root cause.
+	// They will almost certainly come back to bite me.
+	.search_facet input[type=text] {
+		padding-bottom: 0;
+		bottom: -1px;
+	}
+	.search_input input[type=text] {
+		margin-top: 0;
+		bottom: -2px;
+	}
+}
+
+.search {
+	.result .highlighted, .result em {
+		background-color: #ffea80;
+		font-style: normal;
+	}
+	.search_options {
+		text-align: center;
+		max-width: $searchbar_max_width;
+		margin-top: .5rem;
+	}
+
+	.sort_options {
+		@include breakpoint(medium) {
+			text-align: right;
+		}
+	}
+
+	.search-main-col {
+		@include flex-grid-column(12);
+		order: 2;
+		@include breakpoint(medium) {
+			@include flex-grid-size(9);
+			order: 1;
+		}
+		p {
+			margin-bottom: 0;
+		}
+	}
+	.search-context-col {
+		@include flex-grid-column(12);
+		order: 1;
+		@include breakpoint(small only) {
+			padding-bottom: .5rem;
+			a {
+				color: $body-font-color;
+				font-weight: normal;
+			}
+		}
+		@include breakpoint(medium) {
+			order: 2;
+			text-align: right;
+			@include flex-grid-size(3);
+		}
+		font-size: 0.75rem;
+		p {
+			margin-bottom: 0;
+			@include breakpoint(medium) {
+				margin-bottom: .5rem;
+			}
+		}
+	}
+
+	span.br {
+		@include breakpoint(small only) {
+			&.slash:after {
+				content: ' / ';
+			}
+			&.space:after {
+				content: ' ';
+			}
+		}
+		@include breakpoint(medium) {
+			display: block;
+		}
+	}
+
+	.result {
+		padding-top: 1rem;
+		padding-bottom: 1rem;
+		@include breakpoint(small only) {
+			border-bottom: 1px dotted #ccc;
+		}
+	}
+
+	.pagination-container {
+		padding-top: 1rem;
+	}
+
+	#search_leftbar_toggler {
+		@include breakpoint(medium) {
+			display: none;
+		}
+	}
+	#search_leftbar {
+		@include breakpoint(small only) {
+			display: none;
+		}
+	}
+
+}
+
+$datefilter_yellow_label: #fff1ae;
+.searchdatefilter {
+	.slider {
+	    clear: both;
+	}
+	.ui-slider {
+		.ui-slider-handle {
+			background-color: get-color(primary);
+		}
+		.ui-slider-range {
+			background-color: $datefilter_yellow_label;
+		}
+	}	
+
+	.tools {
+	    margin-top: 10px;
+	    height: 20px;
+	    margin-bottom: 30px;
+	}
+
+	.tools .label {
+	    position: absolute;
+	    height: 30px;
+	}
+	.tools .label.right {
+	    text-align: right;
+	}
+
+	.tools .label span {
+	    background-color: $datefilter_yellow_label;
+	    font-size: 85%;
+	    font-style: italic;
+	    color: #222222;
+	    white-space: nowrap;
+	}
+
+	.chart {
+	    position: relative;
+	}
+	.hover-label {
+	    position: absolute;
+	    top: 0;
+	}
+	.hover-label .highlight {
+	    background-color: #888888;
+	    width: 100%;
+	    height: 100%;
+	    opacity: 0.2;
+	    cursor: pointer;
+	}
+
+	.hover-label .label {
+	    width: 180px;
+	    position: absolute;
+	    top: 10px;
+	    left: -185px;
+	    text-align: right;
+	    font-style: italic;
+	    color: #777777;
+	    font-size: 80%;
+	}
+
+	.hover-label .label span {
+	    background-color: white;
+	    background-color: rgba(255,255,255,0.8);
+	}
+	.hover-label span.note {
+	    font-size: 90%;
+	}
+}
+
+.facetwidget {
+	.facetgroup {
+	    margin-bottom: 20px;
+	    opacity: 0.85;
+	}
+	.facetgroup:hover {
+	    opacity: 1.0;
+	}
+
+	.item {
+	    position: relative;
+	    padding: 1px 0 1px 2px;
+	    margin-bottom: 5px;
+	}
+
+	.collapsed {
+	    display: none;
+	}
+	.nocollapse .collapsed {
+	    display: block;
+	}
+	.nocollapse .show-more {
+	    display: none;
+	}
+
+	.label {
+	    position: relative;
+	}
+
+	.barbg {
+	    position: absolute;
+	    top: 0;
+	    left: 0;
+	    height: 100%;
+	}
+	.item:hover .barbg {
+	    background-color: #ffea80;
+	}
+	.barbg {
+	    background-color: #fff1ae;
+	}
+
+	em {
+	    color: #999999;
+	    font-style: normal;
+	    font-size: 90%;
+	    margin-left: 2px;
+	    float: right;
+	}
+}

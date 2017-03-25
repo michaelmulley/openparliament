@@ -9,7 +9,7 @@
 @include foundation-button;
 @include foundation-forms;
 // @include foundation-range-input;
-// @include foundation-accordion;
+@include foundation-accordion;
 // @include foundation-accordion-menu;
 // @include foundation-badge;
 @include foundation-breadcrumbs;
@@ -45,7 +45,7 @@
 // @include foundation-float-classes;
 @include foundation-flex-classes;
 
-$max_text_width: 38rem;
+$max_text_width: 40rem;
 $link_color: #1A59C7;
 
 body {
@@ -155,4 +155,5 @@ a.has-tip {
 @import 'tag_boxes';
 @import 'hansard';
 @import 'notifications';
+@import 'search';
 

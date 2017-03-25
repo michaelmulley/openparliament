@@ -38,7 +38,7 @@ $(function() {
         last_navigated_url = url;
         var $paginated = $('#paginated');
         $paginated.find('.pagination').addClass('loading');
-        $paginated.load(encodeURI(url) + (url.indexOf('?') === -1 ? '?' : '&') + 'partial=1',
+        $paginated.load(url + (url.indexOf('?') === -1 ? '?' : '&') + 'partial=1',
             '', function() {
             $paginated.css({opacity: 1.0});
             $(document).trigger('contentLoad');

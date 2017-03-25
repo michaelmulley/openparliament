@@ -22,7 +22,7 @@
         _.extend(this, opts);
         this.$el = $('<div class="facetwidget"></div>');
 
-        this.$el.delegate('.show-more a', 'click', function(e) {
+        this.$el.on('click', '.show-more a', function(e) {
             e.preventDefault();
             $(this).closest('.facetgroup').addClass('nocollapse');
         });

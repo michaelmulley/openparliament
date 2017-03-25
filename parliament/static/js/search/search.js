@@ -15,7 +15,8 @@
                 params.sort = currentSort;
             }
             var url = '/search/?' + $.param(params);
-            History.pushState(null, null, url);
+            window.history.pushState(null, null, url);
+            OP.AJAXNavigate(url);
         },
 
         getQuery: function() {
@@ -49,15 +50,16 @@
             visualSearch = VS.init({
                 container: $('#visual_search'),
                 query: initialQuery,
+                showFacets: false,
                 callbacks: {
-                    facetMatches: OP.search.VSfacetMatches,
+                    // facetMatches: OP.search.VSfacetMatches,
                     valueMatches: OP.search.VSvalueMatches,
                     search: OP.search.triggerSearch
                 }
             });
 
             /* Hook up facet-editing links */
-            $('#main_search_controls, #search_leftbar').delegate('a[data-add-facet]', 'click', function(e) {
+            $('#main_search_controls, #search_leftbar').on('click', 'a[data-add-facet]', function(e) {
                 e.preventDefault();
                 var value = $(this).attr('data-facet-value');
                 var facetName = $(this).attr('data-add-facet');
@@ -91,6 +93,12 @@
                 }
             });
 
+            $('#search_leftbar_toggler').click(function(e) {
+                e.preventDefault();
+                $('#search_leftbar').slideToggle();
+                $(this).find('li').toggleClass('is-active');
+            });
+
             /* Initialize alert button */
             $('#add_alert button').click(OP.search.createAlert);
 
@@ -103,7 +111,7 @@
                 discontinuityNote: "Our committee data starts in 2006, so there's often a spike here."
             });
             $('#search_content').prepend(dateFilter.$el);
-            dateFilter.bind('sliderChange', function(values, fullRange) {
+            dateFilter.on('sliderChange', function(values, fullRange) {
                 var textVal = values[0] + ' to ' + values[1];
                 var dateFacet = OP.search.findFacet('Date');
                 if (OP.search.findFacet('Document')) {
@@ -124,12 +132,12 @@
                     }
                 }
             });
-            dateFilter.bind('sliderChangeCompleted', function() {
+            dateFilter.on('sliderChangeCompleted', function() {
                 OP.search.triggerSearch();
             });
 
             /* Event on result loading */
-            $(document).bind('op_search_results_loaded', function(e, data) {
+            $(document).on('op_search_results_loaded', function(e, data) {
 
                 if (data && data.facets) {
                     facetWidget.setValues(data.facets);
@@ -170,8 +178,8 @@
             });
 
             /* Update search box on back button */
-            $(window).bind('statechange', function() {
-                var url = History.getState().url;
+            $(window).on('popstate', function() {
+                var url = document.location.href;
                 var query = OP.utils.getQueryParam('q', url);
                 if (query && url.indexOf('/search/?') !== -1) {
                     visualSearch.searchBox.value(query);
@@ -180,7 +188,7 @@
             });
 
             /* Sort links */
-            $('#content').delegate('.sort_options a', 'click', function(e) {
+            $('#content').on('click', '.sort_options a', function(e) {
                 e.preventDefault();
                 currentSort = $(this).attr('data-sort');
                 OP.search.triggerSearch(OP.search.getQuery());
@@ -188,4 +196,3 @@
         }
     };
 })();
-

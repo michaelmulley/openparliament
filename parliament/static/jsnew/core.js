@@ -39,6 +39,10 @@ OP.utils = {
             "personalbar=no,toolbar=no,scrollbars=yes,location=yes,resizable=yes");
     },
 
+    slugify: function(s) {
+        return s.toLowerCase().replace(/[^a-z0-9]/, '-');
+    },
+
     notify: function(message, tag, opts) {
         /** Display a notification to the user.
          * tag should be 'warning', 'success', or 'error'
@@ -180,7 +184,9 @@ $(function() {
         }
     });    
 
-    // This event is to be triggered on AJAX loads too
+    // This event is triggered by us in two situations:
+    // - on AJAX content load in pagination.js
+    // - in a script tag at the bottom of every page
     $(document).bind('contentLoad', function() {
         // $('.tip, .related_link').tooltip({delay: 100, showURL: false});
 
@@ -190,7 +196,5 @@ $(function() {
             this.href = this.href.substring(0, this.href.length - 3);
         });
     });
-
-    $(document).trigger('contentLoad');
 
 });
