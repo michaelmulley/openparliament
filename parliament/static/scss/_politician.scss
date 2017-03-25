@@ -1,0 +1,38 @@
+.politician {
+	div.headshot {
+		margin: 4px auto 25px auto;
+		width: 146px;
+		text-align: right;
+		img {display:block;border:2px solid #666666;}
+		span {
+			display: block;
+			font-size: .65rem;
+			color: #888;
+		}
+	}
+
+	#activity {
+		.tag{font-weight:bold;}
+		h3{
+			border-bottom:1px dotted #AAAAAA;
+			span {
+				position: relative;
+				top: 3px;
+			}
+		}
+		.excerpt {
+			display:block;
+			border-left:1px dotted #AAAAAA;
+			margin-left:2rem;
+			padding-left:1rem;
+			font-style:italic;
+			margin-top:5px;
+		}
+	}
+
+	@include breakpoint(medium) {
+		h3 {
+			font-size: 1.2rem;
+		}
+	}
+}

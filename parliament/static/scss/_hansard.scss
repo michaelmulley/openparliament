@@ -33,6 +33,9 @@
     @include breakpoint(medium) {
       order: 2;
       @include flex-grid-size(7);
+      .politician & {
+        @include flex-grid-size(10);
+      }
     }
   }
   .content:not(.wide-context-col) & .text-col {

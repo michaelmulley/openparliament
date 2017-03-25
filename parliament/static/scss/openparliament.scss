@@ -69,6 +69,9 @@ h2 {
   font-weight: 300;
   color: #522D07;
 }
+h3 {
+  color: #522D07;
+}
 p {
   max-width: $max_text_width;
 }
@@ -80,7 +83,17 @@ p {
   color: #555;
 }
 a.quiet {font-weight: normal;}
-
+@include breakpoint(medium) {
+  ul.bulleted{
+    list-style:none outside url('../images/bullet.png');
+    margin:0 0 20px 0;
+    padding:0;
+    li {
+      padding: 0 0 4px 0;
+      max-width: $max_text_width;
+    }
+  }
+}
 
 .oneline {
   max-height: ($paragraph_lineheight * 1rem);
@@ -152,6 +165,7 @@ a.has-tip {
 .feed{margin-left:3px;padding:0 0 0 19px;background:url("../images/feed-icon-14x14.png") no-repeat 0 50%;}
 
 @import 'navigation';
+@import 'politician';
 @import 'tag_boxes';
 @import 'hansard';
 @import 'notifications';

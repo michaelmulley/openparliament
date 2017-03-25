@@ -1,5 +1,5 @@
-{% extends "politicians/base.html" %}
-{% load markup thumbnail highlight ours compress %}
+{% extends "politicians/responsive_base.html" %}
+{% load markup imagekit highlight ours compress %}
 {% block headextra %}
 {% if member.current %}
 <link rel="alternate" type="application/rss+xml" title="{{ pol.name }}: Statements in the House of Commons" href="{% url "politician_statement_feed" pol_id=pol.id %}">
@@ -7,120 +7,131 @@
 {% endif %}
 	<meta name="description" content="Search through {{ pol.name }}'s recent activity, votes, and speeches in the House.">
 {% endblock headextra %}
-{% block contentclass %}context_4 politician{% endblock %}
+{% block contentclass %}politician wide-context-col{% endblock %}
 {% block contentdiv %} itemscope itemtype="http://schema.org/Person"{% endblock %}
 {% block pagetitle %}{{ pol }}{% if member.current %}, {{ member.party.short_name }} MP for {{ member.riding.name }}{% endif %}{% endblock %}
-{% block breadcrumbs %}{{ block.super }} <a href="{% url "politicians" %}">MPs</a> {% if not member.current %}<a href="{% url "former_mps" %}">Former</a> <a  href="{% url "former_mps" %}#{{ member.riding.province }}">{% else %}<a href="{% url "politicians" %}#{{ member.riding.province }}">{% endif %}{{ member.riding.province|expand_province }}</a> {{ pol.name}}{% endblock %}
+{% block breadcrumbs %}<li><a href="{% url "politicians" %}">MPs</a></li> {% if not member.current %}<li><a href="{% url "former_mps" %}">Former</a></li> <li><a href="{% url "former_mps" %}#{{ member.riding.province }}">{% else %}<li><a href="{% url "politicians" %}#{{ member.riding.province }}">{% endif %}{{ member.riding.province|expand_province }}</a></li> <li>{{ pol.name}}</li>{% endblock %}
 
-{% block pageheading_override %}<div class="focus pageheader"><h1 class="pol_name" itemprop="name">{{ pol.name }}</h1></div>
-    <div class="clear"></div>{% endblock %}
+{% block pageheading_override %}
+<div class="row align-right">
+    <div class="main-col pageheader"><h1 class="pol_name" itemprop="name">{{ pol.name }}</h1></div>
+</div>
+{% endblock %}
 
 {% block content %}
-<div class="context">
-    {% if pol.headshot %}<div class="headshot"><img class="headshot" src="{% thumbnail pol.headshot 142x230 autocrop %}" itemprop="image" alt=""><span>House of Commons photo</span></div>{% endif %}
-        {% if member.current %}
+<div class="row">
+<div class="context-col">
+    {% if pol.headshot %}{% thumbnail '142x230' pol.headshot as headshot %}
+        <div class="headshot"><img class="headshot" src="{{ headshot.url }}" itemprop="image" alt=""><span>House of Commons photo</span></div>
+    {% endif %}
+    {% if member.current %}
         <h3>Track {{ pol.name_given }}</h3>
-        <ul class="bulleted"><li><a href="{% url "alerts_pol_signup" %}?politician={{ pol.id }}">Get e-mail</a> whenever {{ pol|heshe|lower }} speaks in House debates</li>
-        <li>Subscribe to feeds (<a href="/about/rss/">learn more</a>) of <a href="{% url "politician_activity_feed" pol_id=pol.id %}" class="feed">recent activity</a> (what you see to the right) or <a href="{% url "politician_statement_feed" pol_id=pol.id %}" class="feed">statements in the House</a></li></ul> {% endif %}   
+        <ul class="bulleted">
+            <li><a href="{% url "alerts_pol_signup" %}?politician={{ pol.id }}">Get e-mail</a> whenever {{ pol|heshe|lower }} speaks in House debates</li>
+            <li>Subscribe to feeds (<a href="/about/rss/">learn more</a>) of <a href="{% url "politician_activity_feed" pol_id=pol.id %}" class="feed">recent activity</a> or <a href="{% url "politician_statement_feed" pol_id=pol.id %}" class="feed">statements in the House</a></li>
+        </ul>
+    {% endif %}   
 
-{% with pol.info as info %}
+    {% with pol.info as info %}
 
-{% if member.current and info.email %}
-<h3>Your Say</h3>
-<ul class="bulleted">
-<li><a href="./contact/">Contact {{ pol.name_given }}</a></li></ul>
-{% endif %}
+    {% if member.current and info.email %}
+    <h3>Your Say</h3>
+    <ul class="bulleted">
+        <li><a href="./contact/">Contact {{ pol.name_given }}</a></li>
+    </ul>
+    {% endif %}
 
-{% if not show_statements %}
-<h3>In Parliament</h3>
-<ul class="bulleted">
-	<li><a href="/search/?q=MP%3A%20%22{{ pol.identifier|urlencode }}%22%20Type%3A%20%22debate%22&amp;sort=date+desc">Speeches</a> in House debates</li>
-</ul>
-{% endif %}
+    {% if not show_statements %}
+    <h3>In Parliament</h3>
+    <ul class="bulleted">
+    	<li><a href="/search/?q=MP%3A%20%22{{ pol.identifier|urlencode }}%22%20Type%3A%20%22debate%22&amp;sort=date+desc">Speeches</a> in House debates</li>
+    </ul>
+    {% endif %}
 
 
 	{% if info.parl_id %}
-<h3>Elsewhere</h3>
-<ul class="bulleted">
-{% if info.web_site %}<li><a href="{{ info.web_site }}">{{ pol|hisher }} site</a></li>{% endif %}
-<li>On the <a href="{{ pol.parlpage }}">Parliament</a> site</li>
-{% if info.twitter %}<li><a href="http://twitter.com/{{ info.twitter }}">Twitter</a> (and Twitter messages <a href="http://twitter.com/search?q=%40{{ info.twitter }}">to {{ pol|himher|lower }}</a>)</li>{% endif %}
-{% if info.wikipedia_id %}<li><a href="http://en.wikipedia.org/wiki/index.html?curid={{ info.wikipedia_id }}">Wikipedia</a></li>{% endif %}
-</ul>{% endif %}
+    <h3>Elsewhere</h3>
+    <ul class="bulleted">
+        {% if info.web_site %}<li><a href="{{ info.web_site }}">{{ pol|hisher }} site</a></li>{% endif %}
+        <li>On the <a href="{{ pol.parlpage }}">Parliament</a> site</li>
+        {% if info.twitter %}<li><a href="http://twitter.com/{{ info.twitter }}">Twitter</a> (and Twitter messages <a href="http://twitter.com/search?q=%40{{ info.twitter }}">to {{ pol|himher|lower }}</a>)</li>{% endif %}
+        {% if info.wikipedia_id %}<li><a href="http://en.wikipedia.org/wiki/index.html?curid={{ info.wikipedia_id }}">Wikipedia</a></li>{% endif %}
+    </ul>
+    {% endif %}
 
-{% if info.favourite_word %}
-<h3>Crucial Fact</h3>
-<ul class="bulleted"><li>{{ pol|hisher }} <span class="tip tipunderline" title="Most frequently spoken word in Parliament, compared to other MPs.">favourite word</span>
-    {% if member.current %}is{% else %}was{% endif %}
-    <strong>{{ info.favourite_word }}</strong>.</li></ul>
-{% endif %}
+    {% if info.favourite_word %}
+    <h3>Crucial Fact</h3>
+    <ul class="bulleted">
+        <li>{{ pol|hisher }} <span data-tooltip class="tipunderline" title="Most frequently spoken word in Parliament, compared to other MPs.">favourite word</span> {% if member.current %}is{% else %}was{% endif %} <strong>{{ info.favourite_word }}</strong>.</li>
+    </ul>
+    {% endif %}
 
-{% endwith %}
+    {% endwith %}
+</div>
+<div class="main-col">
+    {% if member %}
+        <h2>{% if not member.current %}Last in Parliament {{ member.end_date|date:"F Y"}}, as {% endif %}<span itemprop="affiliation" itemscope itemtype="http://schema.org/Organization"><span itemprop="name">{{ member.party.short_name }}</span></span> <span {% if member.current %} itemprop="jobTitle"{% endif %}>MP for {{ member.riding }}</span></h2>
+    {% endif %}
+
+    {% with pol.latest_candidate as candidate %}{% if candidate %}
+        <p><strong>{% if candidate.elected %}Won{% else %}Lost{% endif %}</strong> {{ pol|hisher|lower }} last election, {% if candidate.election.byelection %}a byelection {% endif %}in {{ candidate.election.date|date:"Y" }}, with {{ candidate.votepercent|floatformat:"0" }}% of the vote.</p>
+    {% endif %}{% endwith %}
+
+    {% include "search/searchbox-new.inc" with placeholder=search_placeholder prepend_filter="MP" prepend_value=pol.identifier %}
+
+    <div class="wordcloud"></div>
+
+    {% if not show_statements %}
+
+    <div id="activity">
+    {% for activity in activities %}
+    {% with activity.date|time_since as since %}{% ifchanged since %}<h3><span>{{ since }}</span></h3>{% endifchanged %}{% endwith %}
+    {{ activity.payload_wrapped|safe }}
+    {% endfor %}
+    </div>
+
+    {% if user.is_staff %}
+    <script type="text/javascript">
+    $(function() {
+        function hide_activity() {
+            var $p = $(this).parent('p')
+            $.ajax({
+                type: 'POST',
+                url: '{% url "hide_politician_activity" %}',
+                data: {'activity_id': $p.data('id')},
+                success: function() {
+                    $p.fadeOut();
+                }
+            });
+        }
+        $('p.activity_item').each(function() {
+            var $hidelink = $('<a>hide</a> ').click(hide_activity).hide();
+            $(this).prepend($hidelink).hover(function() {$hidelink.show();}, function(){$hidelink.hide();});
+        });
+    });
+    </script>
+    {% endif %}
+
+    {% else %}{# else show_statements #}
+    <h2>Statements in the House</h2>
+    <div id="paginated_wrapped">
+        <div id="paginated">
+        {% include "hansards/statement_page_politician_view.inc" %}
         </div>
-<div class="focus">
-{% if member %}<h2>{% if not member.current %}Last in Parliament {{ member.end_date|date:"F Y"}}, as {% endif %}<span itemprop="affiliation" itemscope itemtype="http://schema.org/Organization"><span {# class="tag partytag_{{ member.party.slug|lower }}" #}itemprop="name">{{ member.party.short_name }}</span></span> <span{% if member.current %} itemprop="jobTitle"{% endif %}>MP for {{ member.riding }}</h2>{% endif %}
-
-{% with pol.latest_candidate as candidate %}{% if candidate %}
-<p><strong>{% if candidate.elected %}Won{% else %}Lost{% endif %}</strong> {{ pol|hisher|lower }} last election, {% if candidate.election.byelection %}a byelection {% endif %}in {{ candidate.election.date|date:"Y" }}, with {{ candidate.votepercent|floatformat:"0" }}% of the vote.</p>
-{% endif %}{% endwith %}
-
-<form id="pol_restricted_search" class="prepender" action="{% url "search" %}" method="GET">
-<input type="hidden" name="prepend" value="MP: &quot;{{ pol.identifier }}&quot;">
-{% include "search/searchbox.inc" with placeholder=search_placeholder %}
-</form>
-
-<div class="wordcloud"></div>
-<script>
+    </div>
+    {% endif %}
+</div>
+</div>
+{% endblock %}
+{% block js %}
+{{ block.super }}
+<script type="text/javascript">
 $(function() {
     var wordcloud_opts = {
-        searchURL: '/search/?q=MP:+%22{{ pol.identifier }}%22+',
-        size: [710, 200]
+        searchURL: '/search/?q=MP:+%22{{ pol.identifier }}%22+'
     };
     {{ wordcloud_js }}
 });
 </script>
-
-{% if not show_statements %}
-
-<div id="activity">
-{% for activity in activities %}
-{% with activity.date|time_since as since %}{% ifchanged since %}<h3><span>{{ since }}</span></h3>{% endifchanged %}{% endwith %}
-{{ activity.payload_wrapped|safe }}
-{% endfor %}
-</div>
-
-{% if user.is_staff %}
-<script type="text/javascript">
-$(function() {
-    function hide_activity() {
-        var $p = $(this).parent('p')
-        $.ajax({
-            type: 'POST',
-            url: '{% url "hide_politician_activity" %}',
-            data: {'activity_id': $p.data('id')},
-            success: function() {
-                $p.fadeOut();
-            }
-        });
-    }
-    $('p.activity_item').each(function() {
-        var $hidelink = $('<a>hide</a> ').click(hide_activity).hide();
-        $(this).prepend($hidelink).hover(function() {$hidelink.show();}, function(){$hidelink.hide();});
-    });
-});
-</script>
-{% endif %}
-
-<div id="paginated_wrapped" style="display: none">
-    <h2>Statements in the House</h2><div class="spacer"></div>
-    <div id="paginated"></div></div>
-{% else %}{# else show_statements #}
-<h2>Statements in the House</h2>
-<div id="paginated_wrapped"><div id="paginated">
-    {% include "hansards/statement_page_politician_view.inc" %}
-</div></div>
-{% endif %}
-<div class="clear"></div>
-</div>
-{% endblock %}
+{% endblock js %}
 {% block footer_text %}{{ block.super }}<p>News articles via Google News.</p>{% endblock %}
