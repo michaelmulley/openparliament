@@ -1,27 +1,45 @@
-{% extends "politicians/base.html" %}
+{% extends "politicians/responsive_base.html" %}
 
 {% load ours %}
 
-{% block breadcrumbs %}{{ block.super }} <a href="{% url "politicians" %}">MPs</a> <a href="{% url "politicians" %}#{{ pol.current_member.riding.province }}">{{ pol.current_member.riding.province|expand_province }}</a> <a href="{{ pol.get_absolute_url }}">{{ pol.name}}</a> Contact{% endblock %}
+{% block breadcrumbs %}<li><a href="{% url "politicians" %}">MPs</a></li> <li><a href="{% url "politicians" %}#{{ pol.current_member.riding.province }}">{{ pol.current_member.riding.province|expand_province }}</a></li> <li><a href="{{ pol.get_absolute_url }}">{{ pol.name}}</a></li> <li>Contact</li>{% endblock %}
 
 {% block content %}
-<div class="context"><h2>Rules of Engagement</h2></div>
-<div class="focus"><ul class="bulleted inside">
-<li>If {{ pol.name }} is your MP, introduce yourself as a <strong>constituent</strong>&mdash;MPs tend to put much more stock in letters from inside their districts.</li>
-<li>Be brief and <strong>respectful</strong>.</li>
-<li>Try to ask a <strong>specific</strong> question.</li>
-</ul></div><div class="clear"></div>
-<div class="context"><h2>Paper &amp; Voice</h2></div>
-<div class="focus"><table class="standard"><tr><th>Ottawa</th><td class="gutter"></td><th>Constituency</th></tr>
-    <tr><td class="four"><p>{{ pol.name }}<br>House of Commons<br>Ottawa, ON<br>K1A 0A6</p><p>(No postage required!)</p>
-        {% if info.phone %}<p>Phone: {{ info.phone }}
-            {% if info.fax %}<br>Fax: {{ info.fax }}{% endif %}</p>{% endif %}</td><td></td>
-    <td class="five"><p>{% if info.constituency_offices %}{{ info.constituency_offices|linebreaksbr }}{% else %}Doesn't look like we have that address. {% if pol.parlpage %}Try the official <a href="{{ pol.parlpage }}">Parliament site</a>.{% endif %}{% endif %}</p></td></tr></table>
-</div><div class="clear"></div>
+<div class="row">
+	<div class="context-col"><h2>Rules of Engagement</h2></div>
+	<div class="main-col">
+		<ul class="bulleted inside">
+			<li>If {{ pol.name }} is your MP, introduce yourself as a <strong>constituent</strong>&mdash;MPs tend to put much more stock in letters from inside their districts.</li>
+			<li>Be brief and <strong>respectful</strong>.</li>
+			<li>Try to ask a <strong>specific</strong> question.</li>
+		</ul>
+	</div>
+</div>
+<div class="row">
+	<div class="context-col"><h2>Paper &amp; Voice</h2></div>
+	<div class="main-col">
+		<div class="row tile small-up-1 medium-up-2 large-up-3">
+			<div class="column column-block">
+				<h3>Ottawa</h3>
+				<p>{{ pol.name }}<br>House of Commons<br>Ottawa, ON<br>K1A 0A6</p><p>(No postage required!)</p>
+       			{% if info.phone %}
+       				<p>Phone: {{ info.phone }}
+            		{% if info.fax %}<br>Fax: {{ info.fax }}{% endif %}
+            		</p>
+            	{% endif %}
+            </div>
+            <div class="column column-block">
+            	<h3>Constituency</h3>
+    			<p>{% if info.constituency_offices %}{{ info.constituency_offices|linebreaksbr }}{% else %}Doesn't look like we have that address. {% if pol.parlpage %}Try the official <a href="{{ pol.parlpage }}">Parliament site</a>.{% endif %}{% endif %}</p>
+    		</div>
+    	</div>
+   	</div>
+</div>
 
 {% if info.email %}
-<div class="context"><h2>E-mail</h2></div>
-<div class="focus"><p>You can reach the office of {{ pol.name }} at <a href="mailto:{{ info.email }}">{{ info.email }}</a></p></div>
-<div class="clear"></div>
+<div class="row">
+	<div class="context-col"><h2>E-mail</h2></div>
+	<div class="main-col"><p>You can reach the office of {{ pol.name }} at <a href="mailto:{{ info.email }}">{{ info.email }}</a></p></div>
+</div>
 {% endif %}
 {% endblock content %}
