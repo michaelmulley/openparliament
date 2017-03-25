@@ -1,5 +1,5 @@
-{% extends "politicians/responsive_base.html" %}
-{% load markup imagekit highlight ours compress %}
+{% extends "politicians/base.html" %}
+{% load imagekit highlight ours %}
 {% block headextra %}
 {% if member.current %}
 <link rel="alternate" type="application/rss+xml" title="{{ pol.name }}: Statements in the House of Commons" href="{% url "politician_statement_feed" pol_id=pol.id %}">
