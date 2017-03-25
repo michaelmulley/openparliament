@@ -1,3 +1,13 @@
+.input-group.searchbox {
+	// Search boxes on various pages other than the main search page
+	max-width: 700px;
+	button svg {
+		fill: white;
+		width: 1.2rem;
+		height: 1.2rem;
+	}
+}
+
 $searchbar_max_width: 100%;
 .VS-search {
 	input:focus {

@@ -4,10 +4,7 @@
 <div class="row align-right">
 
 	<div class="main-col">
-		<form action="{% url "search" %}" method="GET" class="prepender">
-			<input type="hidden" name="prepend" value="Committee: &quot;{{ committee.slug }}&quot;">
-			{% include "search/searchbox.inc" with placeholder=search_placeholder %}
-		</form>
+			{% include "search/searchbox-new.inc" with prepend_filter="Committee" prepend_value=committee.slug placeholder=search_placeholder %}
 			<p style="margin-top: 20px;">
 				{% if committee.parent %}
 				This is a subcommittee of the <a href="{{ committee.parent.get_absolute_url }}">{{ committee.parent }}</a> committee.</p>
