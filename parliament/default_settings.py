@@ -132,7 +132,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'haystack',
-    'sorl.thumbnail',
     'imagekit',
     'compressor',
     'parliament.core',
@@ -147,14 +146,6 @@ INSTALLED_APPS = [
     'parliament.search',
     'parliament.text_analysis',
 ]
-
-THUMBNAIL_SUBDIR = '_thumbs'
-THUMBNAIL_PROCESSORS = (
-    'sorl.thumbnail.processors.colorspace',
-    'sorl.thumbnail.processors.autocrop',
-    'sorl.thumbnail.processors.scale_and_crop',
-    'sorl.thumbnail.processors.filters',
-)
 
 LOGGING = {
     'version': 1,
