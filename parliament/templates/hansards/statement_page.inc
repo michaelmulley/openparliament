@@ -53,6 +53,7 @@
 			<div class="r-ctx-col">
 				<div class="sharing-tools">Links &amp; Sharing</div>
 				<div class="lang-control"></div>
+				<div class="lang-preference-switch" style="display:none"></div>
 			</div>
 		</div>
 	{% endwith %}{% endwith %}{% endfor %}

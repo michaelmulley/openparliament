@@ -34,7 +34,12 @@ $(function() {
 		}
 	};
 
-	var stored = window.localStorage.getItem(KEY);
+	var stored = null;
+	try {
+		stored = window.localStorage.getItem(KEY);
+	}
+	catch (err) {}
+
 	if (stored) {
 		stored = stored.split(',');
 		if (now < parseInt(stored[0], 10)) {

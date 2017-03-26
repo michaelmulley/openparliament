@@ -11,7 +11,32 @@
       });
   };
 
+  var TRANSLATE_PREFERENCE = 'ERROR';
+  try {
+    if (window.localStorage.getItem('op_translate') == 'NEVER') {
+      TRANSLATE_PREFERENCE = 'NEVER';
+    }
+    else {
+      TRANSLATE_PREFERENCE = 'ALWAYS';
+    }
+  }
+  catch (err) {}
+  var saveTranslatePreference = function(mode) {
+    try {
+      window.localStorage.setItem('op_translate', mode);
+      TRANSLATE_PREFERENCE = mode;
+    }
+    catch (err) {
+      TRANSLATE_PREFERENCE = 'ERROR';
+    }
+  }
+
   $(document).bind('contentLoad', function() {
+    $('.statement_browser.statement').each(function() { displayLanguageStatus(this); });
+    if (TRANSLATE_PREFERENCE === 'NEVER') {
+      switchAllLanguages('NEVER');
+    }
+
     if ($('.statement_browser').length && !$('.disable_more_links').length) {
       $('.statement .text-col:not(.truncated)').each(function() {
         if (this.clientHeight < this.scrollHeight) {
@@ -22,7 +47,6 @@
       });
     }
 
-    $('.statement_browser.statement').each(function() { displayLanguageStatus(this); });
   });
 
 
@@ -67,23 +91,25 @@
 
   var switchLanguage = function(statement) {
     if (statement.getAttribute('data-languagestatus') === 'FLOOR') {
-      if (!$(statement).data('original_lang_status'))
+      if (!$(statement).attr('data-original-languagestatus'))
         throw(new Error("original data attributes not available in switchLanguage"));
       switchLanguageContent(statement, $(statement).data('original_paragraphs'),
-        $(statement).data('original_lang_status'));
+        $(statement).attr('data-original-languagestatus'));
+      showLanguagePreferenceButton(statement, 'ALWAYS');
     }
     else {
       switchLanguageToFloor(statement);
+      showLanguagePreferenceButton(statement, 'NEVER');
     }
   };
 
   var switchLanguageToFloor = function(statement) {
     var paragraphs = $(statement).find('.text p').get();
     $(statement).data('original_paragraphs', paragraphs);
-    $(statement).data('original_lang_status', statement.getAttribute('data-languagestatus'));
+    $(statement).attr('data-original-languagestatus', statement.getAttribute('data-languagestatus'));
     var paragraphs_floor = $(statement.getAttribute('data-floor')).get();
     switchLanguageContent(statement, paragraphs_floor, 'FLOOR');
-  }
+  };
 
   var switchLanguageContent = function(statement, new_content, new_status) {
     var $text = $(statement).find('div.text');
@@ -91,12 +117,43 @@
     $text.append(new_content);
     statement.setAttribute('data-languagestatus', new_status);
     displayLanguageStatus(statement);
-  }
+  };
 
-  $('body').on('click', '.lang-switchable .lang-control', function(e) {
-    e.preventDefault();
-    var statement = $(e.target).closest('.statement').get()[0];
-    switchLanguage(statement);
-  });
+  var showLanguagePreferenceButton = function(statement, mode) {
+    // mode should be 'NEVER' or 'ALWAYS'
+    var show = (mode !== TRANSLATE_PREFERENCE && TRANSLATE_PREFERENCE !== 'ERROR');
+    $('.statement .lang-preference-switch').hide();
+    if (show && statement) {
+      $(statement).find('.lang-preference-switch')
+        .text(mode === 'ALWAYS' ? 'Always translate' : 'Never translate')
+        .attr('data-mode', mode)
+        .show();
+    }
+  };
+
+  var switchAllLanguages = function(mode) {
+    var $states;
+    if (mode === 'ALWAYS') {
+      $states = $('.statement[data-original-languagestatus][data-languagestatus="FLOOR"]');
+    }
+    else {
+      $states = $('.statement[data-languagestatus="TRANSLATED"],.statement[data-languagestatus="PARTIALLY_TRANSLATED"]');
+    }
+    $states.each(function() { switchLanguage(this); });
+  };
+
+  $('body')
+    .on('click', '.lang-switchable .lang-control', function(e) {
+      e.preventDefault();
+      var statement = $(e.target).closest('.statement').get()[0];
+      switchLanguage(statement);
+    })
+    .on('click', '.statement .lang-preference-switch', function(e) {
+      var mode = $(this).attr('data-mode');
+      saveTranslatePreference(mode);
+      switchAllLanguages(mode);
+      if (TRANSLATE_PREFERENCE === 'NEVER')
+        OP.utils.notify("From now on, statements will appear in their original language across this site.", 'success');
+    });
 
 })();
