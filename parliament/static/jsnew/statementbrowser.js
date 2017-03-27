@@ -85,7 +85,7 @@
   var displayLanguageStatus = function(statement) {
     var lang_status = getLanguageStatus(statement);
     if (lang_status && lang_status !== 'NONE') {
-      $(statement).find('.lang-control').text(LANG_STATUSES[lang_status]);
+      $(statement).find('.lang-control span').text(LANG_STATUSES[lang_status]);
     }        
   }
 
@@ -124,9 +124,9 @@
     var show = (mode !== TRANSLATE_PREFERENCE && TRANSLATE_PREFERENCE !== 'ERROR');
     $('.statement .lang-preference-switch').hide();
     if (show && statement) {
-      $(statement).find('.lang-preference-switch')
+      $(statement).find('.lang-preference-switch span')
         .text(mode === 'ALWAYS' ? 'Always translate' : 'Never translate')
-        .attr('data-mode', mode)
+        .parent().attr('data-mode', mode)
         .show();
     }
   };

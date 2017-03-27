@@ -97,12 +97,14 @@
     width: 100%;
     height: $paragraph_lineheight * 3rem;
     bottom: 0;
+    left: 0;
     pointer-events: none;
     background: linear-gradient(rgba(255,255,255,0), white);
   }
   .text-col.truncated .morelink {
     position: absolute;
     bottom: 0;
+    left: 0;
     width: 100%;
     max-width: $max_text_width;
     height: $paragraph_lineheight * 1rem;
@@ -126,11 +128,11 @@
       color: #888;
       text-transform: uppercase;
       margin-bottom: .3rem;
-      display: inline-block;
+      display: block;
     }
   }
 
-  &.lang-switchable .lang-control, div.sharing-tools, .lang-preference-switch {
+  &.lang-switchable .lang-control span, div.sharing-tools span, .lang-preference-switch span {
     border-bottom: 1px dotted;
     cursor: pointer;
     &:hover {
