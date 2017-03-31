@@ -54,7 +54,7 @@ def flatpage_response(request, title, message):
     c = {
         'flatpage': {
             'title': title,
-            'content': """<div class="focus"><p>%s</p></div>""" % conditional_escape(message)
+            'content': """<div class="row align-right"><div class="main-col"><p>%s</p></div></div>""" % conditional_escape(message)
         },
     }
     return HttpResponse(t.render(c, request))
