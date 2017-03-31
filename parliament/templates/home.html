@@ -1,53 +1,71 @@
-{% extends "base.html" %}{% load i18n %}
+{% extends "responsive_base.html" %}{% load i18n %}
 
 {% block pagetitle %}Keeping tabs on Canada’s Parliament{% endblock %}
 {% block breadcrumbs_all %}{% endblock %}
 {% block pageheading %}{% trans "Keep tabs on Parliament."%}{% endblock %}
 {% block bodyclass %}home{% endblock %}
 {% block content %}
-<div class="focus">
-    <form action="/search/" id="home_searchform" method="GET">
-		{% include "search/searchbox.inc" with placeholder="Enter a postal code, name, or phrase" %}
-		<button type="submit" class="btn btn-primary" id="home_searchbutton">Search</button>
-	</form>
+<div class="row align-right">
+<div class="main-col">
+		{% include "search/searchbox-new.inc" with placeholder="Enter a postal code, name, or phrase" %}
 </div>
-    <div class="clear"></div><div class="context"><h2>What we’re doing</h2></div>
-    <div class="focus">
-    <p>Info on what your representatives are doing in Ottawa can be hard to find and use. <strong>We’re trying to make it easy.</strong></p>
-    <p><strong>Find your MP</strong> by entering your postal code above. See what your representatives are <a href="{% url "debates" %}">saying</a>, and what <a href="{% url "bills" %}">laws</a> they’re proposing. Poke around.</p></div>
-        <div class="clear"></div>
-        <div class="wordcloud"></div>
-        <div class="context"><h2>What they’re talking about</h2></div>
-
-        <div class="focus">
-        <p>The latest House transcript is from <strong>{{ latest_hansard.date|date:"F jS"}}</strong>{% if latest_hansard.most_frequent_word %}, when the <span class="tip tipunderline" title="Most frequently spoken word, compared to other recent debates.">word of the day</span> was <strong>{{ latest_hansard.most_frequent_word }}</strong>{% endif %}. These are the topics that were discussed.</p><div class="spacer"></div><ul class="tile clearafter">
-        	{% with latest_hansard.get_absolute_url as latest_hansard_url %}
-				{% for topic in latest_hansard.topics_with_qp %}<li class="four oneline overflowtip"><a href="{{ latest_hansard_url }}{{ topic.1 }}/#hl">{{ topic.0 }}</a></li>{% endfor %}
-			{% endwith %}
-        </ul><div class="clear"></div></div>
-{% if votes %}<div class="clear"></div><div class="context"><h2>Recent votes</h2></div>
-<div class="focus"><ul class="tile">{% for vote in votes %}<li class="six twoline overflowtip"><a href="{{ vote.get_absolute_url }}">#{{ vote.number }}</a> <span class="tag voteresult_{{ vote.result }}">{{ vote.get_result_display }}</span> {% if vote.bill %}<a href="{{ vote.bill.get_absolute_url }}">{{ vote.bill.number }}</a> {% endif %}{{ vote.description }}</li>{% endfor %}</ul><div class="clear"></div></div>{% endif %}
+</div>
+<div class="row">
+    <div class="context-col"><h2>What we’re doing</h2></div>
+    <div class="main-col">
+      <p class="lead">It can be tough to find out what your representatives in Ottawa are up to.<br><strong>We’re trying to make it easy.</strong></p>
+      <p><strong>Find your MP</strong> by entering your postal code above. See what your representatives are <a href="{% url "debates" %}">saying</a>, and what <a href="{% url "bills" %}">laws</a> they’re proposing. Poke around.</p>
+    </div>
+  </div>
+<div class="row">
+        <div class="columns wordcloud"></div>
+</div>
+<div class="row">
+  <div class="context-col"><h2>What they’re talking about</h2></div>
+  <div class="main-col">
+    <p>The latest House transcript is from <strong>{{ latest_hansard.date|date:"F jS"}}</strong>{% if latest_hansard.most_frequent_word %}, when the <span class="tipunderline" data-tooltip title="Most frequently spoken word, compared to other recent debates.">word of the day</span> was <strong>{{ latest_hansard.most_frequent_word }}</strong>{% endif %}. These are the topics that were discussed.</p>
+    <div class="row tile dense small-up-2 medium-up-3 large-up-4">
+  	  {% with latest_hansard.get_absolute_url as latest_hansard_url %}
+      {% for topic in latest_hansard.topics_with_qp %}
+        <div class="column column-block oneline overflowtip"><a href="{{ latest_hansard_url }}{{ topic.1 }}/#hl">{{ topic.0 }}</a></div>{% endfor %}
+      {% endwith %}
+    </div>
+  </div>
+</div>
+{% if votes %}
+<div class="row">
+  <div class="context-col"><h2>Recent votes</h2></div>
+  <div class="main-col">
+    <div class="row tile small-up-1 medium-up-2">
+      {% for vote in votes %}<div class="column column-block twoline overflowtip"><a href="{{ vote.get_absolute_url }}">#{{ vote.number }}</a> <span class="tag voteresult_{{ vote.result }}">{{ vote.get_result_display }}</span> {% if vote.bill %}<a href="{{ vote.bill.get_absolute_url }}">{{ vote.bill.number }}</a> {% endif %}{{ vote.description }}</div>{% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
 
 {% if sitenews %}
-	<div class="clear"></div><div class="context"><h2>What’s new around here</h2></div>
-	<div class="focus" style="position: relative"><p>Subscribe to our <a href="{% url "sitenews_feed" %}" class="feed">site news feed</a> (<a href="/about/rss/">what's a feed?</a>), or follow <a href="http://twitter.com/openparlca">@openparlca</a> on Twitter.</p>
-        <!-- <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fopenparliament.ca%2F&amp;layout=button_count&amp;show_faces=false&amp;width=120&amp;action=like&amp;font&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:120px; height:21px; position: absolute; right: 30px;top: 0;" allowTransparency="true"></iframe> -->{% for item in sitenews %}
-	<h3 id="n{{ item.id }}">{{ item.title }} <span class="heading_context">{{ item.date|date:"F jS"}}</span></h3>
-	{{ item.html }}{% endfor %}</div>
+<div class="row">
+	<div class="context-col"><h2>What’s new around here</h2></div>
+	<div class="main-col" style="position: relative">
+    <p>Subscribe to our <a href="{% url "sitenews_feed" %}" class="feed">site news feed</a> (<a href="/about/rss/">what's a feed?</a>), or follow <a href="http://twitter.com/openparlca">@openparlca</a> on Twitter.</p>
+        <!-- <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fopenparliament.ca%2F&amp;layout=button_count&amp;show_faces=false&amp;width=120&amp;action=like&amp;font&amp;colorscheme=light&amp;height=21" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:120px; height:21px; position: absolute; right: 30px;top: 0;" allowTransparency="true"></iframe> -->
+    {% for item in sitenews %}
+    <h3 id="n{{ item.id }}">{{ item.title }} <span class="heading_context">{{ item.date|date:"F jS"}}</span></h3>
+    {{ item.html }}
+    {% endfor %}
+  </div>
+</div>
 {% endif %}
 {% endblock %}
 
-{% block js_bottom %}
+{% block js %}
 <script>
-    $(function() {
-       $('#home_searchform input').bind('focus', function() {
-       $('#home_searchbutton').show();
-    });
-    var document_url = "{{ latest_hansard.get_absolute_url|escapejs }}";
-    var wordcloud_opts = {
-        searchURL: '/search/?q=Document:+%22' + document_url + '%22+'
-    };
-    {{ wordcloud_js }}
+$(function() {
+  var document_url = "{{ latest_hansard.get_absolute_url|escapejs }}";
+  var wordcloud_opts = {
+      searchURL: '/search/?q=Document:+%22' + document_url + '%22+'
+  };
+  {{ wordcloud_js }}
 });
 </script>
 <script type="application/ld+json">
