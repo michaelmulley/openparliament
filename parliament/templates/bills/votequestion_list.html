@@ -1,4 +1,4 @@
-{% extends "bills/responsive_base.html" %}
+{% extends "bills/base.html" %}
 {% load ours %}
 {% block breadcrumbs %}{{ block.super }}<li><a href="{% url "bills" %}">Bills</a></li>
 <li><a href="{% url "bills_for_session" session_id=session.id %}">{{ session }}</a></li> <li>Votes</li>{% endblock %}
