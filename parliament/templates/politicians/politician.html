@@ -77,7 +77,7 @@
         <p><strong>{% if candidate.elected %}Won{% else %}Lost{% endif %}</strong> {{ pol|hisher|lower }} last election, {% if candidate.election.byelection %}a byelection {% endif %}in {{ candidate.election.date|date:"Y" }}, with {{ candidate.votepercent|floatformat:"0" }}% of the vote.</p>
     {% endif %}{% endwith %}
 
-    {% include "search/searchbox-new.inc" with placeholder=search_placeholder prepend_filter="MP" prepend_value=pol.identifier %}
+    {% include "search/searchbox.inc" with placeholder=search_placeholder prepend_filter="MP" prepend_value=pol.identifier %}
 
     <div class="wordcloud"></div>
 

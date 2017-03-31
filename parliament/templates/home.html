@@ -7,13 +7,13 @@
 {% block content %}
 <div class="row align-right">
 <div class="main-col">
-		{% include "search/searchbox-new.inc" with placeholder="Enter a postal code, name, or phrase" %}
+		{% include "search/searchbox.inc" with placeholder="Enter a postal code, name, or phrase" %}
 </div>
 </div>
 <div class="row">
     <div class="context-col"><h2>What we’re doing</h2></div>
     <div class="main-col">
-      <p class="lead">It can be tough to find out what your representatives in Ottawa are up to.<br><strong>We’re trying to make it easy.</strong></p>
+      <p class="lead">Finding out what your representatives in Ottawa are up to can be tough.<br><strong>We’re trying to make it easy.</strong></p>
       <p><strong>Find your MP</strong> by entering your postal code above. See what your representatives are <a href="{% url "debates" %}">saying</a>, and what <a href="{% url "bills" %}">laws</a> they’re proposing. Poke around.</p>
     </div>
   </div>

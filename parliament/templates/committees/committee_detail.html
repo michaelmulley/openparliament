@@ -4,7 +4,7 @@
 <div class="row align-right">
 
 	<div class="main-col">
-			{% include "search/searchbox-new.inc" with prepend_filter="Committee" prepend_value=committee.slug placeholder=search_placeholder %}
+			{% include "search/searchbox.inc" with prepend_filter="Committee" prepend_value=committee.slug placeholder=search_placeholder %}
 			<p style="margin-top: 20px;">
 				{% if committee.parent %}
 				This is a subcommittee of the <a href="{{ committee.parent.get_absolute_url }}">{{ committee.parent }}</a> committee.</p>
