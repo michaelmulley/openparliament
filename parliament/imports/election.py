@@ -127,7 +127,7 @@ def import_parl_election(url, election, session=None, soup=None): # FIXME sessio
         partysoup = BeautifulSoup(partypage, convertEntities='html')
         partyname = partysoup.find('td', width='85%').string.strip()
         if partyname:
-            party = Party(name=partyname)
+            party = Party(name_en=partyname)
             party.save()
             return party
         else:
