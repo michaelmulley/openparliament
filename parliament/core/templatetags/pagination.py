@@ -8,7 +8,7 @@ LEADING_PAGE_RANGE = TRAILING_PAGE_RANGE = 6
 NUM_PAGES_OUTSIDE_RANGE = 2
 ADJACENT_PAGES = 2
 
-@register.assignment_tag(takes_context=True)
+@register.simple_tag(takes_context=True)
 def foundation_paginator(context):
     ctx = _get_pagination_context(context)
     if not ctx:
