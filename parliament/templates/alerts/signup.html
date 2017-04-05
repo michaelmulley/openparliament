@@ -24,8 +24,9 @@
 		<form class="signup" action="." method="POST">
 			<div class="input-group">
 				<span class="input-group-label">Your e-mail</span>
-				<input type="email" class="input-group-field">
+				<input type="email" class="input-group-field" name="email">
 				<div class="input-group-button">
+					<input type="hidden" name="politician" value="{{ pol.id }}" />
 					<input type="submit" class="button" value="Sign up" />
 				</div>
 			</div>
