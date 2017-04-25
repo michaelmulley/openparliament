@@ -211,3 +211,15 @@ span.wordoftheday {
   border-bottom: 1px dashed #999999;
 }
 
+@media print {
+  .statement .morelink {
+    display: none !important;
+  }
+  .statement .text-col.truncated {
+    max-height: none !important;
+  }
+  .text-col.truncated:before {
+    display: none !important;
+  }
+}
+
