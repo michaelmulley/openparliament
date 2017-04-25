@@ -2,18 +2,23 @@
 
 {% load ours %}
 
-{% block breadcrumbs %}{{ block.super }}<a href="{% url "debates" %}">Debates</a> {{ year|date:"Y" }}{% endblock %}
-{% block contentclass %}context_3{% endblock %}
+{% block breadcrumbs %}<li><a href="{% url "debates" %}">Debates</a></li> <li>{{ year|date:"Y" }}</li>{% endblock %}
 
 {% block content %}
 
 {% regroup object_list by date.month as month_list %}
 {% for month in month_list %}
-<div class="clear"></div><div class="context"><h2>{{ month.grouper|month_num }}</h2></div>
-<div class="focus">
-<ul class="tile">{% for hansard in month.list %}
-<li class="three"><a href="{{ hansard.get_absolute_url }}" data-wotd="{{ hansard.most_frequent_word }}">{{ hansard.date|date:"F jS" }}</a></li>
-{% endfor %}</ul><div class="clear"></div></div>
+<div class="row">
+	<div class="context-col"><h2>{{ month.grouper|month_num }}</h2></div>
+	<div class="main-col">
+		<div class="row tile small-up-2 medium-up-3 large-up-4">{% for hansard in month.list %}
+			<div class="column column-block">
+				<a href="{{ hansard.get_absolute_url }}">{{ hansard.date|date:"F jS" }}</a>
+				{% with hansard.most_frequent_word as wotd %}{% if wotd %}<br><span class="wordoftheday" title="This is the word that came up the most, compared to other similar debates" data-tooltip>{{ wotd }}</span>{% endif %}{% endwith %}
+			</div>
+		{% endfor %}</div>
+	</div>
+</div>
 {% endfor %}
 
 {% endblock content %}

@@ -1,4 +1,4 @@
-{% extends "hansards/responsive_base.html" %}
+{% extends "hansards/base.html" %}
 {% block breadcrumbs %}<li><a href="{% url "debates" %}">Debates</a></li> <li><a href="{% url "debates_by_year" year=hansard.date.year %}">{{ hansard.date.year }}</a></li> <li><a href="{{ statement_url }}">{{ hansard.date|date:"F jS, Y" }}</a></li> <li>Statement by {{ who }}</li>{% endblock %}
 {% block content %}
 <div class="row align-right">

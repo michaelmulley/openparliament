@@ -1,28 +1,47 @@
 {% extends "hansards/base.html" %}
 
-{% block breadcrumbs %}{{ block.super }}Debates{% endblock %}
-{% block contentclass %}context_3{% endblock %}
+{% block breadcrumbs %}<li>Debates</li>{% endblock %}
 {% block content %}
-<div class="focus">
-<p>When Parliament is in session, every word spoken by a member is faithfully transcribed, and published in a document called a <a href="http://en.wikipedia.org/wiki/Hansard">Hansard</a>. We have the Hansards of the House of Commons dating back to 1994. Browse through them below, or search via the box above.</p>
+<div class="row align-right">
+	<div class="main-col">
+	<p>When Parliament is in session, every word spoken by a member is faithfully transcribed, and published in a document called a <a href="http://en.wikipedia.org/wiki/Hansard">Hansard</a>. We have the Hansards of the House of Commons dating back to 1994. Browse through them below, or search via the box above.</p>
+	</div>
 </div>
 {% with latest.0 as hansard %}
-<div class="clear"></div><div class="context"><h2>{{ hansard.date|date:"F jS" }}</h2></div>
-<div class="focus"><ul class="tile clearafter">
+<div class="row">
+	<div class="context-col"><h2>{{ hansard.date|date:"F jS" }}</h2></div>
+	<div class="main-col">
+		<div class="row tile dense small-up-2 medium-up-3 large-up-4">
 {% with hansard.get_absolute_url as latest_url %}
-	{% for topic in hansard.topics_with_qp %}<li class="four oneline overflowtip"><a href="{{ latest_url }}{{ topic.1 }}/#hl">{{ topic.0 }}</a></li>{% endfor %}
+	{% for topic in hansard.topics_with_qp %}<div class="column column-block oneline overflowtip"><a href="{{ latest_url }}{{ topic.1 }}/#hl">{{ topic.0 }}</a></div>{% endfor %}
 {% endwith %}
-</ul></div>
+		</div>
+	</div>
+</div>
 {% endwith %}
-<div class="clear"></div><div class="context"><h2>Recent</h2></div>
-<div class="focus">
-<ul class="tile clearafter">{% for hansard in latest|slice:":17" %}
-{% if not forloop.first %}<li class="three"><a href="{{ hansard.get_absolute_url }}" data-wotd="{{ hansard.most_frequent_word }}">{{ hansard.date|date:"F jS" }}</a></li>{% endif %}
-{% endfor %}</ul></div>
+<div class="row">
+	<div class="context-col"><h2>Recent</h2></div>
+	<div class="main-col">
+		<div class="row tile small-up-2 medium-up-3 large-up-4">
+		{% for hansard in latest|slice:":17" %}
+{% if not forloop.first %}
+			<div class="column column-block">
+				<a href="{{ hansard.get_absolute_url }}">{{ hansard.date|date:"F jS" }}</a>
+				{% with hansard.most_frequent_word as wotd %}{% if wotd %}<br><span class="wordoftheday" title="This is the word that came up the most, compared to other similar debates" data-tooltip>{{ wotd }}</span>{% endif %}{% endwith %}
+			</div>{% endif %}
+{% endfor %}
+		</div>
+	</div>
+</div>
 
-<div class="clear"></div><div class="context"><h2>Past</h2></div>
-<div class="focus">
-<ul class="tile clearafter">{% for year in date_list %}
-<li class="three"><a href="{% url "debates_by_year" year=year.year %}">{{ year.year }}</a></li>
-{% endfor %}</ul></div>
+<div class="row">
+	<div class="context-col"><h2>Past</h2></div>
+	<div class="main-col">
+		<div class="row tile dense small-up-3 medium-up-5 large-up-6">
+		{% for year in date_list %}
+		<div class="column column-block"><a href="{% url "debates_by_year" year=year.year %}">{{ year.year }}</a></div>
+		{% endfor %}
+		</div>
+	</div>
+</div>
 {% endblock content %}
