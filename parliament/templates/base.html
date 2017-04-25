@@ -1,104 +1,156 @@
-{% load compress i18n %}<!DOCTYPE html>
-<html lang="{% if fr %}fr{% else %}en{% endif %}">
+{% load static i18n compress %}<!doctype html>
+<html class="no-js" lang="{% if fr %}fr{% else %}en{% endif %}">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>{% block pagetitle %}{% if pagetitle %}{{ pagetitle }}{% else %}{{ title }}{% endif %}{% endblock pagetitle %} | {% trans "openparliament.ca" %}</title>
-<link rel="icon" type="image/png" href="{{ STATIC_URL }}images/favicon.png">
-{% compress css %}
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/openparliament.css">
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/print.css">
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/icons.css">
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/visualsearch.css">
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-buttons.css">
-<link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css/bootstrap-tabs.css">
-{% endcompress %}
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block pagetitle %}{% if pagetitle %}{{ pagetitle }}{% else %}{{ title }}{% endif %}{% endblock pagetitle %} | {% trans "openparliament.ca" %}</title>
+  <link rel="icon" type="image/png" href="{{ STATIC_URL }}images/favicon.png">
 
-<script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.min.js"></script>
+  {% compress css %}
+    <link rel="stylesheet" type="text/x-scss" href="{% static 'scss/openparliament.scss' %}">
+  {% endcompress %}
 
-<script type="text/javascript">
-window.OP = {
-  'STATIC_URL': "{{ STATIC_URL|escapejs }}",
-  'LANG': "{% if fr %}fr{% else %}en{% endif %}"
-};
-</script>
+  <script type="text/javascript">
+    window.OP = {
+      'STATIC_URL': "{{ STATIC_URL|escapejs }}",
+      'LANG': "{% if fr %}fr{% else %}en{% endif %}",
+      'BASE_URL': "https://{% if fr %}parlementouvert{% else %}openparliament{% endif %}.ca"
+    };
+  </script>
+  <script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
+
+  {% block headextra %}{% endblock %}
+  <script type="text/javascript">
+
+    var _gaq = _gaq || [];
+    _gaq.push(['_setAccount', 'UA-10168543-3']);
+    _gaq.push(['_trackPageview']);
+
+    (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+    })();
+
+  </script>
+
+</head>
+<body class="{% if fr %}fr{% else %}en{% endif %} {% block bodyclass %}{% endblock %}">
+
+<div class="navbar" id="navbar">
+  <div class="row align-middle">
+    <div class="logo-col">
+      <a href="/"><img id="navbar_logotype" src="{{ STATIC_URL }}images/logotype-white-2x{% if fr %}-fr{% endif %}.png" alt="{% trans 'openparliament.ca' %}"></a>
+    </div>
+    <div class="menu-col" id="navbar-menu">
+     <ul class="menu vertical large-horizontal">
+    <li {% block navlinks_mps %}{% endblock %}><a href="{% url "politicians" %}">{% trans "MPs" %}</a></li>
+    <li {% block navlinks_bills %}{% endblock %}><a href="{% url "bills" %}">{% trans "Bills" %}</a></li>
+    <li {% block navlinks_debates %}{% endblock %}><a href="{% url "debates" %}">{% trans "Debates" %}</a></li>
+    <li {% block navlinks_committees %}{% endblock %}><a href="{% url "committee_list" %}">{% trans "Committees" %}</a></li>
+    <li {% block navlinks_about %}{% endblock %}><a href="/about/">{% trans "About" %}</a></li>
+    <li {% block navlinks_labs %}{% endblock %}><a href="/labs/">{% trans "Labs" %}</a></li>
+      </ul>
+    </div>
+    <div class="button-col">
+      {% block navbar_search %}
+      <a class="search" id="navbar-buttons-search"><span class="show-for-medium">{% trans "search" %}</span>
+        <svg width="8" height="8" viewBox="0 0 8 8"><path d="M3.5 0c-1.93 0-3.5 1.57-3.5 3.5s1.57 3.5 3.5 3.5c.59 0 1.17-.14 1.66-.41a1 1 0 0 0 .13.13l1 1a1.02 1.02 0 1 0 1.44-1.44l-1-1a1 1 0 0 0-.16-.13c.27-.49.44-1.06.44-1.66 0-1.93-1.57-3.5-3.5-3.5zm0 1c1.39 0 2.5 1.11 2.5 2.5 0 .66-.24 1.27-.66 1.72-.01.01-.02.02-.03.03a1 1 0 0 0-.13.13c-.44.4-1.04.63-1.69.63-1.39 0-2.5-1.11-2.5-2.5s1.11-2.5 2.5-2.5z"></path></svg>
+      </a>
+      {% endblock navbar_search %}
+      <span data-responsive-toggle="navbar-menu" data-hide-for="large">
+        <a class="menu" data-toggle><span class="show-for-medium">{% trans "menu" %}</span>
+          <svg width="8" height="8" viewBox="0 0 8 8"><path d="M0 0v1h8v-1h-8zm0 2.97v1h8v-1h-8zm0 3v1h8v-1h-8z" transform="translate(0 1)"></path></svg>
+        </a>
+      </span>
+    </div>
+  </div>
+</div>
+
+<div class="navbar-search" id="navbar-search" style="display: none">
+  <div class="row columns small-12">
+    <form action="{% url 'search' %}" method="GET">
+    <div class="input-group">
+      <input type="text" class="input-group-field" name="q" placeholder="{% trans 'Enter a word, name, or postal code' %}">
+      <div class="input-group-button">
+        <button type="submit" class="button">{% trans "Search" %}</button>
+      </div>
+    </div>
+    </form>
+  </div>
+</div>
+
+
+<div id="notifications">
+  {% block notifications %}{# e.g. <div class="top-notification success"><div class="row columns">Hello!</div></div> #}{% endblock %}{% if fr %}<div class="top-notification warning"><div class="row columns">Ceci est un site <strong>expérimental</strong> et <strong>incomplet</strong>. Voir <a href="https://openparliament.ca/">openparliament.ca</a>, en anglais, pour un site plus fiable.</div></div>{% endif %}
+  <div class="top-notification warning"><div class="row columns">This week, I changed much of the tech behind this site. If you see anything that looks like a bug, please <a class="maillink">let me know</a>!</div></div>
+</div>
+
+
+<div class="content {% block contentclass %}{% endblock %}" {% block contentdiv %}{% endblock %}>
+
+  <nav aria-label="You are here:" role="navigation" class="row">
+    <ul class="breadcrumbs small-12 columns">{% block breadcrumbs_all %}
+      <li><a href="/">{% trans "Home" %}</a></li>
+      {% block breadcrumbs %}{% endblock %}{% endblock breadcrumbs_all %}
+    </ul>
+  </nav>
+
+  {% block pageheading_override %}<div class="row align-right"><div class="pageheader main-col"><h1>{% block pageheading %}{{ title }}{% endblock pageheading %}</h1></div></div>{% endblock pageheading_override %}
+
+  {% block content %}{% endblock %}
+
+</div>
+
+<footer>
+  <div class="opennorth-col">{% trans "supported by" %}<br><a class="opennorth_logo" href="http://www.opennorth.ca/"></a></div>
+  <div class="blurb-col">{% block footer_text %}<p><strong>{% trans "This is not a government site." %}</strong><br> {% trans "Not even sort of." %}</p>{% endblock footer_text %}</div>
+  <div class="links-col">
+    <strong>{% trans "Words" %}</strong><br>
+    <a href="{% url "debates" %}">{% trans "Debates" %}</a> ({% trans "Hansard" %})<br>
+    <a href="{% url "committee_list" %}">{% trans "Committees" %}</a><br>
+    <a href="{% url "search" %}">{% trans "Search" %}</a><br>
+    <a href="{% url "alerts_list" %}">{% trans "Alerts" %}</a>
+  </div>
+  <div class="links-col">
+    <strong>{% trans "Laws" %}</strong><br>
+    <a href="{% url "bills" %}">{% trans "Bills" %}</a><br>
+    <a href="{% url "votes" %}">{% trans "Votes" %}</a>
+  </div>
+  <div class="links-col">
+    <strong>More</strong><br>
+    <a href="/about/#contact">Feedback / Contact</a><br>
+    <a href="/labs/haiku/">Haiku</a><br>
+    <a href="/api/">Developers</a> {% if request.apibrowser_url %}(<a href="{{ request.apibrowser_url }}" rel="nofollow">JSON</a>){% endif %}
+  </div>
+</footer>
 
 {% compress js %}
-<script type="text/javascript" src="{{ STATIC_URL }}js/libs/raven.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.tooltip.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/libs/jquery.expander.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/libs/placeholder-polyfill.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/libs/history.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/libs/history.html4.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/libs/history.adapter.jquery.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/libs/underscore.js"></script>
+  <script type="text/javascript" src="{% static 'bower_components/raven-js/dist/raven.js' %}"></script>
+  <script type="text/javascript" src="{% static 'bower_components/foundation-sites/dist/js/plugins/foundation.core.js' %}"></script>
+  <script type="text/javascript" src="{% static 'bower_components/foundation-sites/dist/js/plugins/foundation.util.triggers.js' %}"></script>
+  <script type="text/javascript" src="{% static 'bower_components/foundation-sites/dist/js/plugins/foundation.util.mediaQuery.js' %}"></script>
+  <script type="text/javascript" src="{% static 'bower_components/foundation-sites/dist/js/plugins/foundation.util.box.js' %}"></script>
+  <script type="text/javascript" src="{% static 'bower_components/foundation-sites/dist/js/plugins/foundation.responsiveMenu.js' %}"></script>
+  <script type="text/javascript" src="{% static 'bower_components/foundation-sites/dist/js/plugins/foundation.responsiveToggle.js' %}"></script>
+  <script type="text/javascript" src="{% static 'bower_components/foundation-sites/dist/js/plugins/foundation.tooltip.js' %}"></script>
 
-<script type="text/javascript" src="{{ STATIC_URL }}js/core.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/pagination.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/statementbrowser.js"></script>
-<script type="text/javascript" src="{{ STATIC_URL }}js/geoalert.js"></script>
+  <script type="text/javascript" src="{% static 'bower_components/underscore/underscore.js' %}"></script>
 
-<script type="text/javascript" src="{{ STATIC_URL }}js/wordcloud-layout.js"></script>
-
+  <script type="text/javascript" src="{% static 'jsnew/core.js' %}"></script>
+  <script type="text/javascript" src="{% static 'jsnew/statementbrowser.js' %}"></script>
+  <script type="text/javascript" src="{% static 'jsnew/statement-sharing.js' %}"></script>
+  <script type="text/javascript" src="{% static 'jsnew/pagination.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/wordcloud-layout.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/geoalert.js' %}"></script>
 {% endcompress %}
-{% block headextra %}{% endblock %}
+
+{% block js %}{% endblock %}
 <script type="text/javascript">
-
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-10168543-3']);
-  _gaq.push(['_trackPageview']);
-
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-
+$(function() {
+  $(document).trigger('contentLoad');
+});
 </script>
-</head>
-<body class="nojs {% if fr %}fr{% else %}en{% endif %} {% block bodyclass %}{% endblock %}">
-<div id="navbarbg"></div>
-<div id="navbar">
-	<a href="/"><img id="navbar_logotype" width="{% if fr %}231{% else %}220{% endif %}" height="34" src="{{ STATIC_URL }}images/logotype-white-2x{% if fr %}-fr{% endif %}.png" alt="openparliament.ca"></a>
-    <ul id="navlinks">
-		<li {% block navlinks_mps %}{% endblock %}><a href="{% url "politicians" %}">{% trans "MPs" %}</a></li>
-		<li {% block navlinks_bills %}{% endblock %}><a href="{% url "bills" %}">{% trans "Bills" %}</a></li>
-		<li {% block navlinks_debates %}{% endblock %}><a href="{% url "debates" %}">{% trans "Debates" %}</a></li>
-		<li {% block navlinks_committees %}{% endblock %}><a href="{% url "committee_list" %}">{% trans "Committees" %}</a></li>
-		<li {% block navlinks_about %}{% endblock %}><a href="/about/">{% trans "About" %}</a></li>
-		<li {% block navlinks_labs %}{% endblock %}><a href="/labs/">{% trans "Labs" %}</a></li>
-	</ul>
-	{% block navbar_search %}<form action="{% url "search" %}" method="GET" id="nav_searchform"><input type="text" name="q" placeholder="{% trans "search" %}"><span class="searchicon"></span></form>{% endblock navbar_search %}
-</div>
-<div id="notifications">{% block notifications %}{# e.g. <div class="top-notification success"><div class="notification-inner">Hello!</div></div> #}{% endblock %}{% if fr %}<div class="top-notification warning"><div class="notification-inner">Ceci est un site <strong>expérimental</strong> et <strong>incomplet</strong>. Voir <a href="https://openparliament.ca/">openparliament.ca</a>, en anglais, pour un site plus fiable.</div></div>{% endif %}</div>
-<div id="content_wrap" class="{% block contentclass %}{% endblock %}" {% block contentdiv %}{% endblock %}><div class="content">
-	<div id="breadcrumbs">{% block breadcrumbs_all %}<a href="/">{% trans "Home" %}</a> {% block breadcrumbs %}{% endblock breadcrumbs %}{% endblock breadcrumbs_all %}</div>
-	{% block pageheading_override %}<div class="focus pageheader"><h1>{% block pageheading %}{{ title }}{% endblock pageheading %}</h1></div><div class="clear"></div>{% endblock pageheading_override %}
-{% block content %}
-
-{% endblock content %}
-</div><div class="clear"></div></div>
-{% block javascript %}{% endblock %}
-<div id="footer"><div class="content">{% block footer %}
-  <div class="col three" style="padding-left: 0; padding-right: 20px"><div style="text-align: center">{% trans "supported by" %}<a class="opennorth_logo" href="http://www.opennorth.ca/"></a></div></div>
-
-<div class="col four">{% block footer_text %}<p><strong>{% trans "This is not a government site." %}</strong><br> {% trans "Not even sort of." %}</p>{% endblock footer_text %}</div>
-<div class="col three"><strong>{% trans "Words" %}</strong><br>
-<a href="{% url "debates" %}">{% trans "Debates" %}</a> ({% trans "Hansard" %})<br>
-<a href="{% url "committee_list" %}">{% trans "Committees" %}</a><br>
-<a href="{% url "search" %}">{% trans "Search" %}</a><br>
-<a href="{% url "alerts_list" %}">{% trans "Alerts" %}</a>
-</div>
-<div class="col three"><strong>{% trans "Laws" %}</strong><br>
-<a href="{% url "bills" %}">{% trans "Bills" %}</a><br>
-<a href="{% url "votes" %}">{% trans "Votes" %}</a></div>
-<div class="col three"><strong>More</strong><br>
-<a href="/about/#contact">Feedback / Contact</a><br>
-<a href="/labs/haiku/">Haiku</a><br>
-<a href="/api/">Developers</a> {% if request.apibrowser_url %}(<a href="{{ request.apibrowser_url }}" rel="nofollow">JSON</a>){% endif %}
-</div>
-  {% endblock footer %}<div class="clear"></div></div></div>
-
-{% block js_bottom %}{% endblock %}
 </body>
 </html>
