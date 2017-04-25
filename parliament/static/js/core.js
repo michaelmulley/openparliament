@@ -1,7 +1,3 @@
-OP = {};
-
-OP.badIE = ($.browser.msie && parseInt($.browser.version, 10) < 9);
-
 OP.utils = {
 
     rot13: function (t){
@@ -12,19 +8,6 @@ OP.utils = {
             else if (cc >= 48 && cc <= 57) cc = 48 + ((cc - 43) % 10);
             return String.fromCharCode(cc);
         });
-    },
-
-    openShareWindow: function(url) {
-        var width = 550;
-        var height = 450;
-        var left = Math.round((screen.width / 2) - (width / 2));
-        var top = 0;
-        if (screen.height > height) {
-            top = Math.round((screen.height / 2) - (height / 2));
-        }
-        window.open(url, "openparliament_share", "width=" + width +
-            ",height=" + height + ",left=" + left, ",top=" + top +
-            "personalbar=no,toolbar=no,scrollbars=yes,location=yes,resizable=yes");
     },
 
     getQueryParam: function(name, qs) {
@@ -41,6 +24,19 @@ OP.utils = {
 
         return match && decodeURIComponent(match[1].replace(/\+/g, ' '));
 
+    },
+
+    openShareWindow: function(url) {
+        var width = 550;
+        var height = 450;
+        var left = Math.round((screen.width / 2) - (width / 2));
+        var top = 0;
+        if (screen.height > height) {
+            top = Math.round((screen.height / 2) - (height / 2));
+        }
+        window.open(url, "openparliament_share", "width=" + width +
+            ",height=" + height + ",left=" + left, ",top=" + top +
+            "personalbar=no,toolbar=no,scrollbars=yes,location=yes,resizable=yes");
     },
 
     slugify: function(s) {
@@ -67,8 +63,8 @@ OP.utils = {
         //     message = _.escape(message);
         // }
 
-        var template = _.template('<div class="top-notification <%= tag %>"><div class="notification-inner">' +
-        '<a href="#" class="close">&times;</a>' + escaper + ' message %></div></div>');
+        var template = _.template('<div class="top-notification <%= tag %>"><div class="row columns">' +
+        '<a class="close">&times;</a>' + escaper + ' message %></div></div>');
         var $el = $(template({ message: message, tag: tag}));
         if ($(document).scrollTop() > $target.offset().top) {
             if (!$('#fixed-notification-container').length) {
@@ -96,7 +92,8 @@ OP.utils = {
             setTimeout(close, opts.hideAfter);
         }
         return { close: close};
-    }
+    }    
+
 };
 
 // https://developer.mozilla.org/en-US/docs/DOM/document.cookie
@@ -129,90 +126,54 @@ OP.auth = {
     }
 };
 
-// TOOLTIPS
 jQuery.fn.overflowtip = function() {
     return this.each(function() {
         if (this.clientWidth < this.scrollWidth
             || (this.clientHeight + 5) < this.scrollHeight) {
             $(this).attr('title', $(this).text());
+        	$(this).attr('data-tooltip', true);
+        	$(this).addClass('has-tip');
         }
     });
 };
 
-if (window.Raven) {
-    Raven.config(
-        'https://b5fd50dac5844b9a872b9fb5718ae980@sentry.io/113972',
-        {
-            whitelistUrls: [ /openparliament\.ca/ ],
-            ignoreUrls: [  /extensions\//i, /^chrome:\/\//i ]
-        }
-    ).install();
-}
+$('.overflowtip').overflowtip();
+$(document).foundation();
 
 $(function() {
+	if (window.Raven) {
+	    Raven.config(
+	        'https://b5fd50dac5844b9a872b9fb5718ae980@sentry.io/113972',
+	        {
+	            whitelistUrls: [ /openparliament\.ca/ ],
+	            ignoreUrls: [  /extensions\//i, /^chrome:\/\//i ]
+	        }
+	    ).install();
+	}
 
+	$('#navbar-buttons-search').click(function(e) {
+		e.preventDefault();
+		var $searchbar = $('#navbar-search');
+		if ($searchbar.is(':visible')) {
+			$searchbar.slideUp('fast');
+			$('#navbar-buttons-search').removeClass('active');
+		}
+		else {
+			$searchbar.slideDown('fast', function() {
+				$searchbar.find('input').focus();
+			});
+			$('#navbar-buttons-search').addClass('active');
+		}
+	});
 
-    // MARGINALIA
-    var $content = $('.content');
-    var contentOffset = $content.offset();
-    $.fn.marginalia = function(onEvent, offEvent, dataFunction) {
-        if (this.length) {
-            var $marginalia = $('#marginalia');
-            if (!$marginalia.length) {
-                $marginalia = $('<div id="marginalia"></div>');
-                $marginalia.appendTo($content);
-            }
-            $marginalia.hide();
-            this.bind(onEvent, function() {
-                var $this = $(this);
-                var content = dataFunction($this);
-                if (content) {
-                    $marginalia.html(content);
-                    $marginalia.css({'top': ($this.offset().top - contentOffset.top) + 'px'}).show();
-                }
-            }).bind(offEvent, function() { $marginalia.hide(); });
-        }
-    };
-    
-    $('.standard_form input, .standard_form textarea').marginalia('focus', 'blur',
-        function($obj) { return $obj.attr('data-helptext');});
-
-    $('[data-marginalia]').marginalia('mouseenter', 'mouseleave', function($obj) {
-        return $obj.attr('data-marginalia');
-    });
-
-    $('body').removeClass('nojs').addClass('js');
-
-    $('.overflowtip').overflowtip().tooltip({delay: 150});
-
-    // Search forms: if there's an automatic "prepend" value,
-    // stick it onto the query then get rid of it.
-    $('form.prepender').submit(function(e) {
-        var $prepend = $(this).find('input[name=prepend]');
-        if ($prepend.val()) {
-            var $q = $(this).find('input[name=q]');
-            $q.val($prepend.val() + ' ' + $q.val());
-            $prepend.val('');
-            $prepend.remove();
-        }
-    });
-    $('input[name=q]').val('');
-    $('#navbar .searchicon').click(function() {
-        if ($('#navbar form input').val()) {
-            $('#navbar form').submit();
-        }
-        else {
-            $('#navbar form input').focus();
-        }
-    });
-
-    $('body').delegate('.top-notification a.close', 'click', function(e) {
-        var $notification = $(this).closest('.top-notification');
+    $('body').on('click', '.top-notification a.close', function(e) {
+        e.preventDefault();
+        var $notification = $(e.target).closest('.top-notification');
         
         $notification.slideUp(function() {
             $notification.remove(); // We won't need it again after it's been closed
         });
-    }).delegate('a.auth-logout', 'click', function(e) {
+    }).on('click', 'a.auth-logout', function(e) {
         e.preventDefault();
         OP.auth.logout();
     });;
@@ -221,11 +182,13 @@ $(function() {
         if (jqXHR.getResponseHeader('X-OP-Redirect')) {
             window.location.href = jqXHR.getResponseHeader('X-OP-Redirect');
         }
-    });
-    
-    // This event is to be triggered on AJAX loads too
+    });    
+
+    // This event is triggered by us in two situations:
+    // - on AJAX content load in pagination.js
+    // - in a script tag at the bottom of every page
     $(document).bind('contentLoad', function() {
-        $('.tip, .related_link').tooltip({delay: 100, showURL: false});
+        // $('.tip, .related_link').tooltip({delay: 100, showURL: false});
 
         $('a.maillink').attr('href', OP.utils.rot13('znvygb:zvpunry@zvpunryzhyyrl.pbz'));
 
@@ -233,15 +196,5 @@ $(function() {
             this.href = this.href.substring(0, this.href.length - 3);
         });
     });
-
-    $(document).trigger('contentLoad');
-
-//    var uservoiceOptions = {
-//      key: 'openparliament',
-//      host: 'openparliament.uservoice.com',
-//      forum: '52385',
-//      lang: 'en',
-//      showTab: false
-//    };
 
 });

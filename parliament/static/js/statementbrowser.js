@@ -1,88 +1,159 @@
 (function() {
 
-    var revealStatement =  function () {
-        $(this).hide()
-            .parent().children('.fadeout').hide()
-            .parent().children('.truncated').animate({
-                maxHeight: '800px'
-            }, 'slow', 'linear',
-            function () {
-                $(this).addClass('displayall').css('max-height', 'none').removeClass('truncated');
-            });
-    };
+  /* SEE MORE */
+  var revealStatement =  function () {
+    $(this).hide()
+      .parent().animate({
+        maxHeight: '800px'
+      }, 'fast', 'linear',
+      function () {
+        $(this).addClass('displayall').css('max-height', 'none').removeClass('truncated');
+      });
+  };
 
-    $(document).bind('contentLoad', function() {
-        if ($('.statement_browser').length && !$('.disable_more_links').length) {
-            $('.statement .focus:not(.truncated)').each(function() {
-                if (this.clientHeight < this.scrollHeight) {
-                    $(this).addClass('truncated');
-                    var $morelink = $(document.createElement('div')).addClass('morelink').click(revealStatement);
-                    var $fadeout = $(document.createElement('div')).addClass('fadeout');
-                    $(this).parent().append($morelink).append($fadeout);
-                }
-            });
+  var TRANSLATE_PREFERENCE = 'ERROR';
+  try {
+    if (window.localStorage.getItem('op_translate') == 'NEVER') {
+      TRANSLATE_PREFERENCE = 'NEVER';
+    }
+    else {
+      TRANSLATE_PREFERENCE = 'ALWAYS';
+    }
+  }
+  catch (err) {}
+  var saveTranslatePreference = function(mode) {
+    try {
+      window.localStorage.setItem('op_translate', mode);
+      TRANSLATE_PREFERENCE = mode;
+    }
+    catch (err) {
+      TRANSLATE_PREFERENCE = 'ERROR';
+    }
+  }
+
+  $(document).bind('contentLoad', function() {
+    $('.statement_browser.statement').each(function() { displayLanguageStatus(this); });
+    if (TRANSLATE_PREFERENCE === 'NEVER') {
+      switchAllLanguages('NEVER');
+    }
+
+    if ($('.statement_browser').length && !$('.disable_more_links').length) {
+      $('.statement .text-col:not(.truncated)').each(function() {
+        if (this.clientHeight < this.scrollHeight) {
+          $(this).addClass('truncated');
+          var $morelink = $(document.createElement('div')).html('&darr;').addClass('morelink').click(revealStatement);
+          $(this).prepend($morelink);
         }
-    });
+      });
+    }
+
+  });
 
 
-    /* STATEMENT SHARING BUTTONS */
+  /* LANGUAGE CONTROL */
+  var LANG_STATUSES = {
+    PARTIALLY_TRANSLATED: 'Partially translated',
+    FLOOR: 'As spoken',
+    TRANSLATED: 'Translated'
+  };
 
-    $(function() {
-        if ($('#paginated').length && !$('body').hasClass('search')) {
-            var $statementTools = $('<div id="statement-tools" style="display: none"><img id="share_link" src="/static/images/link.png" class="tip" title="Share a link to this statement"><img id="share_twitter" src="/static/images/twitter.png" class="tip" alt="Twitter" title="Share on Twitter"><img id="share_facebook" src="/static/images/facebook.png" class="tip" title="Share on Facebook"></div>');
-            $statementTools.bind('mouseenter', function () {$statementTools.show();})
-                .bind('mouseleave', function () {$statementTools.hide();})
-                .find('.tip').tooltip({delay: 100, showURL: false});
-            $('#paginated').after($statementTools);
-            var $currentStatement;
-            function currentStatementURL() {
-                return 'https://openparliament.ca' + $currentStatement.attr('data-url');
-            }
-            function currentStatementDescription() {
-                var descr = $currentStatement.find('.pol_name').html();
-                if (!descr) {
-                    descr = $('.pol_name').html();
-                }
-                var topic = $currentStatement.find('.statement_topic').html();
-                if (topic) {
-                    descr += ' on ' + topic;
-                }
-                return descr;
-            }
-            $('.statement').live('mouseenter', function() {
-                $currentStatement = $(this);
-                var offset = $currentStatement.position();
-                $statementTools.css({'top': offset.top, 'left': offset.left + ($currentStatement.width() - 66)}).show();
-            }).live('mouseleave', function() {$statementTools.hide();});
-            $('#share_link').click(function() {
-                if (!$currentStatement.find('.share_link').length) {
-                    var linkbox = $('<input type="text">').val(currentStatementURL()).click(function() {
-                        if (this.createTextRange) {
-                            // This is for IE and Opera.
-                            range = this.createTextRange();
-                            range.moveEnd('character', this.value.length);
-                            range.select();
-                        } else if (this.setSelectionRange) {
-                            // This is for Mozilla and WebKit.
-                            this.setSelectionRange(0, this.value.length);
-                        }});
-                    $currentStatement.find('.focus').prepend($('<p class="share_link">Copy this link: </p>').append(linkbox));
-                }
-            });
-            $('#share_facebook').click(function() {
-                OP.utils.openShareWindow('http://facebook.com/sharer.php?'
-                    + $.param({'u': currentStatementURL(),
-                    't': currentStatementDescription()}));
-            });
-            $('#share_twitter').click(function() {
-                OP.utils.openShareWindow('http://twitter.com/share?'
-                    + $.param({'url': currentStatementURL(),
-                    'via': 'openparlca',
-                    'related': 'openparlca:openparliament.ca',
-                    'text': currentStatementDescription()
-                }));
-            });
-        }
+  var _determineLanguageStatus = function(statement) {
+    var paragraphs = $(statement).find('p[data-originallang]').get();
+    var langs = _.uniq(_.map(paragraphs, function(p) { return p.getAttribute('data-originallang'); }));
+    if (langs.length == 0)
+      return 'NONE';
+    if (langs.length == 2)
+      return 'PARTIALLY_TRANSLATED';
+    if (langs.length == 1) {
+      if (langs[0] === OP.LANG)
+        return 'FLOOR';
+      return 'TRANSLATED'
+    }
+  };
+
+  var getLanguageStatus = function(statement) {
+    var lang_status = statement.getAttribute('data-languagestatus');
+    if (!lang_status) {
+      lang_status = _determineLanguageStatus(statement);
+      statement.setAttribute('data-languagestatus', lang_status);
+      if (statement.getAttribute('data-floor'))
+        $(statement).addClass('lang-switchable');
+    }
+    return lang_status;
+  };
+
+  var displayLanguageStatus = function(statement) {
+    var lang_status = getLanguageStatus(statement);
+    if (lang_status && lang_status !== 'NONE') {
+      $(statement).find('.lang-control span').text(LANG_STATUSES[lang_status]);
+    }        
+  }
+
+  var switchLanguage = function(statement) {
+    if (statement.getAttribute('data-languagestatus') === 'FLOOR') {
+      if (!$(statement).attr('data-original-languagestatus'))
+        throw(new Error("original data attributes not available in switchLanguage"));
+      switchLanguageContent(statement, $(statement).data('original_paragraphs'),
+        $(statement).attr('data-original-languagestatus'));
+      showLanguagePreferenceButton(statement, 'ALWAYS');
+    }
+    else {
+      switchLanguageToFloor(statement);
+      showLanguagePreferenceButton(statement, 'NEVER');
+    }
+  };
+
+  var switchLanguageToFloor = function(statement) {
+    var paragraphs = $(statement).find('.text p').get();
+    $(statement).data('original_paragraphs', paragraphs);
+    $(statement).attr('data-original-languagestatus', statement.getAttribute('data-languagestatus'));
+    var paragraphs_floor = $(statement.getAttribute('data-floor')).get();
+    switchLanguageContent(statement, paragraphs_floor, 'FLOOR');
+  };
+
+  var switchLanguageContent = function(statement, new_content, new_status) {
+    var $text = $(statement).find('div.text');
+    $text.children().remove();
+    $text.append(new_content);
+    statement.setAttribute('data-languagestatus', new_status);
+    displayLanguageStatus(statement);
+  };
+
+  var showLanguagePreferenceButton = function(statement, mode) {
+    // mode should be 'NEVER' or 'ALWAYS'
+    var show = (mode !== TRANSLATE_PREFERENCE && TRANSLATE_PREFERENCE !== 'ERROR');
+    $('.statement .lang-preference-switch').hide();
+    if (show && statement) {
+      $(statement).find('.lang-preference-switch span')
+        .text(mode === 'ALWAYS' ? 'Always translate' : 'Never translate')
+        .parent().attr('data-mode', mode)
+        .show();
+    }
+  };
+
+  var switchAllLanguages = function(mode) {
+    var $states;
+    if (mode === 'ALWAYS') {
+      $states = $('.statement[data-original-languagestatus][data-languagestatus="FLOOR"]');
+    }
+    else {
+      $states = $('.statement[data-languagestatus="TRANSLATED"],.statement[data-languagestatus="PARTIALLY_TRANSLATED"]');
+    }
+    $states.each(function() { switchLanguage(this); });
+  };
+
+  $('body')
+    .on('click', '.lang-switchable .lang-control', function(e) {
+      e.preventDefault();
+      var statement = $(e.target).closest('.statement').get()[0];
+      switchLanguage(statement);
+    })
+    .on('click', '.statement .lang-preference-switch', function(e) {
+      var mode = $(this).attr('data-mode');
+      saveTranslatePreference(mode);
+      switchAllLanguages(mode);
+      if (TRANSLATE_PREFERENCE === 'NEVER')
+        OP.utils.notify("From now on, statements will appear in their original language across this site.", 'success');
     });
 
 })();
