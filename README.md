@@ -7,7 +7,7 @@ Code is released under the AGPLv3 (see below). However, any site you create
 using this code cannot use the openparliament.ca name or logo, except as
 acknowledgement.
 
-Copyright (C) 2012 Michael Mulley (michaelmulley.com)
+Copyright (C) 2017 Michael Mulley (michaelmulley.com)
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU Affero General Public License as
@@ -39,8 +39,6 @@ Database
 
 The site's pretty useless without some data. Download a dump of the openparliament data
 from <http://openparliament.ca/data-download/>
-
-Save the SQLite database as `parliament.sqlite`, in the main project directory (same one `manage.py` is in).
 
 Settings
 -----------
