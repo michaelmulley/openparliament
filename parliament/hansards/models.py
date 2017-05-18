@@ -266,21 +266,12 @@ class Document(models.Model):
         self.downloaded = False
         self.save()
 
-    def _fetch_xml(self, language):
-        import urllib2
-        return urllib2.urlopen('http://www.parl.gc.ca/HousePublications/Publication.aspx?DocId=%s&Language=%s&Mode=1&xml=true'
-        % (self.source_id, language[0].upper())).read()
-
-    def download(self):
-        if self.downloaded:
-            return True
-        if self.date and self.date.year < 2006:
-            raise Exception("No XML available before 2006")
-        langs = ('en', 'fr')
-        paths = [self.get_filepath(l) for l in langs]
-        if not all((os.path.exists(p) for p in paths)):
-            for path, lang in zip(paths, langs):
-                self._save_file(path, self._fetch_xml(lang))
+    def save_xml(self, xml_en, xml_fr, overwrite=False):
+        if not overwrite and any(
+                os.path.exists(p) for p in [self.get_filepath(l) for l in ['en', 'fr']]):
+            raise Exception("XML files already exist")
+        self._save_file(self.get_filepath('en'), xml_en)
+        self._save_file(self.get_filepath('fr'), xml_fr)
         self.downloaded = True
         self.save()
 

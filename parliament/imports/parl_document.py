@@ -13,9 +13,11 @@ from xml.sax.saxutils import quoteattr
 
 from django.core import urlresolvers
 from django.db import transaction
+from django.db.models import Max
 
 import alpheus
-from BeautifulSoup import BeautifulSoup
+from lxml import etree
+import requests
 
 from parliament.bills.models import Bill, BillInSession, VoteQuestion
 from parliament.core.models import Politician, ElectedMember, Session
@@ -42,7 +44,8 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
                 return
             document.statement_set.all().delete()
 
-    document.download()
+    if not document.downloaded:
+        return False
     xml_en = document.get_cached_xml('en')
     pdoc_en = alpheus.parse_file(xml_en)
     xml_en.close()
@@ -289,29 +292,53 @@ def _build_tag(name, attrs):
         u''.join([u" %s=%s" % (k, quoteattr(unicode(v))) for k,v in sorted(attrs.items())])
     )
 
-def _docid_from_url(u):
-    return int(re.search(r'DocId=(\d+)', u).group(1))
-
 def fetch_latest_debates(session=None):
     if not session:
         session = Session.objects.current()
 
-    url = 'http://www2.parl.gc.ca/housechamberbusiness/chambersittings.aspx?View=H&Parl=%d&Ses=%d&Language=E&Mode=2' % (
-        session.parliamentnum, session.sessnum)
-    soup = BeautifulSoup(urllib2.urlopen(url))
+    url_template = 'http://www.ourcommons.ca/Content/House/{parliamentnum}{sessnum}/Debates/{sitting:03d}/HAN{sitting:03d}-{lang}.XML'
 
-    cal = soup.find('div', id='ctl00_PageContent_calTextCalendar')
-    for link in cal.findAll('a', href=True):
-        source_id = _docid_from_url(link['href'])
-        if not Document.objects.filter(source_id=source_id).exists():
-            Document.objects.create(
+    sittings = Document.objects.filter(
+        document_type=Document.DEBATE, session=session).values_list(
+        'number', flat=True)
+    # FIXME at the moment ourcommons.ca doesn't make it easy to get a list of
+    # debates; this is a quick temporary solution that will break on special
+    # sittings like 128-B
+    if len(sittings) == 0:
+        max_sitting = 0
+    else:
+        max_sitting = max(int(n) for n in sittings if n.isdigit())
+
+    while True:
+        max_sitting += 1
+        url = url_template.format(parliamentnum=session.parliamentnum,
+            sessnum=session.sessnum, sitting=max_sitting, lang='E')
+        print url
+        resp = requests.get(url)
+        if resp.status_code != 200:
+            if resp.status_code != 404:
+                logger.error("Response %d from %s", resp.status_code, url)
+            break
+
+        xml_en = resp.content
+        url = url_template.format(parliamentnum=session.parliamentnum,
+            sessnum=session.sessnum, sitting=max_sitting, lang='F')
+        resp = requests.get(url)
+        resp.raise_for_status()
+        xml_fr = resp.content
+
+        source_id = int(etree.fromstring(xml_en).get('id'))
+        if Document.objects.filter(source_id=source_id).exists():
+            raise Exception("Document at source_id %s already exists but not sitting %s" %
+                (source_id, max_sitting))
+        assert int(etree.fromstring(xml_fr).get('id')) == source_id
+
+        with transaction.atomic():
+            doc = Document.objects.create(
                 document_type=Document.DEBATE,
                 session=session,
-                source_id=source_id
+                source_id=source_id,
+                number=str(max_sitting)
             )
-
-
-
-
-        
-
+            doc.save_xml(xml_en, xml_fr)
+            logger.info("Saved sitting %s", doc.number)
