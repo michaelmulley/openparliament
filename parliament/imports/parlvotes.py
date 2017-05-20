@@ -1,6 +1,7 @@
-import xml.etree.ElementTree as etree
-import urllib2
 import datetime
+
+from lxml import etree
+import requests
 
 from django.db import transaction
 
@@ -11,34 +12,46 @@ from parliament.core import parsetools
 import logging
 logger = logging.getLogger(__name__)
 
-VOTELIST_URL = 'http://www2.parl.gc.ca/HouseChamberBusiness/Chambervotelist.aspx?Language=E&Mode=1&Parl=%(parliamentnum)s&Ses=%(sessnum)s&xml=True&SchemaVersion=1.0'
-VOTEDETAIL_URL = 'http://www2.parl.gc.ca/HouseChamberBusiness/Chambervotedetail.aspx?Language=%(lang)s&Mode=1&Parl=%(parliamentnum)s&Ses=%(sessnum)s&FltrParl=%(parliamentnum)s&FltrSes=%(sessnum)s&vote=%(votenum)s&xml=True'
+VOTELIST_URL = 'http://www.ourcommons.ca/Parliamentarians/{lang}/HouseVotes/ExportVotes?output=XML'
+VOTEDETAIL_URL = 'http://www.ourcommons.ca/Parliamentarians/en/HouseVotes/ExportDetailsVotes?output=XML&parliament={parliamentnum}&session={sessnum}&vote={votenumber}'
+#VOTELIST_URL = 'http://www2.parl.gc.ca/HouseChamberBusiness/Chambervotelist.aspx?Language=E&Mode=1&Parl=%(parliamentnum)s&Ses=%(sessnum)s&xml=True&SchemaVersion=1.0'
+#VOTEDETAIL_URL = 'http://www2.parl.gc.ca/HouseChamberBusiness/Chambervotedetail.aspx?Language=%(lang)s&Mode=1&Parl=%(parliamentnum)s&Ses=%(sessnum)s&FltrParl=%(parliamentnum)s&FltrSes=%(sessnum)s&vote=%(votenum)s&xml=True'
 
 @transaction.atomic
 def import_votes(session=None):
     if session is None:
         session = Session.objects.current()
-    votelisturl = VOTELIST_URL % {'parliamentnum' : session.parliamentnum, 'sessnum': session.sessnum}
-    votelistpage = urllib2.urlopen(votelisturl)
-    tree = etree.parse(votelistpage)
-    root = tree.getroot()
-    votelist = root.findall('Vote')
-    votelist.reverse() # We want to process earlier votes first, just for the order they show up in the activity feed
+    elif session != Session.objects.current():
+        raise Exception("FIXME only current session supported in VOTELIST_URL for now")
+    
+    votelisturl_en = VOTELIST_URL.format(lang='en')
+    resp = requests.get(votelisturl_en)
+    resp.raise_for_status()
+    root = etree.fromstring(resp.content)
+
+    votelisturl_fr = VOTELIST_URL.format(lang='fr')
+    resp = requests.get(votelisturl_fr)
+    resp.raise_for_status()
+    root_fr = etree.fromstring(resp.content)
+
+    votelist = root.findall('VoteParticipant')
     for vote in votelist:
-        votenumber = int(vote.attrib['number'])
+        votenumber = int(vote.findtext('DecisionDivisionNumber'))
         if VoteQuestion.objects.filter(session=session, number=votenumber).count():
             continue
         print "Processing vote #%s" % votenumber
+        date = vote.findtext('DecisionEventDateTime')
+        date = datetime.datetime.strptime(date, '%Y-%m-%dT%H:%M:%S').date()
         votequestion = VoteQuestion(
             number=votenumber,
             session=session,
-            date=datetime.date(*(int(x) for x in vote.attrib['date'].split('-'))),
-            yea_total=int(vote.find('TotalYeas').text),
-            nay_total=int(vote.find('TotalNays').text),
-            paired_total=int(vote.find('TotalPaired').text))
+            date=date,
+            yea_total=int(vote.findtext('DecisionDivisionNumberOfYeas')),
+            nay_total=int(vote.findtext('DecisionDivisionNumberOfNays')),
+            paired_total=int(vote.findtext('DecisionDivisionNumberOfPaired')))
         if sum((votequestion.yea_total, votequestion.nay_total)) < 100:
             logger.error("Fewer than 100 votes on vote#%s" % votenumber)
-        decision = vote.find('Decision').text
+        decision = vote.findtext('DecisionResultName')
         if decision in ('Agreed to', 'Agreed To'):
             votequestion.result = 'Y'
         elif decision == 'Negatived':
@@ -47,46 +60,41 @@ def import_votes(session=None):
             votequestion.result = 'T'
         else:
             raise Exception("Couldn't process vote result %s in %s" % (decision, votelisturl))
-        if vote.find('RelatedBill') is not None:
-            billnumber = vote.find('RelatedBill').attrib['number']
+        if vote.findtext('BillNumberCode'):
+            billnumber = vote.findtext('BillNumberCode')
             try:
                 votequestion.bill = Bill.objects.get(sessions=session, number=billnumber)
             except Bill.DoesNotExist:
                 votequestion.bill = Bill.objects.create_temporary_bill(session=session, number=billnumber)
                 logger.warning("Temporary bill %s created for vote %s" % (billnumber, votenumber))
 
-        # Now get the detailed results
-        def get_detail(lang):
-            votedetailurl = VOTEDETAIL_URL % {
-                    'lang': lang,
-                    'parliamentnum' : session.parliamentnum,
-                    'sessnum': session.sessnum,
-                    'votenum': votenumber 
-            }
-            votedetailpage = urllib2.urlopen(votedetailurl)
-            detailtree = etree.parse(votedetailpage)
-            detailroot = detailtree.getroot()
-            return (detailroot, parsetools.etree_extract_text(detailroot.find('Context')).strip())
+        votequestion.description_en = vote.findtext('DecisionDivisionSubject')
         try:
-            detailroot_fr, votequestion.description_fr = get_detail('F')
-            detailroot, votequestion.description_en = get_detail('E')
-        except Exception as e:
-            logger.exception("Import error on vote #%s" % votenumber)
-            continue
-        
+            votequestion.description_fr = root_fr.xpath(
+                'VoteParticipant/DecisionDivisionNumber[text()=%s]/../DecisionDivisionSubject/text()'
+                % votenumber)[0]
+        except Exception:
+            logger.exception("Couldn't get french description for vote %s" % votenumber)
+
         # Okay, save the question, start processing members.
         votequestion.save()
-        for voter in detailroot.findall('Participant'):
+
+        detailurl = VOTEDETAIL_URL.format(parliamentnum=session.parliamentnum,
+            sessnum=session.sessnum, votenumber=votenumber)
+        resp = requests.get(detailurl)
+        resp.raise_for_status()
+        detailroot = etree.fromstring(resp.content)
+
+        for voter in detailroot.findall('VoteParticipant'):
             name = voter.find('FirstName').text + ' ' + voter.find('LastName').text
-            riding = Riding.objects.get_by_name(voter.find('Constituency').text)
+            riding = Riding.objects.get_by_name(voter.find('ConstituencyName').text)
             pol = Politician.objects.get_by_name(name=name, session=session, riding=riding)
             member = ElectedMember.objects.get_by_pol(politician=pol, date=votequestion.date)
-            rvote = voter.find('RecordedVote')
-            if rvote.find('Yea').text == '1':
+            if voter.find('Yea').text == '1':
                 ballot = 'Y'
-            elif rvote.find('Nay').text == '1':
+            elif voter.find('Nay').text == '1':
                 ballot = 'N'
-            elif rvote.find('Paired').text == '1':
+            elif voter.find('Paired').text == '1':
                 ballot = 'P'
             else:
                 raise Exception("Couldn't parse RecordedVote for %s in vote %s" % (name, votenumber))
