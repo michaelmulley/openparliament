@@ -296,6 +296,13 @@ def _build_tag(name, attrs):
         u''.join([u" %s=%s" % (k, quoteattr(unicode(v))) for k,v in sorted(attrs.items())])
     )
 
+def _test_has_paragraph_ids(elem):
+    """Do all, or almost all, of the paragraphs in this document have ID attributes? 
+    Sometimes they're missing at first."""
+    paratext = elem.xpath('//ParaText')
+    paratext_with_id = [pt for pt in paratext if pt.get('id')]
+    return (len(paratext_with_id) / float(len(paratext))) > 0.95
+
 def fetch_latest_debates(session=None):
     if not session:
         session = Session.objects.current()
@@ -331,11 +338,18 @@ def fetch_latest_debates(session=None):
         resp.raise_for_status()
         xml_fr = resp.content
 
-        source_id = int(etree.fromstring(xml_en).get('id'))
+        doc_en = etree.fromstring(xml_en)
+        doc_fr = etree.fromstring(xml_fr)
+
+        source_id = int(doc_en.get('id'))
         if Document.objects.filter(source_id=source_id).exists():
             raise Exception("Document at source_id %s already exists but not sitting %s" %
                 (source_id, max_sitting))
-        assert int(etree.fromstring(xml_fr).get('id')) == source_id
+        assert int(doc_fr.get('id')) == source_id
+
+        if not (_test_has_paragraph_ids(doc_en) and _test_has_paragraph_ids(doc_fr)):
+            logger.warning("Missing paragraph IDs, cancelling")
+            continue
 
         with transaction.atomic():
             doc = Document.objects.create(
