@@ -374,9 +374,9 @@ def refresh_xml(document):
     """
     if document.document_type == Document.DEBATE:
         url_en = HANSARD_URL.format(parliamentnum=document.session.parliamentnum,
-            sessnum=document.session.sessnum, sitting=document.number, lang='E')
+            sessnum=document.session.sessnum, sitting=int(document.number), lang='E')
         url_fr = HANSARD_URL.format(parliamentnum=document.session.parliamentnum,
-            sessnum=document.session.sessnum, sitting=document.number, lang='F')
+            sessnum=document.session.sessnum, sitting=int(document.number), lang='F')
     else:
         raise NotImplementedError
 
