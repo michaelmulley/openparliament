@@ -110,6 +110,7 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
     _r_paragraph_id = re.compile(ur'<p[^>]* data-HoCid="(?P<id>\d+)"')
     fr_paragraphs = dict()
     fr_statements = dict()
+    missing_id_count = 0
 
     def _get_paragraph_id(p):
         return int(_r_paragraph_id.match(p).group('id'))
@@ -121,15 +122,21 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
             pid = _get_paragraph_id(p)
             if pid:
                 fr_paragraphs[pid] = p
+            else:
+                missing_id_count += 1
 
     def _substitute_french_content(match):
         try:
-            return fr_paragraphs[_get_paragraph_id(match.group(0))]
+            pid = _get_paragraph_id(match.group(0))
+            if pid:
+                return fr_paragraphs[pid]
+            else:
+                return match.group(0)
         except KeyError:
             logger.error("Paragraph ID %s not found in French for %s" % (match.group(0), document))
             return match.group(0)
 
-    if not fr_paragraphs:
+    if missing_id_count > len(fr_paragraphs):
         logger.error("French paragraphs not available")
     else:
         for st in statements:
