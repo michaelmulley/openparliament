@@ -310,11 +310,11 @@ def _test_has_paragraph_ids(elem):
     paratext_with_id = [pt for pt in paratext if pt.get('id')]
     return (len(paratext_with_id) / float(len(paratext))) > 0.95
 
+HANSARD_URL = 'http://www.ourcommons.ca/Content/House/{parliamentnum}{sessnum}/Debates/{sitting:03d}/HAN{sitting:03d}-{lang}.XML'
+
 def fetch_latest_debates(session=None):
     if not session:
         session = Session.objects.current()
-
-    url_template = 'http://www.ourcommons.ca/Content/House/{parliamentnum}{sessnum}/Debates/{sitting:03d}/HAN{sitting:03d}-{lang}.XML'
 
     sittings = Document.objects.filter(
         document_type=Document.DEBATE, session=session).values_list(
@@ -329,7 +329,7 @@ def fetch_latest_debates(session=None):
 
     while True:
         max_sitting += 1
-        url = url_template.format(parliamentnum=session.parliamentnum,
+        url = HANSARD_URL.format(parliamentnum=session.parliamentnum,
             sessnum=session.sessnum, sitting=max_sitting, lang='E')
         resp = requests.get(url)
         if resp.status_code != 200:
@@ -339,7 +339,7 @@ def fetch_latest_debates(session=None):
         print url
 
         xml_en = resp.content
-        url = url_template.format(parliamentnum=session.parliamentnum,
+        url = HANSARD_URL.format(parliamentnum=session.parliamentnum,
             sessnum=session.sessnum, sitting=max_sitting, lang='F')
         resp = requests.get(url)
         resp.raise_for_status()
@@ -367,3 +367,26 @@ def fetch_latest_debates(session=None):
             )
             doc.save_xml(xml_en, xml_fr)
             logger.info("Saved sitting %s", doc.number)
+
+def refresh_xml(document):
+    """
+    Download new XML from Parliament, reimport.
+    """
+    if document.document_type == Document.DEBATE:
+        url_en = HANSARD_URL.format(parliamentnum=document.session.parliamentnum,
+            sessnum=document.session.sessnum, sitting=document.number, lang='E')
+        url_fr = HANSARD_URL.format(parliamentnum=document.session.parliamentnum,
+            sessnum=document.session.sessnum, sitting=document.number, lang='F')
+    else:
+        raise NotImplementedError
+
+    resp_en = requests.get(url_en)
+    resp_en.raise_for_status()
+    xml_en = resp_en.content
+
+    resp_fr = requests.get(url_fr)
+    resp_fr.raise_for_status()
+    xml_fr = resp_fr.content
+
+    document.save_xml(xml_en, xml_fr, overwrite=True)
+    import_document(document)
