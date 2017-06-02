@@ -380,7 +380,7 @@ class Statement(models.Model):
     def content_floor_if_necessary(self):
         """Returns text spoken in the original language(s), but only if that would
         be different than the content in the default language."""
-        if not self.content_en and self.content_fr:
+        if not (self.content_en and self.content_fr):
             return ''
 
         lang_matches = re.finditer(r'data-originallang="(\w\w)"',
