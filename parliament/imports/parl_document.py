@@ -118,7 +118,9 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
         if st.meta['id']:
             fr_statements[st.meta['id']] = st
         for p in _r_paragraphs.findall(st.content):
-            fr_paragraphs[_get_paragraph_id(p)] = p
+            pid = _get_paragraph_id(p)
+            if pid:
+                fr_paragraphs[pid] = p
 
     def _substitute_french_content(match):
         try:
@@ -127,24 +129,26 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
             logger.error("Paragraph ID %s not found in French for %s" % (match.group(0), document))
             return match.group(0)
 
-    for st in statements:
-        st.content_fr = _process_related_links(
-            _r_paragraphs.sub(_substitute_french_content, st.content_en),
-            st
-        )
-        fr_data = fr_statements.get(st.source_id)
-        if fr_data:
-            st.h1_fr = fr_data.meta.get('h1', '')
-            st.h2_fr = fr_data.meta.get('h2', '')
-            st.h3_fr = fr_data.meta.get('h3', '')
-            if st.h1_fr and not st.h2_fr:
-                st.h2_fr = s.h3_fr
-                st.h3_fr = ''
-            st.who_fr = fr_data.meta.get('person_attribution', '')
-            st.who_context_fr = fr_data.meta.get('person_context', '')
+    if not fr_paragraphs:
+        logger.error("French paragraphs not available")
+    else:
+        for st in statements:
+            st.content_fr = _process_related_links(
+                _r_paragraphs.sub(_substitute_french_content, st.content_en),
+                st
+            )
+            fr_data = fr_statements.get(st.source_id)
+            if fr_data:
+                st.h1_fr = fr_data.meta.get('h1', '')
+                st.h2_fr = fr_data.meta.get('h2', '')
+                st.h3_fr = fr_data.meta.get('h3', '')
+                if st.h1_fr and not st.h2_fr:
+                    st.h2_fr = s.h3_fr
+                    st.h3_fr = ''
+                st.who_fr = fr_data.meta.get('person_attribution', '')
+                st.who_context_fr = fr_data.meta.get('person_context', '')
 
-
-    document.multilingual = True
+        document.multilingual = True
 
     Statement.set_slugs(statements)
 
@@ -313,12 +317,12 @@ def fetch_latest_debates(session=None):
         max_sitting += 1
         url = url_template.format(parliamentnum=session.parliamentnum,
             sessnum=session.sessnum, sitting=max_sitting, lang='E')
-        print url
         resp = requests.get(url)
         if resp.status_code != 200:
             if resp.status_code != 404:
                 logger.error("Response %d from %s", resp.status_code, url)
             break
+        print url
 
         xml_en = resp.content
         url = url_template.format(parliamentnum=session.parliamentnum,
