@@ -76,7 +76,8 @@
     if (!lang_status) {
       lang_status = _determineLanguageStatus(statement);
       statement.setAttribute('data-languagestatus', lang_status);
-      if (statement.getAttribute('data-floor'))
+      var floor = statement.getAttribute('data-floor');
+      if (floor && floor.length > 9)
         $(statement).addClass('lang-switchable');
     }
     return lang_status;
@@ -107,7 +108,9 @@
     var paragraphs = $(statement).find('.text p').get();
     $(statement).data('original_paragraphs', paragraphs);
     $(statement).attr('data-original-languagestatus', statement.getAttribute('data-languagestatus'));
-    var paragraphs_floor = $(statement.getAttribute('data-floor')).get();
+    var floor = statement.getAttribute('data-floor');
+    if (floor.length < 10) { return; }
+    var paragraphs_floor = $(floor).get();
     switchLanguageContent(statement, paragraphs_floor, 'FLOOR');
   };
 
