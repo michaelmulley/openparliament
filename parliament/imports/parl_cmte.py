@@ -121,7 +121,7 @@ def import_committee_documents(session):
         #import_committee_reports(comm, session)
         #time.sleep(1)
 
-COMMITTEE_MEETINGS_URL = 'http://www.%(domains)s.ca/Committees/en/%(acronym)s/Meetings?parl=%(parliamentnum)d&session=%(sessnum)d'
+COMMITTEE_MEETINGS_URL = 'http://www.%(domain)s.ca/Committees/en/%(acronym)s/Meetings?parl=%(parliamentnum)d&session=%(sessnum)d'
 @transaction.atomic
 def import_committee_meetings(committee, session):
 
