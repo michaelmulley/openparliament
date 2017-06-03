@@ -9,7 +9,7 @@ from parliament.core.models import Session
 from parliament.core.parsetools import slugify
 from parliament.core.templatetags.ours import english_list
 from parliament.core.utils import memoize_property, language_property
-from parliament.hansards.models import Document, url_from_docid
+from parliament.hansards.models import Document
 
 class CommitteeManager(models.Manager):
 
@@ -235,19 +235,27 @@ class CommitteeMeeting(models.Model):
 
     @property
     def minutes_url(self):
-        return url_from_docid(self.minutes)
+        if not self.minutes:
+            return None
+        return 'http://www.ourcommons.ca/DocumentViewer/{}/{}/{}/meeting-{}/minutes'.format(
+            settings.LANGUAGE_CODE[:2], self.session.id,
+            self.committee.get_acronym(self.session), self.number)
 
     @property
     def notice_url(self):
-        return url_from_docid(self.notice)
-
+        if not self.notice:
+            return None
+        return 'http://www.ourcommons.ca/DocumentViewer/{}/{}/{}/meeting-{}/notice'.format(
+            settings.LANGUAGE_CODE[:2], self.session.id,
+            self.committee.get_acronym(self.session), self.number)
+    
     @property
     def webcast_url(self):
-        return 'http://www.parl.gc.ca/Committees/%(lang)s/Redirects/ParlVuMeetingPage?MeetingId=%(source_id)d' % {
-            'lang': settings.LANGUAGE_CODE[:2],
-            'source_id': self.source_id
-        } if (self.webcast and self.source_id) else None
-
+        if not self.webcast:
+            return None
+        return 'http://www.ourcommons.ca/webcast/{}/{}/{}'.format(
+            self.session.id, self.committee.get_acronym(self.session), self.number)
+    
     @property
     def datetime(self):
         return datetime.datetime.combine(self.date, self.start_time)
@@ -264,7 +272,6 @@ class CommitteeReport(models.Model):
     number = models.SmallIntegerField(blank=True, null=True) # watch this become a char
     name_en = models.CharField(max_length=500)
     name_fr = models.CharField(max_length=500, blank=True)
-
     
     source_id = models.IntegerField(unique=True, db_index=True)
     

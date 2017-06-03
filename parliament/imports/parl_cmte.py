@@ -8,6 +8,7 @@ from urlparse import urljoin
 from django.db import transaction
 
 import lxml.html
+import lxml.etree
 import requests
 
 from parliament.committees.models import (Committee, CommitteeMeeting,
@@ -18,7 +19,7 @@ from parliament.hansards.models import Document
 
 logger = logging.getLogger(__name__)
 
-COMMITTEE_LIST_URL = 'http://www.parl.gc.ca/Committees/{lang}/List?parl={parl}&session={sess}'
+COMMITTEE_LIST_URL = 'http://www.ourcommons.ca/Committees/{lang}/List?parl={parl}&session={sess}'
 @transaction.atomic
 def import_committee_list(session=None):
     if session is None:
@@ -120,7 +121,7 @@ def import_committee_documents(session):
         #import_committee_reports(comm, session)
         #time.sleep(1)
 
-COMMITTEE_MEETINGS_URL = 'http://www.parl.gc.ca/Committees/en/%(acronym)s/Meetings?parl=%(parliamentnum)d&session=%(sessnum)d'
+COMMITTEE_MEETINGS_URL = 'http://www.ourcommons.ca/Committees/en/%(acronym)s/Meetings?parl=%(parliamentnum)d&session=%(sessnum)d'
 @transaction.atomic
 def import_committee_meetings(committee, session):
 
@@ -192,29 +193,15 @@ def import_committee_meetings(committee, session):
         
         notice_link = mtg_row.cssselect('a.btn-meeting-notice')
         if notice_link:
-            meeting.notice = _docid_from_url(notice_link[0].get('href'))
+            meeting.notice = 1
         minutes_link = mtg_row.cssselect('a.btn-meeting-minutes')
         if minutes_link:
-            meeting.minutes = _docid_from_url(minutes_link[0].get('href'))
+            meeting.minutes = 1
         
         evidence_link = mtg_row.cssselect('a.btn-meeting-evidence')
-        if evidence_link:
-            evidence_id = _docid_from_url(evidence_link[0].get('href'))
-            if meeting.evidence_id:
-                if meeting.evidence.source_id != evidence_id:
-                    raise Exception("Evidence docid mismatch for %s %s: %s %s" %
-                        (committee.acronym, number, evidence_id, meeting.evidence.source_id))
-                else:
-                    # Evidence hasn't changed; we don't need to worry about updating
-                    continue
-            else:
-                if Document.objects.filter(source_id=evidence_id).exists():
-                    raise Exception("Found evidence source_id %s, but it already exists" % evidence_id)
-                meeting.evidence = Document.objects.create(
-                    source_id=evidence_id,
-                    date=meeting.date,
-                    session=session,
-                    document_type=Document.EVIDENCE)
+        if evidence_link and not meeting.evidence:
+            evidence_viewer_url = urljoin(url, evidence_link[0].get('href'))
+            _download_evidence(meeting, evidence_viewer_url)
         
         meeting.webcast = bool(mtg_row.cssselect('.btn-meeting-parlvu'))
         meeting.in_camera = bool(mtg_row.cssselect('.meeting-title i[title*="In Camera"]'))
@@ -236,6 +223,36 @@ def import_committee_meetings(committee, session):
                     committee, name, study_link.get('href'))
     
     return True
+
+def _get_xml_url_from_documentviewer_url(url):
+    resp = requests.get(url)
+    resp.raise_for_status()
+    root = lxml.html.fromstring(resp.text)
+    xml_button = root.cssselect('a.btn-export-xml')[0]
+    return urljoin(url, xml_button.get('href'))
+
+def _download_evidence(meeting, evidence_viewer_url):
+    xml_url_en = _get_xml_url_from_documentviewer_url(evidence_viewer_url)
+    xml_url_fr = xml_url_en.replace('-E.', '-F.')
+    assert xml_url_fr.upper().endswith('-F.XML')
+    assert not meeting.evidence
+
+    resp = requests.get(xml_url_en)
+    resp.raise_for_status()
+    xml_en = resp.content
+
+    resp = requests.get(xml_url_fr)
+    resp.raise_for_status()
+    xml_fr = resp.content
+
+    source_id = int(lxml.etree.fromstring(xml_en).get('id'))
+
+    meeting.evidence = Document.objects.create(
+        source_id=source_id,
+        date=meeting.date,
+        session=meeting.session,
+        document_type=Document.EVIDENCE)
+    meeting.evidence.save_xml(xml_en, xml_fr)
 
 def get_activity_by_url(activity_url, committee, session):
     activity_id = int(re.search(r'(studyActivityId|Stac)=(\d+)', activity_url).group(2))
