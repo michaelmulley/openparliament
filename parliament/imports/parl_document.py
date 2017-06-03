@@ -138,6 +138,7 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
 
     if missing_id_count > len(fr_paragraphs):
         logger.error("French paragraphs not available")
+        document.multilingual = False
     else:
         for st in statements:
             st.content_fr = _process_related_links(
