@@ -121,14 +121,15 @@ def import_committee_documents(session):
         #import_committee_reports(comm, session)
         #time.sleep(1)
 
-COMMITTEE_MEETINGS_URL = 'http://www.ourcommons.ca/Committees/en/%(acronym)s/Meetings?parl=%(parliamentnum)d&session=%(sessnum)d'
+COMMITTEE_MEETINGS_URL = 'http://www.%(domains)s.ca/Committees/en/%(acronym)s/Meetings?parl=%(parliamentnum)d&session=%(sessnum)d'
 @transaction.atomic
 def import_committee_meetings(committee, session):
 
     acronym = committee.get_acronym(session)
     url = COMMITTEE_MEETINGS_URL % {'acronym': acronym,
         'parliamentnum': session.parliamentnum,
-        'sessnum': session.sessnum}
+        'sessnum': session.sessnum,
+        'domain': 'parl' if committee.joint else 'ourcommons'}
     resp = urllib2.urlopen(url)
     tree = lxml.html.parse(resp)
     root = tree.getroot()

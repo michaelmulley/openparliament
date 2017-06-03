@@ -29,6 +29,7 @@ class Committee(models.Model):
     parent = models.ForeignKey('self', related_name='subcommittees',
         blank=True, null=True)
     sessions = models.ManyToManyField(Session, through='CommitteeInSession')
+    joint = models.BooleanField('Joint committee?', default=False)
 
     display = models.BooleanField('Display on site?', db_index=True, default=True)
 
