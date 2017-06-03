@@ -216,7 +216,7 @@ def import_committee_meetings(committee, session):
         for study_link in mtg_row.cssselect('.meeting-card-study a'):
             name = study_link.text.strip()
             try:
-                study = get_activity_by_url(study_link.get('href'),
+                study = get_activity_by_url(urljoin(url, study_link.get('href')),
                     committee=committee, session=session)
                 meeting.activities.add(study)
             except:
@@ -257,7 +257,6 @@ def _download_evidence(meeting, evidence_viewer_url):
 
 def get_activity_by_url(activity_url, committee, session):
     activity_id = int(re.search(r'(studyActivityId|Stac)=(\d+)', activity_url).group(2))
-    activity_url = urljoin(COMMITTEE_MEETINGS_URL, activity_url)
 
     try:
         return CommitteeActivityInSession.objects.get(source_id=activity_id).activity
@@ -286,7 +285,7 @@ def get_activity_by_url(activity_url, committee, session):
     if CommitteeActivityInSession.objects.exclude(source_id=activity_id).filter(
             session=session, activity=activity).exists():
         logger.info("Apparent duplicate activity ID for %s %s %s: %s" %
-                     (activity, activity.committee, session, activity_id))
+            (activity, activity.committee, session, activity_id))
         return activity
     
     CommitteeActivityInSession.objects.create(
