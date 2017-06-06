@@ -191,7 +191,7 @@ class Subscription(models.Model):
 
     def get_subject_line(self, documents):
         if self.topic.politician_hansard_alert:
-            topics = set((d['topic'] for d in documents))
+            topics = set((d['topic'] for d in documents if 'topic' in d))
             subj = u'%(politician)s spoke about %(topics)s in the House' % {
                 'politician': documents[0]['politician'],
                 'topics': english_list(list(topics))
