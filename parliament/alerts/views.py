@@ -227,7 +227,7 @@ def bounce_webhook(request):
                 return HttpResponse('OK')
             
             for recipient in recipients:
-                if ntype == 'Bounce' and data['bounce']['bounceType'] == 'Transient':
+                if ntype == 'Bounce' and data['bounce']['bounceType'] in ('Transient', 'Undetermined'):
                     try:
                         user = User.objects.get(email=recipient)
                         user.data.setdefault('transient_bounces', []).append(
