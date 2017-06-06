@@ -191,11 +191,14 @@ class Subscription(models.Model):
 
     def get_subject_line(self, documents):
         if self.topic.politician_hansard_alert:
-            topics = set((d['topic'] for d in documents))
-            subj = u'%(politician)s spoke about %(topics)s in the House' % {
-                'politician': documents[0]['politician'],
-                'topics': english_list(list(topics))
-            }
+            topics = set((d['topic'] for d in documents if 'topic' in d))
+            if topics:
+                subj = u'%(politician)s spoke about %(topics)s in the House' % {
+                    'politician': documents[0]['politician'],
+                    'topics': english_list(list(topics))
+                }
+            else:
+                subj = documents[0]['politician'] + u' spoke in the House'
         else:
             subj = u'New from openparliament.ca for %s' % self.topic.query
         return subj[:200]
