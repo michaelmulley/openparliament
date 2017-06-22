@@ -202,7 +202,12 @@ def import_committee_meetings(committee, session):
         evidence_link = mtg_row.cssselect('a.btn-meeting-evidence')
         if evidence_link and not meeting.evidence:
             evidence_viewer_url = urljoin(url, evidence_link[0].get('href'))
-            _download_evidence(meeting, evidence_viewer_url)
+            try:
+                _download_evidence(meeting, evidence_viewer_url)
+            except NoXMLError:
+                if acronym != 'REGS':
+                    # REGS never has XML
+                    logger.error("No XML evidence for %s", meeting)
         
         meeting.webcast = bool(mtg_row.cssselect('.btn-meeting-parlvu'))
         meeting.in_camera = bool(mtg_row.cssselect('.meeting-title i[title*="In Camera"]'))
@@ -225,11 +230,17 @@ def import_committee_meetings(committee, session):
     
     return True
 
+class NoXMLError(Exception):
+    pass
+
 def _get_xml_url_from_documentviewer_url(url):
     resp = requests.get(url)
     resp.raise_for_status()
     root = lxml.html.fromstring(resp.text)
-    xml_button = root.cssselect('a.btn-export-xml')[0]
+    try:
+        xml_button = root.cssselect('a.btn-export-xml')[0]
+    except IndexError:
+        raise NoXMLError
     return urljoin(url, xml_button.get('href'))
 
 def _download_evidence(meeting, evidence_viewer_url):
