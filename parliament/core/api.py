@@ -314,7 +314,7 @@ class ModelDetailView(APIView):
 
 def no_robots(request):
     if request.get_host().lower().startswith(settings.PARLIAMENT_API_HOST) or getattr(settings, 'PARLIAMENT_NO_ROBOTS', False):
-        return HttpResponse('User-agent: *\nDisallow: /\n', content_type='text/plain')
+        return HttpResponse('User-agent: googlecivicsapi\nDisallow:\n\nUser-agent: *\nDisallow: /\n', content_type='text/plain')
     return HttpResponse('', content_type='text/plain')
 
 def docs(request):
