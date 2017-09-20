@@ -193,13 +193,20 @@ def _import_bill(lbill, session, previous_session=None):
         if BillEvent.objects.filter(source_id=source_id).exists():
             continue
 
+        try:
+            status_en = levent.xpath('Status/Title[@language="en"]/text()')[0]
+            status_fr = levent.xpath('Status/Title[@language="fr"]/text()')[0]
+        except IndexError:
+            logger.warning("No status present in billevent: %s", etree.tostring(levent))
+            continue
+
         event = BillEvent(
             source_id=source_id,
             bis=bis,
             date=_parse_date(levent.get('date')),
             institution='S' if levent.get('chamber') == 'SEN' else 'C',
-            status_en=levent.xpath('Status/Title[@language="en"]/text()')[0],
-            status_fr=levent.xpath('Status/Title[@language="fr"]/text()')[0]
+            status_en=status_en,
+            status_fr=status_fr
         )
 
         if event.institution == 'C':
