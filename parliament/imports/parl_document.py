@@ -147,7 +147,7 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
             fr_data = fr_statements.get(st.source_id)
             pids_en = [pid for p, pid in _get_paragraphs_and_ids(st.content_en)]
             pids_fr = [pid for p, pid in _get_paragraphs_and_ids(fr_data.content)] if fr_data else None
-            if fr_data and all(pids_en) and pids_en == pids_fr:
+            if fr_data and pids_en == pids_fr:
                 # Match by statement
                 st.content_fr = _process_related_links(fr_data.content, st)
             elif all(pids_en):
