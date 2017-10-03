@@ -313,6 +313,9 @@ def _test_has_paragraph_ids(elem):
 
 HANSARD_URL = 'http://www.ourcommons.ca/Content/House/{parliamentnum}{sessnum}/Debates/{sitting:03d}/HAN{sitting:03d}-{lang}.XML'
 
+class NoDocumentFound(Exception):
+    pass
+
 def fetch_latest_debates(session=None):
     if not session:
         session = Session.objects.current()
@@ -330,44 +333,51 @@ def fetch_latest_debates(session=None):
 
     while True:
         max_sitting += 1
-        url = HANSARD_URL.format(parliamentnum=session.parliamentnum,
-            sessnum=session.sessnum, sitting=max_sitting, lang='E')
-        resp = requests.get(url)
-        if resp.status_code != 200:
-            if resp.status_code != 404:
-                logger.error("Response %d from %s", resp.status_code, url)
+        try:
+            fetch_debate_for_sitting(session, max_sitting)
+        except NoDocumentFound:
             break
-        print url
 
-        xml_en = resp.content
-        url = HANSARD_URL.format(parliamentnum=session.parliamentnum,
-            sessnum=session.sessnum, sitting=max_sitting, lang='F')
-        resp = requests.get(url)
-        resp.raise_for_status()
-        xml_fr = resp.content
 
-        doc_en = etree.fromstring(xml_en)
-        doc_fr = etree.fromstring(xml_fr)
+def fetch_debate_for_sitting(session, sitting_number):
+    url = HANSARD_URL.format(parliamentnum=session.parliamentnum,
+        sessnum=session.sessnum, sitting=sitting_number, lang='E')
+    resp = requests.get(url)
+    if resp.status_code != 200:
+        if resp.status_code != 404:
+            logger.error("Response %d from %s", resp.status_code, url)
+        raise NoDocumentFound
+    print url
 
-        source_id = int(doc_en.get('id'))
-        if Document.objects.filter(source_id=source_id).exists():
-            raise Exception("Document at source_id %s already exists but not sitting %s" %
-                (source_id, max_sitting))
-        assert int(doc_fr.get('id')) == source_id
+    xml_en = resp.content
+    url = HANSARD_URL.format(parliamentnum=session.parliamentnum,
+        sessnum=session.sessnum, sitting=sitting_number, lang='F')
+    resp = requests.get(url)
+    resp.raise_for_status()
+    xml_fr = resp.content
 
-        if not (_test_has_paragraph_ids(doc_en) and _test_has_paragraph_ids(doc_fr)):
-            logger.warning("Missing paragraph IDs, cancelling")
-            continue
+    doc_en = etree.fromstring(xml_en)
+    doc_fr = etree.fromstring(xml_fr)
 
-        with transaction.atomic():
-            doc = Document.objects.create(
-                document_type=Document.DEBATE,
-                session=session,
-                source_id=source_id,
-                number=str(max_sitting)
-            )
-            doc.save_xml(xml_en, xml_fr)
-            logger.info("Saved sitting %s", doc.number)
+    source_id = int(doc_en.get('id'))
+    if Document.objects.filter(source_id=source_id).exists():
+        raise Exception("Document at source_id %s already exists but not sitting %s" %
+            (source_id, sitting_number))
+    assert int(doc_fr.get('id')) == source_id
+
+    if not (_test_has_paragraph_ids(doc_en) and _test_has_paragraph_ids(doc_fr)):
+        logger.warning("Missing paragraph IDs, cancelling")
+        continue
+
+    with transaction.atomic():
+        doc = Document.objects.create(
+            document_type=Document.DEBATE,
+            session=session,
+            source_id=source_id,
+            number=str(sitting_number)
+        )
+        doc.save_xml(xml_en, xml_fr)
+        logger.info("Saved sitting %s", doc.number)
 
 def refresh_xml(document):
     """
