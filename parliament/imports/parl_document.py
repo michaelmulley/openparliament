@@ -115,11 +115,13 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
     def _get_paragraph_id(p):
         return int(_r_paragraph_id.match(p).group('id'))
 
+    def _get_paragraphs_and_ids(content):
+        return [(p, _get_paragraph_id(p)) for p in _r_paragraphs.findall(content)]
+
     for st in pdoc_fr.statements:
         if st.meta['id']:
             fr_statements[st.meta['id']] = st
-        for p in _r_paragraphs.findall(st.content):
-            pid = _get_paragraph_id(p)
+        for p, pid in _get_paragraphs_and_ids(st.content):
             if pid:
                 fr_paragraphs[pid] = p
             else:
@@ -136,16 +138,27 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
             logger.error("Paragraph ID %s not found in French for %s" % (match.group(0), document))
             return match.group(0)
 
-    if missing_id_count > len(fr_paragraphs):
+    if missing_id_count > float(len(fr_paragraphs)):
         logger.error("French paragraphs not available")
         document.multilingual = False
     else:
+        document.multilingual = True
         for st in statements:
-            st.content_fr = _process_related_links(
-                _r_paragraphs.sub(_substitute_french_content, st.content_en),
-                st
-            )
             fr_data = fr_statements.get(st.source_id)
+            pids_en = [pid for p, pid in _get_paragraphs_and_ids(st.content_en)]
+            pids_fr = [pid for p, pid in _get_paragraphs_and_ids(fr_data.content)] if fr_data else None
+            if fr_data and all(pids_en) and pids_en == pids_fr:
+                # Match by statement
+                st.content_fr = _process_related_links(fr_data.content, st)
+            elif all(pids_en):
+                # Match by paragraph
+                st.content_fr = _process_related_links(
+                    _r_paragraphs.sub(_substitute_french_content, st.content_en),
+                    st
+                )
+            else:
+                logger.warning("Could not do multilingual match of statement %s", st.source_id)
+                document.multilingual = False
             if fr_data:
                 st.h1_fr = fr_data.meta.get('h1', '')
                 st.h2_fr = fr_data.meta.get('h2', '')
@@ -155,8 +168,6 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
                     st.h3_fr = ''
                 st.who_fr = fr_data.meta.get('person_attribution', '')
                 st.who_context_fr = fr_data.meta.get('person_context', '')
-
-        document.multilingual = True
 
     Statement.set_slugs(statements)
 
@@ -339,7 +350,7 @@ def fetch_latest_debates(session=None):
             break
 
 
-def fetch_debate_for_sitting(session, sitting_number):
+def fetch_debate_for_sitting(session, sitting_number, import_without_paragraph_ids=False):
     url = HANSARD_URL.format(parliamentnum=session.parliamentnum,
         sessnum=session.sessnum, sitting=sitting_number, lang='E')
     resp = requests.get(url)
@@ -365,7 +376,8 @@ def fetch_debate_for_sitting(session, sitting_number):
             (source_id, sitting_number))
     assert int(doc_fr.get('id')) == source_id
 
-    if not (_test_has_paragraph_ids(doc_en) and _test_has_paragraph_ids(doc_fr)):
+    if ((not import_without_paragraph_ids) and
+            not (_test_has_paragraph_ids(doc_en) and _test_has_paragraph_ids(doc_fr))):
         logger.warning("Missing paragraph IDs, cancelling")
         return
 
