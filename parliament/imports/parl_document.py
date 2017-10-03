@@ -367,7 +367,7 @@ def fetch_debate_for_sitting(session, sitting_number):
 
     if not (_test_has_paragraph_ids(doc_en) and _test_has_paragraph_ids(doc_fr)):
         logger.warning("Missing paragraph IDs, cancelling")
-        continue
+        return
 
     with transaction.atomic():
         doc = Document.objects.create(
