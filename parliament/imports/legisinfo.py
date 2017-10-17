@@ -197,7 +197,7 @@ def _import_bill(lbill, session, previous_session=None):
             status_en = levent.xpath('Status/Title[@language="en"]/text()')[0]
             status_fr = levent.xpath('Status/Title[@language="fr"]/text()')[0]
         except IndexError:
-            logger.warning("No status present in billevent: %s", etree.tostring(levent))
+            logger.debug("No status present in billevent: %s", etree.tostring(levent))
             continue
 
         event = BillEvent(
