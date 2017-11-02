@@ -117,6 +117,10 @@ def import_parl_election(url, election, session=None, soup=None): # FIXME sessio
     """Import an election from parl.gc.ca results.
     
     Sample URL: http://www2.parl.gc.ca/Sites/LOP/HFER/hfer.asp?Language=E&Search=Bres&ridProvince=0&genElection=0&byElection=2009%2F11%2F09&submit1=Search"""
+
+    # Steps: 1. run this function
+    # 2. el.label_winners()
+    # 3. el.create_members(Session.objects.current())
     
     def _addParty(link):
         match = re.search(r'\?([^"]+)', link)

@@ -28,7 +28,7 @@ class CurrentMPView(ModelListView):
 
     resource_name = 'Politicians'
 
-    default_limit = 308
+    default_limit = 338
 
     # The API stuff here is a bit of a hack: because of the database schema, it makes sense
     # to internally use ElectedMembers in order to add more fields to the default response,
