@@ -76,6 +76,7 @@ class Bill(models.Model):
         u'RoyalAssentGiven': 'Law (royal assent given)',
         u'SenateAt1stReading': 'First reading (Senate)',
         u'HouseAt1stReading': 'First reading (House)',
+        u'HouseAtReferralToCommitteeBeforeSecondReading': 'Referral to committee before 2nd reading (House)',
         u'HouseAt2ndReading': 'Second reading (House)',
         u'HouseAtReportStageAndSecondReading': 'Report stage and second reading (House)',
         u'SenateAt2ndReading': 'Second reading (Senate)',
