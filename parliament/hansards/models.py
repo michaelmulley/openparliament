@@ -2,7 +2,6 @@
 
 from collections import defaultdict, OrderedDict
 import datetime
-import gzip
 import os
 import re
 
@@ -239,7 +238,7 @@ class Document(models.Model):
     def get_filename(self, language):
         assert self.source_id
         assert language in ('en', 'fr')
-        return '%d-%s.xml.gz' % (self.source_id, language)
+        return '%d-%s.xml' % (self.source_id, language)
 
     def get_filepath(self, language):
         filename = self.get_filename(language)
@@ -249,14 +248,14 @@ class Document(models.Model):
             return os.path.join(settings.MEDIA_ROOT, 'document_cache', filename)
 
     def _save_file(self, path, content):
-        out = gzip.open(path, 'wb')
+        out = open(path, 'wb')
         out.write(content)
         out.close()
 
     def get_cached_xml(self, language):
         if not self.downloaded:
             raise Exception("Not yet downloaded")
-        return gzip.open(self.get_filepath(language), 'rb')
+        return open(self.get_filepath(language), 'rb')
 
     def delete_downloaded(self):
         for lang in ('en', 'fr'):
