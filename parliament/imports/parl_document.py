@@ -82,7 +82,11 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
             s.h3_en = ''
 
         s.who_en = pstate.meta.get('person_attribution', '')
-        s.who_hocid = int(pstate.meta['person_id']) if pstate.meta.get('person_id') else None
+        try:
+            s.who_hocid = int(pstate.meta['person_id']) if pstate.meta.get('person_id') else None
+        except ValueError:
+            logger.warning(u"ValueError parsing person ID %s", pstate.meta['person_id'])
+            s.who_hocid = None
         s.who_context_en = pstate.meta.get('person_context', '')
 
         s.statement_type = pstate.meta.get('intervention_type', '').lower()
