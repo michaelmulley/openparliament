@@ -10,7 +10,7 @@ from django.views.generic.dates import (ArchiveIndexView, YearArchiveView, Month
 from django.views.decorators.vary import vary_on_headers
 
 from parliament.committees.models import CommitteeMeeting
-from parliament.core.api import ModelDetailView, ModelListView, APIFilters
+from parliament.core.api import ModelDetailView, ModelListView, APIFilters, BadRequest
 from parliament.hansards.models import Document, Statement
 from parliament.text_analysis.models import TextAnalysis
 from parliament.text_analysis.views import TextAnalysisView
@@ -147,15 +147,21 @@ class SpeechesView(ModelListView):
         u = val.rstrip('/').split('/')
         if u[-4] == 'debates':
             # /debates/2013/2/15/
-            date = datetime.date(int(u[-3]), int(u[-2]), int(u[-1]))
+            try:
+                date = datetime.date(int(u[-3]), int(u[-2]), int(u[-1]))
+            except ValueError:
+                raise BadRequest("Invalid document URL")
             return qs.filter(
                 document__document_type='D',
                 document__date=date
             ).order_by('sequence')
         elif u[-4] == 'committees':
             # /commmittees/national-defence/41-1/63/
-            meeting = CommitteeMeeting.objects.get(
-                committee__slug=u[-3], session=u[-2], number=u[-1])
+            try:
+                meeting = CommitteeMeeting.objects.get(
+                    committee__slug=u[-3], session=u[-2], number=u[-1])
+            except (ValueError, CommitteeMeeting.DoesNotExist):
+                raise BadRequest("Invalid debate/meeting URL")
             return qs.filter(document=meeting.evidence_id).order_by('sequence')
     document_filter.help = "the URL of the debate or committee meeting"
 
