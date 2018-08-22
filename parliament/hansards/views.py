@@ -256,7 +256,8 @@ class APIArchiveView(ModelListView):
 
     filters = {
         'session': APIFilters.dbfield(help='e.g. 41-1'),
-        'date': APIFilters.dbfield(help='e.g. date__range=2010-01-01,2010-09-01'),
+        'date': APIFilters.dbfield(filter_types=APIFilters.numeric_filters,
+            help='e.g. date__range=2010-01-01,2010-09-01'),
         'number': APIFilters.dbfield(help='each Hansard in a session is given a sequential #'),
     }
 
