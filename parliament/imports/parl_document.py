@@ -354,7 +354,7 @@ def fetch_latest_debates(session=None):
             break
 
 
-def fetch_debate_for_sitting(session, sitting_number, import_without_paragraph_ids=False):
+def fetch_debate_for_sitting(session, sitting_number, import_without_paragraph_ids=True):
     url = HANSARD_URL.format(parliamentnum=session.parliamentnum,
         sessnum=session.sessnum, sitting=sitting_number, lang='E')
     resp = requests.get(url)
