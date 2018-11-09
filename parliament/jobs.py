@@ -59,7 +59,10 @@ def committees(sess=None):
         sess = Session.objects.current()
         if sess.start >= datetime.date.today():
             return
-    parl_cmte.import_committee_list(session=sess)
+    try:
+        parl_cmte.import_committee_list(session=sess)
+    except Exception as e:
+        logger.exception("Committee list import failure")
     parl_cmte.import_committee_documents(sess)
 
 def committees_full():
