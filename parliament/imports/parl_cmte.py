@@ -117,7 +117,10 @@ def _parse_date(d):
 def import_committee_documents(session):
     for comm in Committee.objects.filter(sessions=session).order_by('-parent'):
         # subcommittees last
-        import_committee_meetings(comm, session)
+        try:
+            import_committee_meetings(comm, session)
+        except urllib2.HTTPError as e:
+            logger.exception("Error importing committee %s", comm)
         #import_committee_reports(comm, session)
         #time.sleep(1)
 
