@@ -4,6 +4,7 @@ import urllib2
 
 from BeautifulSoup import BeautifulSoup
 from django.db import transaction
+import requests
 
 from parliament.core import parsetools
 from parliament.core.models import Riding, Party, Politician, ElectedMember
@@ -18,7 +19,7 @@ def import_ec_results(election, url="http://enr.elections.ca/DownloadResults.asp
     preliminary_results = {}
     validated_results = {}
 
-    for line in urllib2.urlopen(url):
+    for line in requests.get(url):
         line = line.decode('utf-8').split('\t')
         edid = line[0]
         if not edid.isdigit():
