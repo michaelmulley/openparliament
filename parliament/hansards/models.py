@@ -422,7 +422,8 @@ class Statement(models.Model):
                 elif lang == 'fr':
                     paragraphs[1].append(para)
                 else:
-                    raise Exception("What kind of language is %s?" % lang)
+                    paragraphs[0].append(para)
+                    logger.warning("Unrecognized language %s", lang)
 
         counts = [
             len(self.html_to_text(' '.join(p)).split())

@@ -62,7 +62,7 @@
     var langs = _.uniq(_.map(paragraphs, function(p) { return p.getAttribute('data-originallang'); }));
     if (langs.length == 0)
       return 'NONE';
-    if (langs.length == 2)
+    if (langs.length >= 2)
       return 'PARTIALLY_TRANSLATED';
     if (langs.length == 1) {
       if (langs[0] === OP.LANG)
