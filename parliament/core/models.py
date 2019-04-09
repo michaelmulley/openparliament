@@ -245,7 +245,7 @@ class PoliticianManager(models.Manager):
             except urllib2.HTTPError:
                 cache.set(invalid_ID_cache_key, True, 300)
                 raise Politician.DoesNotExist("Couldn't open " + (POL_LOOKUP_URL % parlid))
-            polname = root.cssselect('title')[0].text_content()
+            polname = root.cssselect('title')[0].text_content().partition(' - ')[0]
             polriding = root.cssselect('span.constituency')[0].text_content()
             polriding = polriding.replace(u'\xe2\x80\x94', '-') # replace unicode dash
                         
