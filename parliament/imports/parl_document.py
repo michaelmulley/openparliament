@@ -87,7 +87,7 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
         except ValueError:
             logger.warning(u"ValueError parsing person ID %s", pstate.meta['person_id'])
             s.who_hocid = None
-        s.who_context_en = pstate.meta.get('person_context', '')
+        s.who_context_en = pstate.meta.get('person_context', '')[:300]
 
         s.statement_type = pstate.meta.get('intervention_type', '').lower()
         s.written_question = pstate.meta.get('written_question', '').upper()[:1]
@@ -171,7 +171,7 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
                     st.h2_fr = s.h3_fr
                     st.h3_fr = ''
                 st.who_fr = fr_data.meta.get('person_attribution', '')[:300]
-                st.who_context_fr = fr_data.meta.get('person_context', '')
+                st.who_context_fr = fr_data.meta.get('person_context', '')[:300]
 
     Statement.set_slugs(statements)
 
