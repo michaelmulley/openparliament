@@ -81,7 +81,7 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
             s.h2_en = s.h3_en
             s.h3_en = ''
 
-        s.who_en = pstate.meta.get('person_attribution', '')
+        s.who_en = pstate.meta.get('person_attribution', '')[:300]
         try:
             s.who_hocid = int(pstate.meta['person_id']) if pstate.meta.get('person_id') else None
         except ValueError:
@@ -170,7 +170,7 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
                 if st.h1_fr and not st.h2_fr:
                     st.h2_fr = s.h3_fr
                     st.h3_fr = ''
-                st.who_fr = fr_data.meta.get('person_attribution', '')
+                st.who_fr = fr_data.meta.get('person_attribution', '')[:300]
                 st.who_context_fr = fr_data.meta.get('person_context', '')
 
     Statement.set_slugs(statements)
