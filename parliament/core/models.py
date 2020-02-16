@@ -12,6 +12,7 @@ from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.safestring import mark_safe
 
+import lxml.etree
 import lxml.html
 from markdown import markdown
 import requests
@@ -23,7 +24,8 @@ from parliament.core.utils import memoize_property, ActiveManager, language_prop
 import logging
 logger = logging.getLogger(__name__)
 
-POL_LOOKUP_URL = 'http://www.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=%d&Language=E'
+#POL_LOOKUP_URL = 'http://www.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=%d&Language=E'
+POL_LOOKUP_URL = 'https://www.ourcommons.ca/Parliamentarians/en/members/profileredirect?affiliationId=%d'
 
 class InternalXref(models.Model):
     """A general-purpose table for quickly storing internal links."""
@@ -239,15 +241,28 @@ class PoliticianManager(models.Manager):
             if not lookOnline:
                 return None # FIXME inconsistent behaviour: when should we return None vs. exception?
             #print "Unknown parlid %d... " % parlid,
+
             try:
-                resp = urllib2.urlopen(POL_LOOKUP_URL % parlid)
-                root = lxml.html.fromstring(resp.read())
-            except urllib2.HTTPError:
+                initial_url = POL_LOOKUP_URL % parlid
+                initial_resp = requests.get(initial_url)
+                initial_resp.raise_for_status()
+            except requests.HTTPError:
                 cache.set(invalid_ID_cache_key, True, 300)
-                raise Politician.DoesNotExist("Couldn't open " + (POL_LOOKUP_URL % parlid))
-            polname = root.cssselect('title')[0].text_content().partition(' - ')[0]
-            polriding = root.cssselect('span.constituency')[0].text_content()
-            polriding = polriding.replace(u'\xe2\x80\x94', '-') # replace unicode dash
+                raise Politician.DoesNotExist("Couldn't open " + initial_url)
+
+            xml_url = initial_resp.url
+            if not xml_url.endswith(')'):
+                if xml_url.endswith('Members/en'):
+                    raise Politician.DoesNotExist("ourcommons redirect doesn't recognize that ID")
+                raise Exception("Apparent change in ourcommons URL scheme? %s" % xml_url)
+            xml_url += '/xml'
+            xml_resp = requests.get(xml_url)
+            xml_resp.raise_for_status()
+            xml_doc = lxml.etree.fromstring(xml_resp.content)
+
+            polname = xml_doc.findtext('MemberOfParliamentRole/PersonOfficialFirstName'
+                ) + ' ' + xml_doc.findtext('MemberOfParliamentRole/PersonOfficialLastName')
+            polriding = xml_doc.findtext('MemberOfParliamentRole/ConstituencyName')
                         
             try:
                 riding = Riding.objects.get_by_name(polriding)
@@ -260,9 +275,6 @@ class PoliticianManager(models.Manager):
             #print "found %s." % pol
             pol.save_parl_id(parlid)
             polid = pol.id
-            # if parlinfolink:
-            #     match = re.search(r'Item=(.+?)&', parlinfolink['href'])
-            #     pol.save_parlinfo_id(match.group(1))
             return self.get_queryset().get(pk=polid)
     getByParlID = get_by_parl_id
 
