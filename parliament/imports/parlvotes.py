@@ -12,18 +12,13 @@ from parliament.core import parsetools
 import logging
 logger = logging.getLogger(__name__)
 
-VOTELIST_URL = 'http://www.ourcommons.ca/Parliamentarians/{lang}/HouseVotes/ExportVotes?output=XML'
-VOTEDETAIL_URL = 'http://www.ourcommons.ca/Parliamentarians/en/HouseVotes/ExportDetailsVotes?output=XML&parliament={parliamentnum}&session={sessnum}&vote={votenumber}'
-#VOTELIST_URL = 'http://www2.parl.gc.ca/HouseChamberBusiness/Chambervotelist.aspx?Language=E&Mode=1&Parl=%(parliamentnum)s&Ses=%(sessnum)s&xml=True&SchemaVersion=1.0'
-#VOTEDETAIL_URL = 'http://www2.parl.gc.ca/HouseChamberBusiness/Chambervotedetail.aspx?Language=%(lang)s&Mode=1&Parl=%(parliamentnum)s&Ses=%(sessnum)s&FltrParl=%(parliamentnum)s&FltrSes=%(sessnum)s&vote=%(votenum)s&xml=True'
+VOTELIST_URL = 'https://www.ourcommons.ca/members/{lang}/votes/xml'
+VOTEDETAIL_URL = 'https://www.ourcommons.ca/members/en/votes/{parliamentnum}/{sessnum}/{votenumber}/xml'
+#VOTELIST_URL = 'http://www.ourcommons.ca/Parliamentarians/{lang}/HouseVotes/ExportVotes?output=XML'
+#VOTEDETAIL_URL = 'http://www.ourcommons.ca/Parliamentarians/en/HouseVotes/ExportDetailsVotes?output=XML&parliament={parliamentnum}&session={sessnum}&vote={votenumber}'
 
 @transaction.atomic
-def import_votes(session=None):
-    if session is None:
-        session = Session.objects.current()
-    elif session != Session.objects.current():
-        raise Exception("FIXME only current session supported in VOTELIST_URL for now")
-    
+def import_votes():
     votelisturl_en = VOTELIST_URL.format(lang='en')
     resp = requests.get(votelisturl_en)
     resp.raise_for_status()
@@ -34,9 +29,13 @@ def import_votes(session=None):
     resp.raise_for_status()
     root_fr = etree.fromstring(resp.content)
 
-    votelist = root.findall('VoteParticipant')
+    votelist = root.findall('Vote')
     for vote in votelist:
         votenumber = int(vote.findtext('DecisionDivisionNumber'))
+        session = Session.objects.get(
+            parliamentnum=int(vote.findtext('ParliamentNumber')),
+            sessnum=int(vote.findtext('SessionNumber'))
+        )
         if VoteQuestion.objects.filter(session=session, number=votenumber).count():
             continue
         print "Processing vote #%s" % votenumber
@@ -71,7 +70,7 @@ def import_votes(session=None):
         votequestion.description_en = vote.findtext('DecisionDivisionSubject')
         try:
             votequestion.description_fr = root_fr.xpath(
-                'VoteParticipant/DecisionDivisionNumber[text()=%s]/../DecisionDivisionSubject/text()'
+                'Vote/DecisionDivisionNumber[text()=%s]/../DecisionDivisionSubject/text()'
                 % votenumber)[0]
         except Exception:
             logger.exception("Couldn't get french description for vote %s" % votenumber)
@@ -86,15 +85,16 @@ def import_votes(session=None):
         detailroot = etree.fromstring(resp.content)
 
         for voter in detailroot.findall('VoteParticipant'):
-            name = voter.find('FirstName').text + ' ' + voter.find('LastName').text
+            name = (voter.find('PersonOfficialFirstName').text 
+                + ' ' + voter.find('PersonOfficialLastName').text)
             riding = Riding.objects.get_by_name(voter.find('ConstituencyName').text)
             pol = Politician.objects.get_by_name(name=name, session=session, riding=riding)
             member = ElectedMember.objects.get_by_pol(politician=pol, date=votequestion.date)
-            if voter.find('Yea').text == '1':
+            if voter.find('IsVoteYea').text == 'true':
                 ballot = 'Y'
-            elif voter.find('Nay').text == '1':
+            elif voter.find('IsVoteNay').text == 'true':
                 ballot = 'N'
-            elif voter.find('Paired').text == '1':
+            elif voter.find('IsVotePaired').text == 'true':
                 ballot = 'P'
             else:
                 raise Exception("Couldn't parse RecordedVote for %s in vote %s" % (name, votenumber))
