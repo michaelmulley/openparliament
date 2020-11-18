@@ -181,12 +181,15 @@ def import_committee_meetings(committee, session):
                 meeting.save()
 
         date_string = mtg_row.cssselect('.meeting-title .date-label')[0].text_content().strip()
-        if date_string in ('Earlier Today', 'Later Today', 'In Progress', 'Tomorrow', 'Yesterday'):
+        if date_string in ('Earlier Today', 'Later Today', 'In Progress', 'Tomorrow', 'Yesterday', 'Suspended'):
             match = re.search(r'-(20\d\d)-(\d\d)-(\d\d)', mtg_row.get('class'))
             assert match
             meeting.date = datetime.date(int(match.group(1)), int(match.group(2)), int(match.group(3)))
         else:
-            meeting.date = _parse_date(date_string.partition(', ')[2]) # partition is to split off day of week
+            try:
+                meeting.date = _parse_date(date_string.partition(', ')[2]) # partition is to split off day of week
+            except ValueError:
+                raise Exception("Unrecognized date string %s for meeting %r" % (date_string, meeting))
         
         timestring = mtg_row.cssselect('.the-time')[0].text_content()
         match = re.search(r'(\d\d?):(\d\d) ([ap]\.?m\.?)(?: - (\d\d?):(\d\d) ([ap]\.?m\.?))?\s\(',
