@@ -28,3 +28,4 @@ webob==1.2.2
 jsonfield==1.0.3
 python-memcached==1.58
 django-imagekit==4.0
+django-recaptcha==2.0.6
