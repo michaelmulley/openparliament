@@ -134,6 +134,7 @@ INSTALLED_APPS = [
     'haystack',
     'imagekit',
     'compressor',
+    'captcha',
     'parliament.core',
     'parliament.accounts',
     'parliament.hansards',

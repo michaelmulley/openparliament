@@ -14,6 +14,9 @@ from django.core.mail import send_mail, mail_admins
 from django.core.signing import Signer, TimestampSigner, BadSignature
 from django.views.decorators.cache import never_cache
 
+from captcha.fields import ReCaptchaField
+from captcha.widgets import ReCaptchaV2Invisible
+
 from parliament.accounts.models import User
 from parliament.alerts.models import Subscription
 from parliament.core.models import Politician
@@ -22,8 +25,10 @@ from parliament.utils.views import JSONView
 
 class PoliticianAlertForm(forms.Form):
 
-    email = forms.EmailField(label='Your email')
+    email = forms.EmailField(label='Your email',
+        widget=forms.widgets.EmailInput(attrs={'class': 'input-group-field'}))
     politician = forms.IntegerField(widget=forms.HiddenInput)
+    captcha = ReCaptchaField(widget=ReCaptchaV2Invisible)
 
 @disable_on_readonly_db
 def politician_hansard_signup(request):

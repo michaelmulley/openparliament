@@ -22,14 +22,22 @@
 	<div class="context-col"><h2>Sign up</h2></div>
 	<div class="main-col">
 		<form class="signup" action="." method="POST">
+			{{ form.non_field_errors }}
 			<div class="input-group">
-				<span class="input-group-label">Your e-mail</span>
-				<input type="email" class="input-group-field" name="email">
+				<span class="input-group-label">
+					{{ form.email.label_tag }}	
+				</span>
+				{{ form.email }}
 				<div class="input-group-button">
-					<input type="hidden" name="politician" value="{{ pol.id }}" />
 					<input type="submit" class="button" value="Sign up" />
 				</div>
 			</div>
+		{% for field in form %}
+			{{ field.errors }}
+			{% if field.html_name != "email" %}
+				{{ field }}
+			{% endif %}
+		{% endfor %}
 		</form>
 	</div>
 </div>
