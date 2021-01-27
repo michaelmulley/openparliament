@@ -185,6 +185,10 @@ def politician_hansard_subscribe(request, signed_key):
             pol=pol,
             title=u'Email alerts for %s' % pol.name
         )
+        if user.email_bouncing:
+            mail_admins("bounce flag cleared after new signup", email)
+            user.email_bouncing = False
+            user.save()
     except BadSignature:
         ctx['key_error'] = True
 
