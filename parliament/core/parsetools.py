@@ -71,7 +71,7 @@ def slugify(s, allow_numbers=False):
     return re.sub(r'--+', '-', s)
 
 def normalizeName(s):
-    return tameWhitespace(removeAccents(stripHonorific(s).lower())).strip()
+    return tameWhitespace(removeAccents(stripHonorific(s).lower())).strip().replace(u"\u2019", "'")
 
 def munge_date(date):
     if date.count('0000') > 0:
