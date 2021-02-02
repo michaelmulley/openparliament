@@ -141,7 +141,7 @@ class AmbiguousPostcodeException(Exception):
         self.ec_url = ec_url
 
 
-EC_POSTCODE_URL = 'http://www.elections.ca/Scripts/vis/FindED?L=e&QID=-1&PAGEID=20&PC=%s'
+EC_POSTCODE_URL = 'https://www.elections.ca/Scripts/vis/FindED?L=e&QID=-1&PAGEID=20&PC=%s'
 r_ec_edid = re.compile(r'&ED=(\d{5})&')
 def postcode_to_edid_ec(postcode):
     resp = requests.get(EC_POSTCODE_URL % postcode.replace(' ', ''), allow_redirects=False)
