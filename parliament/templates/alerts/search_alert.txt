@@ -2,17 +2,17 @@
 {% for document in documents %}{% if document.django_ct == 'hansards.statement' %}
 {{ document.date|date:"F jS, P" }}
 {{ document.politician }} {% if document.topic %}on {{ document.topic }}{% elif document.committee %}at the {{ document.committee }} committee{% endif %}
-http://openparliament.ca{{ document.url }}
+https://openparliament.ca{{ document.url }}
 ----------------------------------------------------------
 
 {{ document.text|text_highlight }}
 {% elif document.django_ct == 'bills.bill' %}
 Bill {{ document.number }}
 {{ document.title }}
-http://openparliament.ca{{ document.url }}
+https://openparliament.ca{{ document.url }}
 {{ document.text|text_highlight }}
 {% else %}
-http://openparliament.ca{{ document.url }}
+https://openparliament.ca{{ document.url }}
 {{ document.text|text_highlight }}
 {% endif %}
 {% endfor %}
@@ -25,7 +25,7 @@ If you no longer want to subscribe to this alert, just follow the link below:
 {{ unsubscribe_url }}
 
 To manage your list of alerts, visit:
-http://openparliament.ca/alerts/
+https://openparliament.ca/alerts/
 
 love,
 openparliament.ca

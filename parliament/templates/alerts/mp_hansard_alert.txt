@@ -3,7 +3,7 @@
 {% for document in documents %}
 {{ document.date|date:"F jS, P" }}
 {{ document.topic }}
-http://openparliament.ca{{ document.url }}
+https://openparliament.ca{{ document.url }}
 ----------------------------------------------------------
 
 {{ document.full_text }}
@@ -18,7 +18,7 @@ If you no longer want to receive these messages, just follow the link below:
 {{ unsubscribe_url }}
 
 To manage your list of alerts, visit:
-http://openparliament.ca/alerts/
+https://openparliament.ca/alerts/
 
 love,
 openparliament.ca
