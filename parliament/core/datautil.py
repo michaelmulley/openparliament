@@ -163,17 +163,15 @@ def replace_links(old, new):
     fields = [f for f in old._meta.get_fields() if (f.auto_created and not f.concrete)]
     for relation in fields:
         if relation.one_to_many:
-            if relation.model == old.__class__:
-                print "Relation to self!"
-                continue
+            if relation.related_model == old.__class__:
+                raise Exception("Relation to self!")
             print relation.field.name
-            relation.model._default_manager.filter(**{relation.field.name: old}).update(**{relation.field.name: new})
+            relation.related_model._default_manager.filter(**{relation.field.name: old}).update(**{relation.field.name: new})
         elif relation.many_to_many:
-            if relation.model == old.__class__:
-                print "Relation to self!"
-                continue
+            if relation.related_model == old.__class__:
+                raise Exception("Relation to self!")
             print relation.field.name
-            for obj in relation.model._default_manager.filter(**{relation.field.name: old}):
+            for obj in relation.related_model._default_manager.filter(**{relation.field.name: old}):
                 getattr(obj, relation.field.name).remove(old)    
                 getattr(obj, relation.field.name).add(new)        
 
@@ -190,7 +188,7 @@ def _merge_pols(good, bad):
             xref.target_id = good.id
             xref.save()
             seen.add((xref.int_value, xref.text_value))
-    bad.delete()
+    print bad.delete()
 
     pi_seen = set()
     for pi in good.politicianinfo_set.all():
