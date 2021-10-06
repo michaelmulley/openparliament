@@ -160,20 +160,22 @@ def populate_parlid():
 def replace_links(old, new):
     if old.__class__ != new.__class__:
         raise Exception("Are old and new the same type?")
-    for relation in old._meta.get_all_related_objects():
-        if relation.model == old.__class__:
-            print "Relation to self!"
-            continue
-        print relation.field.name
-        relation.model._default_manager.filter(**{relation.field.name: old}).update(**{relation.field.name: new})
-    for relation in old._meta.get_all_related_many_to_many_objects():
-        if relation.model == old.__class__:
-            print "Relation to self!"
-            continue
-        print relation.field.name
-        for obj in relation.model._default_manager.filter(**{relation.field.name: old}):
-            getattr(obj, relation.field.name).remove(old)    
-            getattr(obj, relation.field.name).add(new)        
+    fields = [f for f in old._meta.get_fields() if (f.auto_created and not f.concrete)]
+    for relation in fields:
+        if relation.one_to_many:
+            if relation.model == old.__class__:
+                print "Relation to self!"
+                continue
+            print relation.field.name
+            relation.model._default_manager.filter(**{relation.field.name: old}).update(**{relation.field.name: new})
+        elif relation.many_to_many:
+            if relation.model == old.__class__:
+                print "Relation to self!"
+                continue
+            print relation.field.name
+            for obj in relation.model._default_manager.filter(**{relation.field.name: old}):
+                getattr(obj, relation.field.name).remove(old)    
+                getattr(obj, relation.field.name).add(new)        
 
 def _merge_pols(good, bad):
     #ElectedMember.objects.filter(politician=bad).update(politician=good)
