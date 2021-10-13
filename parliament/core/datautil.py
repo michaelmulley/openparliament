@@ -414,3 +414,12 @@ def add_missing_genders():
         assert gender in ('M', 'F')
         pol.gender = gender
         pol.save()
+
+def print_changed_mps(previous_date):
+    prev_members = ElectedMember.objects.on_date(previous_date)
+    current_members = ElectedMember.objects.current()
+    for prev in prev_members:
+        cur = current_members.get(riding=prev.riding)
+        if prev.politician != cur.politician:
+            print prev.riding
+            print "%s => %s" % (prev.politician.name, cur.politician.name)
