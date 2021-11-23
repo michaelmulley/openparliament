@@ -157,14 +157,18 @@ def populate_parlid():
             pol.parlwebid = int(match.group(1))
             pol.save()
 
-def replace_links(old, new):
+def replace_links(old, new, allow_self_relation=False):
     if old.__class__ != new.__class__:
         raise Exception("Are old and new the same type?")
     fields = [f for f in old._meta.get_fields() if (f.auto_created and not f.concrete)]
     for relation in fields:
         if relation.one_to_many:
             if relation.related_model == old.__class__:
-                raise Exception("Relation to self!")
+                if allow_self_relation:
+                    print "self: %r" % relation
+                    continue
+                else:
+                    raise Exception("Relation to self!")
             print relation.field.name
             relation.related_model._default_manager.filter(**{relation.field.name: old}).update(**{relation.field.name: new})
         elif relation.many_to_many:
