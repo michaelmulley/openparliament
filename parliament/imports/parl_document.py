@@ -326,7 +326,7 @@ def _test_has_paragraph_ids(elem):
     paratext_with_id = [pt for pt in paratext if pt.get('id')]
     return (len(paratext_with_id) / float(len(paratext))) > 0.95
 
-HANSARD_URL = 'http://www.ourcommons.ca/Content/House/{parliamentnum}{sessnum}/Debates/{sitting:03d}/HAN{sitting:03d}-{lang}.XML'
+HANSARD_URL = 'https://www.ourcommons.ca/Content/House/{parliamentnum}{sessnum}/Debates/{sitting:03d}/HAN{sitting:03d}-{lang}.XML'
 
 class NoDocumentFound(Exception):
     pass
