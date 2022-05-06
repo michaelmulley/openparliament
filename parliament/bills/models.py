@@ -16,13 +16,9 @@ from parliament.activity import utils as activity
 import logging
 logger = logging.getLogger(__name__)
 
-CALLBACK_URL = 'http://www2.parl.gc.ca/HousePublications/GetWebOptionsCallBack.aspx?SourceSystem=PRISM&ResourceType=Document&ResourceID=%d&language=1&DisplayMode=2'
-BILL_VOTES_URL = 'http://www2.parl.gc.ca/Housebills/BillVotes.aspx?Language=E&Parl=%s&Ses=%s&Bill=%s'
-
-LEGISINFO_BILL_URL = 'http://www.parl.gc.ca/LegisInfo/BillDetails.aspx?Language=%(lang)s&Mode=1&Bill=%(bill)s&Parl=%(parliament)s&Ses=%(session)s'
-LEGISINFO_BILL_ID_URL = 'http://www.parl.gc.ca/LEGISINFO/BillDetails.aspx?Language=%(lang)s&Mode=1&billId=%(id)s'
-PARLIAMENT_DOCVIEWER_URL = 'http://parl.gc.ca/HousePublications/Publication.aspx?Language=%(lang)s&Mode=1&DocId=%(docid)s'
-
+LEGISINFO_BILL_URL = 'https://www.parl.ca/legisinfo/%(lang)s/bill/%(parliament)s-%(session)s/%(bill)s'
+LEGISINFO_BILL_ID_URL = 'https://www.parl.ca/legisinfo/%(lang)s/bill/%(id)s'
+PARLIAMENT_DOCVIEWER_URL = 'https://www.parl.ca/DocumentViewer/%(lang)s/%(docid)s'
 class BillManager(models.Manager):
 
     def get_by_legisinfo_id(self, legisinfo_id):
@@ -88,7 +84,23 @@ class Bill(models.Model):
         u'HouseConsiderationOfCommitteeReport': 'Considering committee report (House)',
         u'SenateConsiderationOfAmendments': 'Considering amendments (Senate)',
         u'HouseConsiderationOfAmendments': 'Considering amendments (House)',
-        u'Introduced': 'Introduced'
+        u'Introduced': 'Introduced',
+        u'ProForma': 'Not a real bill (bills C-1 and S-1 are weird procedural relics)',
+        u'SenateBillWaitingHouse': 'Senate bill, now waiting to be considered in the House',
+        u'OutsideOrderPrecedence': u"Outside the Order of Precedence (a private member's bill that hasn't yet won the draw that determines which private member's bills can be debated)"
+    }
+
+    STATUS_STRING_TO_STATUS_CODE = {
+        u'At consideration in committee in the House of Commons': u'HouseInCommittee',
+        u'At consideration in committee in the Senate': u'SenateInCommittee',
+        u'At second reading in the House of Commons': u'HouseAt2ndReading',
+        u'At second reading in the Senate': u'SenateAt2ndReading',
+        u'At third reading in the Senate': u'SenateAt3rdReading',
+        u'Bill not proceeded with': u'WillNotBeProceededWith',
+        u'Introduced as pro forma bill': 'ProForma',
+        u'Outside the Order of Precedence': 'OutsideOrderPrecedence',
+        u'Royal assent received': u'RoyalAssentGiven',
+        u'Senate bill awaiting first reading in the House of Commons': 'SenateBillWaitingHouse'
     }
 
     name_en = models.TextField(blank=True)
@@ -130,25 +142,23 @@ class Bill(models.Model):
         return urlresolvers.reverse('bill', kwargs={
             'session_id': session.id, 'bill_number': self.number})
         
-    def get_legisinfo_url(self, lang='E'):
+    def get_legisinfo_url(self, lang='en'):
         return LEGISINFO_BILL_URL % {
             'lang': lang,
-            'bill': self.number.replace('-', ''),
+            'bill': self.number,
             'parliament': self.session.parliamentnum,
             'session': self.session.sessnum
         }
         
     legisinfo_url = property(get_legisinfo_url)
         
-    def get_billtext_url(self, lang='E', single_page=False):
+    def get_billtext_url(self, lang='en'): 
         if not self.text_docid:
             return None
         url = PARLIAMENT_DOCVIEWER_URL % {
             'lang': lang,
             'docid': self.text_docid
         }
-        if single_page:
-            url += '&File=4&Col=1'
         return url
 
     def get_text_object(self):
@@ -271,7 +281,7 @@ class BillInSession(models.Model):
     def get_absolute_url(self):
         return self.bill.url_for_session(self.session)
 
-    def get_legisinfo_url(self, lang='E'):
+    def get_legisinfo_url(self, lang='en'):
         return LEGISINFO_BILL_ID_URL % {
             'lang': lang,
             'id': self.legisinfo_id

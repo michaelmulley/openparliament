@@ -73,7 +73,7 @@ $(function () {
 {% if bill.name %}
 <div class="row">
   <div class="context-col"><h2>Elsewhere</h2></div>
-  <div class="main-col"><p>All sorts of information on this bill is available at <a href="{{ bill.legisinfo_url }}">LEGISinfo</a>, provided by the Library of Parliament.{% if bill.text_docid %} You can also read the <a href="{{ bill.get_billtext_url }}">full text of the bill</a>.{% endif %}</p></div>
+  <div class="main-col"><p>All sorts of information on this bill is available at <a href="{{ bill.legisinfo_url }}">LEGISinfo</a>, an excellent resource from the Library of Parliament.{% if bill.text_docid %} You can also read the <a href="{{ bill.get_billtext_url }}">full text of the bill</a>.{% endif %}</p></div>
 </div>
 {% endif %}
 
