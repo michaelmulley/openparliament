@@ -503,6 +503,8 @@ class PoliticianInfo(models.Model):
     politician = models.ForeignKey(Politician)
     schema = models.CharField(max_length=40, db_index=True)
     value = models.TextField()
+
+    created = models.DateTimeField(blank=True, null=True, default=datetime.datetime.now)
     
     objects = models.Manager()
     sr_objects = PoliticianInfoManager()
