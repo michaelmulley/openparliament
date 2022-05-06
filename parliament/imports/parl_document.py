@@ -96,7 +96,7 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
             # At the moment. person_type is only set if we know the person
             # is a non-politician. This might change...
             try:
-                s.politician = Politician.objects.get_by_parl_id(s.who_hocid, session=document.session)
+                s.politician = Politician.objects.get_by_parl_affil_id(s.who_hocid, session=document.session)
                 s.member = ElectedMember.objects.get_by_pol(s.politician, date=document.date)
             except Politician.DoesNotExist:
                 logger.info("Could not resolve speaking politician ID %s for %r" % (s.who_hocid, s.who))
@@ -267,7 +267,7 @@ def _process_related_link(match, statement):
     hocid = int(params['HoCid'])
     if link_type == 'politician':
         try:
-            pol = Politician.objects.get_by_parl_id(hocid)
+            pol = Politician.objects.get_by_parl_affil_id(hocid)
         except Politician.DoesNotExist:
             logger.error("Could not resolve related politician #%s, %r" % (hocid, text))
             return text

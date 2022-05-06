@@ -2,7 +2,6 @@
 
 import datetime
 import re
-import urllib2
 
 from django.conf import settings
 from django.core.cache import cache
@@ -24,8 +23,8 @@ from parliament.core.utils import memoize_property, ActiveManager, language_prop
 import logging
 logger = logging.getLogger(__name__)
 
-#POL_LOOKUP_URL = 'http://www.parl.gc.ca/MembersOfParliament/ProfileMP.aspx?Key=%d&Language=E'
-POL_LOOKUP_URL = 'https://www.ourcommons.ca/Parliamentarians/en/members/profileredirect?affiliationId=%d'
+POL_AFFIL_ID_LOOKUP_URL = 'https://www.ourcommons.ca/Parliamentarians/en/members/profileredirect?affiliationId=%d'
+POL_PERSON_ID_LOOKUP_URL = 'https://www.ourcommons.ca/Members/en/openparliamentdotca-lookup(%d)'
 
 class InternalXref(models.Model):
     """A general-purpose table for quickly storing internal links."""
@@ -206,77 +205,87 @@ class PoliticianManager(models.Manager):
                         pol.add_alternate_name(name) # save the name we were given as an alternate
                     return pol
         raise Politician.DoesNotExist("Could not find politician named %s" % name)
-        
-    def get_by_parlinfo_id(self, parlinfoid, session=None):
-        PARLINFO_LOOKUP_URL = 'http://www2.parl.gc.ca/parlinfo/Files/Parliamentarian.aspx?Item=%s&Language=E'
-        try:
-            info = PoliticianInfo.sr_objects.get(schema='parlinfo_id', value=parlinfoid.lower())
-            return info.politician
-        except PoliticianInfo.DoesNotExist:
-            print "Looking up parlinfo ID %s" % parlinfoid 
-            parlinfourl = PARLINFO_LOOKUP_URL % parlinfoid
-            parlinfopage = urllib2.urlopen(parlinfourl).read()
-            match = re.search(
-              r'href="http://webinfo\.parl\.gc\.ca/MembersOfParliament/ProfileMP\.aspx\?Key=(\d+)&amp;Language=E">MP profile',
-              parlinfopage)
-            if not match:
-                raise Politician.DoesNotExist
-            pol = self.get_by_parl_id(match.group(1), session=session)
-            pol.save_parlinfo_id(parlinfoid)
-            return pol
 
     def get_by_slug_or_id(self, slug_or_id):
         if slug_or_id.isdigit():
             return self.get(id=slug_or_id)
         return self.get(slug=slug_or_id)
-    
-    def get_by_parl_id(self, parlid, session=None, election=None, lookOnline=True):
+
+    def get_by_parl_mp_id(self, parlid, session=None, riding_name=None):
+        """
+        Find a Politician object, based on the ourcommons.ca person ID.
+        """
         try:
-            info = PoliticianInfo.sr_objects.get(schema='parl_id', value=unicode(parlid))
+            info = PoliticianInfo.sr_objects.get(schema='parl_mp_id', value=unicode(parlid))
             return info.politician
         except PoliticianInfo.DoesNotExist:
-            invalid_ID_cache_key = 'invalid-pol-parl-id-%s' % parlid
-            if cache.get(invalid_ID_cache_key):
-                raise Politician.DoesNotExist("ID %s cached as invalid" % parlid)
-            if not lookOnline:
-                return None # FIXME inconsistent behaviour: when should we return None vs. exception?
-            #print "Unknown parlid %d... " % parlid,
-
+            pol, x_mp_id = self._get_pol_from_ourcommons_url(POL_PERSON_ID_LOOKUP_URL % parlid,
+                session, riding_name)
+            if int(parlid) != x_mp_id:
+                raise Exception("get_by_parl_mp_id: Get for ID %s found ID %s (%s)" %
+                    (parlid, x_mp_id, pol))
+            pol.set_info('parl_mp_id', parlid, overwrite=False)
+            return self.get_queryset().get(id=pol.id)
+            
+    def get_by_parl_affil_id(self, parlid, session=None, riding_name=None):
+        """
+        Find a Politician object, based on one of Parliament's affiliation IDs.
+        These are internal person-in-role IDs that are not, as far as I know,
+        very well exposed. Notably these are the IDs that we get in Hansard XML.
+        """
+        try:
+            info = PoliticianInfo.sr_objects.get(
+                schema='parl_affil_id', value=unicode(parlid))
+            return info.politician
+        except PoliticianInfo.DoesNotExist:
+            pol, parl_mp_id = self._get_pol_from_ourcommons_url(POL_AFFIL_ID_LOOKUP_URL % parlid,
+                                                             session, riding_name)
             try:
-                initial_url = POL_LOOKUP_URL % parlid
-                initial_resp = requests.get(initial_url)
-                initial_resp.raise_for_status()
-            except requests.HTTPError:
-                cache.set(invalid_ID_cache_key, True, 300)
-                raise Politician.DoesNotExist("Couldn't open " + initial_url)
+                mpid_info = PoliticianInfo.objects.get(schema='parl_mp_id', value=parl_mp_id)
+                if mpid_info.politician_id != pol.id:
+                    raise Exception("get_by_parl_affil_id: for ID %s found %s, but mp_id %s already used for %s"
+                        % (parlid, pol, parl_mp_id, mpid_info.politician))
+            except PoliticianInfo.DoesNotExist:
+                pol.set_info('parl_mp_id', parl_mp_id, overwrite=False)
+            
+            pol.set_info_multivalued('parl_affil_id', parlid)
+            return self.get_queryset().get(id=pol.id)
 
-            xml_url = initial_resp.url
-            if not xml_url.endswith(')'):
-                if xml_url.endswith('Members/en'):
-                    raise Politician.DoesNotExist("ourcommons redirect doesn't recognize that ID")
-                raise Exception("Apparent change in ourcommons URL scheme? %s" % xml_url)
-            xml_url += '/xml'
-            xml_resp = requests.get(xml_url)
-            xml_resp.raise_for_status()
-            xml_doc = lxml.etree.fromstring(xml_resp.content)
+    def _get_pol_from_ourcommons_url(self, url, session=None, riding_name=None):
+        try:
+            initial_resp = requests.get(url)
+            initial_resp.raise_for_status()
+        except requests.HTTPError:
+            raise Politician.DoesNotExist("Couldn't open " + url)
 
-            polname = xml_doc.findtext('MemberOfParliamentRole/PersonOfficialFirstName'
-                ) + ' ' + xml_doc.findtext('MemberOfParliamentRole/PersonOfficialLastName')
-            polriding = xml_doc.findtext('MemberOfParliamentRole/ConstituencyName')
-                        
-            try:
-                riding = Riding.objects.get_by_name(polriding)
-            except Riding.DoesNotExist:
-                raise Politician.DoesNotExist("Couldn't find riding %s" % polriding)
-            if session:
-                pol = self.get_by_name(name=polname, session=session, riding=riding)
-            else:
-                pol = self.get_by_name(name=polname, riding=riding)
-            #print "found %s." % pol
-            pol.save_parl_id(parlid)
-            polid = pol.id
-            return self.get_queryset().get(pk=polid)
-    getByParlID = get_by_parl_id
+        xml_url = initial_resp.url
+        url_match = re.search(r'\((\d+)\)$', xml_url)
+        if not url_match:
+            if xml_url.endswith('Members/en'):
+                raise Politician.DoesNotExist("ourcommons redirect doesn't recognize that ID")
+            raise Exception("Apparent change in ourcommons URL scheme? %s" % xml_url)
+        parl_mp_id = int(url_match.group(1))
+        xml_url += '/xml'
+        xml_resp = requests.get(xml_url)
+        xml_resp.raise_for_status()
+        xml_doc = lxml.etree.fromstring(xml_resp.content)
+
+        polname = xml_doc.findtext('MemberOfParliamentRole/PersonOfficialFirstName'
+            ) + ' ' + xml_doc.findtext('MemberOfParliamentRole/PersonOfficialLastName')
+        polriding = xml_doc.findtext('MemberOfParliamentRole/ConstituencyName')
+                    
+        try:
+            riding = Riding.objects.get_by_name(polriding)
+        except Riding.DoesNotExist:
+            raise Politician.DoesNotExist("Couldn't find riding %s" % polriding)
+        if riding_name and riding != Riding.objects.get_by_name(riding_name):
+            raise Exception("Pol get_by_id sanity check failed: XML riding %s doesn't match provided name %s"
+                % (polriding, riding_name))
+        if session:
+            pol = self.get_by_name(name=polname, session=session, riding=riding)
+        else:
+            pol = self.get_by_name(name=polname, riding=riding)
+        return (pol, parl_mp_id)
 
 class Politician(Person):
     """Someone who has run for federal office."""
@@ -384,14 +393,6 @@ class Politician(Person):
     def save(self, *args, **kwargs):
         super(Politician, self).save(*args, **kwargs)
         self.add_alternate_name(self.name)
-
-    def save_parl_id(self, parlid):
-        if PoliticianInfo.objects.filter(schema='parl_id', value=unicode(parlid)).exists():
-            raise Exception("ParlID %d already in use" % parlid)
-        self.set_info_multivalued('parl_id', parlid)
-        
-    def save_parlinfo_id(self, parlinfoid):
-        self.set_info('parlinfo_id', parlinfoid.lower())
             
     @models.permalink
     def get_absolute_url(self):
@@ -410,11 +411,11 @@ class Politician(Person):
 
     @property
     def parlpage(self):
-        try:
+        parlid = self.info().get('parl_mp_id')
+        if parlid:
             return "http://www.parl.gc.ca/Parliamentarians/{}/members/{}({})".format(
-                settings.LANGUAGE_CODE, self.identifier, self.info()['parl_id'])
-        except KeyError:
-            return None
+                settings.LANGUAGE_CODE, self.identifier, parlid)
+        return None
         
     @models.permalink
     def get_contact_url(self):
@@ -439,9 +440,12 @@ class Politician(Person):
             info.setdefault(i[0], []).append(i[1])
         return info
         
-    def set_info(self, key, value):
+    def set_info(self, key, value, overwrite=True):
         try:
             info = self.politicianinfo_set.get(schema=key)
+            if not overwrite:
+                raise ValueError("Cannot overwrite key %s on %s with %s"
+                    %(key, self, value))
         except PoliticianInfo.DoesNotExist:
             info = PoliticianInfo(politician=self, schema=key)
         except PoliticianInfo.MultipleObjectsReturned:
