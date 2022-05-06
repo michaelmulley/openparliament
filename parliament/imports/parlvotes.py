@@ -14,8 +14,6 @@ logger = logging.getLogger(__name__)
 
 VOTELIST_URL = 'https://www.ourcommons.ca/members/{lang}/votes/xml'
 VOTEDETAIL_URL = 'https://www.ourcommons.ca/members/en/votes/{parliamentnum}/{sessnum}/{votenumber}/xml'
-#VOTELIST_URL = 'http://www.ourcommons.ca/Parliamentarians/{lang}/HouseVotes/ExportVotes?output=XML'
-#VOTEDETAIL_URL = 'http://www.ourcommons.ca/Parliamentarians/en/HouseVotes/ExportDetailsVotes?output=XML&parliament={parliamentnum}&session={sessnum}&vote={votenumber}'
 
 @transaction.atomic
 def import_votes():
@@ -85,10 +83,12 @@ def import_votes():
         detailroot = etree.fromstring(resp.content)
 
         for voter in detailroot.findall('VoteParticipant'):
-            name = (voter.find('PersonOfficialFirstName').text 
-                + ' ' + voter.find('PersonOfficialLastName').text)
-            riding = Riding.objects.get_by_name(voter.find('ConstituencyName').text)
-            pol = Politician.objects.get_by_name(name=name, session=session, riding=riding)
+            pol = Politician.objects.get_by_parl_mp_id(voter.find('PersonId').text,
+                session=session, riding_name=voter.find('ConstituencyName').text)
+            # name = (voter.find('PersonOfficialFirstName').text 
+            #     + ' ' + voter.find('PersonOfficialLastName').text)
+            # riding = Riding.objects.get_by_name(voter.find('ConstituencyName').text)
+            # pol = Politician.objects.get_by_name(name=name, session=session, riding=riding)
             member = ElectedMember.objects.get_by_pol(politician=pol, date=votequestion.date)
             if voter.find('IsVoteYea').text == 'true':
                 ballot = 'Y'

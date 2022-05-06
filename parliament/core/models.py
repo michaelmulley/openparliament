@@ -23,8 +23,8 @@ from parliament.core.utils import memoize_property, ActiveManager, language_prop
 import logging
 logger = logging.getLogger(__name__)
 
-POL_AFFIL_ID_LOOKUP_URL = 'https://www.ourcommons.ca/Parliamentarians/en/members/profileredirect?affiliationId=%d'
-POL_PERSON_ID_LOOKUP_URL = 'https://www.ourcommons.ca/Members/en/openparliamentdotca-lookup(%d)'
+POL_AFFIL_ID_LOOKUP_URL = 'https://www.ourcommons.ca/Parliamentarians/en/members/profileredirect?affiliationId=%s'
+POL_PERSON_ID_LOOKUP_URL = 'https://www.ourcommons.ca/Members/en/openparliamentdotca-lookup(%s)'
 
 class InternalXref(models.Model):
     """A general-purpose table for quickly storing internal links."""
