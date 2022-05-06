@@ -21,7 +21,7 @@ requests==2.13.0
 requests-oauthlib==0.6.1
 lxml==3.7.3
 cssselect==0.9.1
--e git+git://github.com/rhymeswithcycle/alpheus.git#egg=alpheus
+-e git+https://github.com/rhymeswithcycle/alpheus.git#egg=alpheus
 google-api-python-client==1.5.0
 # WebOb is used for Accept header parsing
 webob==1.2.2
