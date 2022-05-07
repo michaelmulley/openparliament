@@ -221,7 +221,7 @@ class PoliticianManager(models.Manager):
         except PoliticianInfo.DoesNotExist:
             pol, x_mp_id = self._get_pol_from_ourcommons_url(POL_PERSON_ID_LOOKUP_URL % parlid,
                 session, riding_name)
-            if int(parlid) != x_mp_id:
+            if unicode(parlid) != x_mp_id:
                 raise Exception("get_by_parl_mp_id: Get for ID %s found ID %s (%s)" %
                     (parlid, x_mp_id, pol))
             pol.set_info('parl_mp_id', parlid, overwrite=False)
@@ -241,7 +241,7 @@ class PoliticianManager(models.Manager):
             pol, parl_mp_id = self._get_pol_from_ourcommons_url(POL_AFFIL_ID_LOOKUP_URL % parlid,
                                                              session, riding_name)
             try:
-                mpid_info = PoliticianInfo.objects.get(schema='parl_mp_id', value=parl_mp_id)
+                mpid_info = PoliticianInfo.objects.get(schema='parl_mp_id', value=unicode(parl_mp_id))
                 if mpid_info.politician_id != pol.id:
                     raise Exception("get_by_parl_affil_id: for ID %s found %s, but mp_id %s already used for %s"
                         % (parlid, pol, parl_mp_id, mpid_info.politician))
@@ -264,7 +264,7 @@ class PoliticianManager(models.Manager):
             if xml_url.endswith('Members/en'):
                 raise Politician.DoesNotExist("ourcommons redirect doesn't recognize that ID")
             raise Exception("Apparent change in ourcommons URL scheme? %s" % xml_url)
-        parl_mp_id = int(url_match.group(1))
+        parl_mp_id = url_match.group(1)
         xml_url += '/xml'
         xml_resp = requests.get(xml_url)
         xml_resp.raise_for_status()
