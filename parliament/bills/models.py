@@ -100,7 +100,8 @@ class Bill(models.Model):
         u'Introduced as pro forma bill': 'ProForma',
         u'Outside the Order of Precedence': 'OutsideOrderPrecedence',
         u'Royal assent received': u'RoyalAssentGiven',
-        u'Senate bill awaiting first reading in the House of Commons': 'SenateBillWaitingHouse'
+        u'Senate bill awaiting first reading in the House of Commons': 'SenateBillWaitingHouse',
+        u'At report stage in the House of Commons': u'HouseAtReportStage',
     }
 
     name_en = models.TextField(blank=True)
