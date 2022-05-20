@@ -116,9 +116,16 @@ class Document(models.Model):
     def url(self):
         return self.source_url
 
-    @property
+    @memoize_property
     def source_url(self):
-        return url_from_docid(self.source_id)
+        if self.document_type == self.DEBATE:
+            return "https://www.ourcommons.ca/DocumentViewer/%(lang)s/%(sessid)s/house/sitting-%(sitting)s/hansard" % {
+                'lang': 'en',
+                'sessid': self.session_id,
+                'sitting': self.number
+            }
+        elif self.document_type == self.EVIDENCE:
+            return self.committeemeeting.evidence_url
         
     def _topics(self, l):
         topics = []

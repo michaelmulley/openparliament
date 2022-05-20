@@ -111,11 +111,12 @@ class CommitteeInSession(models.Model):
         return u"%s (%s) in %s" % (self.committee, self.acronym, self.session_id)
 
     def get_source_url(self):
-        return 'http://www.parl.gc.ca/Committees/%(lang)s/%(acronym)s?parl=%(parliamentnum)d&session=%(sessnum)d' % {
+        return 'https://www.%(domain)s.ca/Committees/%(lang)s/%(acronym)s?parl=%(parliamentnum)d&session=%(sessnum)d' % {
             'acronym': self.acronym,
             'lang': settings.LANGUAGE_CODE[:2],
             'parliamentnum': self.session.parliamentnum,
-            'sessnum': self.session.sessnum
+            'sessnum': self.session.sessnum,
+            'domain': 'parl' if self.committee.joint else 'ourcommons'
         }
 
 
@@ -236,25 +237,27 @@ class CommitteeMeeting(models.Model):
 
     @property
     def minutes_url(self):
-        if not self.minutes:
-            return None
-        return 'http://www.ourcommons.ca/DocumentViewer/{}/{}/{}/meeting-{}/minutes'.format(
-            settings.LANGUAGE_CODE[:2], self.session.id,
-            self.committee.get_acronym(self.session), self.number)
+        return self.get_ourcommons_doc_url('minutes') if self.minutes else None
 
     @property
     def notice_url(self):
-        if not self.notice:
-            return None
-        return 'http://www.ourcommons.ca/DocumentViewer/{}/{}/{}/meeting-{}/notice'.format(
+        return self.get_ourcommons_doc_url('notice') if self.notice else None
+
+    @property
+    def evidence_url(self):
+        return self.get_ourcommons_doc_url('evidence') if self.evidence_id else None
+
+    def get_ourcommons_doc_url(self, document_type):
+        return 'https://www.ourcommons.ca/DocumentViewer/{}/{}/{}/meeting-{}/{}'.format(
             settings.LANGUAGE_CODE[:2], self.session.id,
-            self.committee.get_acronym(self.session), self.number)
+            self.committee.get_acronym(self.session), self.number,
+            document_type)
     
     @property
     def webcast_url(self):
         if not self.webcast:
             return None
-        return 'http://www.ourcommons.ca/webcast/{}/{}/{}'.format(
+        return 'https://www.ourcommons.ca/webcast/{}/{}/{}'.format(
             self.session.id, self.committee.get_acronym(self.session), self.number)
     
     @property
