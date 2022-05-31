@@ -186,7 +186,7 @@ class APIFilters(object):
                 return qs.filter(**{
                     (field_name if field_name else filter_name) + '__' + filter_extra: val
                 })
-            except ValidationError as e:
+            except (ValueError, ValidationError) as e:
                 raise BadRequest(unicode(e))
         inner.help = help
         return inner
