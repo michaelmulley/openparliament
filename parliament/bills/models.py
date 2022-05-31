@@ -96,6 +96,7 @@ class Bill(models.Model):
         u'At second reading in the House of Commons': u'HouseAt2ndReading',
         u'At second reading in the Senate': u'SenateAt2ndReading',
         u'At third reading in the Senate': u'SenateAt3rdReading',
+        u'At third reading in the House of Commons': u'HouseAt3rdReading',
         u'Bill not proceeded with': u'WillNotBeProceededWith',
         u'Introduced as pro forma bill': 'ProForma',
         u'Outside the Order of Precedence': 'OutsideOrderPrecedence',
