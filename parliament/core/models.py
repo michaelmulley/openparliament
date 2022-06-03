@@ -2,6 +2,7 @@
 
 import datetime
 import re
+from urlparse import urljoin
 
 from django.conf import settings
 from django.core.cache import cache
@@ -23,7 +24,8 @@ from parliament.core.utils import memoize_property, ActiveManager, language_prop
 import logging
 logger = logging.getLogger(__name__)
 
-POL_AFFIL_ID_LOOKUP_URL = 'https://www.ourcommons.ca/Parliamentarians/en/members/profileredirect?affiliationId=%s'
+#POL_AFFIL_ID_LOOKUP_URL = 'https://www.ourcommons.ca/Parliamentarians/en/members/profileredirect?affiliationId=%s'
+POL_AFFIL_ID_LOOKUP_URL = 'https://apps.ourcommons.ca/ParlDataWidgets/en/aff/%s'
 POL_PERSON_ID_LOOKUP_URL = 'https://www.ourcommons.ca/Members/en/openparliamentdotca-lookup(%s)'
 
 class InternalXref(models.Model):
@@ -219,7 +221,7 @@ class PoliticianManager(models.Manager):
             info = PoliticianInfo.sr_objects.get(schema='parl_mp_id', value=unicode(parlid))
             return info.politician
         except PoliticianInfo.DoesNotExist:
-            pol, x_mp_id = self._get_pol_from_ourcommons_url(POL_PERSON_ID_LOOKUP_URL % parlid,
+            pol, x_mp_id = self._get_pol_from_ourcommons_profile_url(POL_PERSON_ID_LOOKUP_URL % parlid,
                 session, riding_name)
             if unicode(parlid) != x_mp_id:
                 raise Exception("get_by_parl_mp_id: Get for ID %s found ID %s (%s)" %
@@ -238,7 +240,16 @@ class PoliticianManager(models.Manager):
                 schema='parl_affil_id', value=unicode(parlid))
             return info.politician
         except PoliticianInfo.DoesNotExist:
-            pol, parl_mp_id = self._get_pol_from_ourcommons_url(POL_AFFIL_ID_LOOKUP_URL % parlid,
+            resp = requests.get(POL_AFFIL_ID_LOOKUP_URL % parlid)
+            resp.raise_for_status()
+            root = lxml.html.fromstring(resp.text)
+            profile_link = root.cssselect('.mpprofile a')
+            if not profile_link:
+                raise Politician.DoesNotExist("Couldn't resolve affil ID %s" % parlid)
+            if len(profile_link) > 1:
+                raise Exception("Weird scrape: multiple CSS results for ID %s in get_by_parl_affil_id" % parlid)
+            profile_url = urljoin(resp.url, profile_link[0].attrib['href'])
+            pol, parl_mp_id = self._get_pol_from_ourcommons_profile_url(profile_url,
                                                              session, riding_name)
             try:
                 mpid_info = PoliticianInfo.objects.get(schema='parl_mp_id', value=unicode(parl_mp_id))
@@ -251,21 +262,12 @@ class PoliticianManager(models.Manager):
             pol.set_info_multivalued('parl_affil_id', parlid)
             return self.get_queryset().get(id=pol.id)
 
-    def _get_pol_from_ourcommons_url(self, url, session=None, riding_name=None):
-        try:
-            initial_resp = requests.get(url)
-            initial_resp.raise_for_status()
-        except requests.HTTPError:
-            raise Politician.DoesNotExist("Couldn't open " + url)
-
-        xml_url = initial_resp.url
-        url_match = re.search(r'\((\d+)\)$', xml_url)
+    def _get_pol_from_ourcommons_profile_url(self, profile_url, session=None, riding_name=None):
+        url_match = re.search(r'\((\d+)\)$', profile_url)
         if not url_match:
-            if xml_url.endswith('Members/en'):
-                raise Politician.DoesNotExist("ourcommons redirect doesn't recognize that ID")
-            raise Exception("Apparent change in ourcommons URL scheme? %s" % xml_url)
+            raise Exception("Couldn't parse ID out of provided profile URL %s" % profile_url)
         parl_mp_id = url_match.group(1)
-        xml_url += '/xml'
+        xml_url = profile_url + '/xml'
         xml_resp = requests.get(xml_url)
         xml_resp.raise_for_status()
         xml_doc = lxml.etree.fromstring(xml_resp.content)
