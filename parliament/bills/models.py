@@ -87,6 +87,7 @@ class Bill(models.Model):
         u'Introduced': 'Introduced',
         u'ProForma': 'Not a real bill (bills C-1 and S-1 are weird procedural relics)',
         u'SenateBillWaitingHouse': 'Senate bill, now waiting to be considered in the House',
+        u'HouseBillWaitingSenate': 'Bill passed the House, now waiting to be considered in the Senate',
         u'OutsideOrderPrecedence': u"Outside the Order of Precedence (a private member's bill that hasn't yet won the draw that determines which private member's bills can be debated)"
     }
 
@@ -103,6 +104,8 @@ class Bill(models.Model):
         u'Royal assent received': u'RoyalAssentGiven',
         u'Senate bill awaiting first reading in the House of Commons': 'SenateBillWaitingHouse',
         u'At report stage in the House of Commons': u'HouseAtReportStage',
+        u'House of Commons bill awaiting first reading in the Senate': u'HouseBillWaitingSenate',
+        u'Bill defeated': u'BillDefeated',
     }
 
     name_en = models.TextField(blank=True)
