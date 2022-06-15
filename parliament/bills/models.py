@@ -69,6 +69,7 @@ class Bill(models.Model):
         u'RoyalAssentAwaiting': 'Awaiting royal assent',
         u'BillDefeated': 'Defeated',
         u'HouseAtReportStage': 'Report stage (House)',
+        u'SenateAtReportStage': 'Report stage (Senate)',
         u'RoyalAssentGiven': 'Law (royal assent given)',
         u'SenateAt1stReading': 'First reading (Senate)',
         u'HouseAt1stReading': 'First reading (House)',
@@ -104,6 +105,7 @@ class Bill(models.Model):
         u'Royal assent received': u'RoyalAssentGiven',
         u'Senate bill awaiting first reading in the House of Commons': 'SenateBillWaitingHouse',
         u'At report stage in the House of Commons': u'HouseAtReportStage',
+        u'At report stage in the Senate': u'SenateAtReportStage',
         u'House of Commons bill awaiting first reading in the Senate': u'HouseBillWaitingSenate',
         u'Bill defeated': u'BillDefeated',
     }
