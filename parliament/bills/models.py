@@ -108,6 +108,7 @@ class Bill(models.Model):
         u'At report stage in the Senate': u'SenateAtReportStage',
         u'House of Commons bill awaiting first reading in the Senate': u'HouseBillWaitingSenate',
         u'Bill defeated': u'BillDefeated',
+        u'Awaiting royal assent': u'RoyalAssentAwaiting',
     }
 
     name_en = models.TextField(blank=True)
