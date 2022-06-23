@@ -116,6 +116,7 @@ class Document(models.Model):
     def url(self):
         return self.source_url
 
+    @property
     @memoize_property
     def source_url(self):
         if self.document_type == self.DEBATE:
