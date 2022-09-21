@@ -9,7 +9,7 @@ from django.db import transaction
 
 import requests
 
-from parliament.core.models import Politician, Session, Riding
+from parliament.core.models import Politician, Session, Riding, Party
 
 import logging
 logger = logging.getLogger(__name__)
@@ -25,12 +25,19 @@ def update_mps_from_represent(download_headshots=False, update_all_headshots=Fal
     warnings = []
     errors = []
 
+    pols_seen = set()
+
     for mp_info in data['objects']:
         try:
             pol = Politician.objects.get_by_name(mp_info['name'], session=session, strictMatch=True)
         except Politician.DoesNotExist:
             errors.append("Could not find politician %s from Represent" % mp_info['name'])
             continue
+
+        pols_seen.add(pol)
+        if pol.current_member.party != Party.objects.get_by_name(mp_info.get('party_name')):
+            warnings.append("Potential party change for %s: Current %s, potential %s" % 
+                (pol, pol.current_member.party, mp_info.get('party_name')))
 
         def _update(fieldname, value):
             if value == '':
@@ -73,6 +80,11 @@ def update_mps_from_represent(download_headshots=False, update_all_headshots=Fal
             elif pol.info().get('twitter') != screen_name:
                 warnings.append("Potential twitter change for %s: existing %s new %s" % (
                     pol, pol.info()['twitter'], screen_name))
+
+    missing_pols = set(Politician.objects.current()) - pols_seen
+    if missing_pols:
+        for p in missing_pols:
+            errors.append("Politician %s not seen in Represent" % p)
     
     if errors:
         logger.error('\n\n'.join(errors))
