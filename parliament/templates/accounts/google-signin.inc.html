@@ -1,22 +1,26 @@
 {% if GOOGLE_CLIENT_ID %}
-<script src="https://apis.google.com/js/platform.js" async defer></script>
-<meta name="google-signin-client_id" content="{{ GOOGLE_CLIENT_ID }}">
-<div class="g-signin2" data-onsuccess="onGoogleSignIn" data-longtitle="true" data-width="220" style="width: 230px; margin: 0 auto 20px auto;"></div>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<div id="g_id_onload" data-client_id="{{ GOOGLE_CLIENT_ID }}" data-context="signin" data-ux_mode="popup" data-callback="onGoogleSignIn"
+    data-auto_prompt="false">
+</div>
+<div style="max-width: 40rem">
+<div class="g_id_signin" data-type="standard" data-shape="rectangular" data-theme="outline" data-text="signin_with"
+    data-size="large" data-width="220" data-logo_alignment="left" style="width:230px; margin: 0 auto 20px auto;">
+</div>
+</div>
 
 <script>
-function onGoogleSignIn(googleUser) {
-	var id_token = googleUser.getAuthResponse().id_token;
+function onGoogleSignIn(resp) {
+    console.log(resp);
     $.ajax({
         type: 'POST',
         url: '/accounts/google/login/',
-        data: {token: id_token},
+        data: {token: resp.credential},
         success: function(res, status, xhr) { 
-        	// Immediately sign you out of Google: we want to maintain state ourselves
-        	var auth = gapi.auth2.getAuthInstance();
-        	auth.signOut().then(function() { window.location.reload(); });
+        	window.location.reload();
         },
         error: function(res, status, xhr) {
-            OP.utils.notify("Oops! There was a problem logging you in.", 'error');
+            OP.utils.notify("Oops! There was a problem logging you in. Please let us know if this persists.", 'error');
         }
     });
 }
