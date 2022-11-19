@@ -7,7 +7,7 @@ from django.conf import settings
 from parliament.politicians import twit
 from parliament.politicians import googlenews as gnews
 from parliament.imports import parlvotes, legisinfo, parl_document, parl_cmte
-from parliament.imports.represent import update_mps_from_represent
+from parliament.imports.mps import update_mps_from_ourcommons
 from parliament.core.models import Politician, Session
 from parliament.hansards.models import Document
 from parliament.activity import utils as activityutils
@@ -22,7 +22,7 @@ def twitter():
     twit.save_tweets()
     return True
 
-represent = update_mps_from_represent
+mps = update_mps_from_ourcommons
 
 def googlenews():
     for pol in Politician.objects.current():
