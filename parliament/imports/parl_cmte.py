@@ -265,7 +265,8 @@ def _download_evidence(meeting, evidence_viewer_url):
 
     source_id = int(lxml.etree.fromstring(xml_en).get('id'))
     if not source_id:
-        source_id = int('9999' + str(meeting.source_id))
+        assert meeting.source_id
+        source_id = int('9' + str(meeting.source_id))
         logger.error("No source ID in evidence for %s, using constructed ID %s" % (
             evidence_viewer_url, source_id))
 
