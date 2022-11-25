@@ -120,7 +120,7 @@ def import_committee_documents(session):
         try:
             import_committee_meetings(comm, session)
         except urllib2.HTTPError as e:
-            logger.exception("Error importing committee %s", comm)
+            logger.exception("Error importing committee %s, #%s", (comm, comm.id))
         #import_committee_reports(comm, session)
         #time.sleep(1)
 
@@ -264,6 +264,10 @@ def _download_evidence(meeting, evidence_viewer_url):
     xml_fr = resp.content
 
     source_id = int(lxml.etree.fromstring(xml_en).get('id'))
+    if not source_id:
+        source_id = int('9999' + str(meeting.source_id))
+        logger.error("No source ID in evidence for %s, using constructed ID %s" % (
+            evidence_viewer_url, source_id))
 
     meeting.evidence = Document.objects.create(
         source_id=source_id,
