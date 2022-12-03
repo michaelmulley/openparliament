@@ -1,5 +1,6 @@
 import datetime
-from collections import defaultdict
+from collections import Counter, defaultdict
+import json
 import re
 
 from django.conf import settings
@@ -7,9 +8,9 @@ from django.core import urlresolvers
 from django.db import models
 from django.utils.safestring import mark_safe
 
-from parliament.committees.models import CommitteeMeeting
+from parliament.committees.models import Committee, CommitteeMeeting
 from parliament.core.models import Session, ElectedMember, Politician, Party
-from parliament.core.utils import language_property
+from parliament.core.utils import language_property, memoize_property
 from parliament.hansards.models import Document, Statement
 from parliament.activity import utils as activity
 
@@ -186,20 +187,6 @@ class Bill(models.Model):
         except BillText.DoesNotExist:
             return ''
 
-    def get_related_debates(self):
-        return Document.objects.filter(billinsession__bill=self)
-
-    def get_committee_meetings(self):
-        return CommitteeMeeting.objects.filter(billevent__bis__bill=self)
-
-    def get_major_speeches(self):
-        doc_ids = list(self.get_related_debates().values_list('id', flat=True))
-        if self.short_title_en:
-            qs = Statement.objects.filter(h2_en__iexact=self.short_title_en, wordcount__gt=50)
-        else:
-            qs = self.statement_set.filter(wordcount__gt=100)
-        return qs.filter(document__in=doc_ids, procedural=False)
-
     @property
     def latest_date(self):
         return self.status_date if self.status_date else self.introduced
@@ -236,6 +223,67 @@ class Bill(models.Model):
         """To deal with tricky save logic, saves a session to the object for cases
         when self.sessions.all() won't get exist in the DB."""
         self._session = session
+
+    @memoize_property
+    def _get_house_bill_stages_json(self):
+        raw_json = self.billinsession_set.order_by('-session').values_list('billstages_json', flat=True)
+        r = []
+        for rj in raw_json:
+            if rj:
+                r.extend(json.loads(rj).get('HouseBillStages', []))
+        return r
+
+    def get_committee_meetings(self):
+        """Return a QuerySet of CommitteeMeetings where this bill was considered."""
+        data = self._get_house_bill_stages_json()
+        for stage in data:
+            if stage.get('CommitteeMeetings'):
+                acronym = set(s['CommitteeAcronym'] for s in stage['CommitteeMeetings'])
+                if len(acronym) > 1:
+                    logger.error("Multiple acronyms on %r" % self)
+                    return CommitteeMeeting.objects.none()
+                acronym = acronym.pop()
+                numbers = [int(s['Number']) for s in stage['CommitteeMeetings']]
+                session = "%s-%s" % (stage['ParliamentNumber'], stage['SessionNumber'])
+                cmte = Committee.objects.get_by_acronym(acronym, session)
+                return CommitteeMeeting.objects.filter(committee=cmte, 
+                    session=session, number__in=numbers)
+        return CommitteeMeeting.objects.none()
+
+    def _get_related_debates_info(self):
+        data = self._get_house_bill_stages_json()
+        sittings = []
+        for stage in data:
+            if stage.get('Sittings'):
+                for s in stage['Sittings']:
+                    sittings.append({
+                        'name': s['Name'],
+                        'number': s['Number'],
+                        'session': "%s-%s" % (stage['ParliamentNumber'], stage['SessionNumber']),
+                        'date': s['Date'][:10]
+                    })
+        return sittings
+
+    def get_second_reading_debate(self):
+        """Returns a QuerySet of Statements representing the second-reading debate
+        of this bill."""
+        second_reading_sittings = [d for d in self._get_related_debates_info()
+            if d['name'] == "Debate at second reading"]
+        if not second_reading_sittings:
+            return Statement.objects.none()
+        debate_ids = Document.debates.filter(date__in=[s['date'] for s in second_reading_sittings]
+            ).values_list('id', flat=True)
+        qs = Statement.objects.filter(document__in=debate_ids)
+        if self.short_title_en:
+            qs = qs.filter(h2_en=self.short_title_en)
+        else:
+            speech_headings = self.statement_set.filter(document__in=debate_ids,
+                h1_en='Government Orders').values_list('h2_en', flat=True)
+            if not speech_headings:
+                return Statement.objects.none()
+            h2 = Counter(speech_headings).most_common(1)[0][0]
+            qs = qs.filter(h2_en=h2)
+        return qs
         
     session = property(get_session)
 
@@ -279,7 +327,7 @@ class BillInSession(models.Model):
     sponsor_politician = models.ForeignKey(Politician, blank=True, null=True)
     sponsor_member = models.ForeignKey(ElectedMember, blank=True, null=True)
 
-    debates = models.ManyToManyField('hansards.Document', through='BillEvent')
+    billstages_json = models.TextField(blank=True, null=True)
 
     objects = BillInSessionManager()
 

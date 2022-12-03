@@ -1,12 +1,11 @@
 import datetime
+import json
 import re
 
 from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 
 import requests
-
-from lxml import etree
 
 from parliament.bills.models import Bill, BillInSession, BillText, BillEvent, LEGISINFO_BILL_ID_URL
 from parliament.committees.models import Committee, CommitteeMeeting
@@ -223,57 +222,14 @@ def _import_bill(bd, session, previous_session=None): # type: (BillData, Session
 
     _update(bis, 'legisinfo_id', bd['Id'])
 
+    billstages_json = json.dumps(bd.get('BillStages'))
+    _update(bis, 'billstages_json', billstages_json)
+
     if getattr(bill, '_changed', False):
         bill.save()
     if getattr(bis, '_changed', False):
         bis.bill = bis.bill # bizarrely, the django orm makes you do this
         bis.save()        
-
-    # FIXME commenting out BillEvent importer because that likely needs to be
-    # remodeled significantly
-    # for levent in lbill.xpath('Events/LegislativeEvents/Event'):
-    #     source_id = int(levent.get('id'))
-    #     if BillEvent.objects.filter(source_id=source_id).exists():
-    #         continue
-
-    #     try:
-    #         status_en = levent.xpath('Status/Title[@language="en"]/text()')[0]
-    #         status_fr = levent.xpath('Status/Title[@language="fr"]/text()')[0]
-    #     except IndexError:
-    #         logger.debug("No status present in billevent: %s", etree.tostring(levent))
-    #         continue
-
-    #     event = BillEvent(
-    #         source_id=source_id,
-    #         bis=bis,
-    #         date=_parse_date(levent.get('date')),
-    #         institution='S' if levent.get('chamber') == 'SEN' else 'C',
-    #         status_en=status_en,
-    #         status_fr=status_fr
-    #     )
-
-    #     if event.institution == 'C':
-    #         hansard_num = levent.get('meetingNumber')
-    #         try:
-    #             event.debate = Document.debates.get(session=bis.session, number=hansard_num)
-    #         except Document.DoesNotExist:
-    #             logger.info(u"Could not associate BillEvent for %s with Hansard#%s" % (bill, hansard_num))
-    #             continue
-
-    #         for lcommittee in levent.xpath('Committee'):
-    #             acronym = lcommittee.get('accronym')
-    #             if acronym and acronym != 'WHOL':
-    #                 event.save()
-    #                 try:
-    #                     committee = Committee.objects.get_by_acronym(acronym, bis.session)
-    #                     for number in lcommittee.xpath('CommitteeMeetings/CommitteeMeeting/@number'):
-    #                         event.committee_meetings.add(
-    #                             CommitteeMeeting.objects.get(committee=committee, number=int(number), session=bis.session)
-    #                         )
-    #                 except ObjectDoesNotExist:
-    #                     logger.exception("Could not import committee meetings: %s" % etree.tostring(lcommittee))
-    #                     continue
-    #     event.save()
 
     if getattr(bill, '_newbill', False) and not session.end:
         bill.save_sponsor_activity()
