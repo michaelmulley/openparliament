@@ -234,16 +234,18 @@ def _import_bill(bd, session, previous_session=None): # type: (BillData, Session
     if getattr(bill, '_newbill', False) and not session.end:
         bill.save_sponsor_activity()
 
-    # if bill.text_docid and not BillText.objects.filter(docid=bill.text_docid).exists():
-    #     try:
-    #         BillText.objects.create(
-    #             bill=bill,
-    #             docid=bill.text_docid,
-    #             text_en=get_plain_bill_text(bill)
-    #         )
-    #         bill.save()  # to trigger search indexing
-    #     except CannotScrapeException:
-    #         logger.warning(u"Could not get bill text for %s" % bill)
+    if bill.text_docid and not BillText.objects.filter(docid=bill.text_docid).exists():
+        try:
+            summary_en, text_en = get_plain_bill_text(bill)
+            BillText.objects.create(
+                bill=bill,
+                docid=bill.text_docid,
+                text_en=text_en,
+                summary_en=summary_en
+            )
+            bill.save()  # to trigger search indexing
+        except CannotScrapeException:
+            logger.warning(u"Could not get bill text for %s" % bill)
 
     return bill
             

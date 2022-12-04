@@ -90,7 +90,9 @@ class Bill(models.Model):
         u'ProForma': 'Not a real bill (bills C-1 and S-1 are weird procedural relics)',
         u'SenateBillWaitingHouse': 'Senate bill, now waiting to be considered in the House',
         u'HouseBillWaitingSenate': 'Bill passed the House, now waiting to be considered in the Senate',
-        u'OutsideOrderPrecedence': u"Outside the Order of Precedence (a private member's bill that hasn't yet won the draw that determines which private member's bills can be debated)"
+        u'OutsideOrderPrecedence': u"Outside the Order of Precedence (a private member's bill that hasn't yet won the draw that determines which private member's bills can be debated)",
+        u'SenConsideringHouseAmendments': u'At consideration in the Senate of amendments made by the House of Commons',
+        u'HouseConsideringSenAmendments': u'At consideration in the House of Commons of amendments made by the Senate',
     }
 
     STATUS_STRING_TO_STATUS_CODE = {
@@ -110,6 +112,8 @@ class Bill(models.Model):
         u'House of Commons bill awaiting first reading in the Senate': u'HouseBillWaitingSenate',
         u'Bill defeated': u'BillDefeated',
         u'Awaiting royal assent': u'RoyalAssentAwaiting',
+        u'At consideration in the Senate of amendments made by the House of Commons': u'SenConsideringHouseAmendments',
+        u'At consideration in the House of Commons of amendments made by the Senate': u'HouseConsideringSenAmendments',
     }
 
     name_en = models.TextField(blank=True)
@@ -238,12 +242,9 @@ class Bill(models.Model):
         data = self._get_house_bill_stages_json()
         for stage in data:
             if stage.get('CommitteeMeetings'):
-                acronym = set(s['CommitteeAcronym'] for s in stage['CommitteeMeetings'])
-                if len(acronym) > 1:
-                    logger.error("Multiple acronyms on %r" % self)
-                    return CommitteeMeeting.objects.none()
-                acronym = acronym.pop()
-                numbers = [int(s['Number']) for s in stage['CommitteeMeetings']]
+                acronym = stage['CommitteeMeetings'][0]['CommitteeAcronym']
+                numbers = [int(s['Number']) for s in stage['CommitteeMeetings']
+                    if s['CommitteeAcronym'] == acronym]
                 session = "%s-%s" % (stage['ParliamentNumber'], stage['SessionNumber'])
                 cmte = Committee.objects.get_by_acronym(acronym, session)
                 return CommitteeMeeting.objects.filter(committee=cmte, 
@@ -409,6 +410,7 @@ class BillText(models.Model):
 
     text_en = models.TextField()
     text_fr = models.TextField(blank=True)
+    summary_en = models.TextField(blank=True)
 
     text = language_property('text')
 
@@ -416,16 +418,11 @@ class BillText(models.Model):
         return u"Document #%d for %s" % (self.docid, self.bill)
 
     @property
-    def summary(self):
-        match = re.search(r'SUMMARY\n([\s\S]+?)(Also a|A)vailable on', self.text_en)
-        return match.group(1).strip() if match else None
-
-    @property
     def summary_html(self):
-        summary = self.summary
+        summary = self.summary_en
         if not summary:
             return ''
-        return mark_safe('<p>' + summary.replace('\n', '</p><p>') + '</p>')
+        return mark_safe('<p>' + summary.replace('\n', '<br>') + '</p>')
 
         
 VOTE_RESULT_CHOICES = (
