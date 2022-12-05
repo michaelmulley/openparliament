@@ -6,12 +6,12 @@ Django>=1.11.0,<2.0
 Markdown==2.6.8
 Pillow==4.0.0
 django-extensions==1.7.6
+setuptools==44.1.1
 #django-haystack==2.6.0
 # Using this fork of Haystack because it includes a pull request
 # (unmerged upstream as of 2017-02) fixing a bug with index fields across
 # foreignkey__relationships
 -e git+https://github.com/michaelmulley/django-haystack.git@88b6d31#egg=django-haystack
-setuptools==44.1.1
 #psycopg2>=2.0.7
 pysolr==3.6.0
 wsgiref==0.1.2
