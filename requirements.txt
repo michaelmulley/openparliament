@@ -11,17 +11,17 @@ django-extensions==1.7.6
 # (unmerged upstream as of 2017-02) fixing a bug with index fields across
 # foreignkey__relationships
 -e git+https://github.com/michaelmulley/django-haystack.git@88b6d31#egg=django-haystack
-setuptools==45.0.0
+setuptools==44.1.1
 #psycopg2>=2.0.7
 pysolr==3.6.0
 wsgiref==0.1.2
 feedparser==4.1
 django-compressor==2.1.1
 django-libsass==0.7
-libsass=0.21.0
+libsass==0.21.0
 requests==2.13.0
 requests-oauthlib==0.6.1
-oauthlib==3.10
+oauthlib==3.1.0
 lxml==3.7.3
 cssselect==0.9.1
 -e git+https://github.com/rhymeswithcycle/alpheus.git#egg=alpheus
