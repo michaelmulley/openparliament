@@ -145,6 +145,8 @@ class SpeechesView(ModelListView):
 
     def document_filter(qs, view, filter_name, filter_extra, val):
         u = val.rstrip('/').split('/')
+        if len(u) != 4:
+            raise BadRequest("Invalid document URL")
         if u[-4] == 'debates':
             # /debates/2013/2/15/
             try:
