@@ -2,7 +2,6 @@ import datetime
 import logging
 import re
 import time
-import urllib2
 from urlparse import urljoin
 
 from django.db import transaction
@@ -19,7 +18,7 @@ from parliament.hansards.models import Document
 
 logger = logging.getLogger(__name__)
 
-COMMITTEE_LIST_URL = 'http://www.ourcommons.ca/Committees/{lang}/List?parl={parl}&session={sess}'
+COMMITTEE_LIST_URL = 'https://www.ourcommons.ca/Committees/{lang}/List?parl={parl}&session={sess}'
 @transaction.atomic
 def import_committee_list(session=None):
     if session is None:
@@ -119,12 +118,12 @@ def import_committee_documents(session):
         # subcommittees last
         try:
             import_committee_meetings(comm, session)
-        except urllib2.HTTPError as e:
+        except requests.exceptions.HTTPError as e:
             logger.exception("Error importing committee %s, #%s", (comm, comm.id))
         #import_committee_reports(comm, session)
         #time.sleep(1)
 
-COMMITTEE_MEETINGS_URL = 'http://www.%(domain)s.ca/Committees/en/%(acronym)s/Meetings?parl=%(parliamentnum)d&session=%(sessnum)d'
+COMMITTEE_MEETINGS_URL = 'https://www.%(domain)s.ca/Committees/en/%(acronym)s/Meetings?parl=%(parliamentnum)d&session=%(sessnum)d'
 @transaction.atomic
 def import_committee_meetings(committee, session):
 
@@ -133,9 +132,9 @@ def import_committee_meetings(committee, session):
         'parliamentnum': session.parliamentnum,
         'sessnum': session.sessnum,
         'domain': 'parl' if committee.joint else 'ourcommons'}
-    resp = urllib2.urlopen(url)
-    tree = lxml.html.parse(resp)
-    root = tree.getroot()
+    resp = requests.get(url)
+    resp.raise_for_status()
+    root = lxml.html.fromstring(resp.text)
     for mtg_row in root.cssselect('#meeting-accordion .accordion-item'):
         source_id = mtg_row.get('id')
         assert source_id.startswith('meeting-item-')
@@ -287,7 +286,9 @@ def get_activity_by_url(activity_url, committee, session):
 
     activity = CommitteeActivity(committee=committee)
     activity.study = True # not parsing this at the moment
-    root = lxml.html.parse(urllib2.urlopen(activity_url)).getroot()
+    resp = requests.get(activity_url)
+    resp.raise_for_status()
+    root = lxml.html.fromstring(resp.text)
 
     activity.name_en = root.cssselect('.core-content h2')[0].text.strip()[:500]
 
@@ -300,7 +301,7 @@ def get_activity_by_url(activity_url, committee, session):
         )
     except CommitteeActivity.DoesNotExist:
         url = activity_url.replace('/en/', '/fr/')
-        root = lxml.html.parse(urllib2.urlopen(url)).getroot()
+        root = lxml.html.fromstring(requests.get(url).text)
         activity.name_fr = root.cssselect('.core-content h2')[0].text.strip()[:500]
         activity.save()
 
