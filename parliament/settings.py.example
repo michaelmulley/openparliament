@@ -3,7 +3,7 @@ from default_settings import *
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['.openparliament.ca']
+ALLOWED_HOSTS = ['localhost', '.openparliament.ca']
 
 DATABASES = {
     'default': {
@@ -16,11 +16,19 @@ DATABASES = {
     },
 }
 
+import dj_database_url
+
+DATABASES = {
+    'default': dj_database_url.config()
+}
+
 HANSARD_CACHE_DIR = os.path.join(PROJ_ROOT, 'hansard-cache')
 SITE_URL='http://openparliament.ca'
 
 # You'll need this to allow Google login
 # GOOGLE_CLIENT_ID = "YOUR_ID"
+
+SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
 
 CACHES = {
     'default': {

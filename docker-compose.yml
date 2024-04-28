@@ -1,0 +1,36 @@
+services:
+  op:
+    build: ./
+    ports:
+      - "8000"
+    environment:
+      - DATABASE_URL=postgres://op:op@postgres/parliament
+    volumes:
+      - opmedia:/mediafiles
+      # To edit settings, you can use something like this:
+      # - ./docker-settings.py:/app/parliament/settings.py
+    depends_on:
+      - postgres    
+
+  postgres:
+    image: postgres:16
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=op
+      - POSTGRES_PASSWORD=op
+      - POSTGRES_DB=parliament
+      - PGUSER=op
+      - PGDATABASE=parliament
+
+  # pgadmin:
+  #   image: dpage/pgadmin4
+  #   ports:
+  #     - "5679:80"
+  #   environment:
+  #     - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+  #     - PGADMIN_DEFAULT_PASSWORD=admin
+
+volumes:
+  pgdata:
+  opmedia:

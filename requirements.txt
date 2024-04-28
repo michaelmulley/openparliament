@@ -2,7 +2,7 @@
 # pip can install these libraries automatically by reading this file:
 # pip install -r requirements.txt
 BeautifulSoup==3.2.0
-Django>=1.11.0,<2.0
+Django==1.11.29
 Markdown==2.6.8
 Pillow==4.0.0
 django-extensions==1.7.6
@@ -12,7 +12,7 @@ setuptools==44.1.1
 # (unmerged upstream as of 2017-02) fixing a bug with index fields across
 # foreignkey__relationships
 -e git+https://github.com/michaelmulley/django-haystack.git@88b6d31#egg=django-haystack
-#psycopg2>=2.0.7
+psycopg2==2.8.6
 pysolr==3.6.0
 wsgiref==0.1.2
 feedparser==4.1
@@ -37,4 +37,7 @@ rsa==4.0
 httplib2==0.21.0
 pyparsing==2.4.7
 pyasn1==0.4.8
-
+# something is specifying a too-new version of django-appconf
+django-appconf==1.0.3
+sqlparse==0.3.1 # required for some migrations by newer Django
+dj-database-url==0.5.0
