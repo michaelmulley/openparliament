@@ -23,6 +23,17 @@ services:
       - PGUSER=op
       - PGDATABASE=parliament
 
+  solr:
+    image: solr:7.7.3
+    volumes:
+      - ./solr-config:/parliament-config
+    command:
+      - solr-precreate
+      - parliament-en
+      - /parliament-config
+    ports:
+      - "8983:8983"
+
   # pgadmin:
   #   image: dpage/pgadmin4
   #   ports:
