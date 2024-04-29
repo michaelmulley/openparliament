@@ -102,7 +102,7 @@ TEMPLATES = [
 ]
 
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'parliament.accounts.middleware.AuthenticatedEmailMiddleware',
@@ -134,7 +134,7 @@ INSTALLED_APPS = [
     'haystack',
     'imagekit',
     'compressor',
-    'captcha',
+    'django_recaptcha',
     'parliament.core',
     'parliament.accounts',
     'parliament.hansards',
@@ -147,6 +147,8 @@ INSTALLED_APPS = [
     'parliament.search',
     'parliament.text_analysis',
 ]
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 LOGGING = {
     'version': 1,

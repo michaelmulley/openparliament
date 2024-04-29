@@ -1,4 +1,4 @@
-from __future__ import absolute_import
+
 from json import dumps
 
 from django import template

@@ -35,7 +35,7 @@ class BillIndex(indexes.SearchIndex, indexes.Indexable):
         elif obj.short_title:
             return obj.short_title
         else:
-            return obj.name[:140] + u'…'
+            return obj.name[:140] + '…'
 
     def index_queryset(self, using=None):
         return Bill.objects.all().prefetch_related(

@@ -46,11 +46,11 @@ def committee_evidence():
       .annotate(scount=models.Count('statement'))\
       .exclude(scount__gt=0).exclude(skip_parsing=True).order_by('date').iterator():
         try:
-            print document
+            print(document)
             parl_document.import_document(document, interactive=False)
             if document.statement_set.all().count():
                 document.save_activity()
-        except Exception, e:
+        except Exception as e:
             logger.exception("Evidence parse failure on #%s: %r" % (document.id, e))
             continue
     
@@ -81,7 +81,7 @@ def hansards_parse():
             try:
                 with transaction.atomic():
                     parl_document.import_document(hansard, interactive=False)
-            except Exception, e:
+            except Exception as e:
                 logger.exception("Hansard parse failure on #%s: %r" % (hansard.id, e))
                 continue
             # now reload the Hansard to get the date

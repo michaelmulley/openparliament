@@ -28,9 +28,9 @@ class Command(BaseCommand):
 
         topics_sent = messages_sent = 0
 
-        for topic, subs in by_topic.items():
+        for topic, subs in list(by_topic.items()):
             documents = topic.get_new_items()
-            logger.debug(u'%s documents for query %s' % (len(documents), topic))
+            logger.debug('%s documents for query %s' % (len(documents), topic))
             #time.sleep(0.3)
             if documents:
                 topics_sent += 1
@@ -39,5 +39,5 @@ class Command(BaseCommand):
                     sub.send_email(documents)
 
         if topics_sent:
-            print "%s topics, %s subscriptions sent in %s seconds" % (
-                topics_sent, messages_sent, (time.time() - start_time))
+            print("%s topics, %s subscriptions sent in %s seconds" % (
+                topics_sent, messages_sent, (time.time() - start_time)))

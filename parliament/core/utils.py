@@ -1,11 +1,11 @@
 import json
-import urllib
-import urllib2
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
 from functools import wraps
 
 from django.db import models
 from django.conf import settings
-from django.core import urlresolvers
+from django.urls import reverse
 from django.http import HttpResponsePermanentRedirect
 
 from compressor.filters import CompilerFilter
@@ -39,7 +39,7 @@ def redir_view(view):
     
     def wrapped(request, *args, **kwargs):
         return HttpResponsePermanentRedirect(
-            urlresolvers.reverse(view, args=args, kwargs=kwargs)
+            reverse(view, args=args, kwargs=kwargs)
         )
     return wrapped
     
@@ -55,10 +55,10 @@ def get_twitter_share_url(url, description, add_plug=True):
     longurl = settings.SITE_URL + url
     
     try:
-        shorten_resp_raw = urllib2.urlopen(settings.BITLY_API_URL + urllib.urlencode({'longurl': longurl}))
+        shorten_resp_raw = urllib.request.urlopen(settings.BITLY_API_URL + urllib.parse.urlencode({'longurl': longurl}))
         shorten_resp = json.load(shorten_resp_raw)
         shorturl = shorten_resp['data']['url']
-    except Exception, e:
+    except Exception as e:
         # FIXME logging
         shorturl = longurl
     
@@ -67,7 +67,7 @@ def get_twitter_share_url(url, description, add_plug=True):
     elif add_plug and (len(description) + len(shorturl) + len(PLUG)) < 140:
         description += PLUG
     message = "%s %s" % (description, shorturl)
-    return 'http://twitter.com/home?' + urllib.urlencode({'status': message})
+    return 'http://twitter.com/home?' + urllib.parse.urlencode({'status': message})
     
 #http://stackoverflow.com/questions/561486/how-to-convert-an-integer-to-the-shortest-url-safe-string-in-python
 import string
@@ -123,3 +123,7 @@ class AutoprefixerFilter(CompilerFilter):
         ("args", getattr(settings, "COMPRESS_AUTOPREFIXER_ARGS",
            '--use autoprefixer --autoprefixer.browsers "> 1%"')),
     )
+
+def is_ajax(request):
+    # Duplicates Django's removed request.is_ajax() function
+    return 'XMLHttpRequest' in request.headers.get('X-Requested_With', '')

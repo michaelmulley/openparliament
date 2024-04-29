@@ -1,8 +1,8 @@
-from django.conf.urls import url
+from django.urls import re_path
 
 from parliament.search.views import SearchFeed, search
 
 urlpatterns = [
-    url(r'^$', search, name='search'),
-    url(r'^feed/$', SearchFeed(), name='search_feed'),
+    re_path(r'^$', search, name='search'),
+    re_path(r'^feed/$', SearchFeed(), name='search_feed'),
 ]

@@ -6,7 +6,7 @@ import re
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.core.signing import Signer
-from django.core import urlresolvers
+from django.urls import reverse
 from django.db import models
 from django.template import loader
 
@@ -40,9 +40,9 @@ class Topic(models.Model):
 
     objects = TopicManager()
 
-    def __unicode__(self):
+    def __str__(self):
         if self.politician_hansard_alert:
-            return u'%s in House debates' % self.person_name
+            return '%s in House debates' % self.person_name
         return self.query
 
     def save(self, *args, **kwargs):
@@ -119,7 +119,7 @@ class Topic(models.Model):
 
 class SeenItem(models.Model):
     """A record that users have already seen a given item for a topic."""
-    topic = models.ForeignKey(Topic)
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
     item_id = models.CharField(max_length=400, db_index=True)
     timestamp = models.DateTimeField(default=datetime.datetime.now)
 
@@ -128,8 +128,8 @@ class SeenItem(models.Model):
             ('topic', 'item_id')
         ]
 
-    def __unicode__(self):
-        return u'%s seen for %s' % (self.item_id, self.topic)
+    def __str__(self):
+        return '%s seen for %s' % (self.item_id, self.topic)
 
 
 class SubscriptionManager(models.Manager):
@@ -141,8 +141,8 @@ class SubscriptionManager(models.Manager):
 
 class Subscription(models.Model):
     """A specific user's alert subscription for a specific search."""
-    topic = models.ForeignKey(Topic)
-    user = models.ForeignKey('accounts.User')
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
+    user = models.ForeignKey('accounts.User', on_delete=models.CASCADE)
 
     created = models.DateTimeField(default=datetime.datetime.now)
     active = models.BooleanField(default=True)
@@ -156,8 +156,8 @@ class Subscription(models.Model):
         ]
         ordering = ['-created']
 
-    def __unicode__(self):
-        return u'%s: %s' % (self.user, self.topic)
+    def __str__(self):
+        return '%s: %s' % (self.user, self.topic)
 
     def save(self, *args, **kwargs):
         new = not self.id
@@ -166,8 +166,8 @@ class Subscription(models.Model):
             self.topic.initialize_if_necessary()
 
     def get_unsubscribe_url(self, full=False):
-        key = Signer(salt='alerts_unsubscribe').sign(unicode(self.id))
-        return (settings.SITE_URL if full else '') + urlresolvers.reverse(
+        key = Signer(salt='alerts_unsubscribe').sign(str(self.id))
+        return (settings.SITE_URL if full else '') + reverse(
             'alerts_unsubscribe', kwargs={'key': key})
 
     def render_message(self, documents):
@@ -193,14 +193,14 @@ class Subscription(models.Model):
         if self.topic.politician_hansard_alert:
             topics = set((d['topic'] for d in documents if 'topic' in d))
             if topics:
-                subj = u'%(politician)s spoke about %(topics)s in the House' % {
+                subj = '%(politician)s spoke about %(topics)s in the House' % {
                     'politician': documents[0]['politician'],
                     'topics': english_list(list(topics))
                 }
             else:
-                subj = documents[0]['politician'] + u' spoke in the House'
+                subj = documents[0]['politician'] + ' spoke in the House'
         else:
-            subj = u'New from openparliament.ca for %s' % self.topic.query
+            subj = 'New from openparliament.ca for %s' % self.topic.query
         return subj[:200]
 
     def send_email(self, documents):
@@ -222,14 +222,14 @@ class Subscription(models.Model):
             self.save()
         else:
             logger.warning("settings.PARLIAMENT_SEND_EMAIL must be True to send mail")
-            print msg.subject
-            print msg.body
+            print(msg.subject)
+            print(msg.body)
 
 
 class PoliticianAlert(models.Model):
     
     email = models.EmailField('Your e-mail')
-    politician = models.ForeignKey(Politician)
+    politician = models.ForeignKey(Politician, on_delete=models.CASCADE)
     active = models.BooleanField(default=False)
     created = models.DateTimeField(default=datetime.datetime.now)
     
@@ -243,6 +243,6 @@ class PoliticianAlert(models.Model):
         h.update(settings.SECRET_KEY)
         return base64.urlsafe_b64encode(h.digest()).replace('=', '')
     
-    def __unicode__(self):
-        return u"%s for %s (%s)" % \
+    def __str__(self):
+        return "%s for %s (%s)" % \
             (self.email, self.politician.name, 'active' if self.active else 'inactive')

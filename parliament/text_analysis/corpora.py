@@ -1,6 +1,6 @@
 import datetime
 import os.path
-import cPickle as pickle
+import pickle as pickle
 import re
 
 from django.conf import settings

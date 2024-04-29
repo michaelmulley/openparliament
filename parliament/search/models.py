@@ -11,9 +11,9 @@ class IndexingTask(models.Model):
 
     timestamp = models.DateTimeField(default=datetime.datetime.now)
 
-    content_type = models.ForeignKey(ContentType, null=True, blank=True)
+    content_type = models.ForeignKey(ContentType, null=True, blank=True, on_delete=models.CASCADE)
     object_id = models.CharField(max_length=20, blank=True)
     content_object = GenericForeignKey('content_type', 'object_id')
 
-    def __unicode__(self):
-        return u'%s %s' % (self.action, self.identifier)
+    def __str__(self):
+        return '%s %s' % (self.action, self.identifier)

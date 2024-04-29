@@ -1,8 +1,8 @@
 import datetime
-from urllib import urlencode
+from urllib.parse import urlencode
 
 from django.contrib.syndication.views import Feed
-from django.core import urlresolvers
+from django.urls import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.shortcuts import get_object_or_404
@@ -14,12 +14,13 @@ from django.views.decorators.vary import vary_on_headers
 from parliament.bills.models import Bill, VoteQuestion, MemberVote, BillInSession
 from parliament.core.api import ModelListView, ModelDetailView, APIFilters
 from parliament.core.models import Session
+from parliament.core.utils import is_ajax
 from parliament.hansards.models import Statement, Document
 
 def bill_pk_redirect(request, bill_id):
     bill = get_object_or_404(Bill, pk=bill_id)
     return HttpResponsePermanentRedirect(
-        urlresolvers.reverse('bill', kwargs={
+        reverse('bill', kwargs={
         'session_id': bill.get_session().id, 'bill_number': bill.number}))
 
 
@@ -33,7 +34,7 @@ class BillDetailView(ModelDetailView):
 
     def get_related_resources(self, request, qs, result):
         return {
-            'bills_url': urlresolvers.reverse('bills')
+            'bills_url': reverse('bills')
         }
 
     def _render_page(self, request, qs, per_page=10):
@@ -88,7 +89,7 @@ class BillDetailView(ModelDetailView):
             'statements_full_date': True,
             'statements_context_link': True,
         }
-        if request.is_ajax():
+        if is_ajax(request):
             if tab == 'meetings':
                 t = loader.get_template("bills/related_meetings.inc")
             else:
@@ -144,7 +145,7 @@ index = BillListView.as_view()
 class BillSessionListView(ModelListView):
 
     def get_json(self, request, session_id):
-        return HttpResponseRedirect(urlresolvers.reverse('bills') + '?'
+        return HttpResponseRedirect(reverse('bills') + '?'
                                     + urlencode({'session': session_id}))
 
     def get_html(self, request, session_id):
@@ -192,7 +193,7 @@ class VoteListView(ModelListView):
 
     def get_json(self, request, session_id=None):
         if session_id:
-            return HttpResponseRedirect(urlresolvers.reverse('votes') + '?'
+            return HttpResponseRedirect(reverse('votes') + '?'
                                         + urlencode({'session': session_id}))
         return super(VoteListView, self).get_json(request)
 
@@ -217,7 +218,7 @@ votes_for_session = VoteListView.as_view()
 def vote_pk_redirect(request, vote_id):
     vote = get_object_or_404(VoteQuestion, pk=vote_id)
     return HttpResponsePermanentRedirect(
-        urlresolvers.reverse('vote', kwargs={
+        reverse('vote', kwargs={
         'session_id': vote.session_id, 'number': vote.number}))
 
 
@@ -232,9 +233,9 @@ class VoteDetailView(ModelDetailView):
 
     def get_related_resources(self, request, obj, result):
         return {
-            'ballots_url': urlresolvers.reverse('vote_ballots') + '?' +
+            'ballots_url': reverse('vote_ballots') + '?' +
                 urlencode({'vote': result['url']}),
-            'votes_url': urlresolvers.reverse('votes')
+            'votes_url': reverse('votes')
         }
 
     def get_html(self, request, session_id, number):

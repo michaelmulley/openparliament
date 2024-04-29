@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import migrations, models
 
@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('short_name_fr', models.TextField(blank=True)),
                 ('slug', models.SlugField(unique=True)),
                 ('display', models.BooleanField(default=True, db_index=True, verbose_name=b'Display on site?')),
-                ('parent', models.ForeignKey(related_name='subcommittees', blank=True, to='committees.Committee', null=True)),
+                ('parent', models.ForeignKey(on_delete=models.CASCADE, related_name='subcommittees', blank=True, to='committees.Committee', null=True)),
             ],
             options={
                 'ordering': ['name_en'],
@@ -35,7 +35,7 @@ class Migration(migrations.Migration):
                 ('name_en', models.CharField(max_length=500)),
                 ('name_fr', models.CharField(max_length=500)),
                 ('study', models.BooleanField(default=False)),
-                ('committee', models.ForeignKey(to='committees.Committee')),
+                ('committee', models.ForeignKey(on_delete=models.CASCADE, to='committees.Committee')),
             ],
             options={
                 'verbose_name_plural': 'Committee activities',
@@ -46,8 +46,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('source_id', models.IntegerField(unique=True)),
-                ('activity', models.ForeignKey(to='committees.CommitteeActivity')),
-                ('session', models.ForeignKey(to='core.Session')),
+                ('activity', models.ForeignKey(on_delete=models.CASCADE, to='committees.CommitteeActivity')),
+                ('session', models.ForeignKey(on_delete=models.CASCADE, to='core.Session')),
             ],
         ),
         migrations.CreateModel(
@@ -55,8 +55,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('acronym', models.CharField(max_length=5, db_index=True)),
-                ('committee', models.ForeignKey(to='committees.Committee')),
-                ('session', models.ForeignKey(to='core.Session')),
+                ('committee', models.ForeignKey(on_delete=models.CASCADE, to='committees.Committee')),
+                ('session', models.ForeignKey(on_delete=models.CASCADE, to='core.Session')),
             ],
         ),
         migrations.CreateModel(
@@ -75,9 +75,9 @@ class Migration(migrations.Migration):
                 ('webcast', models.BooleanField(default=False)),
                 ('televised', models.BooleanField(default=False)),
                 ('activities', models.ManyToManyField(to='committees.CommitteeActivity')),
-                ('committee', models.ForeignKey(to='committees.Committee')),
-                ('evidence', models.OneToOneField(null=True, blank=True, to='hansards.Document')),
-                ('session', models.ForeignKey(to='core.Session')),
+                ('committee', models.ForeignKey(on_delete=models.CASCADE, to='committees.Committee')),
+                ('evidence', models.OneToOneField(on_delete=models.CASCADE, null=True, blank=True, to='hansards.Document')),
+                ('session', models.ForeignKey(on_delete=models.CASCADE, to='core.Session')),
             ],
         ),
         migrations.CreateModel(
@@ -91,9 +91,9 @@ class Migration(migrations.Migration):
                 ('adopted_date', models.DateField(null=True, blank=True)),
                 ('presented_date', models.DateField(null=True, blank=True)),
                 ('government_response', models.BooleanField(default=False)),
-                ('committee', models.ForeignKey(to='committees.Committee')),
-                ('parent', models.ForeignKey(related_name='children', blank=True, to='committees.CommitteeReport', null=True)),
-                ('session', models.ForeignKey(to='core.Session')),
+                ('committee', models.ForeignKey(on_delete=models.CASCADE, to='committees.Committee')),
+                ('parent', models.ForeignKey(on_delete=models.CASCADE, related_name='children', blank=True, to='committees.CommitteeReport', null=True)),
+                ('session', models.ForeignKey(on_delete=models.CASCADE, to='core.Session')),
             ],
         ),
         migrations.AddField(

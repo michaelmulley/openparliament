@@ -15,11 +15,11 @@ class Election (models.Model):
     class Meta:
         ordering = ('-date',)
     
-    def __unicode__ (self):
+    def __str__ (self):
         if self.byelection:
-            return u"Byelection of %s" % self.date
+            return "Byelection of %s" % self.date
         else:
-            return u"General election of %s" % self.date
+            return "General election of %s" % self.date
     
     def calculate_vote_percentages(self):
         candidacies = self.candidacy_set.all()
@@ -40,7 +40,7 @@ class Election (models.Model):
         riding_candidacies = defaultdict(list)
         for candidacy in candidacies:
             riding_candidacies[candidacy.riding_id].append(candidacy)
-        for riding_candidacies in riding_candidacies.values():
+        for riding_candidacies in list(riding_candidacies.values()):
             winner = max(riding_candidacies, key=lambda c: c.votetotal)
             winner.elected = True
             winner.save()
@@ -61,7 +61,7 @@ class CandidacyManager(models.Manager):
         the Candidacy model"""
         
         candidate = None
-        fullname = u' '.join((first_name, last_name))
+        fullname = ' '.join((first_name, last_name))
         candidates = Politician.objects.filter_by_name(fullname)
         # If there's nothing in the list, try a little harder
         if not candidates:
@@ -78,8 +78,8 @@ class CandidacyManager(models.Manager):
             if match:
                 if candidate is not None:
                     if interactive:
-                        print "Please enter Politician ID for %r (%r)" % (fullname, riding.name)
-                        candidate = Politician.objects.get(pk=raw_input().strip())
+                        print("Please enter Politician ID for %r (%r)" % (fullname, riding.name))
+                        candidate = Politician.objects.get(pk=input().strip())
                         break
                     else:
                         raise Politician.MultipleObjectsReturned(
@@ -103,14 +103,14 @@ class CandidacyManager(models.Manager):
         
 
 class Candidacy (models.Model):
-    candidate = models.ForeignKey(Politician)
-    riding = models.ForeignKey(Riding)
-    party = models.ForeignKey(Party)
-    election = models.ForeignKey(Election)
+    candidate = models.ForeignKey(Politician, on_delete=models.CASCADE)
+    riding = models.ForeignKey(Riding, on_delete=models.CASCADE)
+    party = models.ForeignKey(Party, on_delete=models.CASCADE)
+    election = models.ForeignKey(Election, on_delete=models.CASCADE)
     occupation = models.CharField(max_length=100, blank=True)
     votetotal = models.IntegerField(blank=True, null=True)
     votepercent = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
-    elected = models.NullBooleanField(blank=True, null=True)
+    elected = models.BooleanField(blank=True, null=True)
     
     objects = CandidacyManager()
     
@@ -142,5 +142,5 @@ class Candidacy (models.Model):
             self.candidate.add_slug()
         return member
     
-    def __unicode__ (self):
-        return u"%s (%s) was a candidate in %s in the %s" % (self.candidate, self.party, self.riding, self.election)
+    def __str__ (self):
+        return "%s (%s) was a candidate in %s in the %s" % (self.candidate, self.party, self.riding, self.election)

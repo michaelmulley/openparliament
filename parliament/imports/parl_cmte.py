@@ -2,7 +2,7 @@ import datetime
 import logging
 import re
 import time
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 from django.db import transaction
 
@@ -36,7 +36,7 @@ def import_committee_list(session=None):
             committee, created = Committee.objects.get_or_create(name_en=name_en,
                 name_fr=name_fr, parent=parent)
             if created:
-                logger.warning(u"Creating committee: %s, %s" % (committee.name_en, committee.slug))
+                logger.warning("Creating committee: %s, %s" % (committee.name_en, committee.slug))
             CommitteeInSession.objects.get_or_create(
                 committee=committee, session=session, acronym=acronym)
             return committee

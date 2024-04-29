@@ -1,8 +1,8 @@
 import datetime
-from urllib import urlencode
+from urllib.parse import urlencode
 
 from django.conf import settings
-from django.core import urlresolvers
+from django.urls import reverse
 from django.http import HttpResponse, HttpResponsePermanentRedirect, Http404
 from django.shortcuts import get_object_or_404, render
 from django.template import loader
@@ -59,9 +59,9 @@ class CommitteeView(ModelDetailView):
 
     def get_related_resources(self, request, qs, result):
         return {
-            'meetings_url': urlresolvers.reverse('committee_meetings') + '?' +
+            'meetings_url': reverse('committee_meetings') + '?' +
                 urlencode({'committee': self.kwargs['slug']}),
-            'committees_url': urlresolvers.reverse('committee_list')
+            'committees_url': reverse('committee_list')
         }
 
     def get_html(self, request, slug):
@@ -76,13 +76,13 @@ class CommitteeView(ModelDetailView):
         try:
             oldest_year = CommitteeMeeting.objects.filter(committee=cmte).order_by('date')[0].date.year
             newest_year = recent_meetings[0].date.year
-            meeting_years = reversed(range(oldest_year, newest_year+1))
+            meeting_years = reversed(list(range(oldest_year, newest_year+1)))
         except IndexError:
             pass
 
         title = cmte.name
         if 'Committee' not in title and not cmte.parent:
-            title += u' Committee'
+            title += ' Committee'
 
         t = loader.get_template("committees/committee_detail.html")
         c = {
@@ -93,9 +93,9 @@ class CommitteeView(ModelDetailView):
             'archive_years': meeting_years,
             'subcommittees': Committee.objects.filter(parent=cmte, display=True, sessions=Session.objects.current()),
             'include_year': newest_year != datetime.date.today().year,
-            'search_placeholder': u"Search %s transcripts" % cmte.short_name,
+            'search_placeholder': "Search %s transcripts" % cmte.short_name,
             'wordcloud_js': TextAnalysis.objects.get_wordcloud_js(
-                urlresolvers.reverse('committee_analysis', kwargs={'committee_slug': slug})),
+                reverse('committee_analysis', kwargs={'committee_slug': slug})),
         }
         return HttpResponse(t.render(c, request))
 committee = CommitteeView.as_view()        
@@ -113,7 +113,7 @@ def committee_year_archive(request, slug, year):
     ).distinct()
 
     return render(request, "committees/committee_year_archive.html", {
-        'title': u"%s Committee in %s" % (cmte, year),
+        'title': "%s Committee in %s" % (cmte, year),
         'committee': cmte,
         'meetings': meetings,
         'studies': studies,
@@ -124,7 +124,7 @@ def committee_activity(request, activity_id):
     activity = get_object_or_404(CommitteeActivity, id=activity_id)
 
     return render(request, "committees/committee_activity.html", {
-        'title': unicode(activity),
+        'title': str(activity),
         'activity': activity,
         'meetings': activity.committeemeeting_set.order_by('-date'),
         'committee': activity.committee
@@ -166,7 +166,7 @@ class CommitteeMeetingView(ModelDetailView):
     def get_related_resources(self, request, obj, result):
         if obj.evidence_id:
             return {
-                'speeches_url': urlresolvers.reverse('speeches') + '?' +
+                'speeches_url': reverse('speeches') + '?' +
                     urlencode({'document': result['url']})
             }
 
@@ -233,7 +233,7 @@ class CommitteeMeetingStatementView(ModelDetailView):
 
     def get_related_resources(self, request, qs, result):
         return {
-            'document_speeches_url': urlresolvers.reverse('speeches') + '?' +
+            'document_speeches_url': reverse('speeches') + '?' +
                 urlencode({'document': result['document_url']}),
         }        
 

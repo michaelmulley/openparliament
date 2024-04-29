@@ -24,7 +24,7 @@ def clear_former_mp_alerts(qs=None):
             'new_politician': new_politician
         }
         msg = t.render(c)
-        subj = u'Your alerts for %s from openparliament.ca' % alert.politician.name
+        subj = 'Your alerts for %s from openparliament.ca' % alert.politician.name
         try:
             send_mail(subject=subj,
                 message=msg,

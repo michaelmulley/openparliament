@@ -52,6 +52,6 @@ class AjaxRedirectResponse(HttpResponse):
 
 
 def adaptive_redirect(request, url):
-    if request.is_ajax():
+    if 'XMLHttpRequest' in request.headers.get('X-Requested-With', ''):
         return AjaxRedirectResponse(url)
     return HttpResponseRedirect(url)

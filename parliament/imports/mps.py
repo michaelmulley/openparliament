@@ -5,7 +5,7 @@ from parliament.core.models import Politician, Session, Riding, Party
 from django.db import transaction
 from time import sleep
 import hashlib
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 import lxml.html
 import requests
@@ -214,9 +214,9 @@ def _scrape_ourcommons_row(row):
     # </p>
     offices = [{'type': 'legislature'}]
     phone_el = mp_page.xpath(
-        u'.//h4[contains(., "Hill Office")]/../p[contains(., "Telephone")]|.//h4[contains(., "Hill Office")]/../p[contains(., "Téléphone :")]')
+        './/h4[contains(., "Hill Office")]/../p[contains(., "Telephone")]|.//h4[contains(., "Hill Office")]/../p[contains(., "Téléphone :")]')
     fax_el = mp_page.xpath(
-        u'.//h4[contains(., "Hill Office")]/../p[contains(., "Fax")]|.//h4[contains(., "Hill Office")]/../p[contains(., "Télécopieur :")]')
+        './/h4[contains(., "Hill Office")]/../p[contains(., "Fax")]|.//h4[contains(., "Hill Office")]/../p[contains(., "Télécopieur :")]')
 
     if phone_el:
         phone = phone_el[0].text_content().strip().splitlines()
@@ -228,7 +228,7 @@ def _scrape_ourcommons_row(row):
     if fax_el:
         fax = fax_el[0].text_content().strip().splitlines()
         fax = fax[0].replace('Fax:', '').replace(
-            u'Télécopieur :', '').strip()
+            'Télécopieur :', '').strip()
         if fax:
             offices[0]['fax'] = fax
 
@@ -242,19 +242,19 @@ def _scrape_ourcommons_row(row):
         o = dict(postal='\n'.join(address), type='constituency')
 
         phone_and_fax_el = constituency_office_el.xpath(
-            u'./p[contains(., "Telephone")]|./p[contains(., "Téléphone")]')
+            './p[contains(., "Telephone")]|./p[contains(., "Téléphone")]')
         if len(phone_and_fax_el):
             phone_and_fax = phone_and_fax_el[0].text_content(
             ).strip().splitlines()
             # Note that https://www.ourcommons.ca/Members/en/michael-barrett(102275)#contact
             # has a empty value - "Telephone:". So the search / replace cannot include space.
             voice = phone_and_fax[0].replace(
-                'Telephone:', '').replace(u'Téléphone :', '').strip()
+                'Telephone:', '').replace('Téléphone :', '').strip()
             if voice:
                 o['tel'] = voice
             if len(phone_and_fax) > 1:
                 fax = phone_and_fax[1].replace('Fax:', '').replace(
-                    u'Télécopieur :', '').strip()
+                    'Télécopieur :', '').strip()
                 if fax:
                     o['fax'] = fax
         offices.append(o)

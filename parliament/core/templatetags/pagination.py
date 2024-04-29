@@ -26,7 +26,7 @@ def _get_pagination_context(context):
         return ''
     page = page_obj.number
     in_leading_range = in_trailing_range = False
-    pages_outside_leading_range = pages_outside_trailing_range = range(0)
+    pages_outside_leading_range = pages_outside_trailing_range = list(range(0))
     if pages <= LEADING_PAGE_RANGE_DISPLAYED + NUM_PAGES_OUTSIDE_RANGE + 1:
         in_leading_range = in_trailing_range = True
         page_range = [n for n in range(1, pages + 1)]

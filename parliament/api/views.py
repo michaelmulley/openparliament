@@ -10,7 +10,7 @@ class LegacyAPIHansardListView(JSONView):
     def get(self, request):
         return [{
             'note': "This API is deprecated. Please use the API documented on the openparliament.ca Developers page.",
-            'date': unicode(h.date),
+            'date': str(h.date),
             'id': h.id,
             'number': h.number,
             'api_url': '/api/hansards/%s/' % h.id
@@ -23,7 +23,7 @@ def _serialize_statement(s):
         'url': s.get_absolute_url(),
         'heading': s.heading,
         'topic': s.topic,
-        'time': unicode(s.time),
+        'time': str(s.time),
         'attribution': s.who,
         'text': s.text_plain()
     }
@@ -34,7 +34,7 @@ def _serialize_statement(s):
             'name': s.member.politician.name,
             'url': s.member.politician.get_absolute_url(),
             'party': s.member.party.short_name,
-            'riding': unicode(s.member.riding),
+            'riding': str(s.member.riding),
         }
     return v
 
@@ -45,7 +45,7 @@ class LegacyAPIHansardView(JSONView):
     def get(self, request, hansard_id):
         doc = get_object_or_404(Document, document_type='D', id=hansard_id)
         return {
-            'date': unicode(doc.date),
+            'date': str(doc.date),
             'url': doc.get_absolute_url(),
             'id': doc.id,
             'original_url': doc.url,

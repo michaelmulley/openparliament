@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import migrations, models
 
@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('payload', models.TextField()),
                 ('guid', models.CharField(unique=True, max_length=50, db_index=True)),
                 ('active', models.BooleanField(default=True, db_index=True)),
-                ('politician', models.ForeignKey(to='core.Politician')),
+                ('politician', models.ForeignKey(on_delete=models.CASCADE, to='core.Politician')),
             ],
             options={
                 'ordering': ('-date', '-id'),

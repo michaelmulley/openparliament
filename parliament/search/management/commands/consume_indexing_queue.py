@@ -34,7 +34,7 @@ class Command(BaseCommand):
                 logger.debug("Indexing %s" % cls)
                 index = connections['default'].get_unified_index().get_index(cls)
                 if hasattr(index, 'should_obj_be_indexed'):
-                    objs = filter(index.should_obj_be_indexed, objs)
+                    objs = list(filter(index.should_obj_be_indexed, objs))
                 prepared_objs = [_remove_nulls(index.prepare(o)) for o in objs]
                 solr.add(prepared_objs)
 
@@ -42,13 +42,13 @@ class Command(BaseCommand):
 
         if delete_tasks:
             for dt in delete_tasks:
-                print "Deleting %s" % dt.identifier
+                print("Deleting %s" % dt.identifier)
                 solr.delete(id=dt.identifier, commit=False)
             solr.commit()
 
             IndexingTask.objects.filter(id__in=[t.id for t in delete_tasks]).delete()
 
 def _remove_nulls(d):
-    return {k:v for k,v in d.iteritems() if v is not None}
+    return {k:v for k,v in d.items() if v is not None}
 
 

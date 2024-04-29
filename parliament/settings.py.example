@@ -1,5 +1,5 @@
 
-from default_settings import *
+from .default_settings import *
 
 DEBUG = True
 
@@ -28,7 +28,7 @@ SITE_URL='http://openparliament.ca'
 # You'll need this to allow Google login
 # GOOGLE_CLIENT_ID = "YOUR_ID"
 
-SILENCED_SYSTEM_CHECKS = ['captcha.recaptcha_test_key_error']
+SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error']
 
 CACHES = {
     'default': {
