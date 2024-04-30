@@ -3,7 +3,7 @@
 These transcripts are either House Hansards, or House committee evidence.
 
 Most of the heavily-lifting code has been put in a separate module
-called alpheus: http://github.com/rhymeswithcycle/alpheus
+called alpheus.
 """
 from difflib import SequenceMatcher
 import re
@@ -15,7 +15,7 @@ from django.urls import reverse
 from django.db import transaction
 from django.db.models import Max
 
-import alpheus
+from .alpheus import parse_file as alpheus_parse_file
 from lxml import etree
 import requests
 
@@ -47,11 +47,11 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
     if not document.downloaded:
         return False
     xml_en = document.get_cached_xml('en')
-    pdoc_en = alpheus.parse_file(xml_en)
+    pdoc_en = alpheus_parse_file(xml_en)
     xml_en.close()
 
     xml_fr = document.get_cached_xml('fr')
-    pdoc_fr = alpheus.parse_file(xml_fr)
+    pdoc_fr = alpheus_parse_file(xml_fr)
     xml_fr.close()
     
     if document.date and document.date != pdoc_en.meta['date']:
