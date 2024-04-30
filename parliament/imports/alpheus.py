@@ -20,10 +20,10 @@ def _n2s(o):
     return o if o is not None else ''
         
 def _build_tag(name, attrs):
-    return u'<%s%s>' % (
+    return '<%s%s>' % (
         name,
-        u''.join((
-            u" %s=%s" % (k, quoteattr(unicode(v)))
+        ''.join((
+            " %s=%s" % (k, quoteattr(str(v)))
             for k,v in sorted(attrs.items())
         ))
     )
@@ -35,7 +35,7 @@ def _tame_whitespace(s):
 def _text_content(el, tail=False):
     return _tame_whitespace(
         _n2s(el.text) + 
-        u''.join([_text_content(subel, True) for subel in el]) + 
+        ''.join([_text_content(subel, True) for subel in el]) + 
         (_n2s(el.tail) if tail else ''))
         
 def _letters_only(s):
@@ -67,9 +67,9 @@ def _only_open(target):
             return target(self, el, openclose, *args, **kwargs)
     return inner
 
-_r_housemet = re.compile(ur'^\s*(?P<text>The\s+House\s+met\s+at|La\s+séance\s+est\s+ouverte\s+à)\s+(?P<number>\d[\d:\.]*)\s*(?P<ampm>[ap]\.m\.|)', re.I | re.UNICODE)
-_r_person_label = re.compile(ur'^(Mr\.?\s|Mrs\.?\s|Ms\.?\s|Miss\.?s\|Hon\.?\s|Right\sHon\.\s|The\sSpeaker|Le\sprésident|The\sChair|The\sDeputy|The\sActing|An\s[hH]on\.?\s|Une\svoix|Des\svoix|Some\s[hH]on\.\s|M\.\s|Acting\s|L.hon\.?\s|Le\strès\s|Assistant\s|Mme\.?\s|Mlle\.?\s|Dr\.?\s)', re.UNICODE)
-_r_honorific = re.compile(ur'^(Mr\.?\s|Mrs\.?\s|Ms\.?\s|Miss\.?\s|Hon\.?\s|Right\sHon\.\s|M\.\s|L.hon\.?\s|Mme\.?\s|Mlle\.?\s|Dr\.?\s)', re.UNICODE)
+_r_housemet = re.compile(r'^\s*(?P<text>The\s+House\s+met\s+at|La\s+séance\s+est\s+ouverte\s+à)\s+(?P<number>\d[\d:\.]*)\s*(?P<ampm>[ap]\.m\.|)', re.I | re.UNICODE)
+_r_person_label = re.compile(r'^(Mr\.?\s|Mrs\.?\s|Ms\.?\s|Miss\.?s\|Hon\.?\s|Right\sHon\.\s|The\sSpeaker|Le\sprésident|The\sChair|The\sDeputy|The\sActing|An\s[hH]on\.?\s|Une\svoix|Des\svoix|Some\s[hH]on\.\s|M\.\s|Acting\s|L.hon\.?\s|Le\strès\s|Assistant\s|Mme\.?\s|Mlle\.?\s|Dr\.?\s)', re.UNICODE)
+_r_honorific = re.compile(r'^(Mr\.?\s|Mrs\.?\s|Ms\.?\s|Miss\.?\s|Hon\.?\s|Right\sHon\.\s|M\.\s|L.hon\.?\s|Mme\.?\s|Mlle\.?\s|Dr\.?\s)', re.UNICODE)
 _r_parens = re.compile(r'\s*\(.+\)\s*')
 _r_indeterminate = re.compile(r'^(An?|Une)\s')
 def _get_housemet_time(number, ampm):
@@ -108,7 +108,7 @@ class AlpheusError(Exception):
         
 class Document(object):
     
-    BASE_HTML = u"""<!DOCTYPE html>
+    BASE_HTML = """<!DOCTYPE html>
     <html lang="%(lang)s"><head>
     <meta charset="utf-8">
     <title>%(title)s</title>
@@ -129,22 +129,22 @@ class Document(object):
                 title = self.meta['committee_name_fr']
         elif self.meta['document_type'].lower() == 'debates':
             if self.meta['language'].lower() == 'en':
-                title = u'House Debates'
+                title = 'House Debates'
             else:
-                title = u'Débats du Chambre'
-        title += u', ' + unicode(self.meta['date'])
+                title = 'Débats du Chambre'
+        title += ', ' + str(self.meta['date'])
         
         metadata_rows = []
         for k, v in sorted(self.meta.items()):
-            metadata_rows.append(u"%s<th>%s</th><td>%s</td></tr>" % (
+            metadata_rows.append("%s<th>%s</th><td>%s</td></tr>" % (
                 _build_tag('tr', {'class': 'metadata', 'data-name': k, 'data-value': v}),
-                escape(k), escape(unicode(v))))
+                escape(k), escape(str(v))))
         
         html = self.BASE_HTML % {
             'title': title,
             'lang': self.meta['language'],
-            'metadata_rows': u'\n'.join(metadata_rows),
-            'statements': u'\n'.join((s.as_html() for s in self.statements))
+            'metadata_rows': '\n'.join(metadata_rows),
+            'statements': '\n'.join((s.as_html() for s in self.statements))
         }
         return html
         
@@ -157,7 +157,7 @@ class Statement(object):
     def __init__(self, attributes, more_attributes):
         self.meta = dict(attributes)
         self.meta.update(more_attributes)
-        self.content = u''
+        self.content = ''
         
     def clean_up_content(self):
         self.content = _tame_whitespace(self.content)
@@ -168,11 +168,11 @@ class Statement(object):
     def as_html(self):
         def setval(in_key, out_key):
             if self.meta.get(in_key):
-                attrs[out_key] = unicode(self.meta[in_key])
+                attrs[out_key] = str(self.meta[in_key])
                 
         attrs = {
             'class': 'statement',
-            'data-timestamp': unicode(self.meta['timestamp']), #.strftime("%H:%M"),
+            'data-timestamp': str(self.meta['timestamp']), #.strftime("%H:%M"),
         }
         setval('id', 'id')
         setval('person_attribution', 'data-person-speaking-attribution')
@@ -183,7 +183,7 @@ class Statement(object):
         setval('h3', 'data-h3')
         setval('intervention_type', 'data-intervention-type')
         setval('written_question', 'data-written-question')
-        return _build_tag('div', attrs) + self.content + u'</div>'
+        return _build_tag('div', attrs) + self.content + '</div>'
 
 class ParseHandler(object):
     """This class contains the bulk of the parsing logic.
@@ -220,7 +220,7 @@ class ParseHandler(object):
                     'Pause', 'StartPause', 'EndPause', 'Date', 'Insertion',
                     'colspec', 'tgroup', 'tbody', 'thead', 'title',
                     'EditorsNotes',
-                    etree.ProcessingInstruction] + PASSTHROUGH_TAGS.keys()
+                    etree.ProcessingInstruction] + list(PASSTHROUGH_TAGS.keys())
 
         
     def __init__(self, document):
@@ -431,7 +431,7 @@ class ParseHandler(object):
                     p_attrs['data-originallang'] = self.current_attributes['language']
             
             if el.xpath('.//QuotePara'):
-                self._add_code(u'<blockquote>')
+                self._add_code('<blockquote>')
             self._add_code(_build_tag('p', p_attrs)) 
             self._add_tag_text(el, openclose)
         else:
@@ -439,7 +439,7 @@ class ParseHandler(object):
             self.in_para = False
             self._add_code('</p>')
             if el.xpath('.//QuotePara'):
-                self._add_code(u'</blockquote>')
+                self._add_code('</blockquote>')
             assert not _n2s(el.tail).strip()
                         
     def handle_ProceduralText(self, el, openclose):
@@ -460,7 +460,7 @@ class ParseHandler(object):
     def handle_ThroneSpeech(self, el, openclose):
         self._new_person(None, 
             "The Governor General" if self.document_language[0] == 'e' 
-            else u"Le gouverneur général")
+            else "Le gouverneur général")
             
     def handle_B(self, el, openclose):
         # Fallout from new-speaker special case in ParaText
@@ -496,7 +496,7 @@ class ParseHandler(object):
         if affil.tail and affil.tail.replace(':', '').strip():
             content = affil.tail.replace(':', '').strip()
             if not content.startswith('('):
-                logger.warning(u"Looks like there's content in PersonSpeaking: %s" % content)
+                logger.warning("Looks like there's content in PersonSpeaking: %s" % content)
                 self._add_text(content)
         return NO_DESCEND
         
@@ -642,7 +642,7 @@ def parse_tree(tree):
     
     # Start by getting metadata
     def _get_meta(key):
-        return unicode(tree.xpath('//ExtractedItem[@Name="%s"]' % key)[0].text)
+        return str(tree.xpath('//ExtractedItem[@Name="%s"]' % key)[0].text)
     document.meta['date'] = datetime.date(
         year=int(_get_meta('MetaDateNumYear')),
         month=int(_get_meta('MetaDateNumMonth')),
@@ -693,14 +693,14 @@ def parse_string(s):
     return parse_tree(etree.fromstring(s))
     
 def fetch_and_parse(doc_id, lang):
-    import urllib2
+    import urllib.request, urllib.error, urllib.parse
     if doc_id == 'hansard':
         url = 'http://parl.gc.ca/HousePublications/Publication.aspx?Pub=%s&Language=%s&Mode=1&xml=true' % (
             doc_id, lang[0].upper())
     else:
         url = 'http://www.parl.gc.ca/HousePublications/Publication.aspx?DocId=%s&Language=%s&Mode=1&xml=true' % (
             doc_id, lang[0].upper())
-    resp = urllib2.urlopen(url)
+    resp = urllib.request.urlopen(url)
     doc = parse_file(resp)
     try:
         doc.meta['HoCid'] = int(doc_id)
@@ -744,10 +744,10 @@ def main():
     #sys.stderr.write("Parsed %d statements\n" % len(document.statements))
     if options.print_names:
         for s in document.statements:
-            print s.meta.get('person_attribution', '').encode('utf8')
+            print(s.meta.get('person_attribution', '').encode('utf8'))
     else:
         html = document.as_html()
-        print html.encode('utf8')
+        print(html.encode('utf8'))
     
 if __name__ == '__main__':
     main()
