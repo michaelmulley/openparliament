@@ -263,7 +263,7 @@ class Document(models.Model):
     def get_cached_xml(self, language):
         if not self.downloaded:
             raise Exception("Not yet downloaded")
-        return open(self.get_filepath(language), 'rb')
+        return open(self.get_filepath(language), encoding='utf8')
 
     def delete_downloaded(self):
         for lang in ('en', 'fr'):

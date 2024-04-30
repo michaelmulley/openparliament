@@ -7,6 +7,8 @@ django-imagekit
 django-libsass
 django-recaptcha
 lxml
+lxml_html_clean
+cssselect
 Markdown
 pysolr
 requests

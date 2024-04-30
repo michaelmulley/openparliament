@@ -14,7 +14,7 @@ def save_activity(obj, politician, date, guid=None, variety=None):
     if not guid:
         guid = variety + str(obj.id)
     if len(guid) > 50:
-        guid = sha1(guid).hexdigest()
+        guid = sha1(guid.encode('utf8')).hexdigest()
     if Activity.objects.filter(guid=guid).exists():
         return False
     t = loader.get_template("activity/%s.html" % variety.lower())

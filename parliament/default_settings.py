@@ -19,6 +19,7 @@ PARLIAMENT_DB_READONLY = False
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 TIME_ZONE = 'America/Montreal'
+USE_TZ = False
 
 # Language code for this installation.
 # MUST BE either 'en' or 'fr'

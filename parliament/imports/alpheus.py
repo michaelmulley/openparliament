@@ -1,6 +1,6 @@
 #coding: utf-8
 
-from cgi import escape
+from html import escape
 import datetime
 from functools import wraps
 import re
@@ -14,7 +14,7 @@ import logging
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 
-__all__ = ['parse_file', 'parse_string', 'fetch_and_parse']
+__all__ = ['parse_string', 'fetch_and_parse']
 
 def _n2s(o):
     return o if o is not None else ''
@@ -683,11 +683,8 @@ def parse_tree(tree):
     
     document.statements = handler.get_final_statements()
     return document
-
-def parse_file(fileobj):
-    return parse_string(fileobj.read())
     
-def parse_string(s):
+def parse_string(s: str):
     s = s.replace('<B />', '').replace('<ParaText />', '') # Some empty tags can gum up the works
     s = s.replace('&ccedil;', '&#231;').replace('&eacute;', '&#233;') # Fix invalid entities
     return parse_tree(etree.fromstring(s))

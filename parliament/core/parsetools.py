@@ -31,7 +31,7 @@ def normalizeHansardURL(u):
     ses = re.search(r'Ses=(\d+)', u).group(1)
     return 'http://www2.parl.gc.ca/HousePublications/Publication.aspx?Language=E&Mode=1&Parl=%s&Ses=%s&DocId=%s' % (parl, ses, docid)
 
-def removeAccents(str):
+def removeAccents(s: str) -> str:
     nkfd_form = unicodedata.normalize('NFKD', str(str))
     return "".join([c for c in nkfd_form if not unicodedata.combining(c)])
     

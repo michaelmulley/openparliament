@@ -5,7 +5,6 @@ from django.db import transaction, models
 from django.conf import settings
 
 from parliament.politicians import twit
-from parliament.politicians import googlenews as gnews
 from parliament.imports import parlvotes, legisinfo, parl_document, parl_cmte
 from parliament.imports.mps import update_mps_from_ourcommons
 from parliament.core.models import Politician, Session
@@ -23,11 +22,6 @@ def twitter():
     return True
 
 mps = update_mps_from_ourcommons
-
-def googlenews():
-    for pol in Politician.objects.current():
-        gnews.save_politician_news(pol)
-        #time.sleep(1)
         
 def votes():
     parlvotes.import_votes()
