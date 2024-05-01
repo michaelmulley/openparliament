@@ -25,14 +25,8 @@ def time_to_datetime(hour, minute, date):
             datetime.time(hour=hour % 24, minute=minute)
         )
 
-def normalizeHansardURL(u):
-    docid = re.search(r'DocId=(\d+)', u).group(1)
-    parl = re.search(r'Parl=(\d+)', u).group(1)
-    ses = re.search(r'Ses=(\d+)', u).group(1)
-    return 'http://www2.parl.gc.ca/HousePublications/Publication.aspx?Language=E&Mode=1&Parl=%s&Ses=%s&DocId=%s' % (parl, ses, docid)
-
 def removeAccents(s: str) -> str:
-    nkfd_form = unicodedata.normalize('NFKD', str(str))
+    nkfd_form = unicodedata.normalize('NFKD', str(s))
     return "".join([c for c in nkfd_form if not unicodedata.combining(c)])
     
 def stripHonorific(s):

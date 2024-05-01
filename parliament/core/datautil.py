@@ -99,26 +99,6 @@ def spark_index(bucketsize, bigrams=False):
             bucketcount = 0
             bucketidx += 1
             
-def get_parlinfo_ids(polset):
-    
-    for pol in polset:
-        page = urllib.request.urlopen(pol.parlpage)
-        soup = BeautifulSoup(page)
-        parlinfolink = soup.find('a', id='MasterPage_MasterPage_BodyContent_PageContent_Content_TombstoneContent_TombstoneContent_ucHeaderMP_hlFederalExperience')
-        if not parlinfolink:
-            print("Couldn't find on %s" % parlpage)
-        else:
-            match = re.search(r'Item=(.+?)&', parlinfolink['href'])
-            pol.save_parlinfo_id(match.group(1))
-            print("Saved for %s" % pol)
-
-def normalize_hansard_urls():
-    for h in Hansard.objects.all():
-        normalized = parsetools.normalizeHansardURL(h.url)
-        if normalized != h.url:
-            h.url = normalized
-            h.save()
-
 def populate_members_by():
     for by in Election.objects.filter(byelection=True):
         print(str(by))
