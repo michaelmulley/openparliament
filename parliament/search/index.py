@@ -1,3 +1,5 @@
+import itertools
+
 from django.conf import settings
 from django.db.models import signals
 
@@ -59,10 +61,10 @@ def index_model(model_cls):
     return index_qs(model_cls.search_get_qs())
 
 def index_qs(qs, batchsize=1000):
-    for i, start in enumerate(range(0, qs.count(), batchsize)):
-        batch = qs[start:start + batchsize]
-        index_objects(list(batch))
-        print(start)
+    batches = itertools.batched(qs.iterator(chunk_size=batchsize), batchsize)
+    for i, batch in enumerate(batches):
+        index_objects(batch)
+        print(i * batchsize)
 
 def index_objects(model_objs):
     prepared_objs = [get_search_dict(o)

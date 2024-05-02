@@ -445,7 +445,7 @@ class Statement(models.Model):
         qs = cls.objects.all().prefetch_related(
             'member__politician', 'member__party', 'member__riding', 'document',
             'document__committeemeeting__committee'
-        ).order_by('-time')
+        ).order_by()
         if settings.LANGUAGE_CODE.startswith('fr'):
             qs = qs.exclude(content_fr='')
         return qs
