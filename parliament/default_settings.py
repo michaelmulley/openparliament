@@ -132,7 +132,6 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.staticfiles',
     'django_extensions',
-    'haystack',
     'imagekit',
     'compressor',
     'django_recaptcha',

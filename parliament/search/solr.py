@@ -36,7 +36,8 @@ def autohighlight(results):
                 doc[field] = mark_safe(r_hl.sub(r'<\1em>', val))
     return results
 
-solr = pysolr.Solr(settings.HAYSTACK_CONNECTIONS['default']['URL'])
+def get_pysolr_instance() -> pysolr.Solr:
+    return pysolr.Solr(settings.PARLIAMENT_SOLR_URL)
 
 
 class SearchQuery(BaseSearchQuery):
@@ -171,7 +172,7 @@ class SearchQuery(BaseSearchQuery):
     def solr_results(self):
         if not getattr(self, '_results', None):
             bare_query, searchparams = self.get_solr_query()
-            self._results = autohighlight(solr.search(bare_query, **searchparams))
+            self._results = autohighlight(get_pysolr_instance().search(bare_query, **searchparams))
         return self._results
 
     @property

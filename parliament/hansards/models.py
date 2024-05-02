@@ -16,6 +16,7 @@ from parliament.core.models import Session, ElectedMember, Politician
 from parliament.core import parsetools
 from parliament.core.utils import memoize_property, language_property
 from parliament.activity import utils as activity
+from parliament.search.index import register_search_model
 
 import logging
 logger = logging.getLogger(__name__)
@@ -282,6 +283,7 @@ class Document(models.Model):
         self.downloaded = True
         self.save()
 
+@register_search_model
 class Statement(models.Model):
     document = models.ForeignKey(Document, on_delete=models.CASCADE)
     time = models.DateTimeField(db_index=True)
@@ -411,6 +413,42 @@ class Statement(models.Model):
             .replace('<br>', '\n')
             .replace('</p>', '\n\n')
         ).strip()
+
+    def search_dict(self):      
+        name = self.name_info
+        d = {
+            "text": self.text_plain(),
+            # the date is local Ottawa time, not UTC, but we'll pretend for search
+            "date": self.time.isoformat() + 'Z',
+            "who_hocid": self.who_hocid,
+            "topic": self.h2,
+            "url": self.get_absolute_url(),
+            "doc_url": self.document.get_absolute_url(),
+            "committee": self.committee_name,
+            "committee_slug": self.committee_slug
+        }
+        if self.member:
+            d['party'] = self.member.party.short_name
+            d['province'] = self.member.riding.province
+            d['politician_id'] = self.member.politician.identifier
+
+        d['doctype'] = 'committee' if d['committee'] else 'debate'
+        d['politician'] = name['display_name']
+        d['searchtext'] = f"{name['display_name']} {name['post'] if name['post'] else ''} {d.get('party', '')} {d['topic']} {d['text']}"
+        return d
+    
+    def search_should_index(self):
+        return True
+    
+    @classmethod
+    def search_get_qs(cls):
+        qs = cls.objects.all().prefetch_related(
+            'member__politician', 'member__party', 'member__riding', 'document',
+            'document__committeemeeting__committee'
+        ).order_by('-time')
+        if settings.LANGUAGE_CODE.startswith('fr'):
+            qs = qs.exclude(content_fr='')
+        return qs
 
     def _generate_wordcounts(self):
         paragraphs = [

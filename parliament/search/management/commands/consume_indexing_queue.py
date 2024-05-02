@@ -1,11 +1,10 @@
 import itertools
 import logging
 
-from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from haystack import connections
-import pysolr
+from parliament.search.index import index_objects
+from parliament.search.solr import get_pysolr_instance
 
 logger = logging.getLogger(__name__)
 
@@ -24,19 +23,12 @@ class Command(BaseCommand):
             IndexingTask.objects.filter(action='update').prefetch_related('content_object')
         )
 
-        solr = pysolr.Solr(settings.HAYSTACK_CONNECTIONS['default']['URL'], timeout=600)
+        solr = get_pysolr_instance()
 
         if update_tasks:
             update_objs = [t.content_object for t in update_tasks if t.content_object]
 
-            update_objs.sort(key=lambda o: o.__class__.__name__)
-            for cls, objs in itertools.groupby(update_objs, lambda o: o.__class__):
-                logger.debug("Indexing %s" % cls)
-                index = connections['default'].get_unified_index().get_index(cls)
-                if hasattr(index, 'should_obj_be_indexed'):
-                    objs = list(filter(index.should_obj_be_indexed, objs))
-                prepared_objs = [_remove_nulls(index.prepare(o)) for o in objs]
-                solr.add(prepared_objs)
+            index_objects(update_objs)
 
             IndexingTask.objects.filter(id__in=[t.id for t in update_tasks]).delete()
 
@@ -47,8 +39,3 @@ class Command(BaseCommand):
             solr.commit()
 
             IndexingTask.objects.filter(id__in=[t.id for t in delete_tasks]).delete()
-
-def _remove_nulls(d):
-    return {k:v for k,v in d.items() if v is not None}
-
-

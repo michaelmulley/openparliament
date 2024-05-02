@@ -20,6 +20,7 @@ import requests
 from parliament.core import parsetools
 from parliament.core import thumbnail # importing so it'll register a tag
 from parliament.core.utils import memoize_property, ActiveManager, language_property
+from parliament.search.index import register_search_model
 
 import logging
 logger = logging.getLogger(__name__)
@@ -289,6 +290,7 @@ class PoliticianManager(models.Manager):
             pol = self.get_by_name(name=polname, riding=riding)
         return (pol, parl_mp_id)
 
+@register_search_model
 class Politician(Person):
     """Someone who has run for federal office."""
     GENDER_CHOICES = (
@@ -480,6 +482,37 @@ class Politician(Person):
         resp.raise_for_status()
         self.headshot.save(str(self.identifier) + ".jpg", ContentFile(resp.content))
         self.save()
+
+    @classmethod
+    def search_get_qs(cls):
+        return cls.objects.elected()
+    
+    def search_should_index(self):
+        # Only index politicians who've been elected
+        return bool(self.latest_member)
+    
+    def search_dict(self):
+        member = self.latest_member        
+        d = {
+            'text': '',
+            'politician': self.name,
+            'party': member.party.short_name,
+            'province': member.riding.province,
+            'url': self.get_absolute_url(),
+            'doctype': 'mp',
+        }
+        d['boosted'] = f"""
+            {self.name} {' '.join(self.alternate_names())}
+            {member.party.name} {member.party.short_name}
+            {member.riding}
+        """
+
+        d['text'] = f"""
+        {'was' if member.end_date else ''}
+        <span class="tag partytag_{ member.party.slug.lower() }">{member.party.short_name }</span>
+        MP for { member.riding } {('until ' + str(member.end_date.year)) if member.end_date else ''}
+        """
+        return d
 
 class PoliticianInfoManager(models.Manager):
     """Custom manager ensures we always pull in the politician FK."""

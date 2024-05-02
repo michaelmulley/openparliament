@@ -299,6 +299,37 @@ class Bill(models.Model):
     @property
     def dormant(self):
         return (self.status_date and (datetime.date.today() - self.status_date).days > 150)
+    
+    def search_dict(self):
+        d = {
+            'text': self.get_text(),
+            'title': self.name,
+            'number': self.number,
+            'url': self.get_absolute_url(),
+            'session': str(self.session),
+            'doctype': 'bill'
+        }
+        if self.introduced:
+            d['date'] = self.introduced.isoformat() + 'T12:00:00Z'
+        if self.sponsor_politician:
+            d['politician'] = self.sponsor_politician.name
+            d['politician_id'] = self.sponsor_politician.identifier
+        if self.sponsor_member:
+            d['party'] = self.sponsor_member.party.short_name
+        d['searchtext'] = f"{self.name} {self.short_title_en} {d['text']}"
+        d['boosted'] = f"Bill {self.number}"
+        if len(d['title']) >= 150:
+            d['title'] = self.short_title if self.short_title else (self.name[:140] + '…')
+        return d
+    
+    def search_should_index(self):
+        return True # index all bills
+    
+    @classmethod
+    def search_get_qs(cls):
+        return Bill.objects.all().prefetch_related(
+            'sponsor_politician', 'sponsor_member', 'sponsor_member__party'
+        )
 
 class BillInSessionManager(models.Manager):
 
