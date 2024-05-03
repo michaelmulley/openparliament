@@ -100,7 +100,7 @@ class FrequencyModel(dict):
 
     @classmethod
     def from_statement_qs(cls, qs, ngram=1, min_count=1):
-        it = statements_token_iterator(qs, statement_separator='/')
+        it = statements_token_iterator(qs.iterator(), statement_separator='/')
         if ngram > 1:
             it = ngram_iterator(it, ngram)
         return cls(it, min_count=min_count)

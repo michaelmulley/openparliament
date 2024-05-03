@@ -41,16 +41,11 @@ CACHE_MIDDLEWARE_SECONDS = 60 * 60 * 3
 # For search to work, you need to have a running instance of Apache Solr
 # (If you just leave this as an invalid URL, the site will work with the
 # exception of search features.)
-HAYSTACK_CONNECTIONS = {
-    'default': {
-        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-        'URL': 'http://solr:8983/solr/parliament-en'
-    },
-}
-
-# If uncommented, Solr will be sent an update command whenever new searchable
-# data is added.
-#HAYSTACK_SIGNAL_PROCESSOR = 'haystack.signals.RealtimeSignalProcessor'
+PARLIAMENT_SOLR_URL = 'http://solr:8983/solr/parliament-en'
+# If True, will keep track of updated or deleted items and leave notes in the
+# IndexingTask table; the consume_indexing_queue mangement command will then
+# perform all those tasks when called.
+PARLIAMENT_TRACK_INDEXING_TASKS = True
 
 PARLIAMENT_SEND_EMAIL = False
 
