@@ -2,7 +2,6 @@ Django
 dj-database-url
 django-compressor
 django-extensions
-django-haystack
 django-imagekit
 django-libsass
 django-recaptcha
@@ -15,3 +14,5 @@ requests
 psycopg2
 webob
 oauth2client
+whitenoise
+pymemcache

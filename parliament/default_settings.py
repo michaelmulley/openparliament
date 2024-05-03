@@ -1,6 +1,6 @@
 import os
 
-DEBUG = True
+DEBUG = False
 
 ADMINS = [
     ('Michael Mulley', 'michael@michaelmulley.com'),
@@ -11,7 +11,6 @@ MANAGERS = ADMINS
 PROJ_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 CACHE_MIDDLEWARE_KEY_PREFIX = 'parl'
-CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
 # Set to True to disable functionality where user-provided data is saved
 PARLIAMENT_DB_READONLY = False
@@ -56,19 +55,18 @@ STATICFILES_FINDERS = [
     'compressor.finders.CompressorFinder',
 ]
 
-COMPRESS_CSS_FILTERS = [
-    'parliament.core.utils.AutoprefixerFilter',
-    'compressor.filters.css_default.CssAbsoluteFilter',
-    'compressor.filters.cssmin.rCSSMinFilter'
-]
-COMPRESS_JS_FILTERS = []
+# COMPRESS_CSS_FILTERS = [
+#     'parliament.core.utils.AutoprefixerFilter',
+#     'compressor.filters.css_default.CssAbsoluteFilter',
+#     'compressor.filters.cssmin.rCSSMinFilter'
+# ]
 COMPRESS_OFFLINE = True
 COMPRESS_ENABLED = False
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
-    ('es6', 'cat {infile} | ./node_modules/.bin/babel --presets es2015 > {outfile}'),
+    # ('es6', 'cat {infile} | ./node_modules/.bin/babel --presets es2015 > {outfile}'),
 )
-COMPRESS_CACHEABLE_PRECOMPILERS = ['es6']
+# COMPRESS_CACHEABLE_PRECOMPILERS = ['es6']
 
 PARLIAMENT_LANGUAGE_MODEL_PATH = os.path.realpath(os.path.join(PROJ_ROOT, '..', '..', 'language_models'))
 PARLIAMENT_GENERATE_TEXT_ANALYSIS = False
@@ -104,6 +102,8 @@ TEMPLATES = [
 
 
 MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'parliament.accounts.middleware.AuthenticatedEmailMiddleware',
@@ -111,6 +111,7 @@ MIDDLEWARE = [
     #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
     #'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'parliament.core.api.FetchFromCacheMiddleware',
@@ -152,6 +153,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 LOGGING = {
     'version': 1,
+    'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
             'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
