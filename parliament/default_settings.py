@@ -67,6 +67,16 @@ COMPRESS_PRECOMPILERS = (
     # ('es6', 'cat {infile} | ./node_modules/.bin/babel --presets es2015 > {outfile}'),
 )
 # COMPRESS_CACHEABLE_PRECOMPILERS = ['es6']
+COMPRESS_FILTERS = {
+    'css': [
+        'compressor.filters.css_default.CssAbsoluteFilter',
+        'compressor.filters.cssmin.rCSSMinFilter'
+    ], 
+    'js': [
+         'compressor.filters.jsmin.CalmjsFilter' # the rjsmin filter conflicts with some vendor js
+    ]
+}
+
 
 PARLIAMENT_LANGUAGE_MODEL_PATH = os.path.realpath(os.path.join(PROJ_ROOT, '..', '..', 'language_models'))
 PARLIAMENT_GENERATE_TEXT_ANALYSIS = False

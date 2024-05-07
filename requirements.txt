@@ -11,8 +11,10 @@ cssselect
 Markdown
 pysolr
 requests
-psycopg2
+psycopg
 webob
 oauth2client
 whitenoise
 pymemcache
+gunicorn
+calmjs
