@@ -14,7 +14,10 @@ requests
 psycopg
 webob
 oauth2client
+
+# The following are only used in production
 whitenoise
 pymemcache
 gunicorn
+gevent # only used for gunicorn workers
 calmjs
