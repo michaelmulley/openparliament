@@ -1,0 +1,250 @@
+{% extends "labs/base.html" %}
+{% block pagetitle %}Parliamentary Haiku{% endblock %}
+{% block headextra %}
+<link href='https://fonts.googleapis.com/css?family=OFL+Sorts+Mill+Goudy+TT:italic' rel='stylesheet' type='text/css'>
+<style type="text/css">
+#background {
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	position: fixed;
+	z-index: -1;
+    top: 0;
+    left: 0;
+}
+#background img {
+    width: 100%;
+    z-index: -1;
+}
+#haiku {
+    background-color: rgb(100, 100, 100);
+    background-color: rgba(230, 230, 230, 0.8);
+    border: 4px solid #888888;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    top: 200px;
+    width: 550px;
+    height: 175px;
+    padding: 20px;
+}
+#haiku p {
+    font-size: 30px;
+    font-style: italic;
+    padding: 0;
+    margin: 5px;
+    font-family: "OFL Sorts Mill Goudy TT", "Adobe Caslon Pro", Garamond, Georgia, serif;
+}
+#line2 {
+    text-indent: 70px;
+}
+#source a {
+    color: #555555;
+    text-decoration: none;
+    font-size: 11px;
+}
+#source a:hover {
+    color: #1A59C7;
+}
+#source {
+    position: absolute;
+    right: 10px;
+    bottom: 5px;
+}
+#share {
+    position: relative;
+    top: 200px;
+    width: 590px;
+    height: 20px;
+    margin: 5px auto;
+}
+#share img {
+     opacity: 0.7;   
+}
+#share iframe {
+    opacity: 0.65;
+    display: inline-block;
+}
+#share img {
+    cursor: pointer;
+    vertical-align: top;
+    padding: 3px 9px 0 0;
+}
+#share img:hover, #share iframe:hover {
+    opacity: 1.0;
+}
+.loading {
+    visibility: hidden;
+}
+#nextbutton {
+    position: absolute;
+    width: 60px;
+    height: 110px;
+    right: -80px;
+    top: 58px;
+    cursor: pointer;
+    /*background-image:url('/labs/static/haiku/arrows_sprited.png'); */
+}
+
+#tooltip{position:absolute;z-index:3000;border:1px solid #111;background-color:#f9f7cd;padding:5px;max-width:350px;}
+#tooltip h3,#tooltip div{margin:0;font-size:12px;color:#222222;font-weight:normal;}
+</style>
+<meta property="og:title" content="{{ haiku.line1 }} / {{ haiku.line2 }} / {{ haiku.line3 }}">
+<meta property="og:type" content="article">
+<meta property="og:url" content="http://openparliament.ca/labs/haiku/{{ haiku.id }}/">
+<meta property="og:image" content="{{ STATIC_URL }}haiku/leaves.jpg">
+<meta property="og:site_name" content="openparliament.ca">
+<meta property="fb:admins" content="michael.mulley">
+<script src="{{ STATIC_URL }}haiku/raphael.js" type="text/javascript" charset="utf-8"></script>
+{% endblock headextra %}
+{% block content %}
+<div id="background">
+    <img src="{{ STATIC_URL }}haiku/muskoku.jpg" alt="by Mary, Creative Commons licensed, flickr.com/photos/virgomerry/5552010/">
+</div>
+<div id="haiku">
+    <div id="haiku_inner">
+        <p id="line1">
+            {{ haiku.line1 }}
+        </p>
+        <p id="line2">
+            {{ haiku.line2 }}
+        </p>
+        <p id="line3">
+            {{ haiku.line3 }}
+        </p>
+        <div id="source">
+            <a id="attribution" href="{{ haiku.attribution_url }}" name="attribution">{{ haiku.attribution }}</a>
+        </div>
+        <div id="nextbutton"></div>
+    </div>
+</div>
+<div id="share"><img src="{{ STATIC_URL }}haiku/twitter.png" class="tip" width="32" height="32" title="Share on Twitter" id="share_twitter"></div>
+
+<script type="text/javascript">
+$(function () {
+    // Displaying & fetching
+    var currentHaiku = {{ haiku.id }};
+    var haikus = new Array();
+    var haiqueue = new Array();
+    function displayHaiku(haiku_id, pushState) {
+        if (!haiku_id) {
+            haiku_id = haiqueue.shift();
+        }
+        currentHaiku = haiku_id;
+        var h = haikus[haiku_id];
+        $('#line1').text(h[0]);
+        $('#line2').text(h[1]);
+        $('#line3').text(h[2]);
+        $('#attribution').attr('href', h[3]).html(h[4]);
+        if (pushState && window.history && window.history.pushState) {
+            window.history.pushState(haiku_id, null, getRelativeURL(haiku_id));
+        }
+    }
+    function getHaiku(haiku_id, pushState) {
+        var request_url;
+        if (haiku_id) {
+            request_url = '/labs/haiku/' + haiku_id + '/?';
+        }
+        else {
+            request_url = '/labs/haiku/?';
+        }
+        $('#haiku_inner').fadeOut(200);
+        function cont() {
+            $('#haiku_inner').queue(function(next) {
+                displayHaiku(haiku_id, pushState);
+                $('#haiku_inner').fadeIn();
+                // updateLikeButton();
+                next();
+            });
+        }
+        if ( (haiku_id && !haikus[haiku_id]) || (!haiku_id && !haiqueue.length) ) {
+            $.getJSON(request_url, null, function(data) {
+                $.each(data, function() {
+                    haikus[this[5]] = this;
+                    if (!haiku_id) {
+                        haiqueue.push(this[5]);
+                    }
+                });
+                cont();
+            });
+        }
+        else {
+            cont();
+        }
+    }
+    
+    // Sharing buttons
+    function textHaiku() {
+        return $.trim($('#line1').text()) + '\n' + $.trim($('#line2').text()) + '\n' + $.trim($('#line3').text()) + '\n';
+    }
+    function currentURL() {
+        return 'https://openparliament.ca' + getRelativeURL(currentHaiku);
+    }
+    function getRelativeURL(haiku_id) {
+        return '/labs/haiku/' + haiku_id + '/';
+    }
+    function openShareWindow(url) {
+        var width = 550;
+        var height = 450;
+        var left = Math.round((screen.width / 2) - (width / 2));
+        var top = 0;
+        if (screen.height > height) {
+            top = Math.round((screen.height / 2) - (height / 2));
+        }
+        window.open(url, "openparliament_share", "width=" + width +
+            ",height=" + height + ",left=" + left, ",top=" + top +
+            "personalbar=no,toolbar=no,scrollbars=yes,location=yes,resizable=yes");
+    }    
+    $('#share_twitter').click(function (e) {
+        openShareWindow('http://twitter.com/share?'
+            + $.param({'url': currentURL(),
+            'via': 'openparlca',
+            'related': 'openparlca:openparliament.ca',
+            'text': textHaiku()
+            }));
+    })
+    // function updateLikeButton() {
+    //     var params = $.param({
+    //        'href': currentURL(),
+    //        'layout': 'button_count' 
+    //     });
+    //     var like = $('<iframe src="http://www.facebook.com/widgets/like.php?'
+    //         + params + 
+    //         '" scrolling="no" frameborder="0" class="loading" style="border:none; overflow: hidden; width:90px; height:21px" allowTransparency="true""></iframe>').load(function(){
+    //             $('iframe:not(.loading)').remove();
+    //             $(this).removeClass('loading');
+    //     });
+    //     $('#share').append(like);
+        
+    // }
+    
+    // Next button
+    var button_canvas = Raphael(document.getElementById('nextbutton'), 60, 110);
+    var button = button_canvas.path('M 5 5 L 55 55 L 5 105 L 5 5 Z');
+    var buttonColors = ['#de9a85', '#dea985', '#deb785', '#dec685', '#ded585', '#d8de85', '#c9de85', '#bade85', '#acde85',
+        '#9dde85', '#8ede85', '#85de8b', '#85de9a', '#85dea9', '#85deb7', '#85dec6', '#85ded5', '#85d8de', '#85c9de',
+        '#85bade', '#85acde', '#859dde', '#858ede', '#8b85de', '#9a85de', '#a985de', '#b785de', '#c685de', '#d585de',
+        '#de85d8', '#de85c9', '#de85ba', '#de85ac', '#de859d', '#de858e', '#de8b85'];
+    button.attr({'stroke': 'none', 'fill': '#edd3b2'});
+    function changeButtonColor() {
+        var newcolor = buttonColors[Math.floor(Math.random() * buttonColors.length)];
+        button.animate({'fill': newcolor}, 25000, function() { changeButtonColor(); });
+    }
+    changeButtonColor();
+    $('#nextbutton').hover(function() {
+        button.attr({'stroke': '#dddddd', 'stroke-width': '4'});
+    }, function () {
+        button.attr({'stroke': 'none'});
+    }).click(function () {
+        getHaiku(null, true);
+    });
+
+    $(window).bind('popstate', function(e) {
+        if (e.originalEvent.state && e.originalEvent.state != currentHaiku) {
+            getHaiku(e.originalEvent.state);
+        }
+    });
+    
+});
+</script>
+{% endblock content %}

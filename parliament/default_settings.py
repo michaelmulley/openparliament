@@ -156,6 +156,7 @@ INSTALLED_APPS = [
     'parliament.committees',
     'parliament.search',
     'parliament.text_analysis',
+    'parliament.haiku',
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'

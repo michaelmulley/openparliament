@@ -25,6 +25,7 @@ urlpatterns = [
     re_path(r'^api/$', api_docs),
     re_path(r'^api/', include('parliament.api.urls')),
     re_path(r'^accounts/', include('parliament.accounts.urls')),
+    path(r'labs/haiku/', include('parliament.haiku.urls')),
     re_path(r'^$', home),
     re_path(r'^sitemap\.xml$', sitemap_view, {'sitemaps': sitemaps}),
     re_path(r'^sitenews/rss/$', SiteNewsFeed(), name='sitenews_feed'),
