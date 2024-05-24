@@ -4,7 +4,6 @@ import time
 from django.db import transaction, models
 from django.conf import settings
 
-from parliament.politicians import twit
 from parliament.imports import parlvotes, legisinfo, parl_document, parl_cmte
 from parliament.imports.mps import update_mps_from_ourcommons
 from parliament.core.models import Politician, Session
@@ -15,11 +14,6 @@ from parliament.text_analysis import corpora
 
 import logging
 logger = logging.getLogger(__name__)
-
-@transaction.atomic
-def twitter():
-    twit.save_tweets()
-    return True
 
 mps = update_mps_from_ourcommons
         
