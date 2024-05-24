@@ -1,6 +1,6 @@
 #coding: utf-8
 
-from html import escape
+from html import escape as stdlib_escape
 import datetime
 from functools import wraps
 import re
@@ -66,6 +66,11 @@ def _only_open(target):
         if openclose == TAG_OPEN:
             return target(self, el, openclose, *args, **kwargs)
     return inner
+
+def escape(s):
+    """Escape HTML entities in a string. A wrapper around the Python function, since we don't want
+    to escape quotation marks."""
+    return stdlib_escape(s, quote=False)
 
 _r_housemet = re.compile(r'^\s*(?P<text>The\s+House\s+met\s+at|La\s+séance\s+est\s+ouverte\s+à)\s+(?P<number>\d[\d:\.]*)\s*(?P<ampm>[ap]\.m\.|)', re.I | re.UNICODE)
 _r_person_label = re.compile(r'^(Mr\.?\s|Mrs\.?\s|Ms\.?\s|Miss\.?s\|Hon\.?\s|Right\sHon\.\s|The\sSpeaker|Le\sprésident|The\sChair|The\sDeputy|The\sActing|An\s[hH]on\.?\s|Une\svoix|Des\svoix|Some\s[hH]on\.\s|M\.\s|Acting\s|L.hon\.?\s|Le\strès\s|Assistant\s|Mme\.?\s|Mlle\.?\s|Dr\.?\s)', re.UNICODE)

@@ -412,6 +412,7 @@ class Statement(models.Model):
             .replace('\n', '')
             .replace('<br>', '\n')
             .replace('</p>', '\n\n')
+            .replace('&amp;', '&')
         ).strip()
 
     def search_dict(self):      
