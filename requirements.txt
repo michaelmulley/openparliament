@@ -21,3 +21,4 @@ pymemcache
 gunicorn
 gevent # only used for gunicorn workers
 calmjs
+sentry-sdk[django]

@@ -112,8 +112,14 @@ def feed_wrapper(feed_class):
         return feed_instance(request, *args, **kwargs)
     return call_feed
 
-def lang_context(request):
-    return {'fr': settings.LANGUAGE_CODE.startswith('fr')}
+def settings_context(request):
+    """Context processor makes certain settings available to templates."""
+    return {
+        'fr': settings.LANGUAGE_CODE.startswith('fr'),
+        'GOOGLE_CLIENT_ID': getattr(settings, 'GOOGLE_CLIENT_ID', None),
+        'GOOGLE_ANALYTICS_ID': getattr(settings, 'GOOGLE_ANALYTICS_ID', None),        
+        'SENTRY_JS_ID': getattr(settings, 'SENTRY_JS_ID', None),
+    }
 
 class AutoprefixerFilter(CompilerFilter):
     command = "{binary} {args} -o {outfile} {infile}"
