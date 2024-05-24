@@ -33,9 +33,10 @@ urlpatterns = [
 ]
 
 if settings.DEBUG:
-    urlpatterns += [
-        path('admin/', admin.site.urls),
-    ]
+    if not getattr(settings, 'ADMIN_URL', False):
+        urlpatterns += [
+            path('admin/', admin.site.urls),
+        ]
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if getattr(settings, 'ADMIN_URL', False):
