@@ -86,14 +86,13 @@ def _import_mps(objs, download_headshots=False, update_all_headshots=False):
         if constituency_offices:
             _update('constituency_offices', '\n\n'.join(constituency_offices))
 
-        if (not pol.headshot) and mp_info.get('photo_url'):
-            if download_headshots:
-                pol.download_headshot(mp_info['photo_url'])
-            else:
-                warnings.append("Photo available: %s for %s" %
+        if mp_info.get('photo_url') and (update_all_headshots or (not pol.headshot)):
+            if is_photo_real(mp_info.get('photo_url')):
+                if update_all_headshots or download_headshots:
+                    pol.download_headshot(mp_info['photo_url'])
+                else:
+                    warnings.append("Photo available: %s for %s" %
                                 (mp_info.get('photo_url'), pol))
-        elif mp_info.get('photo_url') and update_all_headshots:
-            pol.download_headshot(mp_info['photo_url'])
 
         if mp_info.get('extra') and mp_info['extra'].get('twitter'):
             screen_name = mp_info['extra']['twitter'].split('/')[-1]
@@ -165,6 +164,12 @@ def scrape_mps_from_ourcommons():
     mp_data = (_scrape_ourcommons_row(row) for row in rows)
     return mp_data
 
+def is_photo_real(photo_url: str) -> bool:
+    """Sometimes the scraped photo is just a generic silhouette;
+    this will return False if that appears to be the case."""
+    photo_response = requests.get(photo_url)
+    return (photo_response.status_code == 200 and hashlib.sha1(photo_response.content).hexdigest() not in IMAGE_PLACEHOLDER_SHA1)
+
 def _scrape_ourcommons_row(row):
     d = {}
     d['name'] = row.xpath(
@@ -200,11 +205,7 @@ def _scrape_ourcommons_row(row):
         './/div[@class="ce-mip-mp-profile-container"]//img/@src')[0]
 
     if photo:
-        photo = urljoin(OURCOMMONS_MPS_URL, photo)
-        # Determine whether the photo is actually a generic silhouette
-        photo_response = requests.get(photo)
-        if (photo_response.status_code == 200 and hashlib.sha1(photo_response.content).hexdigest() not in IMAGE_PLACEHOLDER_SHA1):
-            d['photo_url'] = photo
+        d['photo_url'] = urljoin(OURCOMMONS_MPS_URL, photo)
 
     # Hill Office contacts
     # Now phone and fax are in the same element

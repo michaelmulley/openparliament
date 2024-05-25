@@ -1,5 +1,5 @@
 {% extends "politicians/base.html" %}
-{% load imagekit highlighting ours %}
+{% load highlighting ours %}
 {% block headextra %}
 {% if member.current %}
 <link rel="alternate" type="application/rss+xml" title="{{ pol.name }}: Statements in the House of Commons" href="{% url "politician_statement_feed" pol_id=pol.id %}">
@@ -21,8 +21,8 @@
 {% block content %}
 <div class="row">
 <div class="context-col">
-    {% if pol.headshot %}{% thumbnail '142x230' pol.headshot as headshot %}
-        <div class="headshot"><img class="headshot" src="{{ headshot.url }}" itemprop="image" alt=""><span>House of Commons photo</span></div>
+    {% if pol.headshot %}
+        <div class="headshot"><img class="headshot" src="{{ pol.headshot.url }}" itemprop="image" alt=""><span>House of Commons photo</span></div>
     {% endif %}
     {% if member.current %}
         <h3>Track {{ pol.name_given }}</h3>

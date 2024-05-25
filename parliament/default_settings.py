@@ -142,7 +142,6 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.staticfiles',
     'django_extensions',
-    'imagekit',
     'compressor',
     'django_recaptcha',
     'parliament.core',

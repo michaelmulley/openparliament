@@ -2,9 +2,9 @@ Django
 dj-database-url
 django-compressor
 django-extensions
-django-imagekit
 django-libsass
 django-recaptcha
+Pillow
 lxml
 lxml_html_clean
 cssselect
@@ -22,3 +22,4 @@ gunicorn
 gevent # only used for gunicorn workers
 calmjs
 sentry-sdk[django]
+ipython
