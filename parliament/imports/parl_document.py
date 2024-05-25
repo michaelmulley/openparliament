@@ -269,7 +269,7 @@ def _process_related_link(match, statement):
         try:
             pol = Politician.objects.get_by_parl_affil_id(hocid)
         except Politician.DoesNotExist:
-            logger.error("Could not resolve related politician #%s, %r" % (hocid, text))
+            logger.warning("Could not resolve related politician #%s, %r" % (hocid, text))
             return text
         url = pol.get_absolute_url()
         title = pol.name
