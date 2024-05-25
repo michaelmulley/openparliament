@@ -13,6 +13,7 @@ from parliament.core.models import Session, ElectedMember, Politician, Party
 from parliament.core.utils import language_property, memoize_property
 from parliament.hansards.models import Document, Statement
 from parliament.activity import utils as activity
+from parliament.search.index import register_search_model
 
 import logging
 logger = logging.getLogger(__name__)
@@ -59,6 +60,7 @@ class BillManager(models.Manager):
             & models.Q(status_code='Introduced')).order_by('-status_date')[:number]
 
 
+@register_search_model
 class Bill(models.Model): 
     CHAMBERS = (
         ('C', 'House'),
