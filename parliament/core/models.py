@@ -416,8 +416,7 @@ class Politician(Person):
     def parlpage(self):
         parlid = self.info().get('parl_mp_id')
         if parlid:
-            return "http://www.parl.gc.ca/Parliamentarians/{}/members/{}({})".format(
-                settings.LANGUAGE_CODE, self.identifier, parlid)
+            return f"https://www.ourcommons.ca/members/{settings.LANGUAGE_CODE}/{self.identifier}({parlid})"
         return None
         
     def get_contact_url(self):
