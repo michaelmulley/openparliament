@@ -1,7 +1,7 @@
-from django.conf.urls import url
+from django.urls import path
 
 from parliament.alerts.views import bounce_webhook
 
 urlpatterns = [
-	url(r'', bounce_webhook)
+	path('', bounce_webhook)
 ]
