@@ -136,7 +136,7 @@ class APIView(View):
             return result
 
         kwargs['pretty_print'] = True
-        content = self.process_json(result, request, **kwargs).content
+        content = self.process_json(result, request, **kwargs).content.decode('utf8')
         resource_name = getattr(self, 'resource_name', None)
         title = resource_name if resource_name else 'API'
         params = request.GET.copy()
