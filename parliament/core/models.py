@@ -17,7 +17,7 @@ import lxml.etree
 import lxml.html
 from markdown import markdown
 import requests
-import PIL
+from PIL import Image, ImageOps
 
 from parliament.core import parsetools
 from parliament.core.utils import memoize_property, ActiveManager, language_property
@@ -480,23 +480,23 @@ class Politician(Person):
         resp = requests.get(url)
         resp.raise_for_status()
         file = ContentFile(resp.content)
-        pil_img = PIL.Image.open(BytesIO(resp.content))
+        pil_img = Image.open(BytesIO(resp.content))
         if not pil_img.size == (142, 230):
             logger.warning(f'Headshot image for {self.name} is incorrect size, {pil_img.size}. Resizing to (142,230)')
             bio = BytesIO()
-            PIL.ImageOps.fit(pil_img, (142, 230), method=PIL.Image.Resampling.LANCZOS).save(bio, format='JPEG', quality=90)
+            ImageOps.fit(pil_img, (142, 230), method=Image.Resampling.LANCZOS).save(bio, format='JPEG', quality=90)
             file = ContentFile(bio.getvalue())
         self.headshot.save(str(self.identifier) + ".jpg", file)
         self.save_headshot_thumbnail()
         self.save()
 
     def save_headshot_thumbnail(self):
-        pil_img = PIL.Image.open(self.headshot)
+        pil_img = Image.open(self.headshot)
         (w, h) = pil_img.size
         if not (w == 142 and h == 230):
             raise Exception(f'Headshot image for {self.name} is incorrect size, {pil_img.size}. Should be (142, 230)')
         pil_img =  pil_img.crop((10, 10, w - 10, h - 68))
-        pil_img.thumbnail((100, 125), resample=PIL.Image.Resampling.LANCZOS)
+        pil_img.thumbnail((100, 125), resample=Image.Resampling.LANCZOS)
         bio = BytesIO()
         pil_img.save(bio, format='JPEG', quality=90)
         self.headshot_thumbnail.save(f'{self.identifier}-thumb.jpg', ContentFile(bio.getvalue()))
