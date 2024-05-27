@@ -53,6 +53,7 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
+    'parliament.core.utils.ListingCompressorFinder'
 ]
 
 # COMPRESS_CSS_FILTERS = [
@@ -76,7 +77,7 @@ COMPRESS_FILTERS = {
          'compressor.filters.jsmin.CalmjsFilter' # the rjsmin filter conflicts with some vendor js
     ]
 }
-
+COMPRESS_ROOT = os.path.realpath(os.path.join(PROJ_ROOT, '..', '..', 'frontend_bundles'))
 
 PARLIAMENT_LANGUAGE_MODEL_PATH = os.path.realpath(os.path.join(PROJ_ROOT, '..', '..', 'language_models'))
 PARLIAMENT_GENERATE_TEXT_ANALYSIS = False
@@ -88,6 +89,11 @@ SESSION_COOKIE_AGE = 60*60*24*60  # 60 days
 SESSION_COOKIE_SECURE = True
 
 PARLIAMENT_API_HOST = 'api.openparliament.ca'
+
+# These looser-than-the-default policies are required for
+# Google popup signin to work (as of spring 2024)
+SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
 
 TEMPLATES = [
     {

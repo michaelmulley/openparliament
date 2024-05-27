@@ -5,10 +5,12 @@ from functools import wraps
 
 from django.db import models
 from django.conf import settings
+from django.contrib import staticfiles
 from django.urls import reverse
 from django.http import HttpResponsePermanentRedirect
 
 from compressor.filters import CompilerFilter
+from compressor.storage import CompressorFileStorage
 
 import logging
 logger = logging.getLogger(__name__)
@@ -129,6 +131,12 @@ class AutoprefixerFilter(CompilerFilter):
         ("args", getattr(settings, "COMPRESS_AUTOPREFIXER_ARGS",
            '--use autoprefixer --autoprefixer.browsers "> 1%"')),
     )
+
+class ListingCompressorFinder(staticfiles.finders.BaseStorageFinder):
+    """Much like django-compressor's base finder, but doesn't
+    explicitly stop collectstatic from picking up compressed files."""
+    storage = CompressorFileStorage
+
 
 def is_ajax(request):
     # Duplicates Django's removed request.is_ajax() function

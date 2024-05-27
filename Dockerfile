@@ -29,12 +29,14 @@ RUN --mount=type=cache,target=/root/.cache/pip \
     --mount=type=bind,source=requirements.txt,target=requirements.txt \
     python -m pip install -r requirements.txt
 
-# RUN mkdir /staticfiles && chown appuser /staticfiles
+# RUN mkdir /staticfiles && chown appuser /staticfiles && mkdir /frontend_bundles && chown appuser /frontend_bundles
 
 # USER appuser
 
 COPY . .
 COPY parliament/settings.py.example parliament/settings.py
+
+RUN python manage.py compress --settings=parliament.offline_compress_settings
 
 EXPOSE 8000
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
