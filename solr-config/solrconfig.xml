@@ -671,6 +671,7 @@
       <str name="hl.maxAlternateFieldLength">280</str>
       <str name="hl.simple.pre">~hl~</str>
       <str name="hl.simple.post">~/hl~</str>
+      <str name="hl.defaultSummary">true</str>
 
       <!-- date facet -->
       <str name="facet.range">{!ex=fdate}date</str>
