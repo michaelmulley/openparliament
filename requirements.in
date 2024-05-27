@@ -1,0 +1,24 @@
+Django<5.1
+dj-database-url
+django-compressor
+django-extensions
+django-libsass
+django-recaptcha
+Pillow
+lxml
+lxml_html_clean
+cssselect
+Markdown
+pysolr
+requests
+psycopg
+webob
+oauth2client
+
+# The following are only used in production
+whitenoise
+pymemcache
+gunicorn
+gevent # only used for gunicorn workers
+calmjs
+sentry-sdk
