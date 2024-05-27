@@ -59,7 +59,7 @@ def token_login(request, token):
     try:
         lt = LoginToken.validate(token=token, login_ip=_get_ip(request))
     except TokenError as e:
-        messages.error(request, e.message)
+        messages.error(request, str(e))
         return HttpResponseRedirect(redirect_url)
 
     user, created = User.objects.get_or_create(email=lt.email)

@@ -29,7 +29,7 @@ class User(models.Model):
         self.__class__.objects.filter(id=self.id).update(last_login=datetime.datetime.now())
 
 def _random_token():
-    return urlsafe_b64encode(os.urandom(15))
+    return urlsafe_b64encode(os.urandom(15)).decode('ascii').rstrip('=')
 
 class TokenError(Exception):
 
