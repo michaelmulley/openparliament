@@ -144,7 +144,7 @@ def document_view(request, document, meeting=None, slug=None):
 class SpeechesView(ModelListView):
 
     def document_filter(qs, view, filter_name, filter_extra, val):
-        u = val.rstrip('/').split('/')
+        u = val.strip('/').split('/')
         if len(u) < 4:
             raise BadRequest("Invalid document URL")
         if u[-4] == 'debates':
@@ -163,8 +163,10 @@ class SpeechesView(ModelListView):
                 meeting = CommitteeMeeting.objects.get(
                     committee__slug=u[-3], session=u[-2], number=u[-1])
             except (ValueError, CommitteeMeeting.DoesNotExist):
-                raise BadRequest("Invalid debate/meeting URL")
+                raise BadRequest("Invalid meeting URL")
             return qs.filter(document=meeting.evidence_id).order_by('sequence')
+        else:
+            raise BadRequest("Invalid document URL")
     document_filter.help = "the URL of the debate or committee meeting"
 
     filters = {
