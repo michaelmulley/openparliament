@@ -21,5 +21,7 @@ fabfile
 *.sublime-*
 language_models/
 node_modules/
-op3env/
 .python-version
+hansard-cache/
+*.code-workspace
+docker-compose.yml

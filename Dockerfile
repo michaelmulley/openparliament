@@ -34,7 +34,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 # USER appuser
 
 COPY . .
-COPY parliament/settings.py.example parliament/settings.py
+COPY config-examples/settings.py.example parliament/settings.py
 
 RUN python manage.py compress --settings=parliament.offline_compress_settings
 
