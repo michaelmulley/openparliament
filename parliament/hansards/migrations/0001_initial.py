@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import migrations, models
 
@@ -26,7 +26,7 @@ class Migration(migrations.Migration):
                 ('skip_parsing', models.BooleanField(default=False, help_text=b"Don't try to parse this, presumably because of errors in the source.")),
                 ('public', models.BooleanField(default=False, verbose_name=b'Display on site?')),
                 ('multilingual', models.BooleanField(default=False, verbose_name=b'Content parsed in both languages?')),
-                ('session', models.ForeignKey(to='core.Session')),
+                ('session', models.ForeignKey(on_delete=models.CASCADE, to='core.Session')),
             ],
             options={
                 'ordering': ('-date',),
@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('sequence', models.PositiveIntegerField()),
                 ('slug', models.SlugField(max_length=100)),
-                ('document', models.ForeignKey(to='hansards.Document')),
+                ('document', models.ForeignKey(on_delete=models.CASCADE, to='hansards.Document')),
             ],
         ),
         migrations.CreateModel(
@@ -69,10 +69,10 @@ class Migration(migrations.Migration):
                 ('written_question', models.CharField(blank=True, max_length=1, choices=[(b'Q', b'Question'), (b'R', b'Response')])),
                 ('statement_type', models.CharField(max_length=35, blank=True)),
                 ('bills', models.ManyToManyField(to='bills.Bill', blank=True)),
-                ('document', models.ForeignKey(to='hansards.Document')),
-                ('member', models.ForeignKey(blank=True, to='core.ElectedMember', null=True)),
+                ('document', models.ForeignKey(on_delete=models.CASCADE, to='hansards.Document')),
+                ('member', models.ForeignKey(on_delete=models.CASCADE, blank=True, to='core.ElectedMember', null=True)),
                 ('mentioned_politicians', models.ManyToManyField(related_name='statements_with_mentions', to='core.Politician', blank=True)),
-                ('politician', models.ForeignKey(blank=True, to='core.Politician', null=True)),
+                ('politician', models.ForeignKey(on_delete=models.CASCADE, blank=True, to='core.Politician', null=True)),
             ],
             options={
                 'ordering': ('sequence',),

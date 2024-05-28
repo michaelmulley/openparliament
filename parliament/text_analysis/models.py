@@ -63,7 +63,7 @@ class TextAnalysis(models.Model):
         unique_together = [('key', 'lang')]
         verbose_name_plural = 'Text analyses'
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s (%s)" % (self.key, self.lang)
 
     @property

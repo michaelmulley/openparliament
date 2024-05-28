@@ -1,14 +1,16 @@
 import json
-import urllib
-import urllib2
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
 from functools import wraps
 
 from django.db import models
 from django.conf import settings
-from django.core import urlresolvers
+from django.contrib import staticfiles
+from django.urls import reverse
 from django.http import HttpResponsePermanentRedirect
 
 from compressor.filters import CompilerFilter
+from compressor.storage import CompressorFileStorage
 
 import logging
 logger = logging.getLogger(__name__)
@@ -39,7 +41,7 @@ def redir_view(view):
     
     def wrapped(request, *args, **kwargs):
         return HttpResponsePermanentRedirect(
-            urlresolvers.reverse(view, args=args, kwargs=kwargs)
+            reverse(view, args=args, kwargs=kwargs)
         )
     return wrapped
     
@@ -55,10 +57,10 @@ def get_twitter_share_url(url, description, add_plug=True):
     longurl = settings.SITE_URL + url
     
     try:
-        shorten_resp_raw = urllib2.urlopen(settings.BITLY_API_URL + urllib.urlencode({'longurl': longurl}))
+        shorten_resp_raw = urllib.request.urlopen(settings.BITLY_API_URL + urllib.parse.urlencode({'longurl': longurl}))
         shorten_resp = json.load(shorten_resp_raw)
         shorturl = shorten_resp['data']['url']
-    except Exception, e:
+    except Exception as e:
         # FIXME logging
         shorturl = longurl
     
@@ -67,7 +69,7 @@ def get_twitter_share_url(url, description, add_plug=True):
     elif add_plug and (len(description) + len(shorturl) + len(PLUG)) < 140:
         description += PLUG
     message = "%s %s" % (description, shorturl)
-    return 'http://twitter.com/home?' + urllib.urlencode({'status': message})
+    return 'http://twitter.com/home?' + urllib.parse.urlencode({'status': message})
     
 #http://stackoverflow.com/questions/561486/how-to-convert-an-integer-to-the-shortest-url-safe-string-in-python
 import string
@@ -112,8 +114,14 @@ def feed_wrapper(feed_class):
         return feed_instance(request, *args, **kwargs)
     return call_feed
 
-def lang_context(request):
-    return {'fr': settings.LANGUAGE_CODE.startswith('fr')}
+def settings_context(request):
+    """Context processor makes certain settings available to templates."""
+    return {
+        'fr': settings.LANGUAGE_CODE.startswith('fr'),
+        'GOOGLE_CLIENT_ID': getattr(settings, 'GOOGLE_CLIENT_ID', None),
+        'GOOGLE_ANALYTICS_ID': getattr(settings, 'GOOGLE_ANALYTICS_ID', None),        
+        'SENTRY_JS_ID': getattr(settings, 'SENTRY_JS_ID', None),
+    }
 
 class AutoprefixerFilter(CompilerFilter):
     command = "{binary} {args} -o {outfile} {infile}"
@@ -123,3 +131,13 @@ class AutoprefixerFilter(CompilerFilter):
         ("args", getattr(settings, "COMPRESS_AUTOPREFIXER_ARGS",
            '--use autoprefixer --autoprefixer.browsers "> 1%"')),
     )
+
+class ListingCompressorFinder(staticfiles.finders.BaseStorageFinder):
+    """Much like django-compressor's base finder, but doesn't
+    explicitly stop collectstatic from picking up compressed files."""
+    storage = CompressorFileStorage
+
+
+def is_ajax(request):
+    # Duplicates Django's removed request.is_ajax() function
+    return 'XMLHttpRequest' in request.headers.get('X-Requested_With', '')

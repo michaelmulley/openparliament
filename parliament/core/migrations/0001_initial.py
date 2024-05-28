@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import migrations, models
 import datetime
@@ -65,7 +65,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('schema', models.CharField(max_length=40, db_index=True)),
                 ('value', models.TextField()),
-                ('politician', models.ForeignKey(to='core.Politician')),
+                ('politician', models.ForeignKey(on_delete=models.CASCADE, to='core.Politician')),
             ],
         ),
         migrations.CreateModel(
@@ -113,17 +113,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='electedmember',
             name='party',
-            field=models.ForeignKey(to='core.Party'),
+            field=models.ForeignKey(on_delete=models.CASCADE, to='core.Party'),
         ),
         migrations.AddField(
             model_name='electedmember',
             name='politician',
-            field=models.ForeignKey(to='core.Politician'),
+            field=models.ForeignKey(on_delete=models.CASCADE, to='core.Politician'),
         ),
         migrations.AddField(
             model_name='electedmember',
             name='riding',
-            field=models.ForeignKey(to='core.Riding'),
+            field=models.ForeignKey(on_delete=models.CASCADE, to='core.Riding'),
         ),
         migrations.AddField(
             model_name='electedmember',

@@ -1,5 +1,5 @@
 from django.contrib import messages
-from django.core import urlresolvers
+from django.urls import reverse
 from django.core.exceptions import ValidationError
 from django.core.validators import EmailValidator
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotAllowed
@@ -54,12 +54,12 @@ def token_login(request, token):
         # Some email systems make HEAD requests to all URLs
         return HttpResponseNotAllowed(['GET'])
 
-    redirect_url = urlresolvers.reverse('alerts_list')
+    redirect_url = reverse('alerts_list')
 
     try:
         lt = LoginToken.validate(token=token, login_ip=_get_ip(request))
     except TokenError as e:
-        messages.error(request, e.message)
+        messages.error(request, str(e))
         return HttpResponseRedirect(redirect_url)
 
     user, created = User.objects.get_or_create(email=lt.email)

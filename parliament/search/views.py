@@ -2,8 +2,8 @@
 
 import logging
 import re
-import urllib
-from urlparse import urljoin
+import urllib.request, urllib.parse, urllib.error
+from urllib.parse import urljoin
 
 from django.conf import settings
 from django.contrib.syndication.views import Feed
@@ -16,6 +16,7 @@ import requests
 
 from parliament.core.models import Politician, Session, ElectedMember, Riding, InternalXref
 from parliament.core.views import closed, flatpage_response
+from parliament.core.utils import is_ajax
 from parliament.search.solr import SearchQuery
 from parliament.search.utils import SearchPaginator
 from parliament.utils.views import adaptive_redirect
@@ -34,13 +35,13 @@ def search(request):
         if not 'page' in request.GET:
             resp = try_postcode_first(request)
             if resp: return resp
-            if not request.is_ajax():
+            if not is_ajax(request):
                 resp = try_politician_first(request)
                 if resp: return resp
 
         query = request.GET['q'].strip()
         if request.GET.get('prepend'):
-            query = request.GET['prepend'] + u' ' + query
+            query = request.GET['prepend'] + ' ' + query
         if 'page' in request.GET:
             try:
                 pagenum = int(request.GET['page'])
@@ -74,7 +75,7 @@ def search(request):
             'query': '',
             'page': None,
         }
-    if request.is_ajax():
+    if is_ajax(request):
         t = loader.get_template("search/search_results.inc")
     else:
         t = loader.get_template("search/search.html")
@@ -97,23 +98,23 @@ def try_postcode_first(request):
             InternalXref.objects.get_or_create(schema='edid_postcode', text_value=postcode, target_id=edid)
         except AmbiguousPostcodeException as e:
             ec_url = e.ec_url if e.ec_url else 'http://elections.ca/'
-            return flatpage_response(request, u"You’ve got a confusing postcode",
-                mark_safe(u"""Some postal codes might cross riding boundaries. It looks like yours is one of them.
+            return flatpage_response(request, "You’ve got a confusing postcode",
+                mark_safe("""Some postal codes might cross riding boundaries. It looks like yours is one of them.
                     If you need to find out who your MP is, visit <a href="%s">this Elections Canada page</a> and
                     tell them your full address.""" % ec_url))
         except Exception:
             logger.exception("elections.ca problem", extra={'request': request})
             edid = postcode_to_edid_represent(postcode)
     if not edid:
-        return flatpage_response(request, u"Can’t find that postcode",
-            mark_safe(u"""We’re having trouble figuring out where that postcode is.
+        return flatpage_response(request, "Can’t find that postcode",
+            mark_safe("""We’re having trouble figuring out where that postcode is.
                 Try asking <a href="http://elections.ca/">Elections Canada</a> who your MP is."""))
     try:
         member = ElectedMember.objects.get(end_date__isnull=True, riding__edid=edid)
         return adaptive_redirect(request, member.politician.get_absolute_url())
     except ElectedMember.DoesNotExist:
-        return flatpage_response(request, u"Ain’t nobody lookin’ out for you",
-            mark_safe(u"""It looks like that postal code is in the riding of %s. There is no current
+        return flatpage_response(request, "Ain’t nobody lookin’ out for you",
+            mark_safe("""It looks like that postal code is in the riding of %s. There is no current
             Member of Parliament for that riding. By law, a byelection must be called within
             180 days of a resignation causing a vacancy. (If you think we’ve got our facts
             wrong about your riding or MP, please send an <a class='maillink'>e-mail</a>.)"""
@@ -171,18 +172,17 @@ class SearchFeed(Feed):
         return request.GET['q']
 
     def title(self, query):
-        return u'"%s" | openparliament.ca' % query
+        return '"%s" | openparliament.ca' % query
 
     def link(self, query):
-        return "https://openparliament.ca/search/?" + urllib.urlencode({'q': query.encode('utf8'), 'sort': 'date desc'})
+        return "https://openparliament.ca/search/?" + urllib.parse.urlencode({'q': query.encode('utf8'), 'sort': 'date desc'})
 
     def description(self, query):
         return "From openparliament.ca, search results for '%s'" % query
 
     def items(self, query):
         query_obj = SearchQuery(query, user_params={'sort': 'date desc'})
-        return filter(lambda item: item['django_ct'] == 'hansards.statement',
-            query_obj.documents)
+        return [item for item in query_obj.documents if item['django_ct'] == 'hansards.statement']
 
     def item_title(self, item):
         return "%s / %s" % (item.get('topic', ''), item.get('politician', ''))

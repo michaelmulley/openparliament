@@ -1,8 +1,8 @@
 import datetime
-from urllib import urlencode
+from urllib.parse import urlencode
 
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
-from django.core import urlresolvers
+from django.urls import reverse
 from django.http import HttpResponse, Http404, HttpResponsePermanentRedirect, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.template import loader
@@ -11,6 +11,7 @@ from django.views.decorators.vary import vary_on_headers
 
 from parliament.committees.models import CommitteeMeeting
 from parliament.core.api import ModelDetailView, ModelListView, APIFilters, BadRequest
+from parliament.core.utils import is_ajax
 from parliament.hansards.models import Document, Statement
 from parliament.text_analysis.models import TextAnalysis
 from parliament.text_analysis.views import TextAnalysisView
@@ -31,9 +32,9 @@ class HansardView(ModelDetailView):
 
     def get_related_resources(self, request, obj, result):
         return {
-            'speeches_url': urlresolvers.reverse('speeches') + '?' +
+            'speeches_url': reverse('speeches') + '?' +
                 urlencode({'document': result['url']}),
-            'debates_url': urlresolvers.reverse('debates')
+            'debates_url': reverse('debates')
         }
 hansard = HansardView.as_view()
 
@@ -52,7 +53,7 @@ class HansardStatementView(ModelDetailView):
 
     def get_related_resources(self, request, qs, result):
         return {
-            'document_speeches_url': urlresolvers.reverse('speeches') + '?' +
+            'document_speeches_url': reverse('speeches') + '?' +
                 urlencode({'document': result['document_url']}),
         }
 
@@ -104,8 +105,7 @@ def document_view(request, document, meeting=None, slug=None):
     
     if highlight_statement is not None:
         try:
-            highlight_statement = filter(
-                    lambda s: s.sequence == highlight_statement, statements.object_list)[0]
+            highlight_statement = [s for s in statements.object_list if s.sequence == highlight_statement][0]
         except IndexError:
             raise Http404
         
@@ -128,7 +128,7 @@ def document_view(request, document, meeting=None, slug=None):
             'pagination_url': meeting.get_absolute_url(),
         })
 
-    if request.is_ajax():
+    if is_ajax(request):
         t = loader.get_template("hansards/statement_page.inc")
     else:
         if document.document_type == Document.DEBATE:
@@ -220,9 +220,9 @@ def statement_permalink(request, doc, statement, template, **kwargs):
     title = who
     
     if statement.topic:
-        title += u' on %s' % statement.topic
+        title += ' on %s' % statement.topic
     elif 'committee' in kwargs:
-        title += u' at the ' + kwargs['committee'].title
+        title += ' at the ' + kwargs['committee'].title
 
     t = loader.get_template(template)
     ctx = {

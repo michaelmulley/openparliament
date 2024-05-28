@@ -1,6 +1,6 @@
 import os
 
-DEBUG = True
+DEBUG = False
 
 ADMINS = [
     ('Michael Mulley', 'michael@michaelmulley.com'),
@@ -11,7 +11,6 @@ MANAGERS = ADMINS
 PROJ_ROOT = os.path.dirname(os.path.realpath(__file__))
 
 CACHE_MIDDLEWARE_KEY_PREFIX = 'parl'
-CACHE_MIDDLEWARE_ANONYMOUS_ONLY = True
 
 # Set to True to disable functionality where user-provided data is saved
 PARLIAMENT_DB_READONLY = False
@@ -19,6 +18,7 @@ PARLIAMENT_DB_READONLY = False
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 TIME_ZONE = 'America/Montreal'
+USE_TZ = False
 
 # Language code for this installation.
 # MUST BE either 'en' or 'fr'
@@ -53,21 +53,31 @@ STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     'compressor.finders.CompressorFinder',
+    'parliament.core.utils.ListingCompressorFinder'
 ]
 
-COMPRESS_CSS_FILTERS = [
-    'parliament.core.utils.AutoprefixerFilter',
-    'compressor.filters.css_default.CssAbsoluteFilter',
-    'compressor.filters.cssmin.rCSSMinFilter'
-]
-COMPRESS_JS_FILTERS = []
+# COMPRESS_CSS_FILTERS = [
+#     'parliament.core.utils.AutoprefixerFilter',
+#     'compressor.filters.css_default.CssAbsoluteFilter',
+#     'compressor.filters.cssmin.rCSSMinFilter'
+# ]
 COMPRESS_OFFLINE = True
 COMPRESS_ENABLED = False
 COMPRESS_PRECOMPILERS = (
     ('text/x-scss', 'django_libsass.SassCompiler'),
-    ('es6', 'cat {infile} | ./node_modules/.bin/babel --presets es2015 > {outfile}'),
+    # ('es6', 'cat {infile} | ./node_modules/.bin/babel --presets es2015 > {outfile}'),
 )
-COMPRESS_CACHEABLE_PRECOMPILERS = ['es6']
+# COMPRESS_CACHEABLE_PRECOMPILERS = ['es6']
+COMPRESS_FILTERS = {
+    'css': [
+        'compressor.filters.css_default.CssAbsoluteFilter',
+        'compressor.filters.cssmin.rCSSMinFilter'
+    ], 
+    'js': [
+         'compressor.filters.jsmin.CalmjsFilter' # the rjsmin filter conflicts with some vendor js
+    ]
+}
+COMPRESS_ROOT = os.path.realpath(os.path.join(PROJ_ROOT, '..', '..', 'frontend_bundles'))
 
 PARLIAMENT_LANGUAGE_MODEL_PATH = os.path.realpath(os.path.join(PROJ_ROOT, '..', '..', 'language_models'))
 PARLIAMENT_GENERATE_TEXT_ANALYSIS = False
@@ -79,6 +89,11 @@ SESSION_COOKIE_AGE = 60*60*24*60  # 60 days
 SESSION_COOKIE_SECURE = True
 
 PARLIAMENT_API_HOST = 'api.openparliament.ca'
+
+# These looser-than-the-default policies are required for
+# Google popup signin to work (as of spring 2024)
+SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin-allow-popups'
 
 TEMPLATES = [
     {
@@ -94,15 +109,16 @@ TEMPLATES = [
                 'django.template.context_processors.i18n',
                 'django.template.context_processors.media',
                 'django.template.context_processors.static',
-                'parliament.accounts.context_processors.auth',
-                'parliament.core.utils.lang_context',
+                'parliament.core.utils.settings_context',
             ],
         },
     },
 ]
 
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.common.CommonMiddleware',
     'parliament.accounts.middleware.AuthenticatedEmailMiddleware',
@@ -110,6 +126,7 @@ MIDDLEWARE_CLASSES = [
     #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
     #'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'parliament.core.api.FetchFromCacheMiddleware',
@@ -131,10 +148,8 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.staticfiles',
     'django_extensions',
-    'haystack',
-    'imagekit',
     'compressor',
-    'captcha',
+    'django_recaptcha',
     'parliament.core',
     'parliament.accounts',
     'parliament.hansards',
@@ -146,10 +161,14 @@ INSTALLED_APPS = [
     'parliament.committees',
     'parliament.search',
     'parliament.text_analysis',
+    'parliament.haiku',
 ]
+
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 LOGGING = {
     'version': 1,
+    'disable_existing_loggers': False,
     'formatters': {
         'verbose': {
             'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
@@ -175,14 +194,9 @@ LOGGING = {
     },
     'loggers': {
         'django': {
-            'handlers': ['null'],
+            'handlers': ['console'],
             'propagate': True,
             'level': 'INFO',
-        },
-        'django.request': {
-            'handlers': ['mail_admins'],
-            'level': 'ERROR',
-            'propagate': False,
         },
         'parliament': {
             'handlers': ['console'],

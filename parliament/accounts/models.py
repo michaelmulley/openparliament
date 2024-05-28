@@ -2,12 +2,10 @@ from base64 import urlsafe_b64encode
 import datetime
 import os
 
-from django.core import urlresolvers
+from django.urls import reverse
 from django.core.mail import send_mail
 from django.db import models
 from django.template import loader
-
-from jsonfield import JSONField
 
 
 class User(models.Model):
@@ -21,9 +19,9 @@ class User(models.Model):
     created = models.DateTimeField(default=datetime.datetime.now)
     last_login = models.DateTimeField(blank=True, null=True)
 
-    data = JSONField(blank=True, default={})
+    data = models.JSONField(blank=True, default=dict)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.email
 
     def log_in(self, request):
@@ -31,7 +29,7 @@ class User(models.Model):
         self.__class__.objects.filter(id=self.id).update(last_login=datetime.datetime.now())
 
 def _random_token():
-    return urlsafe_b64encode(os.urandom(15))
+    return urlsafe_b64encode(os.urandom(15)).decode('ascii').rstrip('=')
 
 class TokenError(Exception):
 
@@ -51,16 +49,16 @@ class LoginToken(models.Model):
 
     MAX_TOKEN_AGE = datetime.timedelta(seconds=60 * 60 * 8)
 
-    def __unicode__(self):
+    def __str__(self):
         return "%s for %s" % (self.token, self.email)
 
     @classmethod
     def generate(cls, email, requesting_ip):
         lt = cls.objects.create(email=email, requesting_ip=requesting_ip)
-        login_url = urlresolvers.reverse('token_login', kwargs={'token': lt.token})
+        login_url = reverse('token_login', kwargs={'token': lt.token})
         ctx = {'login_url': login_url, 'email': email}
         t = loader.get_template("accounts/token_login.txt")
-        send_mail(subject=u'Log in to openparliament.ca',
+        send_mail(subject='Log in to openparliament.ca',
             message=t.render(ctx),
             from_email='alerts@contact.openparliament.ca',
             recipient_list=[email])

@@ -86,7 +86,7 @@ def time_since(value):
         
 @register.filter(name='english_list')
 def english_list(value, arg=', '):
-    if not type(value) == types.ListType:
+    if not type(value) == list:
         raise Exception("Tag english_list takes a list as argument")
     if len(value) == 1:
         return "%s" % value[0]
@@ -103,4 +103,4 @@ def list_prefix(value, arg):
     
 @register.filter(name='list_filter')
 def list_filter(value, arg):
-    return filter(lambda x: x != arg, value)
+    return [x for x in value if x != arg]

@@ -1,8 +1,6 @@
 import re, unicodedata, decimal
 import datetime
 
-from BeautifulSoup import NavigableString
-
 r_politicalpost = re.compile(r'(Minister|Leader|Secretary|Solicitor|Attorney|Speaker|Deputy |Soliciter|Chair |Parliamentary|President |for )')
 r_honorific = re.compile(r'^(Mr\.?|Mrs\.?|Ms\.?|Miss\.?|Hon\.?|Right Hon\.|The|A|An\.?|Some|M\.|One|Santa|Acting|L\'hon\.|Assistant|Mme)\s(.+)$', re.DOTALL | re.UNICODE)
 r_notamember = re.compile(r'^(The|A|Some|Acting|Santa|One|Assistant|An\.?|Le|La|Une|Des|Voices)')
@@ -27,24 +25,14 @@ def time_to_datetime(hour, minute, date):
             datetime.time(hour=hour % 24, minute=minute)
         )
 
-def normalizeHansardURL(u):
-    docid = re.search(r'DocId=(\d+)', u).group(1)
-    parl = re.search(r'Parl=(\d+)', u).group(1)
-    ses = re.search(r'Ses=(\d+)', u).group(1)
-    return 'http://www2.parl.gc.ca/HousePublications/Publication.aspx?Language=E&Mode=1&Parl=%s&Ses=%s&DocId=%s' % (parl, ses, docid)
-
-def removeAccents(str):
-    nkfd_form = unicodedata.normalize('NFKD', unicode(str))
-    return u"".join([c for c in nkfd_form if not unicodedata.combining(c)])
+def removeAccents(s: str) -> str:
+    nkfd_form = unicodedata.normalize('NFKD', str(s))
+    return "".join([c for c in nkfd_form if not unicodedata.combining(c)])
     
 def stripHonorific(s):
     for hon in ('The Honourable ', 'The Right Honourable ', 'The Rt. ', 'The '):
         s = s.replace(hon, '')
     return re.sub(r'^[A-Z][a-z]+\. ', '', s)
-    
-def isString(o):
-    #return not hasattr(o, 'contents')
-    return isinstance(o, NavigableString)
     
 def titleIfNecessary(s):
     if not re.search(r'[a-z]', s):
@@ -53,11 +41,11 @@ def titleIfNecessary(s):
     
 r_hasText = re.compile(r'\S', re.UNICODE)
 def getText(tag):
-    return u''.join(tag.findAll(text=r_hasText))
+    return ''.join(tag.findAll(text=r_hasText))
 
 r_extraWhitespace = re.compile(r'\s\s*', re.UNICODE)    
 def tameWhitespace(s):
-    return re.sub(r_extraWhitespace, u' ', s.replace(u"\n", u' '))
+    return re.sub(r_extraWhitespace, ' ', s.replace("\n", ' '))
     
 def sane_quotes(s):
     return s.replace('``', '"').replace("''", '"')
@@ -71,14 +59,14 @@ def slugify(s, allow_numbers=False):
     return re.sub(r'--+', '-', s)
 
 def normalizeName(s):
-    return tameWhitespace(removeAccents(stripHonorific(s).lower())).strip().replace(u"\u2019", "'")
+    return tameWhitespace(removeAccents(stripHonorific(s).lower())).strip().replace("\u2019", "'")
 
 def munge_date(date):
     if date.count('0000') > 0:
         return None
     elif date == '':
         return None
-    elif date == u'&nbsp;':
+    elif date == '&nbsp;':
         return None
     else:
         return date

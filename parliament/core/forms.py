@@ -11,7 +11,7 @@ class Form(forms.Form):
         super(Form, self).__init__(*args, **kwargs)
         
     def _html_output(self, *args, **kwargs):
-        for field in self.fields.values():
+        for field in list(self.fields.values()):
             if field.help_text:
                 field.widget.attrs['data-helptext'] = field.help_text
                 field.help_text = None

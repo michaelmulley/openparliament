@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import migrations, models
 import datetime
@@ -91,7 +91,7 @@ class Migration(migrations.Migration):
                 ('yea_total', models.SmallIntegerField()),
                 ('nay_total', models.SmallIntegerField()),
                 ('paired_total', models.SmallIntegerField()),
-                ('bill', models.ForeignKey(blank=True, to='bills.Bill', null=True)),
+                ('bill', models.ForeignKey(on_delete=models.CASCADE, blank=True, to='bills.Bill', null=True)),
             ],
             options={
                 'ordering': ('-date', '-number'),

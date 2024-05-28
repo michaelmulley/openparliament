@@ -24,8 +24,9 @@ services:
       - PGDATABASE=parliament
 
   solr:
-    image: solr:7.7.3
+    image: solr:9.5
     volumes:
+      - solrdata:/var/solr
       - ./solr-config:/parliament-config
     command:
       - solr-precreate
@@ -45,3 +46,4 @@ services:
 volumes:
   pgdata:
   opmedia:
+  solrdata:

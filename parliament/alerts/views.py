@@ -8,14 +8,14 @@ from django.shortcuts import get_object_or_404, render
 from django import forms
 from django.conf import settings
 from django.contrib import messages
-from django.core import urlresolvers
+from django.urls import reverse
 from django.core.exceptions import PermissionDenied
 from django.core.mail import send_mail, mail_admins
 from django.core.signing import Signer, TimestampSigner, BadSignature
 from django.views.decorators.cache import never_cache
 
-from captcha.fields import ReCaptchaField
-from captcha.widgets import ReCaptchaV2Invisible
+from django_recaptcha.fields import ReCaptchaField
+from django_recaptcha.widgets import ReCaptchaV2Invisible
 
 from parliament.accounts.models import User
 from parliament.alerts.models import Subscription
@@ -54,19 +54,19 @@ def politician_hansard_signup(request):
                     _generate_query_for_politician(pol),
                     request.authenticated_email_user
                 )
-                messages.success(request, u"You're signed up for alerts for %s." % pol.name)
-                return HttpResponseRedirect(urlresolvers.reverse('alerts_list'))
+                messages.success(request, "You're signed up for alerts for %s." % pol.name)
+                return HttpResponseRedirect(reverse('alerts_list'))
 
             key = "%s,%s" % (politician_id, form.cleaned_data['email'])
             signed_key = TimestampSigner(salt='alerts_pol_subscribe').sign(key)
-            activate_url = urlresolvers.reverse('alerts_pol_subscribe',
+            activate_url = reverse('alerts_pol_subscribe',
                 kwargs={'signed_key': signed_key})
             activation_context = {
                 'pol': pol,
                 'activate_url': activate_url,
             }
             t = loader.get_template("alerts/activate.txt")
-            send_mail(subject=u'Confirmation required: Email alerts about %s' % pol.name,
+            send_mail(subject='Confirmation required: Email alerts about %s' % pol.name,
                 message=t.render(activation_context, request),
                 from_email='alerts@contact.openparliament.ca',
                 recipient_list=[form.cleaned_data['email']])
@@ -130,7 +130,7 @@ class CreateAlertView(JSONView):
         user_email = request.authenticated_email
         if not user_email:
             request.session['pending_alert'] = query
-            return self.redirect(urlresolvers.reverse('alerts_list'))
+            return self.redirect(reverse('alerts_list'))
         user = User.objects.get(email=user_email)
         try:
             subscription = Subscription.objects.get_or_create_by_query(query, user)
@@ -161,7 +161,7 @@ class ModifyAlertView(JSONView):
 modify_alert = ModifyAlertView.as_view()
 
 def _generate_query_for_politician(pol):
-    return u'MP: "%s" Type: "debate"' % pol.identifier
+    return 'MP: "%s" Type: "debate"' % pol.identifier
 
 @disable_on_readonly_db
 def politician_hansard_subscribe(request, signed_key):
@@ -183,7 +183,7 @@ def politician_hansard_subscribe(request, signed_key):
             sub.save()
         ctx.update(
             pol=pol,
-            title=u'Email alerts for %s' % pol.name
+            title='Email alerts for %s' % pol.name
         )
         if user.email_bouncing:
             mail_admins("bounce flag cleared after new signup", email)

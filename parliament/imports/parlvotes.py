@@ -36,7 +36,7 @@ def import_votes():
         )
         if VoteQuestion.objects.filter(session=session, number=votenumber).count():
             continue
-        print "Processing vote #%s" % votenumber
+        print("Processing vote #%s" % votenumber)
         date = vote.findtext('DecisionEventDateTime')
         date = datetime.datetime.strptime(date, '%Y-%m-%dT%H:%M:%S').date()
         votequestion = VoteQuestion(

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import migrations, models
 import datetime
@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('email', models.EmailField(max_length=254, verbose_name=b'Your e-mail')),
                 ('active', models.BooleanField(default=False)),
                 ('created', models.DateTimeField(default=datetime.datetime.now)),
-                ('politician', models.ForeignKey(to='core.Politician')),
+                ('politician', models.ForeignKey(on_delete=models.CASCADE, to='core.Politician')),
             ],
         ),
         migrations.CreateModel(
@@ -56,17 +56,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='subscription',
             name='topic',
-            field=models.ForeignKey(to='alerts.Topic'),
+            field=models.ForeignKey(on_delete=models.CASCADE, to='alerts.Topic'),
         ),
         migrations.AddField(
             model_name='subscription',
             name='user',
-            field=models.ForeignKey(to='accounts.User'),
+            field=models.ForeignKey(on_delete=models.CASCADE, to='accounts.User'),
         ),
         migrations.AddField(
             model_name='seenitem',
             name='topic',
-            field=models.ForeignKey(to='alerts.Topic'),
+            field=models.ForeignKey(on_delete=models.CASCADE, to='alerts.Topic'),
         ),
         migrations.AlterUniqueTogether(
             name='subscription',

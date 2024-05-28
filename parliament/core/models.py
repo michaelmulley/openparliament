@@ -2,12 +2,13 @@
 
 import datetime
 import re
-from urlparse import urljoin
+from urllib.parse import urljoin
+from io import BytesIO
 
 from django.conf import settings
 from django.core.cache import cache
 from django.core.files.base import ContentFile
-from django.core import urlresolvers
+from django.urls import reverse
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.utils.safestring import mark_safe
@@ -16,10 +17,11 @@ import lxml.etree
 import lxml.html
 from markdown import markdown
 import requests
+from PIL import Image, ImageOps
 
 from parliament.core import parsetools
-from parliament.core import thumbnail # importing so it'll register a tag
 from parliament.core.utils import memoize_property, ActiveManager, language_property
+from parliament.search.index import register_search_model
 
 import logging
 logger = logging.getLogger(__name__)
@@ -41,8 +43,8 @@ class InternalXref(models.Model):
     # edid_postcode -- the EDID -- which points to a riding, but is NOT the primary  key -- for a postcode
     schema = models.CharField(max_length=15, db_index=True)
     
-    def __unicode__(self):
-        return u"%s: %s %s for %s" % (self.schema, self.text_value, self.int_value, self.target_id)
+    def __str__(self):
+        return "%s: %s %s for %s" % (self.schema, self.text_value, self.int_value, self.target_id)
 
 class PartyManager(models.Manager):
     
@@ -104,7 +106,7 @@ class Party(models.Model):
             if x[0].target_id != self.id:
                 raise Exception("Name %s already points to a different party" % name.strip().lower())
                 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 class Person(models.Model):
@@ -114,7 +116,7 @@ class Person(models.Model):
     name_given = models.CharField("Given name", max_length=50, blank=True)
     name_family = models.CharField("Family name", max_length=50, blank=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
     
     class Meta:
@@ -218,12 +220,12 @@ class PoliticianManager(models.Manager):
         Find a Politician object, based on the ourcommons.ca person ID.
         """
         try:
-            info = PoliticianInfo.sr_objects.get(schema='parl_mp_id', value=unicode(parlid))
+            info = PoliticianInfo.sr_objects.get(schema='parl_mp_id', value=str(parlid))
             return info.politician
         except PoliticianInfo.DoesNotExist:
             pol, x_mp_id = self._get_pol_from_ourcommons_profile_url(POL_PERSON_ID_LOOKUP_URL % parlid,
                 session, riding_name)
-            if unicode(parlid) != x_mp_id:
+            if str(parlid) != x_mp_id:
                 raise Exception("get_by_parl_mp_id: Get for ID %s found ID %s (%s)" %
                     (parlid, x_mp_id, pol))
             pol.set_info('parl_mp_id', parlid, overwrite=False)
@@ -237,7 +239,7 @@ class PoliticianManager(models.Manager):
         """
         try:
             info = PoliticianInfo.sr_objects.get(
-                schema='parl_affil_id', value=unicode(parlid))
+                schema='parl_affil_id', value=str(parlid))
             return info.politician
         except PoliticianInfo.DoesNotExist:
             resp = requests.get(POL_AFFIL_ID_LOOKUP_URL % parlid)
@@ -252,7 +254,7 @@ class PoliticianManager(models.Manager):
             pol, parl_mp_id = self._get_pol_from_ourcommons_profile_url(profile_url,
                                                              session, riding_name)
             try:
-                mpid_info = PoliticianInfo.objects.get(schema='parl_mp_id', value=unicode(parl_mp_id))
+                mpid_info = PoliticianInfo.objects.get(schema='parl_mp_id', value=str(parl_mp_id))
                 if mpid_info.politician_id != pol.id:
                     raise Exception("get_by_parl_affil_id: for ID %s found %s, but mp_id %s already used for %s"
                         % (parlid, pol, parl_mp_id, mpid_info.politician))
@@ -289,6 +291,7 @@ class PoliticianManager(models.Manager):
             pol = self.get_by_name(name=polname, riding=riding)
         return (pol, parl_mp_id)
 
+@register_search_model
 class Politician(Person):
     """Someone who has run for federal office."""
     GENDER_CHOICES = (
@@ -296,11 +299,10 @@ class Politician(Person):
         ('F', 'Female'),
     )
 
-    WORDCLOUD_PATH = 'autoimg/wordcloud-pol'
-
     dob = models.DateField(blank=True, null=True)
     gender = models.CharField(max_length=1, blank=True, choices=GENDER_CHOICES)
     headshot = models.ImageField(upload_to='polpics', blank=True, null=True)
+    headshot_thumbnail = models.ImageField(blank=True, null=True, upload_to='polpics/thumbnail')
     slug = models.CharField(max_length=30, blank=True, db_index=True)
     
     objects = PoliticianManager()
@@ -396,11 +398,10 @@ class Politician(Person):
         super(Politician, self).save(*args, **kwargs)
         self.add_alternate_name(self.name)
             
-    @models.permalink
     def get_absolute_url(self):
         if self.slug:
-            return 'politician', [], {'pol_slug': self.slug}
-        return ('politician', [], {'pol_id': self.id})
+            return reverse('politician', kwargs={'pol_slug': self.slug})
+        return reverse('politician', kwargs={'pol_id': self.id})
 
     @property
     def identifier(self):
@@ -415,15 +416,13 @@ class Politician(Person):
     def parlpage(self):
         parlid = self.info().get('parl_mp_id')
         if parlid:
-            return "http://www.parl.gc.ca/Parliamentarians/{}/members/{}({})".format(
-                settings.LANGUAGE_CODE, self.identifier, parlid)
+            return f"https://www.ourcommons.ca/members/{settings.LANGUAGE_CODE}/{self.identifier}({parlid})"
         return None
         
-    @models.permalink
     def get_contact_url(self):
         if self.slug:
-            return ('politician_contact', [], {'pol_slug': self.slug})
-        return ('politician_contact', [], {'pol_id': self.id})
+            return reverse('politician_contact', kwargs={'pol_slug': self.slug})
+        return reverse('politician_contact', kwargs={'pol_id': self.id})
             
     @memoize_property
     def info(self):
@@ -457,11 +456,11 @@ class Politician(Person):
                     ))
             self.politicianinfo_set.filter(schema=key).delete()
             info = PoliticianInfo(politician=self, schema=key)
-        info.value = unicode(value)
+        info.value = str(value)
         info.save()
         
     def set_info_multivalued(self, key, value):
-        PoliticianInfo.objects.get_or_create(politician=self, schema=key, value=unicode(value))
+        PoliticianInfo.objects.get_or_create(politician=self, schema=key, value=str(value))
 
     def del_info(self, key):
         self.politicianinfo_set.filter(schema=key).delete()
@@ -480,8 +479,58 @@ class Politician(Person):
     def download_headshot(self, url):
         resp = requests.get(url)
         resp.raise_for_status()
-        self.headshot.save(str(self.identifier) + ".jpg", ContentFile(resp.content))
+        file = ContentFile(resp.content)
+        pil_img = Image.open(BytesIO(resp.content))
+        if not pil_img.size == (142, 230):
+            logger.warning(f'Headshot image for {self.name} is incorrect size, {pil_img.size}. Resizing to (142,230)')
+            bio = BytesIO()
+            ImageOps.fit(pil_img, (142, 230), method=Image.Resampling.LANCZOS).save(bio, format='JPEG', quality=90)
+            file = ContentFile(bio.getvalue())
+        self.headshot.save(str(self.identifier) + ".jpg", file)
+        self.save_headshot_thumbnail()
         self.save()
+
+    def save_headshot_thumbnail(self):
+        pil_img = Image.open(self.headshot)
+        (w, h) = pil_img.size
+        if not (w == 142 and h == 230):
+            raise Exception(f'Headshot image for {self.name} is incorrect size, {pil_img.size}. Should be (142, 230)')
+        pil_img =  pil_img.crop((10, 10, w - 10, h - 68))
+        pil_img.thumbnail((100, 125), resample=Image.Resampling.LANCZOS)
+        bio = BytesIO()
+        pil_img.save(bio, format='JPEG', quality=90)
+        self.headshot_thumbnail.save(f'{self.identifier}-thumb.jpg', ContentFile(bio.getvalue()))
+
+    @classmethod
+    def search_get_qs(cls):
+        return cls.objects.elected()
+    
+    def search_should_index(self):
+        # Only index politicians who've been elected
+        return bool(self.latest_member)
+    
+    def search_dict(self):
+        member = self.latest_member        
+        d = {
+            'text': '',
+            'politician': self.name,
+            'party': member.party.short_name,
+            'province': member.riding.province,
+            'url': self.get_absolute_url(),
+            'doctype': 'mp',
+        }
+        d['boosted'] = f"""
+            {self.name} {' '.join(self.alternate_names())}
+            {member.party.name} {member.party.short_name}
+            {member.riding}
+        """
+
+        d['text'] = f"""
+        {'was' if member.end_date else ''}
+        <span class="tag partytag_{ member.party.slug.lower() }">{member.party.short_name }</span>
+        MP for { member.riding } {('until ' + str(member.end_date.year)) if member.end_date else ''}
+        """
+        return d
 
 class PoliticianInfoManager(models.Manager):
     """Custom manager ensures we always pull in the politician FK."""
@@ -502,7 +551,7 @@ POLITICIAN_INFO_SCHEMAS = (
             
 class PoliticianInfo(models.Model):
     """Key-value store for attributes of a Politician."""
-    politician = models.ForeignKey(Politician)
+    politician = models.ForeignKey(Politician, on_delete=models.CASCADE)
     schema = models.CharField(max_length=40, db_index=True)
     value = models.TextField()
 
@@ -511,8 +560,8 @@ class PoliticianInfo(models.Model):
     objects = models.Manager()
     sr_objects = PoliticianInfoManager()
 
-    def __unicode__(self):
-        return u"%s: %s" % (self.politician, self.schema)
+    def __str__(self):
+        return "%s: %s" % (self.politician, self.schema)
         
     @property
     def int_value(self):
@@ -534,7 +583,7 @@ class SessionManager(models.Manager):
         """Given a string like '41st Parliament, 1st Session, returns the session."""
         match = re.search(r'^(\d\d)\D+(\d)\D', string)
         if not match:
-            raise ValueError(u"Could not find parl/session in %s" % string)
+            raise ValueError("Could not find parl/session in %s" % string)
         pk = match.group(1) + '-' + match.group(2)
         return self.get_queryset().get(pk=pk)
 
@@ -561,7 +610,7 @@ class Session(models.Model):
     class Meta:
         ordering = ('-start',)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
         
     def has_votes(self):
@@ -658,10 +707,10 @@ class Riding(models.Model):
         
     @property
     def dashed_name(self):
-        return self.name.replace('--', u'—')
+        return self.name.replace('--', '—')
         
-    def __unicode__(self):
-        return u"%s (%s)" % (self.dashed_name, self.get_province_display())
+    def __str__(self):
+        return "%s (%s)" % (self.dashed_name, self.get_province_display())
         
 class ElectedMemberManager(models.Manager):
     
@@ -691,30 +740,30 @@ class ElectedMemberManager(models.Manager):
 class ElectedMember(models.Model):
     """Represents one person, elected to a given riding for a given party."""
     sessions = models.ManyToManyField(Session)
-    politician = models.ForeignKey(Politician)
-    riding = models.ForeignKey(Riding)
-    party = models.ForeignKey(Party)
+    politician = models.ForeignKey(Politician, on_delete=models.CASCADE)
+    riding = models.ForeignKey(Riding, on_delete=models.CASCADE)
+    party = models.ForeignKey(Party, on_delete=models.CASCADE)
     start_date = models.DateField(db_index=True)
     end_date = models.DateField(blank=True, null=True, db_index=True)
     
     objects = ElectedMemberManager()
     
-    def __unicode__ (self):
+    def __str__ (self):
         if self.end_date:
-            return u"%s (%s) was the member from %s from %s to %s" % (self.politician, self.party, self.riding, self.start_date, self.end_date)
+            return "%s (%s) was the member from %s from %s to %s" % (self.politician, self.party, self.riding, self.start_date, self.end_date)
         else:
-            return u"%s (%s) is the member from %s (since %s)" % (self.politician, self.party, self.riding, self.start_date)
+            return "%s (%s) is the member from %s (since %s)" % (self.politician, self.party, self.riding, self.start_date)
 
     def to_api_dict(self, representation, include_politician=True):
         d = dict(
             url=self.get_absolute_url(),
-            start_date=unicode(self.start_date),
-            end_date=unicode(self.end_date) if self.end_date else None,
+            start_date=str(self.start_date),
+            end_date=str(self.end_date) if self.end_date else None,
             party={
                 'name': {'en':self.party.name_en},
                 'short_name': {'en':self.party.short_name_en}
             },
-            label={'en': u"%s MP for %s" % (self.party.short_name, self.riding.dashed_name)},
+            label={'en': "%s MP for %s" % (self.party.short_name, self.riding.dashed_name)},
             riding={
                 'name': {'en': self.riding.dashed_name},
                 'province': self.riding.province,
@@ -726,7 +775,7 @@ class ElectedMember(models.Model):
         return d
 
     def get_absolute_url(self):
-        return urlresolvers.reverse('politician_membership', kwargs={'member_id': self.id})
+        return reverse('politician_membership', kwargs={'member_id': self.id})
             
     @property
     def current(self):

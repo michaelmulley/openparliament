@@ -23,7 +23,7 @@ class Command(BaseCommand):
     def handle(self, jobname, **options):
         try:
             getattr(jobs, jobname)()
-        except Exception, e:
+        except Exception as e:
             try:
                 if options.get('pdb'):
                     post_mortem()
@@ -31,6 +31,6 @@ class Command(BaseCommand):
                     tb = "\n".join(traceback.format_exception(*(sys.exc_info())))
                     mail_admins("Exception in job %s" % jobname, "\n".join(traceback.format_exception(*(sys.exc_info()))))
             except:
-                print tb
+                print(tb)
             finally:
                 raise e

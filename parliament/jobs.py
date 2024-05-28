@@ -4,8 +4,6 @@ import time
 from django.db import transaction, models
 from django.conf import settings
 
-from parliament.politicians import twit
-from parliament.politicians import googlenews as gnews
 from parliament.imports import parlvotes, legisinfo, parl_document, parl_cmte
 from parliament.imports.mps import update_mps_from_ourcommons
 from parliament.core.models import Politician, Session
@@ -17,17 +15,7 @@ from parliament.text_analysis import corpora
 import logging
 logger = logging.getLogger(__name__)
 
-@transaction.atomic
-def twitter():
-    twit.save_tweets()
-    return True
-
 mps = update_mps_from_ourcommons
-
-def googlenews():
-    for pol in Politician.objects.current():
-        gnews.save_politician_news(pol)
-        #time.sleep(1)
         
 def votes():
     parlvotes.import_votes()
@@ -46,11 +34,11 @@ def committee_evidence():
       .annotate(scount=models.Count('statement'))\
       .exclude(scount__gt=0).exclude(skip_parsing=True).order_by('date').iterator():
         try:
-            print document
+            print(document)
             parl_document.import_document(document, interactive=False)
             if document.statement_set.all().count():
                 document.save_activity()
-        except Exception, e:
+        except Exception as e:
             logger.exception("Evidence parse failure on #%s: %r" % (document.id, e))
             continue
     
@@ -81,7 +69,7 @@ def hansards_parse():
             try:
                 with transaction.atomic():
                     parl_document.import_document(hansard, interactive=False)
-            except Exception, e:
+            except Exception as e:
                 logger.exception("Hansard parse failure on #%s: %r" % (hansard.id, e))
                 continue
             # now reload the Hansard to get the date

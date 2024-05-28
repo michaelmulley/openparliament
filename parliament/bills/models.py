@@ -4,7 +4,7 @@ import json
 import re
 
 from django.conf import settings
-from django.core import urlresolvers
+from django.urls import reverse
 from django.db import models
 from django.utils.safestring import mark_safe
 
@@ -13,6 +13,7 @@ from parliament.core.models import Session, ElectedMember, Politician, Party
 from parliament.core.utils import language_property, memoize_property
 from parliament.hansards.models import Document, Statement
 from parliament.activity import utils as activity
+from parliament.search.index import register_search_model
 
 import logging
 logger = logging.getLogger(__name__)
@@ -59,61 +60,62 @@ class BillManager(models.Manager):
             & models.Q(status_code='Introduced')).order_by('-status_date')[:number]
 
 
+@register_search_model
 class Bill(models.Model): 
     CHAMBERS = (
         ('C', 'House'),
         ('S', 'Senate'),
     )
     STATUS_CODES = {
-        u'BillNotActive': 'Not active',
-        u'WillNotBeProceededWith': 'Dead',
-        u'RoyalAssentAwaiting': 'Awaiting royal assent',
-        u'BillDefeated': 'Defeated',
-        u'HouseAtReportStage': 'Report stage (House)',
-        u'SenateAtReportStage': 'Report stage (Senate)',
-        u'RoyalAssentGiven': 'Law (royal assent given)',
-        u'SenateAt1stReading': 'First reading (Senate)',
-        u'HouseAt1stReading': 'First reading (House)',
-        u'HouseAtReferralToCommitteeBeforeSecondReading': 'Referral to committee before 2nd reading (House)',
-        u'HouseAt2ndReading': 'Second reading (House)',
-        u'HouseAtReportStageAndSecondReading': 'Report stage and second reading (House)',
-        u'SenateAt2ndReading': 'Second reading (Senate)',
-        u'SenateAt3rdReading': 'Third reading (Senate)',
-        u'HouseAt3rdReading': 'Third reading (House)',
-        u'HouseInCommittee': 'In committee (House)',
-        u'SenateInCommittee': 'In committee (Senate)',
-        u'SenateConsiderationOfCommitteeReport': 'Considering committee report (Senate)',
-        u'HouseConsiderationOfCommitteeReport': 'Considering committee report (House)',
-        u'SenateConsiderationOfAmendments': 'Considering amendments (Senate)',
-        u'HouseConsiderationOfAmendments': 'Considering amendments (House)',
-        u'Introduced': 'Introduced',
-        u'ProForma': 'Not a real bill (bills C-1 and S-1 are weird procedural relics)',
-        u'SenateBillWaitingHouse': 'Senate bill, now waiting to be considered in the House',
-        u'HouseBillWaitingSenate': 'Bill passed the House, now waiting to be considered in the Senate',
-        u'OutsideOrderPrecedence': u"Outside the Order of Precedence (a private member's bill that hasn't yet won the draw that determines which private member's bills can be debated)",
-        u'SenConsideringHouseAmendments': u'At consideration in the Senate of amendments made by the House of Commons',
-        u'HouseConsideringSenAmendments': u'At consideration in the House of Commons of amendments made by the Senate',
+        'BillNotActive': 'Not active',
+        'WillNotBeProceededWith': 'Dead',
+        'RoyalAssentAwaiting': 'Awaiting royal assent',
+        'BillDefeated': 'Defeated',
+        'HouseAtReportStage': 'Report stage (House)',
+        'SenateAtReportStage': 'Report stage (Senate)',
+        'RoyalAssentGiven': 'Law (royal assent given)',
+        'SenateAt1stReading': 'First reading (Senate)',
+        'HouseAt1stReading': 'First reading (House)',
+        'HouseAtReferralToCommitteeBeforeSecondReading': 'Referral to committee before 2nd reading (House)',
+        'HouseAt2ndReading': 'Second reading (House)',
+        'HouseAtReportStageAndSecondReading': 'Report stage and second reading (House)',
+        'SenateAt2ndReading': 'Second reading (Senate)',
+        'SenateAt3rdReading': 'Third reading (Senate)',
+        'HouseAt3rdReading': 'Third reading (House)',
+        'HouseInCommittee': 'In committee (House)',
+        'SenateInCommittee': 'In committee (Senate)',
+        'SenateConsiderationOfCommitteeReport': 'Considering committee report (Senate)',
+        'HouseConsiderationOfCommitteeReport': 'Considering committee report (House)',
+        'SenateConsiderationOfAmendments': 'Considering amendments (Senate)',
+        'HouseConsiderationOfAmendments': 'Considering amendments (House)',
+        'Introduced': 'Introduced',
+        'ProForma': 'Not a real bill (bills C-1 and S-1 are weird procedural relics)',
+        'SenateBillWaitingHouse': 'Senate bill, now waiting to be considered in the House',
+        'HouseBillWaitingSenate': 'Bill passed the House, now waiting to be considered in the Senate',
+        'OutsideOrderPrecedence': "Outside the Order of Precedence (a private member's bill that hasn't yet won the draw that determines which private member's bills can be debated)",
+        'SenConsideringHouseAmendments': 'At consideration in the Senate of amendments made by the House of Commons',
+        'HouseConsideringSenAmendments': 'At consideration in the House of Commons of amendments made by the Senate',
     }
 
     STATUS_STRING_TO_STATUS_CODE = {
-        u'At consideration in committee in the House of Commons': u'HouseInCommittee',
-        u'At consideration in committee in the Senate': u'SenateInCommittee',
-        u'At second reading in the House of Commons': u'HouseAt2ndReading',
-        u'At second reading in the Senate': u'SenateAt2ndReading',
-        u'At third reading in the Senate': u'SenateAt3rdReading',
-        u'At third reading in the House of Commons': u'HouseAt3rdReading',
-        u'Bill not proceeded with': u'WillNotBeProceededWith',
-        u'Introduced as pro forma bill': 'ProForma',
-        u'Outside the Order of Precedence': 'OutsideOrderPrecedence',
-        u'Royal assent received': u'RoyalAssentGiven',
-        u'Senate bill awaiting first reading in the House of Commons': 'SenateBillWaitingHouse',
-        u'At report stage in the House of Commons': u'HouseAtReportStage',
-        u'At report stage in the Senate': u'SenateAtReportStage',
-        u'House of Commons bill awaiting first reading in the Senate': u'HouseBillWaitingSenate',
-        u'Bill defeated': u'BillDefeated',
-        u'Awaiting royal assent': u'RoyalAssentAwaiting',
-        u'At consideration in the Senate of amendments made by the House of Commons': u'SenConsideringHouseAmendments',
-        u'At consideration in the House of Commons of amendments made by the Senate': u'HouseConsideringSenAmendments',
+        'At consideration in committee in the House of Commons': 'HouseInCommittee',
+        'At consideration in committee in the Senate': 'SenateInCommittee',
+        'At second reading in the House of Commons': 'HouseAt2ndReading',
+        'At second reading in the Senate': 'SenateAt2ndReading',
+        'At third reading in the Senate': 'SenateAt3rdReading',
+        'At third reading in the House of Commons': 'HouseAt3rdReading',
+        'Bill not proceeded with': 'WillNotBeProceededWith',
+        'Introduced as pro forma bill': 'ProForma',
+        'Outside the Order of Precedence': 'OutsideOrderPrecedence',
+        'Royal assent received': 'RoyalAssentGiven',
+        'Senate bill awaiting first reading in the House of Commons': 'SenateBillWaitingHouse',
+        'At report stage in the House of Commons': 'HouseAtReportStage',
+        'At report stage in the Senate': 'SenateAtReportStage',
+        'House of Commons bill awaiting first reading in the Senate': 'HouseBillWaitingSenate',
+        'Bill defeated': 'BillDefeated',
+        'Awaiting royal assent': 'RoyalAssentAwaiting',
+        'At consideration in the Senate of amendments made by the House of Commons': 'SenConsideringHouseAmendments',
+        'At consideration in the House of Commons of amendments made by the Senate': 'HouseConsideringSenAmendments',
     }
 
     name_en = models.TextField(blank=True)
@@ -124,10 +126,10 @@ class Bill(models.Model):
     number_only = models.SmallIntegerField()
     institution = models.CharField(max_length=1, db_index=True, choices=CHAMBERS)
     sessions = models.ManyToManyField(Session, through='BillInSession')
-    privatemember = models.NullBooleanField()
-    sponsor_member = models.ForeignKey(ElectedMember, blank=True, null=True)
-    sponsor_politician = models.ForeignKey(Politician, blank=True, null=True)
-    law = models.NullBooleanField()
+    privatemember = models.BooleanField(blank=True, null=True)
+    sponsor_member = models.ForeignKey(ElectedMember, blank=True, null=True, on_delete=models.CASCADE)
+    sponsor_politician = models.ForeignKey(Politician, blank=True, null=True, on_delete=models.CASCADE)
+    law = models.BooleanField(blank=True, null=True)
 
     status_date = models.DateField(blank=True, null=True, db_index=True)
     status_code = models.CharField(max_length=50, blank=True)
@@ -145,14 +147,14 @@ class Bill(models.Model):
     class Meta:
         ordering = ('privatemember', 'institution', 'number_only')
     
-    def __unicode__(self):
+    def __str__(self):
         return "%s - %s" % (self.number, self.name)
         
     def get_absolute_url(self):
         return self.url_for_session(self.session)
 
     def url_for_session(self, session):
-        return urlresolvers.reverse('bill', kwargs={
+        return reverse('bill', kwargs={
             'session_id': session.id, 'bill_number': self.number})
         
     def get_legisinfo_url(self, lang='en'):
@@ -299,6 +301,37 @@ class Bill(models.Model):
     @property
     def dormant(self):
         return (self.status_date and (datetime.date.today() - self.status_date).days > 150)
+    
+    def search_dict(self):
+        d = {
+            'text': self.get_text(),
+            'title': self.name,
+            'number': self.number,
+            'url': self.get_absolute_url(),
+            'session': str(self.session),
+            'doctype': 'bill'
+        }
+        if self.introduced:
+            d['date'] = self.introduced.isoformat() + 'T12:00:00Z'
+        if self.sponsor_politician:
+            d['politician'] = self.sponsor_politician.name
+            d['politician_id'] = self.sponsor_politician.identifier
+        if self.sponsor_member:
+            d['party'] = self.sponsor_member.party.short_name
+        d['searchtext'] = f"{self.name} {self.short_title_en} {d['text']}"
+        d['boosted'] = f"Bill {self.number}"
+        if len(d['title']) >= 150:
+            d['title'] = self.short_title if self.short_title else (self.name[:140] + '…')
+        return d
+    
+    def search_should_index(self):
+        return True # index all bills
+    
+    @classmethod
+    def search_get_qs(cls):
+        return Bill.objects.all().prefetch_related(
+            'sponsor_politician', 'sponsor_member', 'sponsor_member__party'
+        )
 
 class BillInSessionManager(models.Manager):
 
@@ -320,20 +353,20 @@ class BillInSession(models.Model):
     reintroduced bills into a single Bill object. But it's this model
     that maps one-to-one to most IDs used elsewhere.
     """
-    bill = models.ForeignKey(Bill)
-    session = models.ForeignKey(Session)
+    bill = models.ForeignKey(Bill, on_delete=models.CASCADE)
+    session = models.ForeignKey(Session, on_delete=models.CASCADE)
 
     legisinfo_id = models.PositiveIntegerField(db_index=True, blank=True, null=True)
     introduced = models.DateField(blank=True, null=True, db_index=True)
-    sponsor_politician = models.ForeignKey(Politician, blank=True, null=True)
-    sponsor_member = models.ForeignKey(ElectedMember, blank=True, null=True)
+    sponsor_politician = models.ForeignKey(Politician, blank=True, null=True, on_delete=models.CASCADE)
+    sponsor_member = models.ForeignKey(ElectedMember, blank=True, null=True, on_delete=models.CASCADE)
 
     billstages_json = models.TextField(blank=True, null=True)
 
     objects = BillInSessionManager()
 
-    def __unicode__(self):
-        return u"%s in session %s" % (self.bill, self.session_id)
+    def __str__(self):
+        return "%s in session %s" % (self.bill, self.session_id)
 
     def get_absolute_url(self):
         return self.bill.url_for_session(self.session)
@@ -348,7 +381,7 @@ class BillInSession(models.Model):
         d = {
             'session': self.session_id,
             'legisinfo_id': self.legisinfo_id,
-            'introduced': unicode(self.introduced) if self.introduced else None,
+            'introduced': str(self.introduced) if self.introduced else None,
             'name': {
                 'en': self.bill.name_en,
                 'fr': self.bill.name_fr
@@ -361,7 +394,7 @@ class BillInSession(models.Model):
                 home_chamber=self.bill.get_institution_display(),
                 law=self.bill.law,
                 sponsor_politician_url=self.sponsor_politician.get_absolute_url() if self.sponsor_politician else None,
-                sponsor_politician_membership_url=urlresolvers.reverse('politician_membership',
+                sponsor_politician_membership_url=reverse('politician_membership',
                     kwargs={'member_id': self.sponsor_member_id}) if self.sponsor_member_id else None,
                 text_url=self.bill.get_billtext_url(),
                 other_session_urls=[self.bill.url_for_session(s)
@@ -377,7 +410,7 @@ class BillInSession(models.Model):
 
 
 class BillEvent(models.Model):
-    bis = models.ForeignKey(BillInSession)
+    bis = models.ForeignKey(BillInSession, on_delete=models.CASCADE)
 
     date = models.DateField(db_index=True)
 
@@ -393,8 +426,8 @@ class BillEvent(models.Model):
 
     status = language_property('status')
 
-    def __unicode__(self):
-        return u"%s: %s, %s" % (self.status, self.bis.bill.number, self.date)
+    def __str__(self):
+        return "%s: %s, %s" % (self.status, self.bis.bill.number, self.date)
 
     @property
     def bill_number(self):
@@ -403,7 +436,7 @@ class BillEvent(models.Model):
 
 class BillText(models.Model):
 
-    bill = models.ForeignKey(Bill)
+    bill = models.ForeignKey(Bill, on_delete=models.CASCADE)
     docid = models.PositiveIntegerField(unique=True, db_index=True)
 
     created = models.DateTimeField(default=datetime.datetime.now)
@@ -414,8 +447,8 @@ class BillText(models.Model):
 
     text = language_property('text')
 
-    def __unicode__(self):
-        return u"Document #%d for %s" % (self.docid, self.bill)
+    def __str__(self):
+        return "Document #%d for %s" % (self.docid, self.bill)
 
     @property
     def summary_html(self):
@@ -432,8 +465,8 @@ VOTE_RESULT_CHOICES = (
 )
 class VoteQuestion(models.Model):
     
-    bill = models.ForeignKey(Bill, blank=True, null=True)
-    session = models.ForeignKey(Session)
+    bill = models.ForeignKey(Bill, blank=True, null=True, on_delete=models.CASCADE)
+    session = models.ForeignKey(Session, on_delete=models.CASCADE)
     number = models.PositiveIntegerField()
     date = models.DateField(db_index=True)
     description_en = models.TextField()
@@ -447,8 +480,8 @@ class VoteQuestion(models.Model):
 
     description = language_property('description')
     
-    def __unicode__(self):
-        return u"Vote #%s on %s" % (self.number, self.date)
+    def __str__(self):
+        return "Vote #%s on %s" % (self.number, self.date)
         
     class Meta:
         ordering=('-date', '-number')
@@ -458,7 +491,7 @@ class VoteQuestion(models.Model):
             'bill_url': self.bill.get_absolute_url() if self.bill else None,
             'session': self.session_id,
             'number': self.number,
-            'date': unicode(self.date),
+            'date': str(self.date),
             'description': {'en': self.description_en, 'fr': self.description_fr},
             'result': self.get_result_display(),
             'yea_total': self.yea_total,
@@ -495,7 +528,7 @@ class VoteQuestion(models.Model):
         partyvotes = {}
         for party in parties:
             # Find the most common vote
-            votes = sorted(parties[party].items(), key=lambda i: i[1])
+            votes = sorted(list(parties[party].items()), key=lambda i: i[1])
             partyvotes[party] = votes[-1][0]
             
             # Find how many people voted with the majority
@@ -521,10 +554,9 @@ class VoteQuestion(models.Model):
                 mv.dissent = True
                 mv.save()
             
-    @models.permalink
     def get_absolute_url(self):
-        return ('vote', [],
-            {'session_id': self.session_id, 'number': self.number})
+        return reverse('vote', kwargs={
+            'session_id': self.session_id, 'number': self.number})
 
 VOTE_CHOICES = [
     ('Y', 'Yes'),
@@ -534,14 +566,14 @@ VOTE_CHOICES = [
 ]
 class MemberVote(models.Model):
     
-    votequestion = models.ForeignKey(VoteQuestion)
-    member = models.ForeignKey(ElectedMember)
-    politician = models.ForeignKey(Politician)
+    votequestion = models.ForeignKey(VoteQuestion, on_delete=models.CASCADE)
+    member = models.ForeignKey(ElectedMember, on_delete=models.CASCADE)
+    politician = models.ForeignKey(Politician, on_delete=models.CASCADE)
     vote = models.CharField(max_length=1, choices=VOTE_CHOICES)
     dissent = models.BooleanField(default=False, db_index=True)
     
-    def __unicode__(self):
-        return u'%s voted %s on %s' % (self.politician, self.get_vote_display(), self.votequestion)
+    def __str__(self):
+        return '%s voted %s on %s' % (self.politician, self.get_vote_display(), self.votequestion)
             
     def save_activity(self):
         activity.save_activity(self, politician=self.politician, date=self.votequestion.date)
@@ -550,7 +582,7 @@ class MemberVote(models.Model):
         return {
             'vote_url': self.votequestion.get_absolute_url(),
             'politician_url': self.politician.get_absolute_url(),
-            'politician_membership_url': urlresolvers.reverse('politician_membership',
+            'politician_membership_url': reverse('politician_membership',
                 kwargs={'member_id': self.member_id}) if self.member_id else None,
             'ballot': self.get_vote_display(),
         }
@@ -558,13 +590,13 @@ class MemberVote(models.Model):
 VOTE_CHOICES_PARTY = VOTE_CHOICES + [('F', "Free vote")]            
 class PartyVote(models.Model):
     
-    votequestion = models.ForeignKey(VoteQuestion)
-    party = models.ForeignKey(Party)
+    votequestion = models.ForeignKey(VoteQuestion, on_delete=models.CASCADE)
+    party = models.ForeignKey(Party, on_delete=models.CASCADE)
     vote = models.CharField(max_length=1, choices=VOTE_CHOICES_PARTY)
     disagreement = models.FloatField(null=True)
     
     class Meta:
         unique_together = ('votequestion', 'party')
     
-    def __unicode__(self):
-        return u'%s voted %s on %s' % (self.party, self.get_vote_display(), self.votequestion)
+    def __str__(self):
+        return '%s voted %s on %s' % (self.party, self.get_vote_display(), self.votequestion)

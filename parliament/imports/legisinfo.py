@@ -121,7 +121,7 @@ def _update(obj, field, value):
     if value is None:
         return
     if not isinstance(value, datetime.date):
-        value = unicode(value)
+        value = str(value)
     if getattr(obj, field) != value:
         setattr(obj, field, value)
         obj._changed = True
@@ -245,7 +245,7 @@ def _import_bill(bd, session, previous_session=None): # type: (BillData, Session
             )
             bill.save()  # to trigger search indexing
         except CannotScrapeException:
-            logger.warning(u"Could not get bill text for %s" % bill)
+            logger.warning("Could not get bill text for %s" % bill)
 
     return bill
             

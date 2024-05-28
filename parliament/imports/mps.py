@@ -5,7 +5,7 @@ from parliament.core.models import Politician, Session, Riding, Party
 from django.db import transaction
 from time import sleep
 import hashlib
-from urlparse import urljoin
+from urllib.parse import urljoin
 
 import lxml.html
 import requests
@@ -86,14 +86,13 @@ def _import_mps(objs, download_headshots=False, update_all_headshots=False):
         if constituency_offices:
             _update('constituency_offices', '\n\n'.join(constituency_offices))
 
-        if (not pol.headshot) and mp_info.get('photo_url'):
-            if download_headshots:
-                pol.download_headshot(mp_info['photo_url'])
-            else:
-                warnings.append("Photo available: %s for %s" %
+        if mp_info.get('photo_url') and (update_all_headshots or (not pol.headshot)):
+            if is_photo_real(mp_info.get('photo_url')):
+                if update_all_headshots or download_headshots:
+                    pol.download_headshot(mp_info['photo_url'])
+                else:
+                    warnings.append("Photo available: %s for %s" %
                                 (mp_info.get('photo_url'), pol))
-        elif mp_info.get('photo_url') and update_all_headshots:
-            pol.download_headshot(mp_info['photo_url'])
 
         if mp_info.get('extra') and mp_info['extra'].get('twitter'):
             screen_name = mp_info['extra']['twitter'].split('/')[-1]
@@ -165,6 +164,12 @@ def scrape_mps_from_ourcommons():
     mp_data = (_scrape_ourcommons_row(row) for row in rows)
     return mp_data
 
+def is_photo_real(photo_url: str) -> bool:
+    """Sometimes the scraped photo is just a generic silhouette;
+    this will return False if that appears to be the case."""
+    photo_response = requests.get(photo_url)
+    return (photo_response.status_code == 200 and hashlib.sha1(photo_response.content).hexdigest() not in IMAGE_PLACEHOLDER_SHA1)
+
 def _scrape_ourcommons_row(row):
     d = {}
     d['name'] = row.xpath(
@@ -200,11 +205,7 @@ def _scrape_ourcommons_row(row):
         './/div[@class="ce-mip-mp-profile-container"]//img/@src')[0]
 
     if photo:
-        photo = urljoin(OURCOMMONS_MPS_URL, photo)
-        # Determine whether the photo is actually a generic silhouette
-        photo_response = requests.get(photo)
-        if (photo_response.status_code == 200 and hashlib.sha1(photo_response.content).hexdigest() not in IMAGE_PLACEHOLDER_SHA1):
-            d['photo_url'] = photo
+        d['photo_url'] = urljoin(OURCOMMONS_MPS_URL, photo)
 
     # Hill Office contacts
     # Now phone and fax are in the same element
@@ -214,9 +215,9 @@ def _scrape_ourcommons_row(row):
     # </p>
     offices = [{'type': 'legislature'}]
     phone_el = mp_page.xpath(
-        u'.//h4[contains(., "Hill Office")]/../p[contains(., "Telephone")]|.//h4[contains(., "Hill Office")]/../p[contains(., "Téléphone :")]')
+        './/h4[contains(., "Hill Office")]/../p[contains(., "Telephone")]|.//h4[contains(., "Hill Office")]/../p[contains(., "Téléphone :")]')
     fax_el = mp_page.xpath(
-        u'.//h4[contains(., "Hill Office")]/../p[contains(., "Fax")]|.//h4[contains(., "Hill Office")]/../p[contains(., "Télécopieur :")]')
+        './/h4[contains(., "Hill Office")]/../p[contains(., "Fax")]|.//h4[contains(., "Hill Office")]/../p[contains(., "Télécopieur :")]')
 
     if phone_el:
         phone = phone_el[0].text_content().strip().splitlines()
@@ -228,7 +229,7 @@ def _scrape_ourcommons_row(row):
     if fax_el:
         fax = fax_el[0].text_content().strip().splitlines()
         fax = fax[0].replace('Fax:', '').replace(
-            u'Télécopieur :', '').strip()
+            'Télécopieur :', '').strip()
         if fax:
             offices[0]['fax'] = fax
 
@@ -242,19 +243,19 @@ def _scrape_ourcommons_row(row):
         o = dict(postal='\n'.join(address), type='constituency')
 
         phone_and_fax_el = constituency_office_el.xpath(
-            u'./p[contains(., "Telephone")]|./p[contains(., "Téléphone")]')
+            './p[contains(., "Telephone")]|./p[contains(., "Téléphone")]')
         if len(phone_and_fax_el):
             phone_and_fax = phone_and_fax_el[0].text_content(
             ).strip().splitlines()
             # Note that https://www.ourcommons.ca/Members/en/michael-barrett(102275)#contact
             # has a empty value - "Telephone:". So the search / replace cannot include space.
             voice = phone_and_fax[0].replace(
-                'Telephone:', '').replace(u'Téléphone :', '').strip()
+                'Telephone:', '').replace('Téléphone :', '').strip()
             if voice:
                 o['tel'] = voice
             if len(phone_and_fax) > 1:
                 fax = phone_and_fax[1].replace('Fax:', '').replace(
-                    u'Télécopieur :', '').strip()
+                    'Télécopieur :', '').strip()
                 if fax:
                     o['fax'] = fax
         offices.append(o)

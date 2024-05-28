@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from __future__ import unicode_literals
+
 
 from django.db import migrations, models
 import django.db.models.deletion
@@ -23,42 +23,42 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='votequestion',
             name='session',
-            field=models.ForeignKey(to='core.Session'),
+            field=models.ForeignKey(on_delete=models.CASCADE, to='core.Session'),
         ),
         migrations.AddField(
             model_name='partyvote',
             name='party',
-            field=models.ForeignKey(to='core.Party'),
+            field=models.ForeignKey(on_delete=models.CASCADE, to='core.Party'),
         ),
         migrations.AddField(
             model_name='partyvote',
             name='votequestion',
-            field=models.ForeignKey(to='bills.VoteQuestion'),
+            field=models.ForeignKey(on_delete=models.CASCADE, to='bills.VoteQuestion'),
         ),
         migrations.AddField(
             model_name='membervote',
             name='member',
-            field=models.ForeignKey(to='core.ElectedMember'),
+            field=models.ForeignKey(on_delete=models.CASCADE, to='core.ElectedMember'),
         ),
         migrations.AddField(
             model_name='membervote',
             name='politician',
-            field=models.ForeignKey(to='core.Politician'),
+            field=models.ForeignKey(on_delete=models.CASCADE, to='core.Politician'),
         ),
         migrations.AddField(
             model_name='membervote',
             name='votequestion',
-            field=models.ForeignKey(to='bills.VoteQuestion'),
+            field=models.ForeignKey(on_delete=models.CASCADE, to='bills.VoteQuestion'),
         ),
         migrations.AddField(
             model_name='billtext',
             name='bill',
-            field=models.ForeignKey(to='bills.Bill'),
+            field=models.ForeignKey(on_delete=models.CASCADE, to='bills.Bill'),
         ),
         migrations.AddField(
             model_name='billinsession',
             name='bill',
-            field=models.ForeignKey(to='bills.Bill'),
+            field=models.ForeignKey(on_delete=models.CASCADE, to='bills.Bill'),
         ),
         migrations.AddField(
             model_name='billinsession',
@@ -68,22 +68,22 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='billinsession',
             name='session',
-            field=models.ForeignKey(to='core.Session'),
+            field=models.ForeignKey(on_delete=models.CASCADE, to='core.Session'),
         ),
         migrations.AddField(
             model_name='billinsession',
             name='sponsor_member',
-            field=models.ForeignKey(blank=True, to='core.ElectedMember', null=True),
+            field=models.ForeignKey(on_delete=models.CASCADE, blank=True, to='core.ElectedMember', null=True),
         ),
         migrations.AddField(
             model_name='billinsession',
             name='sponsor_politician',
-            field=models.ForeignKey(blank=True, to='core.Politician', null=True),
+            field=models.ForeignKey(on_delete=models.CASCADE, blank=True, to='core.Politician', null=True),
         ),
         migrations.AddField(
             model_name='billevent',
             name='bis',
-            field=models.ForeignKey(to='bills.BillInSession'),
+            field=models.ForeignKey(on_delete=models.CASCADE, to='bills.BillInSession'),
         ),
         migrations.AddField(
             model_name='billevent',
@@ -103,12 +103,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='bill',
             name='sponsor_member',
-            field=models.ForeignKey(blank=True, to='core.ElectedMember', null=True),
+            field=models.ForeignKey(on_delete=models.CASCADE, blank=True, to='core.ElectedMember', null=True),
         ),
         migrations.AddField(
             model_name='bill',
             name='sponsor_politician',
-            field=models.ForeignKey(blank=True, to='core.Politician', null=True),
+            field=models.ForeignKey(on_delete=models.CASCADE, blank=True, to='core.Politician', null=True),
         ),
         migrations.AlterUniqueTogether(
             name='partyvote',

@@ -78,5 +78,5 @@ class SiteNewsFeed(Feed):
         return 'http://openparliament.ca/'
         
     def item_guid(self, item):
-        return unicode(item.id)
+        return str(item.id)
     

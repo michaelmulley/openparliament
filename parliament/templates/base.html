@@ -10,7 +10,18 @@
   {% compress css %}
     <link rel="stylesheet" type="text/x-scss" href="{% static 'scss/openparliament.scss' %}">
   {% endcompress %}
-
+  {% if SENTRY_JS_ID %}
+    {% if SENTRY_JS_OPTIONS %}
+    <script>
+    window.sentryOnLoad = function () {
+      Sentry.init({
+          {{ SENTRY_JS_OPTIONS }}
+      });
+    };
+    </script>
+    {% endif %}
+  <script src="https://js.sentry-cdn.com/{{ SENTRY_JS_ID }}.min.js" crossorigin="anonymous"></script>
+  {% endif %}
   <script type="text/javascript">
     window.OP = {
       'STATIC_URL': "{{ STATIC_URL|escapejs }}",
@@ -21,14 +32,16 @@
   <script type="text/javascript" src="{% static 'bower_components/jquery/dist/jquery.min.js' %}"></script>
 
   {% block headextra %}{% endblock %}
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3S54K1G77D"></script>
+  {% if GOOGLE_ANALYTICS_ID %}
+  <script async src="https://www.googletagmanager.com/gtag/js?id={{ GOOGLE_ANALYTICS_ID }}"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
 
-    gtag('config', 'G-3S54K1G77D');
+    gtag('config', '{{ GOOGLE_ANALYTICS_ID }}');
   </script>
+  {% endif %}
 
 </head>
 <body class="{% if fr %}fr{% else %}en{% endif %} {% block bodyclass %}{% endblock %}">
@@ -121,7 +134,6 @@
 </footer>
 
 {% compress js %}
-  <script type="text/javascript" src="{% static 'bower_components/raven-js/dist/raven.js' %}"></script>
   <script type="text/javascript" src="{% static 'bower_components/foundation-sites/dist/js/plugins/foundation.core.js' %}"></script>
   <script type="text/javascript" src="{% static 'bower_components/foundation-sites/dist/js/plugins/foundation.util.triggers.js' %}"></script>
   <script type="text/javascript" src="{% static 'bower_components/foundation-sites/dist/js/plugins/foundation.util.mediaQuery.js' %}"></script>

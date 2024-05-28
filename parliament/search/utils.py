@@ -1,7 +1,7 @@
 from collections import namedtuple
 import math
 import re
-import urllib
+import urllib.request, urllib.parse, urllib.error
 
 from django.utils.safestring import mark_safe
 
@@ -58,7 +58,7 @@ class BaseSearchQuery(object):
         q = (self.bare_query
             + (' ' if self.bare_query and self.filters else '')
             + ' '.join((
-                u'%s: "%s"' % (key, self.filters[key])
+                '%s: "%s"' % (key, self.filters[key])
                 for key in sorted(self.filters.keys())
         )))
         return q.strip()

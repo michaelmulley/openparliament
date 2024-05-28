@@ -1,4 +1,4 @@
-{% load imagekit pagination %}
+{% load pagination %}
 {% if highlight_statement or highlight_statement == 0 %}
 	<script type="text/javascript">
 		$(function () {
@@ -34,9 +34,9 @@
 					<p>{{ name_info.post_reminder }}</p>{% endif %}</div>
 
 			<div class="text-col {% if not statement.member.politician.headshot %} nophoto{% endif %}{% if not statement.who %} nospeaker{% endif %}">
-				{% if statement.member.politician.headshot %}
+				{% if statement.member.politician.headshot_thumbnail %}
 					<a href="{{ statement.member.politician.get_absolute_url }}">
-					{% generateimage 'op:statement_headshot' source=statement.member.politician.headshot as headshot%}<img src="{{ headshot.url }}" class="headshot_thumb">
+					<img src="{{ statement.member.politician.headshot_thumbnail.url }}" class="headshot_thumb">
 					</a>
 				{% endif %}
 				{% if statement.who %}<p class="speaking">

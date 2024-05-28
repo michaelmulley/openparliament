@@ -1,4 +1,5 @@
 *.pyc
+*.bak
 *.dump
 *.gz
 *~
@@ -20,3 +21,5 @@ fabfile
 *.sublime-*
 language_models/
 node_modules/
+op3env/
+.python-version

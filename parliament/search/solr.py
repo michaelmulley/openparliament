@@ -24,7 +24,7 @@ def autohighlight(results):
                 doc[datefield] = datetime.datetime.strptime(
                     doc[datefield], "%Y-%m-%dT%H:%M:%SZ")
         if doc['id'] in results.highlighting:
-            for (field, val) in results.highlighting[doc['id']].items():
+            for (field, val) in list(results.highlighting[doc['id']].items()):
                 if 'politician' not in doc['id']:
                     # GIANT HACK: in the current search schema, politician results are pre-escaped
                     val = escape(val[0])
@@ -36,7 +36,8 @@ def autohighlight(results):
                 doc[field] = mark_safe(r_hl.sub(r'<\1em>', val))
     return results
 
-solr = pysolr.Solr(settings.HAYSTACK_CONNECTIONS['default']['URL'])
+def get_pysolr_instance() -> pysolr.Solr:
+    return pysolr.Solr(settings.PARLIAMENT_SOLR_URL)
 
 
 class SearchQuery(BaseSearchQuery):
@@ -85,7 +86,7 @@ class SearchQuery(BaseSearchQuery):
         solr_filters = []
         filter_types = set()
 
-        for filter_name, filter_value in self.filters.items():
+        for filter_name, filter_value in list(self.filters.items()):
             filter_name = self.ALLOWABLE_FILTERS[filter_name]
 
             if filter_name == 'date':
@@ -118,7 +119,7 @@ class SearchQuery(BaseSearchQuery):
                 filter_name = 'doctype'
 
             if ' ' in filter_value and filter_name != 'date':
-                filter_value = u'"%s"' % filter_value
+                filter_value = '"%s"' % filter_value
 
             filter_value = filter_value.replace('/', r'\/')
 
@@ -130,7 +131,7 @@ class SearchQuery(BaseSearchQuery):
                 filter_tag = 'f' + filter_name
 
             filter_types.add(filter_name)
-            solr_filters.append(u'{!tag=%s}%s:%s' % (filter_tag, filter_name, filter_value))
+            solr_filters.append('{!tag=%s}%s:%s' % (filter_tag, filter_name, filter_value))
 
         if solr_filters and not self.bare_query:
             solr_query = '*:*'
@@ -154,7 +155,7 @@ class SearchQuery(BaseSearchQuery):
 
         # Our version of pysolr doesn't like Unicode
         if searchparams.get('fq'):
-            searchparams['fq'] = map(lambda f: f.encode('utf-8'), searchparams['fq'])
+            searchparams['fq'] = [f.encode('utf-8') for f in searchparams['fq']]
 
         return (solr_query, searchparams)
 
@@ -171,7 +172,7 @@ class SearchQuery(BaseSearchQuery):
     def solr_results(self):
         if not getattr(self, '_results', None):
             bare_query, searchparams = self.get_solr_query()
-            self._results = autohighlight(solr.search(bare_query, **searchparams))
+            self._results = autohighlight(get_pysolr_instance().search(bare_query, **searchparams))
         return self._results
 
     @property
@@ -200,7 +201,7 @@ class SearchQuery(BaseSearchQuery):
             if self.committees_only:
                 # If we're searching only committees, we by definition won't have
                 # results before 1994, so let's take them off of the graph.
-                counts = filter(lambda c: c[0] >= 2006, counts)
+                counts = [c for c in counts if c[0] >= 2006]
         return counts
 
     @property

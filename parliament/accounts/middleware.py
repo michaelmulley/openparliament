@@ -33,14 +33,17 @@ HttpRequest.authenticated_email = AuthenticatedEmailDescriptor()
 HttpRequest.authenticated_email_user = AuthenticatedEmailUserDescriptor()
 
 
-class AuthenticatedEmailMiddleware(object):
+class AuthenticatedEmailMiddleware:
     """Keep a JS-readable cookie with the user's email, and ensure it's
     synchronized with the session."""
 
-    def process_request(self, request):
-        assert not hasattr(request, 'session'), "AuthenticatedEmailMiddleware must be before SessionMiddleware"
+    def __init__(self, get_response):
+        self.get_response = get_response
 
-    def process_response(self, request, response):
+    def __call__(self, request):
+        assert not hasattr(request, 'session'), "AuthenticatedEmailMiddleware must be before SessionMiddleware"
+        response = self.get_response(request)
+
         if settings.SESSION_COOKIE_NAME in response.cookies:
             # We're setting the session cookie, so update the email cookie
             if request.authenticated_email:
@@ -50,4 +53,5 @@ class AuthenticatedEmailMiddleware(object):
                 response.cookies[EMAIL_COOKIE_NAME]['httponly'] = ''
             else:
                 response.delete_cookie(EMAIL_COOKIE_NAME)
+
         return response

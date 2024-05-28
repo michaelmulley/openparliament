@@ -38,7 +38,7 @@ class PoliticianInfoOptions(admin.ModelAdmin):
         if db_field.name == "politician":
             kwargs["queryset"] = Politician.objects.elected()
             return db_field.formfield(**kwargs)
-        return super(MyModelAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs)
+        return super(MyModelAdmin, self).formfield_for_foreignkey(db_field, request, **kwargs, on_delete=models.CASCADE)
     
 class SiteNewsOptions(admin.ModelAdmin):
     list_display = ('title', 'date', 'active')

@@ -1,11 +1,11 @@
 import datetime
 import itertools
 import re
-from urllib import urlencode
+from urllib.parse import urlencode
 
 from django.conf import settings
 from django.contrib.syndication.views import Feed
-from django.core import urlresolvers
+from django.urls import reverse
 from django.core.exceptions import PermissionDenied
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
 from django.http import HttpResponse, Http404, HttpResponsePermanentRedirect
@@ -17,7 +17,7 @@ from parliament.activity.models import Activity
 from parliament.activity import utils as activity
 from parliament.core.api import ModelListView, ModelDetailView, APIFilters
 from parliament.core.models import Politician, ElectedMember
-from parliament.core.utils import feed_wrapper
+from parliament.core.utils import feed_wrapper, is_ajax
 from parliament.hansards.models import Statement, Document
 from parliament.text_analysis.models import TextAnalysis
 from parliament.text_analysis.views import TextAnalysisView
@@ -86,7 +86,7 @@ class FormerMPView(ModelListView):
     resource_name = 'Politicians'
 
     def get_json(self, request):
-        return HttpResponsePermanentRedirect(urlresolvers.reverse('politicians') + '?include=former')
+        return HttpResponsePermanentRedirect(reverse('politicians') + '?include=former')
 
     def get_html(self, request):
         former_members = ElectedMember.objects.exclude(end_date__isnull=True)\
@@ -124,11 +124,11 @@ class PoliticianView(ModelDetailView):
     def get_related_resources(self, request, obj, result):
         pol_query = '?' + urlencode({'politician': obj.identifier})
         return {
-            'speeches_url': urlresolvers.reverse('speeches') + pol_query,
-            'ballots_url': urlresolvers.reverse('vote_ballots') + pol_query,
-            'sponsored_bills_url': urlresolvers.reverse('bills') + '?' +
+            'speeches_url': reverse('speeches') + pol_query,
+            'ballots_url': reverse('vote_ballots') + pol_query,
+            'sponsored_bills_url': reverse('bills') + '?' +
                 urlencode({'sponsor_politician': obj.identifier}),
-            'activity_rss_url': urlresolvers.reverse('politician_activity_feed', kwargs={'pol_id': obj.id})
+            'activity_rss_url': reverse('politician_activity_feed', kwargs={'pol_id': obj.id})
         }
 
     def get_html(self, request, pol_id=None, pol_slug=None):
@@ -164,11 +164,11 @@ class PoliticianView(ModelDetailView):
             'statements_politician_view': True,
             'show_statements': show_statements,
             'activities': activity.iter_recent(Activity.public.filter(politician=pol)),
-            'search_placeholder': u"Search %s in Parliament" % pol.name,
+            'search_placeholder': "Search %s in Parliament" % pol.name,
             'wordcloud_js': TextAnalysis.objects.get_wordcloud_js(
                 key=pol.get_absolute_url() + 'text-analysis/')
         }
-        if request.is_ajax():
+        if is_ajax(request):
             t = loader.get_template("hansards/statement_page_politician_view.inc")
         else:
             t = loader.get_template("politicians/politician.html")
@@ -188,7 +188,7 @@ def contact(request, pol_id=None, pol_slug=None):
     c = {
         'pol': pol,
         'info': pol.info(),
-        'title': u'Contact %s' % pol.name
+        'title': 'Contact %s' % pol.name
     }
     t = loader.get_template("politicians/contact.html")
     return HttpResponse(t.render(c, request))
@@ -215,7 +215,7 @@ class PoliticianAutocompleteView(JSONView):
                 'name', 'name_family', 'slug', 'id').order_by('name_family'))
 
         results = (
-            {'value': p['slug'] if p['slug'] else unicode(p['id']), 'label': p['name']}
+            {'value': p['slug'] if p['slug'] else str(p['id']), 'label': p['name']}
             for p in self.politician_list
             if p['name'].lower().startswith(q) or p['name_family'].lower().startswith(q)
         )
