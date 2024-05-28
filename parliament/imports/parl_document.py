@@ -1,4 +1,4 @@
-"""Parse XML transcripts from parl.gc.ca.
+"""Parse XML transcripts from ourcommons.ca.
 
 These transcripts are either House Hansards, or House committee evidence.
 

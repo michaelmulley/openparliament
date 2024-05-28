@@ -327,7 +327,7 @@ class Politician(Person):
             if self.parlpage:
                 d['links'].append({
                     'url': self.parlpage,
-                    'note': 'Page on parl.gc.ca'
+                    'note': 'Page on ourcommons.ca'
                 })
             if 'web_site' in info:
                 d['links'].append({
@@ -585,14 +585,6 @@ class SessionManager(models.Manager):
         if not match:
             raise ValueError("Could not find parl/session in %s" % string)
         pk = match.group(1) + '-' + match.group(2)
-        return self.get_queryset().get(pk=pk)
-
-    def get_from_parl_url(self, url):
-        """Given a parl.gc.ca URL with Parl= and Ses= query-string parameters,
-        return the session."""
-        parlnum = re.search(r'[pP]arl=(\d\d)', url).group(1)
-        sessnum = re.search(r'(?:session|Ses)=(\d)', url).group(1)
-        pk = parlnum + '-' + sessnum
         return self.get_queryset().get(pk=pk)
 
 class Session(models.Model):

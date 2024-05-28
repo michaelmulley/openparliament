@@ -154,7 +154,7 @@ class CommitteeActivityInSession(models.Model):
     source_id = models.IntegerField(unique=True)
 
     def get_source_url(self):
-        return 'http://www.parl.gc.ca/Committees/%(lang)s/%(acronym)s/StudyActivity?studyActivityId=%(source_id)s' % {
+        return 'https://www.ourcommons.ca/Committees/%(lang)s/%(acronym)s/StudyActivity?studyActivityId=%(source_id)s' % {
             'source_id': self.source_id,
             'acronym': self.activity.committee.get_acronym(self.session),
             'lang': settings.LANGUAGE_CODE[:2]

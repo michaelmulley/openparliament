@@ -39,11 +39,6 @@ class NoStatementManager(models.Manager):
             .annotate(scount=models.Count('statement'))\
             .exclude(scount__gt=0)
 
-def url_from_docid(docid):
-    return "http://www.parl.gc.ca/HousePublications/Publication.aspx?DocId=%s&Language=%s&Mode=1" % (
-        docid, settings.LANGUAGE_CODE[0].upper()
-    ) if docid else None
-
 class Document(models.Model):
     
     DEBATE = 'D'

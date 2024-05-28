@@ -107,7 +107,7 @@ class BillListView(ModelListView):
         'session': APIFilters.dbfield(help="e.g. 41-1"),
         'introduced': APIFilters.dbfield(filter_types=APIFilters.numeric_filters,
             help="date bill was introduced, e.g. introduced__gt=2010-01-01"),
-        'legisinfo_id': APIFilters.dbfield(help="integer ID assigned by parl.gc.ca's LEGISinfo"),
+        'legisinfo_id': APIFilters.dbfield(help="integer ID assigned by Parliament's LEGISinfo"),
         'number': APIFilters.dbfield('bill__number',
             help="a string, not an integer: e.g. C-10"),
         'law': APIFilters.dbfield('bill__law',

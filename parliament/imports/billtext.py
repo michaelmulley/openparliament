@@ -10,7 +10,7 @@ from parliament.imports import CannotScrapeException
 
 
 def get_bill_text_xml(bill_or_url):
-    """Given a Bill object or URL to a full-text page on parl.gc.ca,
+    """Given a Bill object or URL to a full-text page on ourcommons.ca,
     returns an lxml Element object for the container div of the full
     bill text."""
 
