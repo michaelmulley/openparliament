@@ -17,9 +17,11 @@ from parliament.text_analysis.models import TextAnalysis
 from parliament.text_analysis.views import TextAnalysisView
 
 def _get_hansard(year, month, day):
-    return get_object_or_404(Document.debates,
-        date=datetime.date(int(year), int(month), int(day)))
-
+    try:
+        return get_object_or_404(Document.debates,
+            date=datetime.date(int(year), int(month), int(day)))
+    except ValueError:
+        raise Http404
 class HansardView(ModelDetailView):
 
     resource_name = 'House debate'
