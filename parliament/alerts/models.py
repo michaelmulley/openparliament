@@ -208,7 +208,7 @@ class Subscription(models.Model):
         msg = EmailMultiAlternatives(
             self.get_subject_line(documents),
             rendered['text'],
-            'alerts@contact.openparliament.ca',
+            '"openparliament.ca alerts" <alerts@contact.openparliament.ca>',
             [self.user.email],
             headers={'List-Unsubscribe': '<' + self.get_unsubscribe_url(full=True) + '>'}
         )
@@ -221,7 +221,7 @@ class Subscription(models.Model):
             self.last_sent = datetime.datetime.now()
             self.save()
         else:
-            logger.warning("settings.PARLIAMENT_SEND_EMAIL must be True to send mail")
+            logger.error("settings.PARLIAMENT_SEND_EMAIL must be True to send mail")
             print(msg.subject)
             print(msg.body)
 
