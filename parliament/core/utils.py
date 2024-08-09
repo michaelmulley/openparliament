@@ -121,6 +121,7 @@ def settings_context(request):
         'GOOGLE_CLIENT_ID': getattr(settings, 'GOOGLE_CLIENT_ID', None),
         'GOOGLE_ANALYTICS_ID': getattr(settings, 'GOOGLE_ANALYTICS_ID', None),        
         'SENTRY_JS_ID': getattr(settings, 'SENTRY_JS_ID', None),
+        'SENTRY_JS_OPTIONS': getattr(settings, 'SENTRY_JS_OPTIONS', None),
     }
 
 class AutoprefixerFilter(CompilerFilter):

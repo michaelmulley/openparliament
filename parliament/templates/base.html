@@ -15,7 +15,7 @@
     <script>
     window.sentryOnLoad = function () {
       Sentry.init({
-          {{ SENTRY_JS_OPTIONS }}
+          {{ SENTRY_JS_OPTIONS|safe }}
       });
     };
     </script>
