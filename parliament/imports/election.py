@@ -18,8 +18,8 @@ def import_ec_results(election, url="http://enr.elections.ca/DownloadResults.asp
     preliminary_results = {}
     validated_results = {}
 
-    for line in requests.get(url).content.split('\n'):
-        line = line.decode('utf-8').split('\t')
+    for line in requests.get(url).text.split('\n'):
+        line = line.split('\t')
         edid = line[0]
         if not edid.isdigit():
             continue
