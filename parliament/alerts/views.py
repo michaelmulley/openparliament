@@ -231,9 +231,9 @@ def bounce_webhook(request):
                 recipients = [b['emailAddress'] for b in data['bounce']['bouncedRecipients']]
             elif ntype == 'Complaint':
                 recipients = [b['emailAddress'] for b in data['complaint']['complainedRecipients']]
-                mail_admins("SES complaint (%r)" % recipients, request.body)
+                mail_admins("SES complaint (%r)" % recipients, json.dumps(data, indent=2))
             else:
-                mail_admins("Unhandled SES notification", request.body)
+                mail_admins("Unhandled SES notification", json.dumps(data, indent=2))
                 return HttpResponse('OK')
             
             for recipient in recipients:
