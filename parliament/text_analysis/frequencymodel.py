@@ -78,15 +78,19 @@ class FrequencyModel(dict):
     def __missing__(self, key):
         return float()
 
-    def diff(self, other):
+    def diff(self, other, min_ratio=None):
         """
         Given another FrequencyModel, returns a FrequencyDiffResult containing the difference
         between the probability of a given word appears in this FrequencyModel vs the other
         background model.
+        min_ratio: if it is e.g. 2, only include words that appears at least twice as often
+        in this model vs the other model.
         """
         r = FrequencyDiffResult()
         for k, v in self.items():
             if k not in STOPWORDS:
+                if min_ratio and other[k] and (v / other[k] < min_ratio):
+                    continue
                 r[k] = self[k] - other[k]
         return r
 

@@ -1,7 +1,7 @@
 from parliament.text_analysis.corpora import load_background_model
 from parliament.text_analysis.frequencymodel import FrequencyModel, STOPWORDS
 
-def analyze_statements(statements, corpus_name):
+def analyze_statements(statements, corpus_name, min_ratio=2):
     results = []
     ngram_lengths = [
         {
@@ -22,7 +22,8 @@ def analyze_statements(statements, corpus_name):
     seen = set(STOPWORDS)
     for opts in ngram_lengths:
         bg = load_background_model(corpus_name, opts['length'])
-        model = FrequencyModel.from_statement_qs(statements, opts['length']).diff(bg)
+        model = FrequencyModel.from_statement_qs(
+            statements, opts['length']).diff(bg, min_ratio=min_ratio)
         top = iter(model.most_common(50))
         count = 0
         for item in top:
