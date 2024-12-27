@@ -66,5 +66,6 @@ def _get_pagination_context(context):
         'pages_outside_leading_range': pages_outside_leading_range,
         'pages_outside_trailing_range': pages_outside_trailing_range,
         'get_params': get_params,
-        'allow_single_page': context.get('allow_single_page')
+        'allow_single_page': context.get('allow_single_page'),
+        'pagination_url': context.get('pagination_url', ''),
     }
