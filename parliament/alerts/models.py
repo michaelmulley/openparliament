@@ -2,6 +2,8 @@ import base64
 import datetime
 import hashlib
 import re
+from smtplib import SMTPException
+import time
 
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
@@ -217,7 +219,16 @@ class Subscription(models.Model):
         if rendered.get('html'):
             msg.attach_alternative(rendered['html'], 'text/html')
         if getattr(settings, 'PARLIAMENT_SEND_EMAIL', False):
-            msg.send()
+            def _send(msg, retries):
+                try:
+                    msg.send()
+                except SMTPException as e:
+                    if retries > 0:
+                        time.sleep(1)
+                        _send(msg, retries=retries - 1)
+                    else:
+                        raise
+            _send(msg, retries=2)
             self.last_sent = datetime.datetime.now()
             self.save()
         else:
