@@ -47,8 +47,10 @@ class Election (models.Model):
         candidacies.filter(elected=None).update(elected=False)
         
     def create_members(self, session):
+        members = []
         for candidacy in self.candidacy_set.filter(elected=True):
-            candidacy.create_member(session)
+            members.append(candidacy.create_member(session))
+        return members
                 
 class CandidacyManager(models.Manager):
     

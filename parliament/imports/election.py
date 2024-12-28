@@ -6,8 +6,11 @@ from django.db import transaction
 import requests
 
 from parliament.core import parsetools
-from parliament.core.models import Riding, Party, Politician, ElectedMember
-from parliament.elections.models import Candidacy
+from parliament.core.models import Riding, Party, Politician, ElectedMember, Session
+from parliament.elections.models import Candidacy, Election
+
+class PreliminaryResultsError(Exception):
+    pass
 
 @transaction.atomic
 def import_ec_results(election, url="http://enr.elections.ca/DownloadResults.aspx",
@@ -32,7 +35,7 @@ def import_ec_results(election, url="http://enr.elections.ca/DownloadResults.asp
             raise Exception("%s not an acceptable type" % result_type)
 
     if (not allow_preliminary) and len(preliminary_results) > len(validated_results):
-        raise Exception("Some results are only preliminary, stopping")
+        raise PreliminaryResultsError("Some results are only preliminary, stopping")
 
     if len(validated_results) > len(preliminary_results):
         raise Exception("Huh?")
@@ -75,6 +78,25 @@ def import_ec_results(election, url="http://enr.elections.ca/DownloadResults.asp
             )
 
     election.label_winners()
+
+def load_byelection():
+    """
+    Interactive script to load a by-election from the Elections Canada results
+    """
+    print("Enter the date of the by-election (YYYY-MM-DD):")
+    eldate = input().strip()
+    el, _ = Election.objects.get_or_create(date=eldate, byelection=True)
+    try:
+        import_ec_results(el)
+    except PreliminaryResultsError:
+        print("Some results are preliminary, continue? (y/n)")
+        if input().strip().lower() == 'y':
+            import_ec_results(el, allow_preliminary=True)
+        else:
+            raise
+    
+    return el.create_members(Session.objects.current())
+
 
 PROVINCES_NORMALIZED = {
     'ab': 'AB',
