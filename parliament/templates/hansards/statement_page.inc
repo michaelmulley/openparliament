@@ -22,7 +22,7 @@
 					{% if statement.h2 %}
 						<p><strong class="statement_topic">{% if statement.h3 %}{{ statement.h3 }}</strong><span class="br"></span>{{ statement.h2 }}{% else %}{{ statement.h2 }}</strong>{% endif %}<span class="br"></span>{{ statement.h1 }}</p>
 					{% endif %}{# endif h1 #}
-					<p>{% if statements_full_date or highlight_statement == statement %}{{ statement.time|date:"F jS, Y / P" }}{% else %}{% if hansard %}{% if hansard.date.day != statement.time.day %}<strong>{{ statement.time|date:"F jS" }}</strong>, {% endif %}{% endif %}{# double endif for hansard.date #}{{ statement.time|date:"P"|capfirst }}{% endif %}{# endif full_date #}
+					<p><a class="statement_time_permalink" href="{{ statementurl }}only/">{% if statements_full_date or highlight_statement == statement %}{{ statement.time|date:"F jS, Y / P" }}{% else %}{% if hansard %}{% if hansard.date.day != statement.time.day %}<strong>{{ statement.time|date:"F jS" }}</strong>, {% endif %}{% endif %}{# double endif for hansard.date #}{{ statement.time|date:"P"|capfirst }}{% endif %}{# endif full_date #}</a></p>
 				{% endif %}{# endif statement.who #}
 				{% if statements_context_link %}<br><a href="{{ statementurl }}">See
 					context</a>{% endif %}{# endif context_link #}
