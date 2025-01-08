@@ -88,7 +88,11 @@ def document_view(request, document, meeting=None, slug=None):
 
     highlight_statement = None
     try:
-        if slug is not None and 'page' not in request.GET:
+        if slug:
+            if request.GET.get('page') or request.GET.get('singlepage'):
+                # Don't include slug in paginated URLs
+                return HttpResponsePermanentRedirect(
+                    document.get_absolute_url() + '?' + request.GET.urlencode())
             if slug.isdigit():
                 highlight_statement = int(slug)
             else:
@@ -119,16 +123,16 @@ def document_view(request, document, meeting=None, slug=None):
         'allow_single_page': True
     }
     if document.document_type == Document.DEBATE:
-        ctx.update({
-            'hansard': document,
-            'pagination_url': document.get_absolute_url(),
-        })
+        ctx['hansard'] = document
+        if highlight_statement:
+            ctx['pagination_url'] = document.get_absolute_url()
     elif document.document_type == Document.EVIDENCE:
         ctx.update({
             'meeting': meeting,
-            'committee': meeting.committee,
-            'pagination_url': meeting.get_absolute_url(),
+            'committee': meeting.committee
         })
+        if highlight_statement:
+            ctx['pagination_url'] = meeting.get_absolute_url()
 
     if is_ajax(request):
         t = loader.get_template("hansards/statement_page.inc")
