@@ -5,7 +5,7 @@ These transcripts are either House Hansards, or House committee evidence.
 Most of the heavily-lifting code has been put in a separate module
 called alpheus.
 """
-from difflib import SequenceMatcher
+from difflib import context_diff, SequenceMatcher
 import re
 import sys
 import urllib.request, urllib.error, urllib.parse
@@ -47,12 +47,10 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
     if not document.downloaded:
         return False
     xml_en = document.get_cached_xml('en')
-    pdoc_en = alpheus_parse_string(xml_en.read())
-    xml_en.close()
+    pdoc_en = alpheus_parse_string(xml_en)
 
     xml_fr = document.get_cached_xml('fr')
-    pdoc_fr = alpheus_parse_string(xml_fr.read())
-    xml_fr.close()
+    pdoc_fr = alpheus_parse_string(xml_fr)
     
     if document.date and document.date != pdoc_en.meta['date']:
         # Sometimes they get the date wrong
@@ -412,3 +410,20 @@ def refresh_xml(document):
 
     document.save_xml(url_en, xml_en, xml_fr, overwrite=True)
     import_document(document)
+
+def has_xml_changed(document, print_diff=True):
+    assert document.downloaded
+    result = {}
+
+    for lang in ('en', 'fr'):
+        url = document.get_xml_url(lang)
+        resp = requests.get(url)
+        resp.raise_for_status()
+        new_xml = resp.content.decode('utf8').splitlines()
+        old_xml = document.get_cached_xml(lang).splitlines()
+        changed = new_xml != old_xml
+        result[lang] = changed
+        if changed and print_diff:
+            diff = context_diff(old_xml, new_xml, n=0)
+            print("\n".join(diff))
+    return result

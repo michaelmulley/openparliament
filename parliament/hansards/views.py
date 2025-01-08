@@ -248,9 +248,8 @@ def statement_permalink(request, doc, statement, template, **kwargs):
     
 def document_cache(request, document_id, language):
     document = get_object_or_404(Document, pk=document_id)
-    xmlfile = document.get_cached_xml(language)
-    resp = HttpResponse(xmlfile.read(), content_type="text/xml")
-    xmlfile.close()
+    xml_content = document.get_cached_xml(language)
+    resp = HttpResponse(xml_content, content_type="text/xml")
     return resp
 
 class TitleAdder(object):
