@@ -274,7 +274,7 @@ def _download_evidence(meeting, evidence_viewer_url):
         date=meeting.date,
         session=meeting.session,
         document_type=Document.EVIDENCE)
-    meeting.evidence.save_xml(xml_en, xml_fr)
+    meeting.evidence.save_xml(xml_url_en, xml_en, xml_fr)
 
 def get_activity_by_url(activity_url, committee, session):
     activity_id = int(re.search(r'(studyActivityId|Stac)=(\d+)', activity_url).group(2))

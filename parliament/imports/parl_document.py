@@ -355,19 +355,19 @@ def fetch_latest_debates(session=None):
 
 
 def fetch_debate_for_sitting(session, sitting_number, import_without_paragraph_ids=True):
-    url = HANSARD_URL.format(parliamentnum=session.parliamentnum,
+    url_en = HANSARD_URL.format(parliamentnum=session.parliamentnum,
         sessnum=session.sessnum, sitting=sitting_number, lang='E')
-    resp = requests.get(url)
+    resp = requests.get(url_en)
     if resp.status_code != 200:
         if resp.status_code != 404:
-            logger.error("Response %d from %s", resp.status_code, url)
+            logger.error("Response %d from %s", resp.status_code, url_en)
         raise NoDocumentFound
-    print(url)
-
+    print(url_en)
     xml_en = resp.content
-    url = HANSARD_URL.format(parliamentnum=session.parliamentnum,
+
+    url_fr = HANSARD_URL.format(parliamentnum=session.parliamentnum,
         sessnum=session.sessnum, sitting=sitting_number, lang='F')
-    resp = requests.get(url)
+    resp = requests.get(url_fr)
     resp.raise_for_status()
     xml_fr = resp.content
 
@@ -392,7 +392,7 @@ def fetch_debate_for_sitting(session, sitting_number, import_without_paragraph_i
             source_id=source_id,
             number=str(sitting_number)
         )
-        doc.save_xml(xml_en, xml_fr)
+        doc.save_xml(url_en, xml_en, xml_fr)
         logger.info("Saved sitting %s", doc.number)
 
 def refresh_xml(document):

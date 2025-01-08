@@ -53,6 +53,7 @@ class Document(models.Model):
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
     
     source_id = models.IntegerField(unique=True, db_index=True)
+    xml_source_url = models.URLField(blank=True) # for English XML
     
     most_frequent_word = models.CharField(max_length=20, blank=True)
     wordcloud = models.ImageField(upload_to='autoimg/wordcloud', blank=True, null=True)
@@ -269,12 +270,13 @@ class Document(models.Model):
         self.downloaded = False
         self.save()
 
-    def save_xml(self, xml_en, xml_fr, overwrite=False):
+    def save_xml(self, source_url, xml_en, xml_fr, overwrite=False):
         if not overwrite and any(
                 os.path.exists(p) for p in [self.get_filepath(l) for l in ['en', 'fr']]):
             raise Exception("XML files already exist")
         self._save_file(self.get_filepath('en'), xml_en)
         self._save_file(self.get_filepath('fr'), xml_fr)
+        self.xml_source_url = source_url
         self.downloaded = True
         self.save()
 
