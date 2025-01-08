@@ -399,13 +399,8 @@ def refresh_xml(document):
     """
     Download new XML from Parliament, reimport.
     """
-    if document.document_type == Document.DEBATE:
-        url_en = HANSARD_URL.format(parliamentnum=document.session.parliamentnum,
-            sessnum=document.session.sessnum, sitting=int(document.number), lang='E')
-        url_fr = HANSARD_URL.format(parliamentnum=document.session.parliamentnum,
-            sessnum=document.session.sessnum, sitting=int(document.number), lang='F')
-    else:
-        raise NotImplementedError
+    url_en = document.get_xml_source_url('en')
+    url_fr = document.get_xml_source_url('fr')
 
     resp_en = requests.get(url_en)
     resp_en.raise_for_status()
@@ -415,5 +410,5 @@ def refresh_xml(document):
     resp_fr.raise_for_status()
     xml_fr = resp_fr.content
 
-    document.save_xml(xml_en, xml_fr, overwrite=True)
+    document.save_xml(url_en, xml_en, xml_fr, overwrite=True)
     import_document(document)

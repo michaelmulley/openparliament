@@ -245,9 +245,9 @@ class CommitteeMeeting(models.Model):
     def evidence_url(self):
         return self.get_ourcommons_doc_url('evidence') if self.evidence_id else None
 
-    def get_ourcommons_doc_url(self, document_type):
+    def get_ourcommons_doc_url(self, document_type, lang=settings.LANGUAGE_CODE[:2]):
         return 'https://www.ourcommons.ca/DocumentViewer/{}/{}/{}/meeting-{}/{}'.format(
-            settings.LANGUAGE_CODE[:2], self.session.id,
+            lang, self.session.id,
             self.committee.get_acronym(self.session), self.number,
             document_type)
     

@@ -4,6 +4,7 @@ from collections import defaultdict, OrderedDict
 import datetime
 import os
 import re
+from typing import Literal
 
 from django.db import models
 from django.conf import settings
@@ -125,6 +126,30 @@ class Document(models.Model):
         elif self.document_type == self.EVIDENCE:
             return self.committeemeeting.evidence_url
         
+    def get_xml_url(self, lang: Literal['en', 'fr']):
+        """Returns the URL of the source XML for this document on Parliament's site."""
+        if self.xml_source_url:
+            if lang == 'fr':
+                assert '-E.' in self.xml_source_url
+                return self.xml_source_url.replace('-E.', '-F.')
+            return self.xml_source_url
+        
+        if self.document_type == self.DEBATE:
+            if self.session.parliamentnum < 39:
+                return None
+            HANSARD_URL = 'https://www.ourcommons.ca/Content/House/{parliamentnum}{sessnum}/Debates/{sitting:03d}/HAN{sitting:03d}-{lang}.XML'
+            return HANSARD_URL.format(parliamentnum=self.session.parliamentnum,
+                sessnum=self.session.sessnum, sitting=int(self.number), lang=lang[0].upper())
+        
+        if self.document_type == self.EVIDENCE:
+            from parliament.imports.parl_cmte import get_xml_url_from_documentviewer_url
+            evidence_page_url = self.committeemeeting.get_ourcommons_doc_url('evidence', lang='en')
+            xml_url_en = get_xml_url_from_documentviewer_url(evidence_page_url)
+            if lang == 'fr':
+                assert '-E.' in xml_url_en
+                return xml_url_en.replace('-E.', '-F.')
+            return xml_url_en
+
     def _topics(self, l):
         topics = []
         last_topic = ''
@@ -260,7 +285,8 @@ class Document(models.Model):
     def get_cached_xml(self, language):
         if not self.downloaded:
             raise Exception("Not yet downloaded")
-        return open(self.get_filepath(language), encoding='utf8')
+        with open(self.get_filepath(language), encoding='utf8') as f:
+            return f.read()
 
     def delete_downloaded(self):
         for lang in ('en', 'fr'):
@@ -270,7 +296,7 @@ class Document(models.Model):
         self.downloaded = False
         self.save()
 
-    def save_xml(self, source_url, xml_en, xml_fr, overwrite=False):
+    def save_xml(self, source_url, xml_en: bytes, xml_fr: bytes, overwrite=False):
         if not overwrite and any(
                 os.path.exists(p) for p in [self.get_filepath(l) for l in ['en', 'fr']]):
             raise Exception("XML files already exist")

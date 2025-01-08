@@ -238,7 +238,7 @@ def import_committee_meetings(committee, session):
 class NoXMLError(Exception):
     pass
 
-def _get_xml_url_from_documentviewer_url(url):
+def get_xml_url_from_documentviewer_url(url):
     resp = requests.get(url)
     resp.raise_for_status()
     root = lxml.html.fromstring(resp.text)
@@ -249,7 +249,7 @@ def _get_xml_url_from_documentviewer_url(url):
     return urljoin(url, xml_button.get('href'))
 
 def _download_evidence(meeting, evidence_viewer_url):
-    xml_url_en = _get_xml_url_from_documentviewer_url(evidence_viewer_url)
+    xml_url_en = get_xml_url_from_documentviewer_url(evidence_viewer_url)
     xml_url_fr = xml_url_en.replace('-E.', '-F.')
     assert xml_url_fr.upper().endswith('-F.XML')
     assert not meeting.evidence
