@@ -8,7 +8,7 @@ called alpheus.
 from difflib import context_diff, SequenceMatcher
 import re
 import sys
-import urllib.request, urllib.error, urllib.parse
+import urllib.error, urllib.parse
 from xml.sax.saxutils import quoteattr
 
 from django.urls import reverse
@@ -21,28 +21,20 @@ import requests
 
 from parliament.bills.models import Bill, BillInSession, VoteQuestion
 from parliament.core.models import Politician, ElectedMember, Session
-from parliament.hansards.models import Statement, Document, OldSequenceMapping
+from parliament.hansards.models import Statement, Document
 
 import logging
 logger = logging.getLogger(__name__)
 
 @transaction.atomic
-def import_document(document, interactive=True, reimport_preserving_sequence=False):
-    old_statements = None
+def import_document(document, interactive=True):
     if document.statement_set.all().exists():
-        if reimport_preserving_sequence:
-            if OldSequenceMapping.objects.filter(document=document).exists():
-                logger.error("Sequence mapping already exits for %s" % document)
-                return
-            old_statements = list(document.statement_set.all())
-            document.statement_set.all().delete()
-        else:
-            if not interactive:
-                return
-            sys.stderr.write("Statements already exist for %r.\nDelete them? (y/n) " % document)
-            if input().strip() != 'y':
-                return
-            document.statement_set.all().delete()
+        if not interactive:
+            return
+        sys.stderr.write("Statements already exist for %r.\nDelete them? (y/n) " % document)
+        if input().strip() != 'y':
+            return
+        document.statement_set.all().delete()
 
     if not document.downloaded:
         return False
@@ -172,14 +164,6 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
                 st.who_context_fr = fr_data.meta.get('person_context', '')[:300]
 
     Statement.set_slugs(statements)
-
-    if old_statements:
-        for mapping in _align_sequences(statements, old_statements):
-            OldSequenceMapping.objects.create(
-                document=document,
-                sequence=mapping[0],
-                slug=mapping[1]
-            )
         
     for s in statements:
         s.save()
@@ -193,66 +177,6 @@ def import_document(document, interactive=True, reimport_preserving_sequence=Fal
     document.save()
 
     return document
-
-def _align_sequences(new_statements, old_statements):
-    """Given two list of statements, returns a list of mappings in the form of
-    (old_statement_sequence, new_statement_slug)"""
-
-    def build_speaker_dict(states):
-        d = {}
-        for s in states:
-            d.setdefault(s.name_info['display_name'], []).append(s)
-        return d
-
-    def get_comparison_sequence(text):
-        return re.split(r'\s+', text)
-
-    def calculate_similarity(old, new):
-        """Given two statements, return a score between 0 and 1 expressing their similarity"""
-        score = 0.8 if old.time == new.time else 0.0
-        oldtext, newtext = old.text_plain(), new.text_plain()
-        if new in chosen:
-            score -= 0.01
-        if newtext in oldtext:
-            similarity = 1.0
-        else:
-            similarity = SequenceMatcher(
-                None, get_comparison_sequence(oldtext), get_comparison_sequence(newtext)
-            ).ratio()
-        return (score + similarity) / 1.8
-
-    new_speakers, old_speakers = build_speaker_dict(new_statements), build_speaker_dict(old_statements)
-    mappings = []
-    chosen = set()
-
-    for speaker, olds in list(old_speakers.items()):
-        news = new_speakers.get(speaker, [])
-        if speaker and len(olds) == len(news):
-            # The easy version: assume we've got the same statements
-            for old, new in zip(olds, news):
-                score = calculate_similarity(old, new)
-                if score < 0.9:
-                    logger.warning("Low similarity for easy match %s: %r %r / %r %r"
-                        % (score, old, old.text_plain(), new, new.text_plain()))
-                mappings.append((old.sequence, new.slug))
-        else:
-            # Try and pair the most similar statement
-            if news:
-                logger.info("Count mismatch for %s" % speaker)
-                candidates = news
-            else:
-                logger.warning("No new statements for %s" % speaker)
-                candidates = new_statements # Calculate similarity with all possibilities
-            for old in olds:
-                scores = ( (cand, calculate_similarity(old, cand)) for cand in candidates )
-                choice, score = max(scores, key=lambda s: s[1])
-                chosen.add(choice)
-                if score < 0.75:
-                    logger.warning("Low-score similarity match %s: %r %r / %r %r"
-                        % (score, old, old.text_plain(), choice, choice.text_plain()))
-                mappings.append((old.sequence, choice.slug))
-
-    return mappings
 
 def _process_related_links(content, statement):
     return re.sub(r'<a class="related_link (\w+)" ([^>]+)>(.*?)</a>',
