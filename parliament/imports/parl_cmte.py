@@ -36,7 +36,7 @@ def import_committee_list(session=None):
             committee, created = Committee.objects.get_or_create(name_en=name_en,
                 name_fr=name_fr, parent=parent)
             if created:
-                logger.warning("Creating committee: %s, %s" % (committee.name_en, committee.slug))
+                logger.warning("Creating committee: %s, %s", committee.name_en, committee.slug)
             CommitteeInSession.objects.get_or_create(
                 committee=committee, session=session, acronym=acronym)
             return committee
@@ -119,7 +119,7 @@ def import_committee_documents(session):
         try:
             import_committee_meetings(comm, session)
         except requests.exceptions.HTTPError as e:
-            logger.exception("Error importing committee %s, #%s", (comm, comm.id))
+            logger.exception("Error importing committee %s, #%s", comm, comm.id)
         #import_committee_reports(comm, session)
         #time.sleep(1)
 
