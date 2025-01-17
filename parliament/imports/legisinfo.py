@@ -30,7 +30,7 @@ def _get_previous_session(session):
     except IndexError:
         return None
 
-class BillData(object):
+class BillData:
     """
     A wrapper for JSON bill data from parl.ca. 
     """
@@ -60,14 +60,14 @@ class BillData(object):
 
     @property
     def is_detailed(self):
-        return bool(self['Number'] or self['LatestBillEventEventTypeId'])
+        return bool(self.get('BillStages'))
 
     @property
     def detailed_json_url(self):
         return LEGISINFO_DETAIL_URL % {
             'parlnum': self['ParliamentNumber'],
             'sessnum': self['SessionNumber'],
-            'billnumber': self['NumberCode']
+            'billnumber': self['BillNumberFormatted'].lower()
         }
 
     def get_detailed(self):
@@ -78,7 +78,7 @@ class BillData(object):
         self._d = rj[0]
         return self
 
-def get_bill_list(session): # type: (Session) -> List(BillData)
+def get_bill_list(session: Session) -> list[BillData]:
     url = LEGISINFO_JSON_LIST_URL % dict(sessid=session.id)
     resp = requests.get(url)
     resp.raise_for_status()
@@ -86,13 +86,13 @@ def get_bill_list(session): # type: (Session) -> List(BillData)
     return [BillData(item) for item in jd]
     
 @transaction.atomic
-def import_bills(session): # type: (Session) -> None
+def import_bills(session: Session):
     bill_list = get_bill_list(session)
     prev_session = _get_previous_session(session)
     for bd in bill_list:
         _import_bill(bd, session, prev_session)
 
-def import_bill_by_id(legisinfo_id):
+def import_bill_by_id(legisinfo_id: int | str) -> Bill:
     """Imports a single bill based on its LEGISinfo id."""
     
     # This request should redirect from an ID to a canonical URL, which we 
@@ -126,7 +126,8 @@ def _update(obj, field, value):
         setattr(obj, field, value)
         obj._changed = True
 
-def _import_bill(bd, session, previous_session=None): # type: (BillData, Session, Session) -> None
+def _import_bill(bd: BillData, session: Session,
+                 previous_session: Session | None = None) -> Bill:
 
     if previous_session is None:
         previous_session = _get_previous_session(session)
