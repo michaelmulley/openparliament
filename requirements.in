@@ -1,4 +1,4 @@
-Django<5.1
+Django<5.2
 dj-database-url
 django-compressor
 django-extensions
@@ -17,7 +17,8 @@ oauth2client
 
 # The following are only used in production
 whitenoise
-pymemcache
+redis<6
+hiredis<3
 gunicorn
 gevent # only used for gunicorn workers
 calmjs
