@@ -210,7 +210,7 @@ def import_committee_meetings(committee, session):
             try:
                 _download_evidence(meeting, evidence_viewer_url)
             except NoXMLError:
-                if acronym != 'REGS':
+                if acronym not in ('REGS', 'BILI'):
                     # REGS never has XML
                     logger.error("No XML evidence for %s", meeting)
         
