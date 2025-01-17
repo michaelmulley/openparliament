@@ -281,11 +281,13 @@ class Bill(models.Model):
             qs = qs.filter(h2_en=self.short_title_en)
         else:
             speech_headings = self.statement_set.filter(document__in=debate_ids,
-                h1_en='Government Orders').values_list('h2_en', flat=True)
+                h1_en__in=('Government Orders', "Private Members' Business")).values_list('h2_en', flat=True)
             if not speech_headings:
                 return Statement.objects.none()
             h2 = Counter(speech_headings).most_common(1)[0][0]
             qs = qs.filter(h2_en=h2)
+        if not qs.exists():
+            logger.warning("Bill %s has second reading sittings, but can't get debate statements")            
         return qs
         
     session = property(get_session)
