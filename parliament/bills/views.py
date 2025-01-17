@@ -53,8 +53,7 @@ class BillDetailView(ModelDetailView):
         bill = get_object_or_404(Bill, sessions=session_id, number=bill_number)
 
         mentions = bill.statement_set.all().order_by('-time', '-sequence').select_related('member', 'member__politician', 'member__riding', 'member__party')
-        major_speeches = bill.get_second_reading_debate().order_by('-document__session', 'document__date', 'sequence').select_related(
-            'member', 'member__politician', 'member__riding', 'member__party')
+        major_speeches = bill.get_second_reading_debate()
         meetings = bill.get_committee_meetings()
 
         tab = request.GET.get('tab', 'major-speeches')
@@ -71,6 +70,8 @@ class BillDetailView(ModelDetailView):
         if tab == 'mentions':
             page = self._render_page(request, mentions, per_page=per_page)
         elif tab == 'major-speeches':
+            major_speeches = major_speeches.order_by('-document__session', 'document__date', 'sequence').select_related(
+                'member', 'member__politician', 'member__riding', 'member__party')            
             page = self._render_page(request, major_speeches, per_page=per_page)
         else:
             page = None
