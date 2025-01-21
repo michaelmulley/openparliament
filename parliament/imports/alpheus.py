@@ -467,6 +467,8 @@ class ParseHandler(object):
             
     def handle_B(self, el, openclose):
         # Fallout from new-speaker special case in ParaText
+        if el.text == ':':
+            el.set('alpheus_skip_text', 'true')
         if not el.get('alpheus_skip_text'):
             self._add_code('<%sstrong>' % ('/' if openclose == TAG_CLOSE else ''))
         self._add_tag_text(el, openclose)
@@ -499,7 +501,7 @@ class ParseHandler(object):
         if affil.tail and affil.tail.replace(':', '').strip():
             content = affil.tail.replace(':', '').strip()
             if not content.startswith('('):
-                logger.warning("Looks like there's content in PersonSpeaking: %s" % content)
+                # logger.warning("Looks like there's content in PersonSpeaking: %s" % content)
                 self._add_text(content)
         return NO_DESCEND
         
