@@ -12,7 +12,7 @@ from django.views.decorators.vary import vary_on_headers
 from parliament.committees.models import CommitteeMeeting
 from parliament.core.api import ModelDetailView, ModelListView, APIFilters, BadRequest
 from parliament.core.utils import is_ajax
-from parliament.hansards.models import Document, Statement
+from parliament.hansards.models import Document, Statement, OldSlugMapping
 from parliament.text_analysis.models import TextAnalysis
 from parliament.text_analysis.views import TextAnalysisView
 
@@ -22,6 +22,20 @@ def _get_hansard(year, month, day):
             date=datetime.date(int(year), int(month), int(day)))
     except ValueError:
         raise Http404
+    
+def _get_statement_by_slug(document, slug, sequence_only=False):
+    try:
+        if sequence_only:
+            return Statement.objects.filter(
+                document=document, slug=slug).values_list('sequence', flat=True)[0]
+        else:
+            return Statement.objects.get(document=document, slug=slug)
+    except (Statement.DoesNotExist, IndexError):
+        try:
+            map = OldSlugMapping.objects.get(document=document, old_slug=slug)
+            return _get_statement_by_slug(document, map.new_slug, sequence_only=sequence_only)
+        except OldSlugMapping.DoesNotExist:
+            raise Http404
 class HansardView(ModelDetailView):
 
     resource_name = 'House debate'
@@ -86,22 +100,19 @@ def document_view(request, document, meeting=None, slug=None):
         .select_related('member__politician', 'member__riding', 'member__party')
     paginator = Paginator(statement_qs, per_page)
 
-    highlight_statement = None
-    try:
-        if slug:
-            if request.GET.get('page') or request.GET.get('singlepage'):
-                # Don't include slug in paginated URLs
-                return HttpResponsePermanentRedirect(
-                    document.get_absolute_url() + '?' + request.GET.urlencode())
-            if slug.isdigit():
-                highlight_statement = int(slug)
-            else:
-                highlight_statement = statement_qs.filter(slug=slug).values_list('sequence', flat=True)[0]
-            page = int(highlight_statement/per_page) + 1
-        else:
+    highlight_statement_seq = highlight_statement = None
+    if slug:
+        if request.GET.get('page') or request.GET.get('singlepage'):
+            # Don't include slug in paginated URLs
+            return HttpResponsePermanentRedirect(
+                document.get_absolute_url() + '?' + request.GET.urlencode())
+        highlight_statement_seq = _get_statement_by_slug(document, slug, sequence_only=True)
+        page = int(highlight_statement_seq/per_page) + 1
+    else:
+        try:
             page = int(request.GET.get('page', '1'))
-    except (ValueError, IndexError):
-        page = 1
+        except ValueError:
+            page = 1
 
     # If page request (9999) is out of range, deliver last page of results.
     try:
@@ -109,10 +120,11 @@ def document_view(request, document, meeting=None, slug=None):
     except (EmptyPage, InvalidPage):
         statements = paginator.page(paginator.num_pages)
     
-    if highlight_statement is not None:
+    if highlight_statement_seq is not None:
         try:
-            highlight_statement = [s for s in statements.object_list if s.sequence == highlight_statement][0]
-        except IndexError:
+            highlight_statement = next(
+                s for s in statements.object_list if s.sequence == highlight_statement_seq)
+        except StopIteration:
             raise Http404
         
     ctx = {
@@ -202,10 +214,7 @@ class DebatePermalinkView(ModelDetailView):
 
     def _get_objs(self, request, slug, year, month, day):
         doc = _get_hansard(year, month, day)
-        if slug.isdigit():
-            statement = get_object_or_404(Statement, document=doc, sequence=slug)
-        else:
-            statement = get_object_or_404(Statement, document=doc, slug=slug)
+        statement = _get_statement_by_slug(doc, slug)
         return doc, statement
 
     def get_json(self, request, **kwargs):

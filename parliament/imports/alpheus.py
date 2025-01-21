@@ -689,9 +689,9 @@ def parse_tree(tree):
     document.statements = handler.get_final_statements()
     return document
     
-def parse_string(s: str):
-    s = s.replace('<B />', '').replace('<ParaText />', '') # Some empty tags can gum up the works
-    s = s.replace('&ccedil;', '&#231;').replace('&eacute;', '&#233;') # Fix invalid entities
+def parse_bytes(s: bytes):
+    s = s.replace(b'<B />', b'').replace(b'<ParaText />', b'') # Some empty tags can gum up the works
+    s = s.replace(b'&ccedil;', b'&#231;').replace(b'&eacute;', b'&#233;') # Fix invalid entities
     return parse_tree(etree.fromstring(s))
     
 def fetch_and_parse(doc_id, lang):

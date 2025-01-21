@@ -3,6 +3,7 @@
 from collections import defaultdict, OrderedDict
 import datetime
 import os
+from pathlib import Path
 import re
 from typing import Literal
 
@@ -63,6 +64,13 @@ class Document(models.Model):
         help_text="Has the source data been downloaded?")
     skip_parsing = models.BooleanField(default=False,
         help_text="Don't try to parse this, presumably because of errors in the source.")
+    skip_redownload = models.BooleanField(default=False,
+        help_text="Don't try to redownload the source.")
+    
+    first_imported = models.DateTimeField(blank=True, null=True,
+        help_text="The first time this document was imported from XML.")
+    last_imported = models.DateTimeField(blank=True, null=True,
+        help_text="The most recent time this document was imported from XML.")
 
     public = models.BooleanField("Display on site?", default=False)
     multilingual = models.BooleanField("Content parsed in both languages?", default=False)
@@ -264,44 +272,36 @@ class Document(models.Model):
                         'url': url,
                         'wordcount': wordcount,
                     }, politician=pol, date=self.date, guid='cmte_%s' % url, variety='committee')
-
-    def get_filename(self, language):
-        assert self.source_id
+        
+    def get_xml_path(self, language: Literal['en', 'fr']) -> Path:
         assert language in ('en', 'fr')
-        return '%d-%s.xml' % (self.source_id, language)
-
-    def get_filepath(self, language):
-        filename = self.get_filename(language)
         if hasattr(settings, 'HANSARD_CACHE_DIR'):
-            return os.path.join(settings.HANSARD_CACHE_DIR, filename)
+            basepath = Path(settings.HANSARD_CACHE_DIR)
         else:
-            return os.path.join(settings.MEDIA_ROOT, 'document_cache', filename)
+            basepath = Path(settings.MEDIA_ROOT) / 'document_cache'
+        
+        if self.document_type == self.DEBATE:
+            assert self.number
+            return (basepath / 'debates' / self.session.id /
+                                f"{self.session.id}-{self.number}-{language}.xml")
+        elif self.document_type == self.EVIDENCE:
+            assert self.date
+            return (basepath / 'evidence' / str(self.date.year) / str(self.date.month) /
+                                f"{self.source_id}-{language}.xml")
 
-    def _save_file(self, path, content):
-        out = open(path, 'wb')
-        out.write(content)
-        out.close()
-
-    def get_cached_xml(self, language):
+    def get_cached_xml(self, language: Literal['en', 'fr']) -> bytes:
         if not self.downloaded:
             raise Exception("Not yet downloaded")
-        with open(self.get_filepath(language), encoding='utf8') as f:
-            return f.read()
-
-    def delete_downloaded(self):
-        for lang in ('en', 'fr'):
-            path = self.get_filepath(lang)
-            if os.path.exists(path):
-                os.unlink(path)
-        self.downloaded = False
-        self.save()
-
+        return self.get_xml_path(language).read_bytes()
+   
     def save_xml(self, source_url, xml_en: bytes, xml_fr: bytes, overwrite=False):
-        if not overwrite and any(
-                os.path.exists(p) for p in [self.get_filepath(l) for l in ['en', 'fr']]):
+        path_en = self.get_xml_path('en')
+        path_fr = self.get_xml_path('fr')
+        if not overwrite and (path_en.exists() or path_fr.exists()):
             raise Exception("XML files already exist")
-        self._save_file(self.get_filepath('en'), xml_en)
-        self._save_file(self.get_filepath('fr'), xml_fr)
+        path_en.parent.mkdir(parents=True, exist_ok=True)
+        path_en.write_bytes(xml_en)
+        path_fr.write_bytes(xml_fr)
         self.xml_source_url = source_url
         self.downloaded = True
         self.save()
@@ -565,14 +565,23 @@ class Statement(models.Model):
         return info
 
     @staticmethod
-    def set_slugs(statements):
+    def set_slugs(statements, with_timestamp=False, substitute_names=dict()):
         counter = defaultdict(int)
         for statement in statements:
             slug = slugify(statement.name_info['display_name'])[:50]
             if not slug:
-                slug = 'procedural'
-            counter[slug] += 1
-            statement.slug = slug + '-%s' % counter[slug]
+                slug = 'procedural'            
+            if slug in substitute_names:
+                slug = substitute_names[slug]
+            if with_timestamp:
+                slug += f"-{statement.time.strftime('%H%M')}"
+                counter[slug] += 1                
+                if counter[slug] > 1:
+                    slug += f"-{counter[slug]}"
+                statement.slug = slug
+            else:
+                counter[slug] += 1
+                statement.slug = slug + '-%s' % counter[slug]
 
     @property
     def committee_name(self):
@@ -599,3 +608,15 @@ class OldSequenceMapping(models.Model):
     def __str__(self):
         return "%s -> %s" % (self.sequence, self.slug)
             
+class OldSlugMapping(models.Model):
+    document = models.ForeignKey(Document, on_delete=models.CASCADE)
+    old_slug = models.SlugField(max_length=100)
+    new_slug = models.SlugField(max_length=100)
+
+    class Meta:
+        unique_together = (
+            ('document', 'old_slug')
+        )
+
+    def __str__(self):
+        return f"{self.old_slug} -> {self.new_slug}"

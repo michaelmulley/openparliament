@@ -35,7 +35,7 @@ def committee_evidence():
       .exclude(scount__gt=0).exclude(skip_parsing=True).order_by('date').iterator():
         try:
             print(document)
-            parl_document.import_document(document, interactive=False)
+            parl_document.import_document(document, allow_reimport=False)
             if document.statement_set.all().count():
                 document.save_activity()
         except Exception as e:
@@ -68,7 +68,7 @@ def hansards_parse():
         with transaction.atomic():
             try:
                 with transaction.atomic():
-                    parl_document.import_document(hansard, interactive=False)
+                    parl_document.import_document(hansard, allow_reimport=False)
             except Exception as e:
                 logger.exception("Hansard parse failure on #%s: %r" % (hansard.id, e))
                 continue

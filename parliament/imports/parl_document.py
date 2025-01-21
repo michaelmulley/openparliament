@@ -5,44 +5,46 @@ These transcripts are either House Hansards, or House committee evidence.
 Most of the heavily-lifting code has been put in a separate module
 called alpheus.
 """
-from difflib import context_diff, SequenceMatcher
+import datetime
+import difflib
 import re
 import sys
-import urllib.error, urllib.parse
 from xml.sax.saxutils import quoteattr
 
 from django.urls import reverse
 from django.db import transaction
-from django.db.models import Max
 
-from .alpheus import parse_string as alpheus_parse_string
 from lxml import etree
 import requests
 
 from parliament.bills.models import Bill, BillInSession, VoteQuestion
 from parliament.core.models import Politician, ElectedMember, Session
-from parliament.hansards.models import Statement, Document
+from parliament.hansards.models import Statement, Document, OldSlugMapping
+from .alpheus import parse_bytes as alpheus_parse_bytes
 
 import logging
 logger = logging.getLogger(__name__)
 
+class ReimportException(Exception):
+    pass
+
 @transaction.atomic
-def import_document(document, interactive=True):
+def import_document(document: Document, allow_reimport=True, prompt_on_slug_change=False,
+                    xml_en: bytes | None = None, xml_fr: bytes | None = None):
+    old_statements = None
     if document.statement_set.all().exists():
-        if not interactive:
-            return
-        sys.stderr.write("Statements already exist for %r.\nDelete them? (y/n) " % document)
-        if input().strip() != 'y':
-            return
-        document.statement_set.all().delete()
+        if not allow_reimport:
+            raise Exception("Statements already exist for %r and allow_reimport is False" % document)
+        old_statements = list(document.statement_set.all())
+        was_multilingual = document.multilingual
+    
+    if not xml_en:
+        xml_en = document.get_cached_xml('en')
+    pdoc_en = alpheus_parse_bytes(xml_en)
 
-    if not document.downloaded:
-        return False
-    xml_en = document.get_cached_xml('en')
-    pdoc_en = alpheus_parse_string(xml_en)
-
-    xml_fr = document.get_cached_xml('fr')
-    pdoc_fr = alpheus_parse_string(xml_fr)
+    if not xml_fr:
+        xml_fr = document.get_cached_xml('fr')
+    pdoc_fr = alpheus_parse_bytes(xml_fr)
     
     if document.date and document.date != pdoc_en.meta['date']:
         # Sometimes they get the date wrong
@@ -100,17 +102,9 @@ def import_document(document, interactive=True):
     if len(statements) != len(pdoc_fr.statements):
         logger.info("French and English statement counts don't match for %r" % document)
 
-    _r_paragraphs = re.compile(r'<p[^>]* data-HoCid=.+?</p>')
-    _r_paragraph_id = re.compile(r'<p[^>]* data-HoCid="(?P<id>\d+)"')
     fr_paragraphs = dict()
     fr_statements = dict()
     missing_id_count = 0
-
-    def _get_paragraph_id(p):
-        return int(_r_paragraph_id.match(p).group('id'))
-
-    def _get_paragraphs_and_ids(content):
-        return [(p, _get_paragraph_id(p)) for p in _r_paragraphs.findall(content)]
 
     for st in pdoc_fr.statements:
         if st.meta['id']:
@@ -163,7 +157,53 @@ def import_document(document, interactive=True):
                 st.who_fr = fr_data.meta.get('person_attribution', '')[:300]
                 st.who_context_fr = fr_data.meta.get('person_context', '')[:300]
 
-    Statement.set_slugs(statements)
+    if old_statements:
+        if was_multilingual and not document.multilingual:
+            raise ReimportException("Document was multilingual but now isn't")
+        
+        old_slugs = set(s.slug for s in old_statements)
+        
+        # Check if we already had, from a previous reimport, slugs in the form of joe-blow-a
+        initial_slug_substitutions = dict()
+        for s in old_slugs:
+            match = re.search(r'^(.+)(-[a-z])(-\d+)$', s)
+            if match:
+                initial_slug_substitutions.setdefault(match.group(1), match.group(1) + match.group(2))
+                if initial_slug_substitutions[match.group(1)] != match.group(1) + match.group(2):
+                    raise ReimportException(f"Processing slug {s}, found existing conflicting substition: {initial_slug_substitutions[match.group(1)]}")
+        Statement.set_slugs(statements, substitute_names=initial_slug_substitutions)
+
+        new_slugs = set(s.slug for s in statements)
+        if old_slugs != new_slugs:
+            logger.warning("Statement slugs changed for %r: %r",
+                           document, old_slugs.symmetric_difference(new_slugs))
+            new_slug_names = initial_slug_substitutions.copy()
+            changed_slug_names = set(re.sub(r'-\d+$', '', s) for s in 
+                                     _map_changed_slugs(old_statements, statements).keys())
+            for n in changed_slug_names:
+                if re.search(r'-[a-z]$', n):
+                    # joe-blow-a -> joe-blow-b
+                    # joe-blow -> joe-blow-b
+                    new_slug_names[n] = re.sub(r'-[a-z]$', lambda match: '-' + chr(ord(match.group()[-1]) + 1), n)
+                    new_slug_names[re.sub(r'-[a-z]$', '', n)] = new_slug_names[n]
+                else:
+                    # joe-blow -> joe-blow-a
+                    new_slug_names[n] = n + '-a'
+            Statement.set_slugs(statements, substitute_names=new_slug_names)
+            slugmap = _map_changed_slugs(old_statements, statements)            
+            print(slugmap)
+            if not slugmap.keys().isdisjoint(slugmap.values()):
+                raise Exception("Overlap between old and new slugs in map_changed_slugs: %r" % slugmap)            
+            if prompt_on_slug_change:
+                sys.stderr.write("Delete and reimport anyway? (y/n) ")
+                if input().strip() != 'y':
+                    raise ReimportException("Not reimporting %r because statement slugs changed" % document)
+            for old_slug, new_slug in slugmap.items():
+                OldSlugMapping(document=document, old_slug=old_slug, new_slug=new_slug).save()
+        document.statement_set.all().delete()
+    else:
+        # if not old_statements, this is much more straightforward
+        Statement.set_slugs(statements)
         
     for s in statements:
         s.save()
@@ -174,9 +214,37 @@ def import_document(document, interactive=True):
             s._related_vote.context_statement = s
             s._related_vote.save()
 
+    document.last_imported = datetime.datetime.now()
+    if not (old_statements or document.first_imported):
+        document.first_imported = document.last_imported
     document.save()
 
     return document
+
+_r_paragraphs = re.compile(r'<p[^>]* data-HoCid=.+?</p>')
+_r_paragraph_id = re.compile(r'<p[^>]* data-HoCid="(?P<id>\d+)"')
+
+def _get_paragraph_id(p: str) -> int:
+    return int(_r_paragraph_id.match(p).group('id'))
+
+def _get_paragraphs_and_ids(content: str) -> list[tuple[str, int]]:
+    return [(p, _get_paragraph_id(p)) for p in _r_paragraphs.findall(content)]
+
+def _map_changed_slugs(old_st: list[Statement], new_st: list[Statement]) -> dict[str, str]:
+    new_p_ids = dict()
+    for s in new_st:
+        for _, pid in _get_paragraphs_and_ids(s.content_en):
+            if pid:
+                new_p_ids[pid] = s
+    
+    slugmap = dict()
+    for s in old_st:
+        for _, pid in _get_paragraphs_and_ids(s.content_en):
+            if pid in new_p_ids:
+                if s.slug != new_p_ids[pid].slug:
+                    slugmap[s.slug] = new_p_ids[pid].slug
+                break
+    return slugmap
 
 def _process_related_links(content, statement):
     return re.sub(r'<a class="related_link (\w+)" ([^>]+)>(.*?)</a>',
@@ -191,7 +259,7 @@ def _process_related_link(match, statement):
         try:
             pol = Politician.objects.get_by_parl_affil_id(hocid)
         except Politician.DoesNotExist:
-            logger.warning("Could not resolve related politician #%s, %s", (hocid, text))
+            logger.warning("Could not resolve related politician #%s, %s", hocid, text)
             return text
         url = pol.get_absolute_url()
         title = pol.name
@@ -285,13 +353,13 @@ def fetch_debate_for_sitting(session, sitting_number, import_without_paragraph_i
             logger.error("Response %d from %s", resp.status_code, url_en)
         raise NoDocumentFound
     print(url_en)
-    xml_en = resp.content
+    xml_en = resp.content.replace(b'\r\n', b'\n')
 
     url_fr = HANSARD_URL.format(parliamentnum=session.parliamentnum,
         sessnum=session.sessnum, sitting=sitting_number, lang='F')
     resp = requests.get(url_fr)
     resp.raise_for_status()
-    xml_fr = resp.content
+    xml_fr = resp.content.replace(b'\r\n', b'\n')
 
     doc_en = etree.fromstring(xml_en)
     doc_fr = etree.fromstring(xml_fr)
@@ -317,37 +385,77 @@ def fetch_debate_for_sitting(session, sitting_number, import_without_paragraph_i
         doc.save_xml(url_en, xml_en, xml_fr)
         logger.info("Saved sitting %s", doc.number)
 
-def refresh_xml(document):
-    """
-    Download new XML from Parliament, reimport.
-    """
-    url_en = document.get_xml_source_url('en')
-    url_fr = document.get_xml_source_url('fr')
+def _remove_whitespace(text: str) -> str:
+    return re.sub(r'\s+', '', text)
 
-    resp_en = requests.get(url_en)
-    resp_en.raise_for_status()
-    xml_en = resp_en.content
+def format_xml(xml_string: bytes) -> bytes:
+    # Pretty-prints an XML bytestring
+    return etree.tostring(
+        etree.fromstring(xml_string, etree.XMLParser(remove_blank_text=True)),
+        pretty_print=True, encoding='utf8', xml_declaration=True)     
 
-    resp_fr = requests.get(url_fr)
-    resp_fr.raise_for_status()
-    xml_fr = resp_fr.content
-
-    document.save_xml(url_en, xml_en, xml_fr, overwrite=True)
-    import_document(document)
-
-def has_xml_changed(document, print_diff=True):
+def check_for_xml_updates(document: Document, print_diff=True,
+                        reimport=False, prompt_on_slug_change=False, prompt_to_import=False):
     assert document.downloaded
     result = {}
+    xml_bytes = {}
+    xml_urls = {}
 
     for lang in ('en', 'fr'):
-        url = document.get_xml_url(lang)
+        url = xml_urls[lang] = document.get_xml_url(lang)
         resp = requests.get(url)
         resp.raise_for_status()
-        new_xml = resp.content.decode('utf8').splitlines()
-        old_xml = document.get_cached_xml(lang).splitlines()
-        changed = new_xml != old_xml
+        xml_bytes[lang] = resp.content.replace(b'\r\n', b'\n')
+        new_xml = format_xml(xml_bytes[lang]).decode('utf8')
+        old_xml = format_xml(document.get_cached_xml(lang)).decode('utf8')
+        # Check if a document has changed after normalizing XML and removing all whitespace.
+        # This does risk missing changes to e.g. typos caused by missing whitespace,
+        # but it avoids flagging many irrelevant whitespace changes.
+        changed = _remove_whitespace(new_xml) != _remove_whitespace(old_xml)
         result[lang] = changed
         if changed and print_diff:
-            diff = context_diff(old_xml, new_xml, n=0)
+            print(document)
+            diff = difflib.unified_diff(
+                [l.strip() for l in old_xml.splitlines()], 
+                [l.strip() for l in new_xml.splitlines()], n=0, lineterm='')
             print("\n".join(diff))
+
+    if reimport and document.skip_redownload:
+        print("Document is marked to skip redownload, skipping reimport")
+        return result
+
+    if prompt_to_import and True in result.values():
+        print("Import this document? (y/n)")
+        if input().strip() != 'y':
+            return result
+        reimport = True
+
+    if reimport and True in result.values():
+        import_document(document, allow_reimport=True, prompt_on_slug_change=prompt_on_slug_change,
+                        xml_en=xml_bytes['en'], xml_fr=xml_bytes['fr'])
+        document.save_xml(xml_urls['en'], xml_bytes['en'], xml_bytes['fr'], overwrite=True)
+        print("Reimported %r" % document)
     return result
+
+def force_redownload(document: Document):
+    def _get(lang):
+        resp = requests.get(document.get_xml_url(lang))
+        resp.raise_for_status()
+        return resp.content.replace(b'\r\n', b'\n')
+    xml_en, xml_fr = _get('en'), _get('fr')
+    document.save_xml(document.get_xml_url('en'), xml_en, xml_fr, overwrite=True)
+    return document.get_xml_path('en')
+
+def reimport_documents(documents: list[Document], reimport=True, prompt_on_slug_change=False,
+                       prompt_to_import=False, print_diff=False):
+    failures = []
+    for doc in documents:
+        if doc.skip_redownload:
+            continue
+        try:
+            check_for_xml_updates(doc, reimport=reimport, print_diff=print_diff,
+                                  prompt_on_slug_change=prompt_on_slug_change, prompt_to_import=prompt_to_import)
+        except Exception as e:
+            logger.error("Error reimporting %r: %r", doc, e)
+            failures.append(doc)
+    return failures

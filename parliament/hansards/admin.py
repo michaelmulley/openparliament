@@ -11,6 +11,10 @@ class StatementOptions(admin.ModelAdmin):
     #list_filter = ('time', 'procedural')
     raw_id_fields = ('document', 'member', 'politician', 'bills', 'mentioned_politicians')
     #ordering = ('-time',)
+
+class OldSlugMappingOptions(admin.ModelAdmin):
+    list_display = ('document', 'old_slug', 'new_slug')    
     
 admin.site.register(Document, DocumentOptions)
 admin.site.register(Statement, StatementOptions)
+admin.site.register(OldSlugMapping, OldSlugMappingOptions)
