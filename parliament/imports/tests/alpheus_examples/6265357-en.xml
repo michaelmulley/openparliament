@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+
+============================================================================================
+
+House of Commons - Canada
+- - - - - - - - - - - - - - - - - - - - - - - - -
+
+The data contained in this document is provided in a standard XML format. Once imported into
+a spreadsheet or database tool of your choice, the data can be filtered and sorted to create
+customized reports.
+
+Please refer to the instructions within the tool of your choice to find out how to import
+external data.
+
+For information about the disclaimer of liability:
+http://webinfo.parl.gc.ca/MembersOfParliament/FAQ.aspx?Language=E#Liability
+
+============================================================================================
+        -->
+<Hansard xml:lang="EN" id="8106385">
+  <StartPageNumber>1</StartPageNumber>
+  <DocumentTitle>
+    <DocumentName>EVIDENCE</DocumentName>
+  </DocumentTitle>
+  <ExtractedInformation>
+    <ExtractedItem Name="InstitutionDebate">Standing Committee on Veterans Affairs</ExtractedItem>
+    <ExtractedItem Name="Number">NUMBER 001</ExtractedItem>
+    <ExtractedItem Name="Session">2nd SESSION</ExtractedItem>
+    <ExtractedItem Name="Parliament">41st PARLIAMENT</ExtractedItem>
+    <ExtractedItem Name="Date">Thursday, October 24, 2013</ExtractedItem>
+    <ExtractedItem Name="DateOtherLang">Le jeudi 24 octobre 2013</ExtractedItem>
+    <ExtractedItem Name="Institution">Standing Committee on Veterans Affairs</ExtractedItem>
+    <ExtractedItem Name="Country">CANADA</ExtractedItem>
+    <ExtractedItem Name="RecordingNote">[Recorded by Electronic Apparatus]</ExtractedItem>
+    <ExtractedItem Name="HeaderTitle">EVIDENCE</ExtractedItem>
+    <ExtractedItem Name="HeaderDate">October 24, 2013</ExtractedItem>
+    <ExtractedItem Name="MetaDocumentCategory">Committee</ExtractedItem>
+    <ExtractedItem Name="MetaTitle">Edited Evidence * Table of Contents * Number 001 (Official Version)</ExtractedItem>
+    <ExtractedItem Name="MetaTitleEn">Official Report * Table of Contents * Number 001 (Official Version)</ExtractedItem>
+    <ExtractedItem Name="MetaTitleFr">Témoignages * Table des matières * Numéro 001 (Version officielle)</ExtractedItem>
+    <ExtractedItem Name="MetaNumberNumber">01</ExtractedItem>
+    <ExtractedItem Name="MetaDateNumDay">24</ExtractedItem>
+    <ExtractedItem Name="MetaDateNumMonth">10</ExtractedItem>
+    <ExtractedItem Name="MetaDateNumYear">2013</ExtractedItem>
+    <ExtractedItem Name="MetaCreationTime">2013/10/24 11:35:00</ExtractedItem>
+    <ExtractedItem Name="MetaInstitution">House of Commons</ExtractedItem>
+    <ExtractedItem Name="InstitutionDebateFr">Comité permanent des anciens combattants</ExtractedItem>
+    <ExtractedItem Name="InstitutionDebateEn">Standing Committee on Veterans Affairs</ExtractedItem>
+    <ExtractedItem Name="Acronyme">ACVA</ExtractedItem>
+    <ExtractedItem Name="ParliamentNumber">41</ExtractedItem>
+    <ExtractedItem Name="SessionNumber">2</ExtractedItem>
+    <ExtractedItem Name="InCameraNote" />
+  </ExtractedInformation>
+  <HansardBody>
+    <OrderOfBusiness>
+      <CatchLine />
+      <SubjectOfBusiness>
+        <SubjectOfBusinessContent>
+          <Timestamp Hr="11" Mn="35">(1135)</Timestamp>
+          <FloorLanguage language="EN">[<I>English</I>]</FloorLanguage>
+          <Intervention Type="Interjection" ToC="No" ToCText="" id="8106388">
+            <PersonSpeaking>
+              <Affiliation DbId="194936" Type="27">The Clerk of the Committee (Mr. Georges Etoka)</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="3450425">Good morning, honourable members.</ParaText>
+              <ParaText id="3450426"> I see a quorum.</ParaText>
+              <ParaText id="3450427">I'll mention for members that the clerk of the committee can only receive motions for the election of the chair. The clerk cannot receive other types of motions and cannot entertain points of order nor participate in debate.</ParaText>
+              <ParaText id="3450428">We can now proceed to the election of the chair. Pursuant to Standing Order 106(2), the chair must be a member of the government party.</ParaText>
+              <ParaText id="3450429">I'm ready to receive motions for the chair.</ParaText>
+              <ParaText id="3450430">Mr. Stoffer.</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" ToCText="" id="8106391">
+            <PersonSpeaking>
+              <Affiliation DbId="197309" Type="47">Mr. Peter Stoffer (Sackville—Eastern Shore, NDP)</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="3450431">I'd like to nominate Monsieur Royal Galipeau, please.</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" ToCText="" id="8106392">
+            <PersonSpeaking>
+              <Affiliation DbId="194936" Type="27">The Clerk</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="3450432">Are there any other motions?</ParaText>
+              <ParaText id="3450433">Is it the pleasure of the committee to adopt the motion?</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" ToCText="" id="8106393">
+            <PersonSpeaking>
+              <Affiliation DbId="197187" Type="47">Hon. Jim Karygiannis (Scarborough—Agincourt, Lib.)</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="3450434">I'd like to nominate Laurie Hawn, please.</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" ToCText="" id="8106394">
+            <PersonSpeaking>
+              <Affiliation DbId="194936" Type="27">The Clerk</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="3450435">I have two motions, with Mr. Stoffer nominating Mr. Galipeau and Mr. Karygiannis nominating Mr. Hawn.</ParaText>
+              <ParaText id="3450436">We're going to start with the first motion.</ParaText>
+              <ParaText id="3450437">On Monsieur Galipeau for chair, who is in favour?</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" ToCText="" id="8106399">
+            <PersonSpeaking>
+              <Affiliation DbId="197309" Type="47">Mr. Peter Stoffer</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="3450438">Don't you ask them first if they want to accept the nomination if there are two?</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" ToCText="" id="8106401">
+            <PersonSpeaking>
+              <Affiliation DbId="194936" Type="27">The Clerk</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="3450439">No.</ParaText>
+              <ParaText id="3450440">Who's in favour of Mr. Galipeau as the chair? Opposed?</ParaText>
+              <ParaText id="3450441">(Motion agreed to)</ParaText>
+              <ParaText id="3450442">
+                <B>The Clerk:</B> I declare Monsieur Galipeau elected.</ParaText>
+              <ParaText id="3450443">
+                <B>Some hon. members:</B> Hear, hear!</ParaText>
+              <ParaText id="3450444">
+                <B>The Clerk:</B> Before inviting Mr. Galipeau to take the chair, and if the committee wishes, we will now proceed to the election of the vice-chairs.</ParaText>
+              <ParaText id="3450445">Mr. Gill.</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" ToCText="" id="8106404">
+            <PersonSpeaking>
+              <Affiliation DbId="195623" Type="47">Mr. Parm Gill (Brampton—Springdale, CPC)</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="3450446">Can I nominate Mr. Stoffer for the vice-chair?</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" id="8106405" ToCText="">
+            <PersonSpeaking>
+              <Affiliation DbId="194936" Type="27">The Clerk</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="3450447">It has been moved by Mr. Gill that Mr. Peter Stoffer be elected first vice-chair of the committee.</ParaText>
+              <ParaText id="3450448">Is it the pleasure of the committee to adopt the motion? All in favour? Against?</ParaText>
+              <ParaText id="3450449">(Motion agreed to)</ParaText>
+              <ParaText id="3450450">
+                <B>The Clerk:</B> I declare the motion carried and Mr. Stoffer elected first vice-chair of the committee. </ParaText>
+              <ParaText id="3450451">I'll now proceed to the election of the second vice-chair of the committee.</ParaText>
+              <ParaText id="3450452">Mr. Galipeau.</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" id="8106408">
+            <PersonSpeaking>
+              <Affiliation DbId="170487" Type="2">Mr. Royal Galipeau (Ottawa—Orléans, CPC)</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="3450453">I propose the name of the Honourable Jim Karygiannis.</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" ToCText="" id="8106409">
+            <PersonSpeaking>
+              <Affiliation DbId="194936" Type="27">The Clerk</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="3450454">It has been proposed by Mr. Galipeau that Mr. Karygiannis be elected second vice-chair of the committee.</ParaText>
+              <ParaText id="3450455">Is it the pleasure of the committee to adopt the motion?</ParaText>
+              <ParaText id="3450456">(Motion agreed to)</ParaText>
+              <ParaText id="3450457">
+                <B>The Clerk:</B> I declare the motion carried and Mr. Karygiannis elected second vice-chair of the committee.</ParaText>
+              <ParaText id="3450458">
+                <B>Some hon. members:</B> Hear, hear!</ParaText>
+              <ParaText id="3450459">
+                <B>The Clerk:</B> I'll now invite Mr. Galipeau to take the chair.</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" id="8106414" ToCText="">
+            <PersonSpeaking>
+              <Affiliation DbId="195624" Type="47">The Chair (Mr. Royal Galipeau (Ottawa—Orléans, CPC))</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="3450460">I'd like to thank you, and I'd like to ask you to humour me for a minute. I haven't prepared remarks, but I have some remarks.</ParaText>
+              <ParaText id="3450461">We all know about false pride, but we seldom hear about false humility. Let me tell you that it is with a sense of real humility that I accept the confidence you gave me today.</ParaText>
+              <ParaText id="3450462">I thank you very much, Mr. Stoffer and the rest of the members of this committee.</ParaText>
+              <ParaText id="3450463"> I'm fully aware that I sit here at my first meeting of this committee and that there are a lot of other people here who have more merit than I do, both at this committee and in the House. I will take this responsibility very seriously. There isn't a day that goes by when I don't think that even the reason for our sitting here in this House comes more from the merits of the veterans who fought for our democracy, human rights and rule of law than we did.... The democracy that we defend was earned before it was earned by us—it was earned by veterans—and I think of it every day. It's not because I'm sitting here now that I'll stop thinking about it.</ParaText>
+              <ParaText id="3450464">Thank you very, very much. I hope to work very well with you in working hard.</ParaText>
+              <ParaText id="3450465">I understand that next Tuesday we're going to deal with the regular motions, the routine motions, and that with next Thursday being on a Friday schedule, we will not meet.</ParaText>
+              <ParaText id="3450466">That's all I have to say. I thank you again.</ParaText>
+              <ParaText id="3450467">Merci beaucoup.</ParaText>
+              <ParaText id="3450468">
+                <B>Some hon. members:</B> Hear, hear!</ParaText>
+              <ParaText id="3450469">
+                <B>The Chair:</B> Is there a motion to adjourn?</ParaText>
+            </Content>
+          </Intervention>
+          <Timestamp Hr="11" Mn="40">(1140)</Timestamp>
+          <Intervention Type="Interjection" ToC="No" EventId="8106429" id="8106429" ToCText="">
+            <PersonSpeaking>
+              <Affiliation DbId="197309" Type="47">Mr. Peter Stoffer</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="3450470">One thing this committee does, which I don't know if other committees do but which but we started in those six, was that when a previous minister or parliamentary secretary or a critic from a party moves on to another area, this committee always sends a letter to them thanking them for their service to the veterans. I think the committee may agree that we send a letter to Mr. Blaney, to Ms. Adams, and Mr. Casey thanking them for their service to the veteran community while they were on the committee. We've always done that in the past.</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" id="8106437">
+            <PersonSpeaking>
+              <Affiliation DbId="198584" Type="35">The Chair</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="3450471">And the last Chair...?</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" ToCText="" id="8106438">
+            <PersonSpeaking>
+              <Affiliation DbId="197309" Type="47">Mr. Peter Stoffer</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="3450472">Yes. The Chair would write it.</ParaText>
+              <ParaText id="3450473">Yes, and to Mr. Greg Kerr as well. Thank you.</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" ToCText="" id="8106439">
+            <PersonSpeaking>
+              <Affiliation DbId="198584" Type="35">The Chair </Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="3450474">I think that is a very good habit of good manners, and it also sets the tone for all the good manners that will continue at this table.</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" ToCText="" id="8106440">
+            <PersonSpeaking>
+              <Affiliation DbId="197309" Type="47">Mr. Peter Stoffer</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="3450475">And that usually comes from you on behalf of the committee, just thanking them.</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" ToCText="" id="8106441">
+            <PersonSpeaking>
+              <Affiliation DbId="198584" Type="35">The Chair </Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="3450476">Thank you very much, Mr. Stoffer.</ParaText>
+              <ParaText id="3450477">Go ahead Mr. Karygiannis.</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" ToCText="" id="8106442">
+            <PersonSpeaking>
+              <Affiliation DbId="197187" Type="47">Hon. Jim Karygiannis</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="3450478">Thank you and congratulations, Chair.</ParaText>
+              <ParaText id="3450479">I certainly would like to echo what Mr. Stoffer said that we send letters to the people who served on our committee. I want to congratulate you on being the Chair.</ParaText>
+              <ParaText id="3450480">If I may, and you can certainly shut me up if you want, but we do have some vets in the room and some with service animals too, and I want us to recognize that they are here with us with their service dogs and that they helped make what this country's all about. I want to thank them for their service to our country and to having this called a democracy that we have all strived for. I want to thank them for coming. There are four vets in the room. There could be some more. I want to certainly point out the vets that have their service dogs with them.</ParaText>
+              <ParaText id="3450481">
+                <B>Some hon. members:</B> Hear, hear!</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" ToCText="" id="8106449">
+            <PersonSpeaking>
+              <Affiliation DbId="195624" Type="47">The Chair </Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="3450482">Is that it?</ParaText>
+              <ParaText id="3450483">See you on Tuesday.</ParaText>
+              <ParaText id="3450484">The meeting is adjourned.</ParaText>
+            </Content>
+          </Intervention>
+        </SubjectOfBusinessContent>
+      </SubjectOfBusiness>
+    </OrderOfBusiness>
+  </HansardBody>
+</Hansard>
