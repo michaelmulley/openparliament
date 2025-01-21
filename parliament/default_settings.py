@@ -89,6 +89,10 @@ SESSION_COOKIE_AGE = 60*60*24*60  # 60 days
 SESSION_COOKIE_SECURE = True
 
 PARLIAMENT_API_HOST = 'api.openparliament.ca'
+PARLIAMENT_ROBOTS_TXT = """
+User-agent: *
+Disallow: /search
+"""
 
 # These looser-than-the-default policies are required for
 # Google popup signin to work (as of spring 2024)

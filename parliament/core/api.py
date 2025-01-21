@@ -313,9 +313,10 @@ class ModelDetailView(APIView):
 
 
 def no_robots(request):
-    if request.get_host().lower().startswith(settings.PARLIAMENT_API_HOST) or getattr(settings, 'PARLIAMENT_NO_ROBOTS', False):
-        return HttpResponse('User-agent: googlecivicsapi\nDisallow:\n\nUser-agent: *\nDisallow: /\n', content_type='text/plain')
-    return HttpResponse('', content_type='text/plain')
+    host = request.get_host().lower()
+    if host.startswith('api.') or host.startswith('op.') or getattr(settings, 'PARLIAMENT_NO_ROBOTS', False):
+        return HttpResponse('User-agent: *\nDisallow: /\n', content_type='text/plain')
+    return HttpResponse(settings.PARLIAMENT_ROBOTS_TXT, content_type='text/plain')
 
 def docs(request):
     return render(request, 'api/doc.html', {'title': 'API'})
