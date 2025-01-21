@@ -1,20 +1,19 @@
-#coding: utf-8
+# Parses XML transcript, of Hansards and committee evidence,
+# from ourcommons.ca. Produces either an HTML file or a bunch of objects,
+# containing mostly HTML, used by parl_document.py.
 
 from html import escape as stdlib_escape
 import datetime
 from functools import wraps
 import re
-import sys
 from xml.sax.saxutils import quoteattr
 
 from lxml import etree
-import lxml.html
 
 import logging
 logger = logging.getLogger(__name__)
-logger.addHandler(logging.StreamHandler())
 
-__all__ = ['parse_string', 'fetch_and_parse']
+__all__ = ['parse_bytes']
 
 def _n2s(o):
     return o if o is not None else ''
@@ -111,22 +110,21 @@ def _strip_person_name(n):
 class AlpheusError(Exception):
     pass
         
-class Document(object):
+class AlpheusDocument(object):
     
     BASE_HTML = """<!DOCTYPE html>
     <html lang="%(lang)s"><head>
     <meta charset="utf-8">
     <title>%(title)s</title>
-    <link rel="stylesheet" type="text/css" href="http://rhymeswithcycle.github.com/alpheus/alpheus.css">
+    <link rel="stylesheet" type="text/css" href="https://michaelmulley.github.io/alpheus/alpheus.css">
     </head>
     <body><h1>%(title)s</h1>
     <table>%(metadata_rows)s</table>
     %(statements)s
-    <script type="text/javascript" src="http://rhymeswithcycle.github.com/alpheus/alpheus.js"></script>
     </body></html>
     """
     
-    def as_html(self):
+    def as_html(self) -> str:
         if self.meta['document_type'].lower() == 'committee':
             if self.meta['language'].lower() == 'en':
                 title = self.meta['committee_name_en']
@@ -149,7 +147,7 @@ class Document(object):
             'title': title,
             'lang': self.meta['language'],
             'metadata_rows': '\n'.join(metadata_rows),
-            'statements': '\n'.join((s.as_html() for s in self.statements))
+            'statements': '\n'.join((s.as_html().replace('</p>', '</p>\n\t') for s in self.statements))
         }
         return html
         
@@ -643,7 +641,7 @@ TAG_OPEN = 1
 TAG_CLOSE = 2
             
 def parse_tree(tree):
-    document = Document()
+    document = AlpheusDocument()
     
     # Start by getting metadata
     def _get_meta(key):
@@ -689,67 +687,7 @@ def parse_tree(tree):
     document.statements = handler.get_final_statements()
     return document
     
-def parse_bytes(s: bytes):
+def parse_bytes(s: bytes) -> AlpheusDocument:
     s = s.replace(b'<B />', b'').replace(b'<ParaText />', b'') # Some empty tags can gum up the works
     s = s.replace(b'&ccedil;', b'&#231;').replace(b'&eacute;', b'&#233;') # Fix invalid entities
     return parse_tree(etree.fromstring(s))
-    
-def fetch_and_parse(doc_id, lang):
-    import urllib.request, urllib.error, urllib.parse
-    if doc_id == 'hansard':
-        url = 'http://parl.gc.ca/HousePublications/Publication.aspx?Pub=%s&Language=%s&Mode=1&xml=true' % (
-            doc_id, lang[0].upper())
-    else:
-        url = 'http://www.parl.gc.ca/HousePublications/Publication.aspx?DocId=%s&Language=%s&Mode=1&xml=true' % (
-            doc_id, lang[0].upper())
-    resp = urllib.request.urlopen(url)
-    doc = parse_file(resp)
-    try:
-        doc.meta['HoCid'] = int(doc_id)
-    except ValueError:
-        pass
-    doc.meta['xml_url'] = url
-    doc.meta['html_url'] = url.replace('&xml=true', '')
-    return doc
-                
-def main():
-    import optparse
-    optparser = optparse.OptionParser(description="Transforms Hansard XML from the Canadian House of Commons into "
-        "an easy-to-process HTML format. If no options are specified, reads XML from stdin.")
-    optparser.add_option("-f", "--file", dest="filename",
-        help="Process the XML file at FILE")
-    optparser.add_option("-i", "--docid", dest="docid",
-        help="Document ID (e.g. 5069607) on parl.gc.ca; it'll be fetched and processed", metavar="ID")
-    optparser.add_option("-l", "--language", dest="language", metavar="[E,F]", default="E",
-        help="Language of the document to download. Only necessary if alpheus is downloading from parl.gc.ca.")
-    
-    group = optparse.OptionGroup(optparser, "Debugging Options")
-    group.add_option("--print-names", dest="print_names", action="store_true",
-        help="Instead of outputting HTML, print a list of names of people speaking.")
-    group.add_option("--pdb", dest="pdb", action="store_true",
-        help="Drop into the Python debugger on exception")
-    optparser.add_option_group(group)
-    
-    (options, args) = optparser.parse_args()
-    try:
-        if options.filename:
-            document = parse_file(open(options.filename))
-        elif options.docid:
-            document = fetch_and_parse(options.docid, options.language[0].upper())
-        else:
-            document = parse_file(sys.stdin)
-    except Exception as e:
-        if options.pdb:
-            import pdb; pdb.post_mortem()
-        else:
-            raise
-    #sys.stderr.write("Parsed %d statements\n" % len(document.statements))
-    if options.print_names:
-        for s in document.statements:
-            print(s.meta.get('person_attribution', '').encode('utf8'))
-    else:
-        html = document.as_html()
-        print(html.encode('utf8'))
-    
-if __name__ == '__main__':
-    main()
