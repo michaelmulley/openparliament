@@ -60,15 +60,18 @@ $(function () {
 </div>
 {% endif %}
 
-{% with bill.get_summary as bill_summary %}{% if bill_summary %}
+{% with bill.get_summary as bill_summary %}{% with bill.get_library_summary_url as library_summary_url %}{% if bill_summary or library_summary_url %}
 <div class="row">
   <div class="context-col">
     <h2>Summary</h2>
-    <p class="quiet">This is from the published bill. The <a href="{{ bill.legisinfo_url }}">Library of Parliament</a> often publishes better independent summaries.</p>
+    {% if bill_summary %}<p class="quiet">This is from the published bill. {% if library_summary_url %}The Library of Parliament has also written a full <a href="{{ library_summary_url }}">legislative summary</a> of the bill.{% endif %}</p>{% endif %}
   </div>
-  <div class="main-col"><div class="bill_summary">{{ bill_summary }}</div></div>
+  <div class="main-col">
+    {% if bill_summary %}<div class="bill_summary">{{ bill_summary }}</div>
+    {% elif library_summary_url %}<p>The Library of Parliament has written a full <a href="{{ library_summary_url }}">legislative summary</a> of the bill.</p>{% endif %}
+  </div>
 </div>
-{% endif %}{% endwith %}
+{% endif %}{% endwith %}{% endwith %}
 
 {% if bill.name %}
 <div class="row">

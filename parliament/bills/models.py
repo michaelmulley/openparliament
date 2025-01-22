@@ -192,6 +192,12 @@ class Bill(models.Model):
             return self.get_text_object().summary_html
         except BillText.DoesNotExist:
             return ''
+        
+    def get_library_summary_url(self, lang=settings.LANGUAGE_CODE) -> str | None:
+        summary_session = (self.billinsession_set.filter(library_summary_available=True)
+                           .order_by('-introduced').values_list('session', flat=True).first())
+        if summary_session:
+            return f"https://loppublicservices.parl.ca/PublicWebsiteProxy/Publication/GoToLS?billNumber={self.number}&lang={lang}_CA&parlSession={summary_session.replace('-', '')}"
 
     @property
     def latest_date(self):
@@ -364,6 +370,7 @@ class BillInSession(models.Model):
     sponsor_member = models.ForeignKey(ElectedMember, blank=True, null=True, on_delete=models.CASCADE)
 
     billstages_json = models.TextField(blank=True, null=True)
+    library_summary_available = models.BooleanField(default=False)
 
     objects = BillInSessionManager()
 

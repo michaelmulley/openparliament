@@ -12,7 +12,7 @@ class BillOptions(admin.ModelAdmin):
 class BillInSessionOptions(admin.ModelAdmin):
     list_display = ["session__id", 'bill__number', "bill__name_en"]
     search_fields = ['bill__number']
-    list_filter = ['session']
+    list_filter = ['session', 'library_summary_available']
 
 class BillTextOptions(admin.ModelAdmin):
     list_display = ['bill', 'docid', 'created']

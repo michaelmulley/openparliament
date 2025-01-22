@@ -222,6 +222,7 @@ def _import_bill(bd: BillData, session: Session,
         pass
 
     _update(bis, 'legisinfo_id', bd['Id'])
+    _update(bis, 'library_summary_available', bd.get('IsFullLegislativeSummaryAvailable'))
 
     billstages_json = json.dumps(bd.get('BillStages'))
     _update(bis, 'billstages_json', billstages_json)
