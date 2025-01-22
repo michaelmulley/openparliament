@@ -33,9 +33,9 @@ class Command(BaseCommand):
             IndexingTask.objects.filter(id__in=[t.id for t in update_tasks]).delete()
 
         if delete_tasks:
-            for dt in delete_tasks:
-                print("Deleting %s" % dt.identifier)
-                solr.delete(id=dt.identifier, commit=False)
+            delete_ids = [dt.identifier for dt in delete_tasks]
+            # print(f"Deleting {len(delete_ids)} items from Solr")
+            solr.delete(id=delete_ids, commit=False)
             solr.commit()
 
             IndexingTask.objects.filter(id__in=[t.id for t in delete_tasks]).delete()
