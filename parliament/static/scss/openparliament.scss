@@ -1,4 +1,17 @@
 @charset 'utf-8';
+
+// Declare some variables to prevent warnings;
+// can likely be removed if/when we upgrade Foundation
+$primary-color: null;
+$secondary-color: null;
+$success-color: null;
+$warning-color: null;
+$alert-color: null;
+$-zf-size: null;
+$-zf-bp-value: null;
+$-normalize-exclude: null;
+$-normalize-include: null;
+
 @import 'foundation-settings';
 @import 'bower_components/foundation-sites/scss/foundation';
 
