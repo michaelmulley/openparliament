@@ -87,12 +87,15 @@
 
   // Long statement truncation
   .text-col {
-    max-height: $paragraph_lineheight * 15rem;
+    max-height: $paragraph_lineheight * 25rem;
     position: relative;
     overflow: hidden;
   }
   .no-js & .text-col, .disable_more_links & .text-col, .text-col.displayall, &.highlighted .text-col {
     max-height: none;
+  }
+  .text-col.displayall .morelink {
+    display: none;
   }
   .text-col.truncated:before {
     // fade out truncated statements

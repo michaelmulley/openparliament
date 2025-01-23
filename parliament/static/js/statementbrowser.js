@@ -11,25 +11,16 @@
       });
   };
 
-  var TRANSLATE_PREFERENCE = 'ERROR';
-  try {
-    if (window.localStorage.getItem('op_translate') == 'NEVER') {
-      TRANSLATE_PREFERENCE = 'NEVER';
+  // Reveal all truncated statements when Ctrl+F is pressed, so that they can be searched
+  // ideally this'd cover other ways of opening the search box, or mobile,
+  // but I don't know how to do that
+  document.addEventListener('keydown', function (event) {
+    if ((event.ctrlKey || event.metaKey) && event.key === 'f') {
+        $('.statement .text-col.truncated').each(function() {
+          $(this).addClass('displayall').removeClass('truncated');
+        });
     }
-    else {
-      TRANSLATE_PREFERENCE = 'ALWAYS';
-    }
-  }
-  catch (err) {}
-  var saveTranslatePreference = function(mode) {
-    try {
-      window.localStorage.setItem('op_translate', mode);
-      TRANSLATE_PREFERENCE = mode;
-    }
-    catch (err) {
-      TRANSLATE_PREFERENCE = 'ERROR';
-    }
-  }
+  });
 
   $(document).bind('contentLoad', function() {
     $('.statement_browser.statement').each(function() { displayLanguageStatus(this); });
@@ -51,6 +42,25 @@
 
 
   /* LANGUAGE CONTROL */
+  var TRANSLATE_PREFERENCE = 'ERROR';
+  try {
+    if (window.localStorage.getItem('op_translate') == 'NEVER') {
+      TRANSLATE_PREFERENCE = 'NEVER';
+    }
+    else {
+      TRANSLATE_PREFERENCE = 'ALWAYS';
+    }
+  }
+  catch (err) {}
+  var saveTranslatePreference = function(mode) {
+    try {
+      window.localStorage.setItem('op_translate', mode);
+      TRANSLATE_PREFERENCE = mode;
+    }
+    catch (err) {
+      TRANSLATE_PREFERENCE = 'ERROR';
+    }
+  }
   var LANG_STATUSES = {
     PARTIALLY_TRANSLATED: 'Partially translated',
     FLOOR: 'As spoken',
