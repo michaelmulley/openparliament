@@ -434,15 +434,20 @@ class Statement(models.Model):
         return ''
 
     def text_html(self, language=settings.LANGUAGE_CODE):
-        return mark_safe(getattr(self, 'content_' + language))
+        html = getattr(self, 'content_' + language)
+        html = re.sub(r'data-HoCid="([1-9][0-9]+)"', r'id="\1"', html)
+        return mark_safe(html)
 
-    def text_plain(self, language=settings.LANGUAGE_CODE):
-        return self.html_to_text(getattr(self, 'content_' + language))
+    def text_plain(self, language=settings.LANGUAGE_CODE, include_paragraph_urls=False):
+        html = getattr(self, 'content_' + language)
+        if include_paragraph_urls:
+            html = re.sub(r'<p [^>]*id="([1-9][^"]+)"[^>]*>', rf'<p>[{self.urlcache}#\1] ', html)
+        return self.html_to_text(html)
 
     @staticmethod
-    def html_to_text(text):
+    def html_to_text(html):
         return strip_tags(
-            text
+            html
             .replace('\n', '')
             .replace('<br>', '\n')
             .replace('</p>', '\n\n')

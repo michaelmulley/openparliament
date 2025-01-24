@@ -2,10 +2,12 @@
 {% if highlight_statement or highlight_statement == 0 %}
 	<script type="text/javascript">
 		$(function () {
-			setTimeout(
-				function() { $('html, body').animate({scrollTop:$('#hl').offset().top - 15}); },
-				5
-			);
+			if (!window.location.hash) {
+				setTimeout(
+					function() { $('html, body').animate({scrollTop:$('#hl').offset().top - 15}); },
+					5
+				);
+			}
 		});
 	</script>
 {% endif %}

@@ -245,8 +245,8 @@ class Bill(models.Model):
                     session=session, number__in=numbers)
         return CommitteeMeeting.objects.none()
     
-    def get_debate_at_stage(self, stage: Literal[1,2,3,'report']) -> models.QuerySet[Statement]:
-        return Statement.objects.filter(bill_debated=self, bill_debate_stage=str(stage)).order_by(
+    def get_debate_at_stage(self, stage: Literal['1','2','3','report']) -> models.QuerySet[Statement]:
+        return Statement.objects.filter(bill_debated=self, bill_debate_stage=stage).order_by(
             '-document__session', 'document__date', 'sequence')
 
     @property

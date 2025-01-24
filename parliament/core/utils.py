@@ -142,3 +142,9 @@ class ListingCompressorFinder(staticfiles.finders.BaseStorageFinder):
 def is_ajax(request):
     # Duplicates Django's removed request.is_ajax() function
     return 'XMLHttpRequest' in request.headers.get('X-Requested_With', '')
+
+def get_client_ip(request) -> str:
+    ip = request.META['REMOTE_ADDR']
+    if ip in ('127.0.0.1', '::1') and 'HTTP_X_REAL_IP' in request.META:
+        ip = request.META['HTTP_X_REAL_IP']
+    return ip

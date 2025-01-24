@@ -283,7 +283,7 @@ class ModelListView(APIView):
             result['related'] = related
         return result
 
-    def get_related_resources(self, request, qs, result):
+    def get_related_resources(self, request, qs, result) -> dict[str, str] | None:
         return None
 
 
@@ -308,7 +308,7 @@ class ModelDetailView(APIView):
             result['related'] = related
         return result
 
-    def get_related_resources(self, request, obj, result):
+    def get_related_resources(self, request, obj, result) -> dict[str, str] | None:
         return None
 
 

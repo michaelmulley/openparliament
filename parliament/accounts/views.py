@@ -7,6 +7,7 @@ from django.views.decorators.cache import never_cache
 
 from parliament.accounts.models import LoginToken, TokenError, User
 from parliament.core.views import disable_on_readonly_db
+from parliament.core.utils import get_client_ip
 from parliament.utils.views import JSONView
 
 
@@ -25,12 +26,6 @@ class LogoutView(JSONView):
 
 logout = never_cache(LogoutView.as_view())
 
-def _get_ip(request):
-    ip = request.META['REMOTE_ADDR']
-    if ip == '127.0.0.1' and 'HTTP_X_REAL_IP' in request.META:
-        ip = request.META['HTTP_X_REAL_IP']
-    return ip
-
 class LoginTokenCreateView(JSONView):
 
     def post(self, request):
@@ -41,7 +36,7 @@ class LoginTokenCreateView(JSONView):
             return HttpResponse(e.message, content_type='text/plain', status=400)
         LoginToken.generate(
             email=email,
-            requesting_ip=_get_ip(request)
+            requesting_ip=get_client_ip(request)
         )
         return 'sent'
 

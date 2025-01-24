@@ -72,6 +72,11 @@
     // width: 71px;
   }
 
+  li {
+    max-width: $max_text_width;
+    margin-bottom: .4rem;
+  }
+
   .l-ctx-col {
     font-size: .7rem;
     color: #555555;
@@ -216,6 +221,30 @@ span.wordoftheday {
   color: #666666;
   font-style: italic;
   border-bottom: 1px dashed #999999;
+}
+
+.ai_warning_icon {
+  display: block;
+  float: left;
+  margin: 4px 20px 4px 2px;
+  border: none;
+  width: 45px;
+}
+.ai_warning_text {
+  font-style: italic;
+  span {
+    background-color: #fcf1d5;
+  }
+}
+.summary_poll {
+  text-align: right;
+  span {
+    font-style: italic;
+    background-color: #fcf1d5;
+  }
+  button {
+    margin: 10px 5px;
+  }
 }
 
 @media print {

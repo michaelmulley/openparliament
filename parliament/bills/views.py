@@ -17,6 +17,7 @@ from parliament.core.api import ModelListView, ModelDetailView, APIFilters
 from parliament.core.models import Session
 from parliament.core.utils import is_ajax
 from parliament.hansards.models import Statement, Document
+from parliament.summaries.models import Summary
 
 def bill_pk_redirect(request, bill_id):
     bill = get_object_or_404(Bill, pk=bill_id)
@@ -30,7 +31,7 @@ class BillDetailView(ModelDetailView):
         return Bill.objects.select_related(
             'sponsor_politician').get(session=session_id, number=bill_number)
 
-    def get_related_resources(self, request, qs, result):
+    def get_related_resources(self, request, obj, result):
         return {
             'bills_url': reverse('bills')
         }
@@ -101,12 +102,19 @@ class BillDetailView(ModelDetailView):
                 reading_speeches = qs.select_related(
                     'member', 'member__politician', 'member__riding', 'member__party')            
                 c['page'] = self._render_page(request, reading_speeches, per_page=per_page)
+                if stage_code in ('2', '3', 'report'):
+                    try:
+                        c['reading_summary'] = Summary.objects.get(
+                            summary_type='stage_' + stage_code,
+                            identifier=bill.get_absolute_url())
+                    except Summary.DoesNotExist:
+                        pass
 
         if is_ajax(request):
             if tab == 'meetings':
                 t = loader.get_template("bills/related_meetings.inc")
             else:
-                t = loader.get_template("hansards/statement_page.inc")
+                t = loader.get_template("bills/reading_debate.inc")
         else:
             t = loader.get_template("bills/bill_detail.html")
         return HttpResponse(t.render(c, request))
