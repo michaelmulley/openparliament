@@ -94,9 +94,14 @@ $(function () {
 <div class="row align-right">
   <div class="main-col">
   	<ul class="tabs" id="bill-tabs">
-      {% if has_major_speeches %}
-      <li class="tabs-title major-speeches">
-        <a href="?tab=major-speeches" {% if tab == 'major-speeches' %}aria-selected="true"{% endif %}>House debate (2<sup>nd</sup> reading)</a>
+      {% if has_third_reading %}
+      <li class="tabs-title third-reading">
+        <a href="?tab=third-reading" {% if tab == 'third-reading' %}aria-selected="true"{% endif %}>House debate (3<sup>rd</sup> reading)</a>
+      </li>
+      {% endif %}      
+      {% if has_second_reading %}
+      <li class="tabs-title second-reading">
+        <a href="?tab=second-reading" {% if tab == 'second-reading' %}aria-selected="true"{% endif %}>House debate (2<sup>nd</sup> reading)</a>
       </li>
       {% endif %}
       {% if has_mentions %}

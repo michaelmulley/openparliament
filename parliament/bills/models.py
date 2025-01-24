@@ -2,6 +2,7 @@ import datetime
 from collections import Counter, defaultdict
 import json
 import re
+from typing import Literal
 
 from django.conf import settings
 from django.urls import reverse
@@ -259,28 +260,21 @@ class Bill(models.Model):
                     session=session, number__in=numbers)
         return CommitteeMeeting.objects.none()
 
-    def _get_related_debates_info(self):
-        data = self._get_house_bill_stages_json()
-        sittings = []
-        for stage in data:
-            if stage.get('Sittings'):
-                for s in stage['Sittings']:
-                    sittings.append({
-                        'name': s['Name'],
-                        'number': s['Number'],
-                        'session': "%s-%s" % (stage['ParliamentNumber'], stage['SessionNumber']),
-                        'date': s['Date'][:10]
-                    })
-        return sittings
-
-    def get_second_reading_debate(self):
-        """Returns a QuerySet of Statements representing the second-reading debate
-        of this bill."""
-        second_reading_sittings = [d for d in self._get_related_debates_info()
-            if d['name'] == "Debate at second reading"]
-        if not second_reading_sittings:
+    def _get_debate_dates_for_stage(self, stage_name: str) -> list[str]:
+        for stage in self._get_house_bill_stages_json():
+            if stage['BillStageNameEn'] == stage_name and stage.get('Sittings'):
+                return [sit['Date'][:10] for sit in stage['Sittings']]
+        return []
+    
+    def get_debate_at_reading(self, reading: Literal[2,3]) -> models.QuerySet[Statement]:
+        reading_name = {
+            2: "Second reading",
+            3: "Third reading"
+        }[reading]
+        sitting_dates = self._get_debate_dates_for_stage(reading_name)
+        if not sitting_dates:
             return Statement.objects.none()
-        debate_ids = Document.debates.filter(date__in=[s['date'] for s in second_reading_sittings]
+        debate_ids = Document.debates.filter(date__in=sitting_dates
             ).values_list('id', flat=True)
         qs = Statement.objects.filter(document__in=debate_ids)
         if self.short_title_en:
@@ -289,11 +283,12 @@ class Bill(models.Model):
             speech_headings = self.statement_set.filter(document__in=debate_ids,
                 h1_en__in=('Government Orders', "Private Members' Business")).values_list('h2_en', flat=True)
             if not speech_headings:
+                logger.warning("Bill %s has %s sittings, but can't get debate statements", self, reading_name)
                 return Statement.objects.none()
             h2 = Counter(speech_headings).most_common(1)[0][0]
             qs = qs.filter(h2_en=h2)
         if not qs.exists():
-            logger.warning("Bill %s has second reading sittings, but can't get debate statements")            
+            logger.warning("Bill %s has %s sittings, but can't get debate statements", self, reading_name)
         return qs
         
     session = property(get_session)

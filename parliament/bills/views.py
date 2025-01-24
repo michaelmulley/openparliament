@@ -53,43 +53,55 @@ class BillDetailView(ModelDetailView):
         bill = get_object_or_404(Bill, sessions=session_id, number=bill_number)
 
         mentions = bill.statement_set.all().order_by('-time', '-sequence').select_related('member', 'member__politician', 'member__riding', 'member__party')
-        major_speeches = bill.get_second_reading_debate()
+        second_reading_debate = bill.get_debate_at_reading(2)
         meetings = bill.get_committee_meetings()
 
-        tab = request.GET.get('tab', 'major-speeches')
-
-        has_major_speeches = major_speeches.exists()
-        has_mentions = has_major_speeches or mentions.exists()
+        has_second_reading = second_reading_debate.exists()
+        if has_second_reading:
+            third_reading_debate = bill.get_debate_at_reading(3)
+            has_third_reading = third_reading_debate.exists()
+        else:
+            third_reading_debate = Statement.objects.none()
+            has_third_reading = False
+        has_mentions = has_second_reading or mentions.exists()
         has_meetings = meetings.exists()
 
-        if tab == 'major-speeches' and not has_major_speeches:
-            tab = 'mentions'
+        tab = request.GET.get('tab')
+        if tab == 'major-speeches': # keep compatibility with old URLs
+            tab = 'second-reading'
+        if not tab:
+            if has_third_reading:
+                tab = 'third-reading'
+            elif has_second_reading:
+                tab = 'second-reading'
+            else:
+                tab = 'mentions'
 
         per_page = 500 if request.GET.get('singlepage') else 15
 
-        if tab == 'mentions':
-            page = self._render_page(request, mentions, per_page=per_page)
-        elif tab == 'major-speeches':
-            major_speeches = major_speeches.order_by('-document__session', 'document__date', 'sequence').select_related(
-                'member', 'member__politician', 'member__riding', 'member__party')            
-            page = self._render_page(request, major_speeches, per_page=per_page)
-        else:
-            page = None
-
         c = {
             'bill': bill,
-            'has_major_speeches': has_major_speeches,
+            'has_second_reading': has_second_reading,
+            'has_third_reading': has_third_reading,
             'has_mentions': has_mentions,
             'has_meetings': has_meetings,
             'committee_meetings': meetings,
             'votequestions': bill.votequestion_set.all().order_by('-date', '-number'),
-            'page': page,
             'allow_single_page': True,
             'tab': tab,
             'title': ('Bill %s' % bill.number) + (' (Historical)' if bill.session.end else ''),
             'statements_full_date': True,
             'statements_context_link': True,
         }
+
+        if tab == 'mentions':
+            c['page'] = self._render_page(request, mentions, per_page=per_page)
+        elif tab in ('second-reading', 'third-reading'):
+            qs = second_reading_debate if tab == 'second-reading' else third_reading_debate
+            reading_speeches = qs.order_by('-document__session', 'document__date', 'sequence').select_related(
+                'member', 'member__politician', 'member__riding', 'member__party')            
+            c['page'] = self._render_page(request, reading_speeches, per_page=per_page)
+
         if is_ajax(request):
             if tab == 'meetings':
                 t = loader.get_template("bills/related_meetings.inc")
