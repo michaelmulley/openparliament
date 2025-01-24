@@ -28,9 +28,10 @@
 					context</a>{% endif %}{# endif context_link #}
 
 				{% if statement.member %}{% if name_info.post %}<p>{{ statement.member.riding.dashed_name }}
-				<span class="br"></span>{{ statement.member.riding.get_province_display }}</p>{% endif %}{# endif post #}<p class="partytag"><span
+				<span class="br"></span>{{ statement.member.riding.get_province_display }}</p>{% endif %}{# endif post #}
+				{% if not name_info.speaker %}<p class="partytag"><span
 						class="tag partytag_{{ statement.member.party.slug|lower }}">{{ statement.member.party.short_name }}</span>
-				</p>{% endif %}{# endif member #}{% if name_info.post_reminder %}
+				</p>{% endif %}{% endif %}{# endif member #}{% if name_info.post_reminder %}
 					<p>{{ name_info.post_reminder }}</p>{% endif %}</div>
 
 			<div class="text-col {% if not statement.member.politician.headshot %} nophoto{% endif %}{% if not statement.who %} nospeaker{% endif %}">
@@ -42,7 +43,7 @@
 				{% if statement.who %}<p class="speaking">
 					{% if name_info.url %}<a href="{{ name_info.url }}">{% endif %}
 					<span class="pol_name">{{ name_info.display_name }}</span>
-					{% if name_info.url %}</a>{% endif %}{% if statement.member or name_info.post %} {% if statement.member %}<span
+					{% if name_info.url %}</a>{% endif %}{% if statement.member or name_info.post %} {% if statement.member and not name_info.speaker %}<span
 						class="partytag tag partytag_{{ statement.member.party.slug|lower }}">{{ statement.member.party.short_name }}</span>{% endif %}<span
 							class="pol_affil">{% if name_info.post %}{{ name_info.post }}{% else %}{# else post #}
 						{% if not name_info.named %}{{ statement.member.politician.name }}{% else %}{# else named #}{{ statement.member.riding.dashed_name }}, {{ statement.member.riding.province }}{% endif %}{# end named #}{% endif %}{# end post #}</span>{% endif %}{# end member #}

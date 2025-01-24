@@ -555,6 +555,8 @@ class Statement(models.Model):
                 if self.member.politician.name in self.who:
                     info['display_name'] = re.sub(r'\(.+\)', '', self.who)
                 info['named'] = False
+                if 'Speaker' in info['display_name']:
+                    info['speaker'] = True
             elif not '(' in self.who or not parsetools.r_politicalpost.search(self.who):
                 info['display_name'] = self.member.politician.name
             else:
