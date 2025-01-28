@@ -20,12 +20,12 @@ dependencies = [
     "requests",
     "psycopg",
     "webob",
-    "oauth2client"
+    "oauth2client",
+    "whitenoise",
 ]
 
 [project.optional-dependencies]
 production = [
-    "whitenoise",
     "redis<6",
     "hiredis<3",
     "gunicorn",

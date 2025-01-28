@@ -383,6 +383,7 @@ dependencies = [
     { name = "pysolr" },
     { name = "requests" },
     { name = "webob" },
+    { name = "whitenoise" },
 ]
 
 [package.optional-dependencies]
@@ -393,7 +394,6 @@ production = [
     { name = "hiredis" },
     { name = "redis" },
     { name = "sentry-sdk" },
-    { name = "whitenoise" },
 ]
 
 [package.metadata]
@@ -420,7 +420,7 @@ requires-dist = [
     { name = "requests" },
     { name = "sentry-sdk", marker = "extra == 'production'" },
     { name = "webob" },
-    { name = "whitenoise", marker = "extra == 'production'" },
+    { name = "whitenoise" },
 ]
 
 [[package]]
