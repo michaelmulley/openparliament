@@ -345,6 +345,9 @@ class ParseHandler(object):
         if openclose == TAG_OPEN:
             
             mytext = _n2s(el.text).strip()
+            if not mytext and not _text_content(el):
+                # Ignore empty paragraphs
+                return NO_DESCEND
             # ParaText has a bunch of special cases
             if _r_housemet.search(mytext) and el.getparent().tag == 'Intro':
                 # "The House met at 10 a.m."
