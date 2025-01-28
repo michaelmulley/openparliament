@@ -389,7 +389,7 @@ class ParseHandler(object):
                 else:
                     self.one_liner = None
                 self._new_person(hoc_id, sub[0].text.replace(':', '').strip())
-                if not sub[0].text.endswith(':') and sub[0].tail[0] == ':':
+                if not sub[0].text.endswith(':') and (sub[0].tail and sub[0].tail[0] == ':'):
                     # If the colon is on the wrong side of the B, stop it from
                     # showing up in the paragraph text
                     sub[0].tail = sub[0].tail[1:]
