@@ -289,7 +289,7 @@ class Bill(models.Model):
             qs = qs.filter(h2_en=h2)
         if not qs.exists():
             logger.warning("Bill %s has %s sittings, but can't get debate statements", self, reading_name)
-        return qs
+        return qs.order_by('-document__session', 'document__date', 'sequence')
         
     session = property(get_session)
 

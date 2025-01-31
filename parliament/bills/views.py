@@ -98,7 +98,7 @@ class BillDetailView(ModelDetailView):
             c['page'] = self._render_page(request, mentions, per_page=per_page)
         elif tab in ('second-reading', 'third-reading'):
             qs = second_reading_debate if tab == 'second-reading' else third_reading_debate
-            reading_speeches = qs.order_by('-document__session', 'document__date', 'sequence').select_related(
+            reading_speeches = qs.select_related(
                 'member', 'member__politician', 'member__riding', 'member__party')            
             c['page'] = self._render_page(request, reading_speeches, per_page=per_page)
 
