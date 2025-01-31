@@ -212,9 +212,9 @@ OP.wordcloud.calculate = function(words, opts) {
 	// Find pixel resolution of canvas
 	canvas.width = 1;
 	canvas.height = 1;
-	var canvas_ratio = Math.sqrt(canvas.getContext("2d").getImageData(0, 0, 1, 1).data.length >> 2);
+	var cc = canvas.getContext("2d", {willReadFrequently: true});
+	var canvas_ratio = Math.sqrt(cc.getImageData(0, 0, 1, 1).data.length >> 2);
 	var canvas_dim = canvas.height = canvas.width = 2048 / canvas_ratio;
-	var cc = canvas.getContext("2d");
 	cc.fillStyle = cc.strokeStyle = "red";
 	cc.textAlign = "center";
 
