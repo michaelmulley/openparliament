@@ -1,7 +1,10 @@
 {% extends "committees/meeting.html" %}
 {% block headextra %}
 {{ block.super }}
-{% if highlight_statement or highlight_statement == 0%}<link rel="canonical" href="{{ highlight_statement.get_absolute_url }}only/">{% endif %}
+{% if highlight_statement or highlight_statement == 0%}
+<link rel="canonical" href="{{ request.path }}only/">
+<meta name="robots" content="noindex">
+{% endif %}
 {% endblock %}
 {% block content %}
 <div class="row align-right">
