@@ -246,10 +246,9 @@ class CommitteeMeeting(models.Model):
         return self.get_ourcommons_doc_url('evidence') if self.evidence_id else None
 
     def get_ourcommons_doc_url(self, document_type, lang=settings.LANGUAGE_CODE[:2]):
-        return 'https://www.ourcommons.ca/DocumentViewer/{}/{}/{}/meeting-{}/{}'.format(
-            lang, self.session.id,
-            self.committee.get_acronym(self.session), self.number,
-            document_type)
+        domain = 'parl' if self.committee.joint else 'ourcommons'
+        acro = self.committee.get_acronym(self.session)
+        return f'https://www.{domain}.ca/DocumentViewer/{lang}/{self.session.id}/{acro}/meeting-{self.number}/{document_type}'
     
     @property
     def webcast_url(self):
