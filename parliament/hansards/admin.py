@@ -13,7 +13,8 @@ class StatementOptions(admin.ModelAdmin):
     #ordering = ('-time',)
 
 class OldSlugMappingOptions(admin.ModelAdmin):
-    list_display = ('document', 'old_slug', 'new_slug')    
+    list_display = ('document', 'old_slug', 'new_slug')
+    raw_id_fields = ['document']    
     
 admin.site.register(Document, DocumentOptions)
 admin.site.register(Statement, StatementOptions)
