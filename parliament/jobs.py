@@ -79,6 +79,9 @@ def hansards_parse():
 def hansards():
     hansards_load()
     hansards_parse()
+
+def reimport():
+    parl_document.reimport_recent_documents()
     
 def corpus_for_debates():
     corpora.generate_for_debates()

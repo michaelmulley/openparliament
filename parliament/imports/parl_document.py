@@ -5,6 +5,7 @@ These transcripts are either House Hansards, or House committee evidence.
 Most of the heavily-lifting code has been put in a separate module
 called alpheus.
 """
+from collections.abc import Iterable
 import datetime
 import difflib
 import re
@@ -12,7 +13,7 @@ import sys
 from xml.sax.saxutils import quoteattr
 
 from django.urls import reverse
-from django.db import transaction
+from django.db import transaction, models
 
 from lxml import etree
 import requests
@@ -446,8 +447,8 @@ def force_redownload(document: Document):
     document.save_xml(document.get_xml_url('en'), xml_en, xml_fr, overwrite=True)
     return document.get_xml_path('en')
 
-def reimport_documents(documents: list[Document], reimport=True, prompt_on_slug_change=False,
-                       prompt_to_import=False, print_diff=False):
+def reimport_documents(documents: Iterable[Document], reimport=True, prompt_on_slug_change=False,
+                       prompt_to_import=False, print_diff=False) -> list[Document]:
     failures = []
     for doc in documents:
         if doc.skip_redownload:
@@ -459,3 +460,16 @@ def reimport_documents(documents: list[Document], reimport=True, prompt_on_slug_
             logger.error("Error reimporting %r: %r", doc, e)
             failures.append(doc)
     return failures
+
+INTERVALS = [1,2,3,7,14,21,30,50,100,150,200,300,400,550,700,1000]
+def reimport_recent_documents(intervals=INTERVALS):
+    today = datetime.date.today()
+    target_dates = [today - datetime.timedelta(days=i) for i in intervals]
+    docs = Document.objects.filter(downloaded=True, skip_redownload=False).filter(
+        models.Q(first_imported__date__in=target_dates) |
+        models.Q(first_imported__isnull=True, date__in=target_dates))
+    failures = reimport_documents(docs)
+    if failures:
+        print("\n\nFailures:")
+        for f in failures:
+            print(f)
