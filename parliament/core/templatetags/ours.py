@@ -20,7 +20,7 @@ def heshe(pol):
         return 'He/she'
         
 @register.filter(name='hisher')
-def heshe(pol):
+def hisher(pol):
     if pol.gender == 'F':
         return 'Her'
     elif pol.gender == 'M':
