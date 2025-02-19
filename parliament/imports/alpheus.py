@@ -76,6 +76,18 @@ _r_person_label = re.compile(r'^(Mr\.?\s|Mrs\.?\s|Ms\.?\s|Miss\.?s\|Hon\.?\s|Rig
 _r_honorific = re.compile(r'^(Mr\.?\s|Mrs\.?\s|Ms\.?\s|Miss\.?\s|Hon\.?\s|Right\sHon\.\s|M\.\s|L.hon\.?\s|Mme\.?\s|Mlle\.?\s|Dr\.?\s)', re.UNICODE)
 _r_parens = re.compile(r'\s*\(.+\)\s*')
 _r_indeterminate = re.compile(r'^(An?|Une)\s')
+_r_bill_stage = re.compile(r'\s*(?:Projet de loi|Bill)\s+(?P<number>[CS]-\d+)\. (?P<stage>.+)', re.I)
+BILL_STAGES = [
+    ('first reading', '1'),
+    ('première lecture', '1'),
+    ('second reading', '2'),
+    ('deuxième lecture', '2'),
+    ('third reading', '3'),
+    ('troisième lecture', '3'),
+    ('report stage', 'report'),
+    ('étape du rapport', 'report'),
+]
+
 def _get_housemet_time(number, ampm):
     ampm = _n2s(ampm).replace('.', '')
     number = number.replace('.', ':')
@@ -186,6 +198,7 @@ class Statement(object):
         setval('h3', 'data-h3')
         setval('intervention_type', 'data-intervention-type')
         setval('written_question', 'data-written-question')
+        setval('bill_stage', 'data-bill-stage')
         return _build_tag('div', attrs) + self.content + '</div>'
 
 class ParseHandler(object):
@@ -452,7 +465,28 @@ class ParseHandler(object):
         assert not _n2s(el.tail).strip()
         if el.get('TocType') == 'TPC':
             if openclose == TAG_OPEN:
-                # These are headings we've decided we're not interested in
+                stage_match = _r_bill_stage.match(el.text)
+                if stage_match or self.current_attributes.get('bill_stage'):
+                    if stage_match:
+                        bill_number = stage_match.group(1)
+                        raw_stage_name = stage_match.group(2)
+                    else:
+                        bill_number = self.current_attributes['bill_stage'].split(',')[0]
+                        raw_stage_name = el.text
+                    stage_code = f'other[{raw_stage_name}]'
+                    raw_stage_name = raw_stage_name.lower()
+                    for stage, code in BILL_STAGES:
+                        if stage in raw_stage_name:
+                            stage_code = code
+                            break
+                    if stage_match or not stage_code.startswith('other'):
+                        # In the case where the text didn't include the bill number (not stage_match),
+                        # we only want to update to a recognized bill stage like a reading;
+                        # otherwise there's a bunch of stuff like "Amendment negatived" which is not
+                        # in fact a bill stage
+                        self.current_attributes['bill_stage'] = f"{bill_number},{stage_code}"
+                        if self.current_statement:
+                            self.current_statement.meta['bill_stage'] = self.current_attributes['bill_stage']
                 return NO_DESCEND
                 #self._add_code('<!-- ProceduralText ')
                 #self._add_tag_text(el, openclose)
@@ -544,12 +578,14 @@ class ParseHandler(object):
         
     def handle_SubjectOfBusinessTitle(self, el, openclose):
         self.current_attributes['h2'] = _text_content(el)
+        if 'bill_stage' in self.current_attributes:
+            del self.current_attributes['bill_stage']
         return NO_DESCEND
         
     def handle_SubjectOfBusiness(self, el, openclose):
-        if openclose == TAG_CLOSE\
-          and 'h3' in self.current_attributes:
-            del self.current_attributes['h3']
+        if openclose == TAG_CLOSE:
+            if 'h3' in self.current_attributes:
+                del self.current_attributes['h3']
             
     def handle_OrderOfBusiness(self, el, openclose):
         if openclose == TAG_CLOSE:
@@ -557,6 +593,8 @@ class ParseHandler(object):
                 del self.current_attributes['h1']
             if 'h2' in self.current_attributes:
                 del self.current_attributes['h2']
+            if 'bill_stage' in self.current_attributes:
+                del self.current_attributes['bill_stage']                
         
     def handle_OrderOfBusinessTitle(self, el, openclose):
         self.current_attributes['h1'] = _smart_title(_text_content(el))
