@@ -113,7 +113,12 @@ $(function () {
       <li class="tabs-title stage-1">
         <a href="?tab=stage-1" {% if tab == 'stage-1' %}aria-selected="true"{% endif %}>1<sup>st</sup> reading</a>
       </li>
-      {% endif %} 
+      {% endif %}
+      {% if debate_stages.senate %}
+      <li class="tabs-title stage-senate">
+        <a href="?tab=stage-senate" {% if tab == 'stage-senate' %}aria-selected="true"{% endif %}>House debate of Senate amendments</a>
+      </li>
+      {% endif %}       
       {% if debate_stages.other %}
       <li class="tabs-title stage-other">
         <a href="?tab=stage-other" {% if tab == 'stage-other' %}aria-selected="true"{% endif %}>House debate (motions &amp; other)</a>

@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='statement',
             name='bill_debate_stage',
-            field=models.CharField(blank=True, choices=[('1', 'First reading'), ('2', 'Second reading'), ('3', 'Third reading'), ('report', 'Report stage'), ('other', 'Other')], db_index=True, max_length=10),
+            field=models.CharField(blank=True, choices=[('1', 'First reading'), ('2', 'Second reading'), ('3', 'Third reading'), ('report', 'Report stage'), ('senate', 'Senate amendments'), ('other', 'Other')], db_index=True, max_length=10),
         ),
         migrations.AddField(
             model_name='statement',

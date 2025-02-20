@@ -80,6 +80,8 @@ _r_bill_stage = re.compile(r'\s*(?:Projet de loi|Bill)\s+(?P<number>[CS]-\d+)\. 
 BILL_STAGES = [
     ('first reading', '1'),
     ('première lecture', '1'),
+    ('senate', 'senate'),
+    ('du sénat', 'senate'),
     ('second reading', '2'),
     ('deuxième lecture', '2'),
     ('third reading', '3'),

@@ -353,6 +353,7 @@ class Statement(models.Model):
         ('2', 'Second reading'),
         ('3', 'Third reading'),
         ('report', 'Report stage'),
+        ('senate', 'Senate amendments'),
         ('other', 'Other')
     ])
     mentioned_politicians = models.ManyToManyField(Politician, blank=True, related_name='statements_with_mentions')
