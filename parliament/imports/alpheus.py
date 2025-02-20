@@ -76,7 +76,7 @@ _r_person_label = re.compile(r'^(Mr\.?\s|Mrs\.?\s|Ms\.?\s|Miss\.?s\|Hon\.?\s|Rig
 _r_honorific = re.compile(r'^(Mr\.?\s|Mrs\.?\s|Ms\.?\s|Miss\.?\s|Hon\.?\s|Right\sHon\.\s|M\.\s|L.hon\.?\s|Mme\.?\s|Mlle\.?\s|Dr\.?\s)', re.UNICODE)
 _r_parens = re.compile(r'\s*\(.+\)\s*')
 _r_indeterminate = re.compile(r'^(An?|Une)\s')
-_r_bill_stage = re.compile(r'\s*(?:Projet de loi|Bill)\s+(?P<number>[CS]-\d+)\. (?P<stage>.+)', re.I)
+_r_bill_stage = re.compile(r'\s*(?:Projet de loi|Bill)\s+(?P<cs>[CS]).(?P<number_only>\d+)[,:\-\.\s]+(?P<stage>.+)', re.I)
 BILL_STAGES = [
     ('first reading', '1'),
     ('première lecture', '1'),
@@ -470,8 +470,8 @@ class ParseHandler(object):
                 stage_match = _r_bill_stage.match(el.text)
                 if stage_match or self.current_attributes.get('bill_stage'):
                     if stage_match:
-                        bill_number = stage_match.group(1)
-                        raw_stage_name = stage_match.group(2)
+                        bill_number = stage_match.group('cs') + '-' + stage_match.group('number_only')
+                        raw_stage_name = stage_match.group('stage')
                     else:
                         bill_number = self.current_attributes['bill_stage'].split(',')[0]
                         raw_stage_name = el.text

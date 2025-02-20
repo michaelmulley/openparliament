@@ -66,7 +66,7 @@ class BillDetailView(ModelDetailView):
         has_mentions = mentions.exists()
         has_meetings = meetings.exists()
 
-        tab = request.GET.get('tab')
+        tab = request.GET.get('tab', '')
         if tab == 'major-speeches': # keep compatibility with old URLs
             tab = 'stage-2'
         if not tab:
