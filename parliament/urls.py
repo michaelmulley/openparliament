@@ -39,6 +39,9 @@ if settings.DEBUG:
             path('admin/', admin.site.urls),
         ]
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    if getattr(settings, 'ENABLE_DEBUG_TOOLBAR', False):
+        from debug_toolbar.toolbar import debug_toolbar_urls
+        urlpatterns += debug_toolbar_urls()
 
 if getattr(settings, 'ADMIN_URL', False):
     urlpatterns += [
