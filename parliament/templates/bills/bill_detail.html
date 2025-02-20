@@ -17,7 +17,7 @@ $(function () {
 	$(window).on('contentLoad', function() {
     // General pagination code takes care of most of the work; we just need to update
     // the active tab
-    var tab = OP.utils.getQueryParam('tab');
+    var tab = OP.utils.getQueryParam('tab') || "{{ tab|escapejs }}";
 
 		$('#bill-tabs li a').attr('aria-selected', 'false');
     (tab ? $('#bill-tabs li.' + tab + ' a') : $('#bill-tabs li a').first()).attr('aria-selected', 'true');
@@ -94,19 +94,34 @@ $(function () {
 <div class="row align-right">
   <div class="main-col">
   	<ul class="tabs" id="bill-tabs">
-      {% if has_third_reading %}
-      <li class="tabs-title third-reading">
-        <a href="?tab=third-reading" {% if tab == 'third-reading' %}aria-selected="true"{% endif %}>House debate (3<sup>rd</sup> reading)</a>
-      </li>
-      {% endif %}      
-      {% if has_second_reading %}
-      <li class="tabs-title second-reading">
-        <a href="?tab=second-reading" {% if tab == 'second-reading' %}aria-selected="true"{% endif %}>House debate (2<sup>nd</sup> reading)</a>
+      {% if debate_stages.3 %}
+      <li class="tabs-title stage-3">
+        <a href="?tab=stage-3" {% if tab == 'stage-3' %}aria-selected="true"{% endif %}>3<sup>rd</sup> reading</a>
       </li>
       {% endif %}
+      {% if debate_stages.report %}
+      <li class="tabs-title stage-report">
+        <a href="?tab=stage-report" {% if tab == 'stage-report' %}aria-selected="true"{% endif %}>House debate at report stage</a>
+      </li>
+      {% endif %}
+      {% if debate_stages.2 %}
+      <li class="tabs-title stage-2">
+        <a href="?tab=stage-2" {% if tab == 'stage-2' %}aria-selected="true"{% endif %}>2<sup>nd</sup> reading</a>
+      </li>
+      {% endif %}
+      {% if debate_stages.1 %}
+      <li class="tabs-title stage-1">
+        <a href="?tab=stage-1" {% if tab == 'stage-1' %}aria-selected="true"{% endif %}>1<sup>st</sup> reading</a>
+      </li>
+      {% endif %} 
+      {% if debate_stages.other %}
+      <li class="tabs-title stage-other">
+        <a href="?tab=stage-other" {% if tab == 'stage-other' %}aria-selected="true"{% endif %}>House debate (motions &amp; other)</a>
+      </li>
+      {% endif %}     
       {% if has_mentions %}
       <li class="tabs-title mentions">
-        <a href="?tab=mentions" {% if tab == 'mentions' %}aria-selected="true"{% endif %}>All House mentions</a>
+        <a href="?tab=mentions" {% if tab == 'mentions' %}aria-selected="true"{% endif %}>Other House mentions</a>
       </li>
       {% endif %}
       {% if has_meetings %}

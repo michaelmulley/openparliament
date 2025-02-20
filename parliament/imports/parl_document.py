@@ -94,9 +94,17 @@ def import_document(document: Document, allow_reimport=True, prompt_on_slug_chan
             except Politician.DoesNotExist:
                 logger.info("Could not resolve speaking politician ID %s for %r" % (s.who_hocid, s.who))
 
-        s._related_pols = set()
-        s._related_bills = set()
+        s._mentioned_pols = set()
+        s._mentioned_bills = set()
         s.content_en = _process_related_links(s.content_en, s)
+
+        if pstate.meta.get('bill_stage'):
+            bill_number, stage = pstate.meta['bill_stage'].split(',', maxsplit=1)
+            s.bill_debated = Bill.objects.get(number=bill_number, sessions=document.session)
+            if stage in ['1', '2', '3', 'report']:
+                s.bill_debate_stage = stage
+            else:
+                s.bill_debate_stage = 'other'
 
         statements.append(s)
 
@@ -209,8 +217,8 @@ def import_document(document: Document, allow_reimport=True, prompt_on_slug_chan
     for s in statements:
         s.save()
 
-        s.mentioned_politicians.add(*list(s._related_pols))
-        s.bills.add(*list(s._related_bills))
+        s.mentioned_politicians.add(*list(s._mentioned_pols))
+        s.mentioned_bills.add(*[b for b in s._mentioned_bills if b != s.bill_debated])
         if getattr(s, '_related_vote', False):
             s._related_vote.context_statement = s
             s._related_vote.save()
@@ -264,7 +272,7 @@ def _process_related_link(match, statement):
             return text
         url = pol.get_absolute_url()
         title = pol.name
-        statement._related_pols.add(pol)
+        statement._mentioned_pols.add(pol)
     elif link_type == 'legislation':
         try:
             bis = BillInSession.objects.get_by_legisinfo_id(hocid)
@@ -279,7 +287,7 @@ def _process_related_link(match, statement):
                 number=match.group(0), session=statement.document.session)
             url = bill.get_absolute_url()
         title = bill.name
-        statement._related_bills.add(bill)
+        statement._mentioned_bills.add(bill)
     elif link_type == 'vote':
         try:
             vote = VoteQuestion.objects.get(session=statement.document.session,

@@ -4,6 +4,7 @@ from urllib.parse import urlencode
 from django.contrib.syndication.views import Feed
 from django.urls import reverse
 from django.core.paginator import Paginator, InvalidPage, EmptyPage
+from django.db.models import Count, Sum
 from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.shortcuts import get_object_or_404
 from django.template import loader
@@ -52,37 +53,35 @@ class BillDetailView(ModelDetailView):
     def get_html(self, request, session_id, bill_number):
         bill = get_object_or_404(Bill, sessions=session_id, number=bill_number)
 
-        mentions = bill.statement_set.all().order_by('-time', '-sequence').select_related('member', 'member__politician', 'member__riding', 'member__party')
-        second_reading_debate = bill.get_debate_at_reading(2)
+        mentions = Statement.objects.filter(mentioned_bills=bill, document__document_type=Document.DEBATE).order_by(
+            '-time', '-sequence').select_related('member', 'member__politician', 'member__riding', 'member__party')
+        
+        debate_stages = {
+            r['bill_debate_stage']: r['words']
+            for r in
+            Statement.objects.filter(bill_debated=bill, procedural=False).values('bill_debate_stage').annotate(words=Sum("wordcount"))
+            if r['words'] > 150
+        }
         meetings = bill.get_committee_meetings()
-
-        has_second_reading = second_reading_debate.exists()
-        if has_second_reading:
-            third_reading_debate = bill.get_debate_at_reading(3)
-            has_third_reading = third_reading_debate.exists()
-        else:
-            third_reading_debate = Statement.objects.none()
-            has_third_reading = False
-        has_mentions = has_second_reading or mentions.exists()
+        has_mentions = mentions.exists()
         has_meetings = meetings.exists()
 
         tab = request.GET.get('tab')
         if tab == 'major-speeches': # keep compatibility with old URLs
-            tab = 'second-reading'
+            tab = 'stage-2'
         if not tab:
-            if has_third_reading:
-                tab = 'third-reading'
-            elif has_second_reading:
-                tab = 'second-reading'
-            else:
+            for priority in ('3','2','1'):
+                if debate_stages.get(priority):
+                    tab = 'stage-' + priority
+                    break
+            if not tab and has_mentions:
                 tab = 'mentions'
 
         per_page = 500 if request.GET.get('singlepage') else 15
 
         c = {
             'bill': bill,
-            'has_second_reading': has_second_reading,
-            'has_third_reading': has_third_reading,
+            'debate_stages': debate_stages,
             'has_mentions': has_mentions,
             'has_meetings': has_meetings,
             'committee_meetings': meetings,
@@ -91,16 +90,18 @@ class BillDetailView(ModelDetailView):
             'tab': tab,
             'title': ('Bill %s' % bill.number) + (' (Historical)' if bill.session.end else ''),
             'statements_full_date': True,
-            'statements_context_link': True,
+            'statements_context_link': tab == 'mentions',
         }
 
         if tab == 'mentions':
             c['page'] = self._render_page(request, mentions, per_page=per_page)
-        elif tab in ('second-reading', 'third-reading'):
-            qs = second_reading_debate if tab == 'second-reading' else third_reading_debate
-            reading_speeches = qs.select_related(
-                'member', 'member__politician', 'member__riding', 'member__party')            
-            c['page'] = self._render_page(request, reading_speeches, per_page=per_page)
+        elif tab.startswith('stage-'):
+            stage_code = tab.split('-')[1]
+            if debate_stages.get(stage_code):
+                qs = bill.get_debate_at_stage(stage_code)
+                reading_speeches = qs.select_related(
+                    'member', 'member__politician', 'member__riding', 'member__party')            
+                c['page'] = self._render_page(request, reading_speeches, per_page=per_page)
 
         if is_ajax(request):
             if tab == 'meetings':
@@ -327,7 +328,8 @@ class BillFeed(Feed):
         return "From openparliament.ca, speeches about Bill %s, %s" % (bill.number, bill.name)
 
     def items(self, bill):
-        statements = bill.statement_set.all().order_by('-time', '-sequence').select_related('member', 'member__politician', 'member__riding', 'member__party')[:10]
+        statements = Statement.objects.filter(document__document_type=Document.DEBATE,
+            bill_debated=bill).order_by('-time', '-sequence').select_related('member', 'member__politician', 'member__riding', 'member__party')[:10]
         votes = bill.votequestion_set.all().order_by('-date', '-number')[:3]
         merged = list(votes) + list(statements)
         merged.sort(key=lambda i: i.date, reverse=True)

@@ -344,7 +344,17 @@ class Statement(models.Model):
     ))
     statement_type = models.CharField(max_length=35, blank=True)
     
-    bills = models.ManyToManyField('bills.Bill', blank=True)
+    mentioned_bills = models.ManyToManyField('bills.Bill', blank=True,
+                                             db_table='hansards_statement_bills', related_name='+')
+    bill_debated = models.ForeignKey('bills.Bill', blank=True, null=True, on_delete=models.CASCADE,
+                                     related_name='+')
+    bill_debate_stage = models.CharField(max_length=10, blank=True, db_index=True, choices=[
+        ('1', 'First reading'),
+        ('2', 'Second reading'),
+        ('3', 'Third reading'),
+        ('report', 'Report stage'),
+        ('other', 'Other')
+    ])
     mentioned_politicians = models.ManyToManyField(Politician, blank=True, related_name='statements_with_mentions')
         
     class Meta:

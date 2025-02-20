@@ -97,7 +97,7 @@ def document_view(request, document, meeting=None, slug=None):
         per_page = 50000
     
     statement_qs = Statement.objects.filter(document=document)\
-        .select_related('member__politician', 'member__riding', 'member__party')
+        .select_related('member__politician', 'member__riding', 'member__party', 'bill_debated')
     paginator = Paginator(statement_qs, per_page)
 
     highlight_statement_seq = highlight_statement = None

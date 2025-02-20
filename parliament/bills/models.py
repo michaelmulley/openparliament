@@ -226,11 +226,10 @@ class Bill(models.Model):
         
     def get_session(self):
         """Returns the most recent session this bill belongs to."""
-        try:
-            self.__dict__['session'] = s = self.sessions.all().order_by('-start')[0]
-            return s
-        except (IndexError, ValueError):
-            return getattr(self, '_session', None)
+        if hasattr(self, '_session'):
+            return self._session
+        self._session = self.sessions.all().order_by('-start')[0]
+        return self._session
 
     def set_temporary_session(self, session):
         """To deal with tricky save logic, saves a session to the object for cases
@@ -259,38 +258,11 @@ class Bill(models.Model):
                 return CommitteeMeeting.objects.filter(committee=cmte, 
                     session=session, number__in=numbers)
         return CommitteeMeeting.objects.none()
-
-    def _get_debate_dates_for_stage(self, stage_name: str) -> list[str]:
-        for stage in self._get_house_bill_stages_json():
-            if stage['BillStageNameEn'] == stage_name and stage.get('Sittings'):
-                return [sit['Date'][:10] for sit in stage['Sittings']]
-        return []
     
-    def get_debate_at_reading(self, reading: Literal[2,3]) -> models.QuerySet[Statement]:
-        reading_name = {
-            2: "Second reading",
-            3: "Third reading"
-        }[reading]
-        sitting_dates = self._get_debate_dates_for_stage(reading_name)
-        if not sitting_dates:
-            return Statement.objects.none()
-        debate_ids = Document.debates.filter(date__in=sitting_dates
-            ).values_list('id', flat=True)
-        qs = Statement.objects.filter(document__in=debate_ids)
-        if self.short_title_en:
-            qs = qs.filter(h2_en=self.short_title_en)
-        else:
-            speech_headings = self.statement_set.filter(document__in=debate_ids,
-                h1_en__in=('Government Orders', "Private Members' Business")).values_list('h2_en', flat=True)
-            if not speech_headings:
-                logger.warning("Bill %s has %s sittings, but can't get debate statements", self, reading_name)
-                return Statement.objects.none()
-            h2 = Counter(speech_headings).most_common(1)[0][0]
-            qs = qs.filter(h2_en=h2)
-        if not qs.exists():
-            logger.warning("Bill %s has %s sittings, but can't get debate statements", self, reading_name)
-        return qs.order_by('-document__session', 'document__date', 'sequence')
-        
+    def get_debate_at_stage(self, stage: Literal[1,2,3,'report']) -> models.QuerySet[Statement]:
+        return Statement.objects.filter(bill_debated=self, bill_debate_stage=str(stage)).order_by(
+            '-document__session', 'document__date', 'sequence')
+
     session = property(get_session)
 
     @property
