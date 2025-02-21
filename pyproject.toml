@@ -5,7 +5,7 @@ description = "A website to present the goings-on of Canada's House of Commons"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "Django==5.1",
+    "Django >=5.1,<5.2",
     "dj-database-url",
     "django-compressor",
     "django-extensions",
