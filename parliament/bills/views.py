@@ -12,7 +12,7 @@ from django.template.defaultfilters import date as format_date
 from django.utils.safestring import mark_safe
 from django.views.decorators.vary import vary_on_headers
 
-from parliament.bills.models import Bill, VoteQuestion, MemberVote, BillInSession
+from parliament.bills.models import Bill, VoteQuestion, MemberVote
 from parliament.core.api import ModelListView, ModelDetailView, APIFilters
 from parliament.core.models import Session
 from parliament.core.utils import is_ajax
@@ -20,18 +20,15 @@ from parliament.hansards.models import Statement, Document
 
 def bill_pk_redirect(request, bill_id):
     bill = get_object_or_404(Bill, pk=bill_id)
-    return HttpResponsePermanentRedirect(
-        reverse('bill', kwargs={
-        'session_id': bill.get_session().id, 'bill_number': bill.number}))
-
+    return HttpResponsePermanentRedirect(bill.get_absolute_url())
 
 class BillDetailView(ModelDetailView):
 
     resource_name = 'Bill'
 
     def get_object(self, request, session_id, bill_number):
-        return BillInSession.objects.select_related(
-            'bill', 'sponsor_politician').get(session=session_id, bill__number=bill_number)
+        return Bill.objects.select_related(
+            'sponsor_politician').get(session=session_id, number=bill_number)
 
     def get_related_resources(self, request, qs, result):
         return {
@@ -51,7 +48,7 @@ class BillDetailView(ModelDetailView):
             return paginator.page(paginator.num_pages)
 
     def get_html(self, request, session_id, bill_number):
-        bill = get_object_or_404(Bill, sessions=session_id, number=bill_number)
+        bill = get_object_or_404(Bill, session=session_id, number=bill_number)
 
         mentions = Statement.objects.filter(mentioned_bills=bill, document__document_type=Document.DEBATE).order_by(
             '-time', '-sequence').select_related('member', 'member__politician', 'member__riding', 'member__party')
@@ -91,6 +88,7 @@ class BillDetailView(ModelDetailView):
             'title': ('Bill %s' % bill.number) + (' (Historical)' if bill.session.end else ''),
             'statements_full_date': True,
             'statements_context_link': tab == 'mentions',
+            'similar_bills': bill.similar_bills.all().order_by('-introduced')
         }
 
         if tab == 'mentions':
@@ -122,24 +120,24 @@ class BillListView(ModelListView):
         'introduced': APIFilters.dbfield(filter_types=APIFilters.numeric_filters,
             help="date bill was introduced, e.g. introduced__gt=2010-01-01"),
         'legisinfo_id': APIFilters.dbfield(help="integer ID assigned by Parliament's LEGISinfo"),
-        'number': APIFilters.dbfield('bill__number',
+        'number': APIFilters.dbfield('number',
             help="a string, not an integer: e.g. C-10"),
-        'law': APIFilters.dbfield('bill__law',
+        'law': APIFilters.dbfield('law',
             help="did it become law? True, False"),
-        'private_member_bill': APIFilters.dbfield('bill__privatemember',
+        'private_member_bill': APIFilters.dbfield('privatemember',
             help="is it a private member's bill? True, False"),
-        'status_code': APIFilters.dbfield('bill__status_code'),
+        'status_code': APIFilters.dbfield('status_code'),
         'sponsor_politician': APIFilters.politician('sponsor_politician'),
         'sponsor_politician_membership': APIFilters.fkey(lambda u: {'sponsor_member': u[-1]}),
     }
 
     def get_qs(self, request):
-        return BillInSession.objects.all().select_related('bill', 'sponsor_politician')
+        return Bill.objects.all().select_related('sponsor_politician')
 
     def get_html(self, request):
         sessions = Session.objects.with_bills()
         len(sessions) # evaluate it
-        bills = Bill.objects.filter(sessions=sessions[0])
+        bills = Bill.objects.filter(session=sessions[0])
         votes = VoteQuestion.objects.select_related('bill').filter(session=sessions[0])[:6]
 
         t = loader.get_template('bills/index.html')
@@ -164,7 +162,7 @@ class BillSessionListView(ModelListView):
 
     def get_html(self, request, session_id):
         session = get_object_or_404(Session, pk=session_id)
-        bills = Bill.objects.filter(sessions=session)
+        bills = Bill.objects.filter(session=session)
         votes = VoteQuestion.objects.select_related('bill').filter(session=session)[:6]
 
         t = loader.get_template('bills/bill_list.html')
@@ -199,7 +197,7 @@ class VoteListView(ModelListView):
         'number': APIFilters.dbfield(filter_types=APIFilters.numeric_filters,
             help="every vote in a session has a sequential number"),
         'bill': APIFilters.fkey(lambda u: {
-            'bill__sessions': u[-2],
+            'bill__session': u[-2],
             'bill__number': u[-1]
         }, help="e.g. /bills/41-1/C-10/"),
         'result': APIFilters.choices('result', VoteQuestion)

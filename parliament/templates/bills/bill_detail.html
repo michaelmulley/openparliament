@@ -37,8 +37,7 @@ $(function () {
   <div class="main-col">
   {% if bill.short_title %}<h2>{{ bill.short_title }}</h2>{% endif %}    
   <h3>{{ bill.name }}</h3>
-  {% if bill.session.end %}<p>This bill was last introduced in the {{ bill.session }}, which ended in {{ bill.session.end|date:"F Y"}}.</p>{% endif %}
-  {% with bill.sessions.all as sessions %}{% if sessions|length > 1 %}<p>This bill was previously introduced in {{ sessions|list_filter:bill.session|list_prefix:"the "|english_list:"; " }}.</p>{% endif %}{% endwith %}
+  {% if bill.session.end %}<p>This bill is from the {{ bill.session }}, which ended in {{ bill.session.end|date:"F Y"}}.</p>{% endif %}
   {% if bill.number_only == 1 %}<p>This bill, the first introduced in any session, is a <a href="http://en.wikipedia.org/wiki/Bills_C-1_and_S-1">formal tradition</a> rather than proposed legislation. {% if bill.institution == 'S' %}It doesn't actually have anything to do with railways.{% else %}(It has nothing to do with oaths of office. The Senate equivalent is called <em>An Act relating to Railways</em> and&mdash;you guessed it!&mdash;in no way relates to railways.){% endif %}</p>{% endif %}
   </div>
 </div>
@@ -72,6 +71,23 @@ $(function () {
   </div>
 </div>
 {% endif %}{% endwith %}{% endwith %}
+
+{% if similar_bills %}
+<div class="row">
+  <div class="context-col"><h2>Similar bills</h2></div>
+  <div class="main-col">
+    <div class="row tile small-up-1 medium-up-2">
+        {% for similar_bill in similar_bills %}
+        <div class="column column-block">
+          <a href="{{ similar_bill.get_absolute_url }}">{{ similar_bill.number }} ({% if not similar_bill.session.end %}current session{% else %}{{ similar_bill.session.name }}{% endif %})</a>
+          {% if similar_bill.law %}<span class="tag bill_law">Law</span>{% endif %}
+          {% if similar_bill.short_title %}{{ similar_bill.short_title }}{% else %}{{ similar_bill.name }}{% endif %}
+        </div>
+        {% endfor %}
+    </div>
+  </div>
+</div>
+{% endif %}
 
 {% if bill.name %}
 <div class="row">

@@ -7,10 +7,8 @@ from django.db import transaction
 
 import requests
 
-from parliament.bills.models import Bill, BillInSession, BillText, BillEvent, LEGISINFO_BILL_ID_URL
-from parliament.committees.models import Committee, CommitteeMeeting
+from parliament.bills.models import Bill, BillText, LEGISINFO_BILL_ID_URL
 from parliament.core.models import Session, Politician, ElectedMember
-from parliament.hansards.models import Document
 from parliament.imports import CannotScrapeException
 from parliament.imports.billtext import get_plain_bill_text
 
@@ -22,13 +20,6 @@ LEGISINFO_JSON_LIST_URL = 'https://www.parl.ca/legisinfo/en/bills/json?parlsessi
 
 def _parse_date(d):
     return datetime.date(*[int(x) for x in d[:10].split('-')])
-
-def _get_previous_session(session):
-    try:
-        return Session.objects.filter(start__lt=session.start)\
-            .order_by('-start')[0]
-    except IndexError:
-        return None
 
 class BillData:
     """
@@ -88,9 +79,8 @@ def get_bill_list(session: Session) -> list[BillData]:
 @transaction.atomic
 def import_bills(session: Session):
     bill_list = get_bill_list(session)
-    prev_session = _get_previous_session(session)
     for bd in bill_list:
-        _import_bill(bd, session, prev_session)
+        _import_bill(bd, session)
 
 def import_bill_by_id(legisinfo_id: int | str) -> Bill:
     """Imports a single bill based on its LEGISinfo id."""
@@ -126,12 +116,7 @@ def _update(obj, field, value):
         setattr(obj, field, value)
         obj._changed = True
 
-def _import_bill(bd: BillData, session: Session,
-                 previous_session: Session | None = None) -> Bill:
-
-    if previous_session is None:
-        previous_session = _get_previous_session(session)
-
+def _import_bill(bd: BillData, session: Session) -> Bill:
     if not bd.is_detailed:
         # Right now it looks like the data model requires one request per bill;
         # I can at some point look closer to see if there's a method at looking
@@ -141,71 +126,40 @@ def _import_bill(bd: BillData, session: Session,
 
     billnumber = bd['NumberCode']
     try:
-        bill = Bill.objects.get(number=billnumber, sessions=session)
-        bis = bill.billinsession_set.get(session=session)
+        bill = Bill.objects.get(number=billnumber, session=session)
     except Bill.DoesNotExist:
-        bill = Bill(number=billnumber)
-        bis = BillInSession(bill=bill, session=session)
+        bill = Bill(number=billnumber, session=session)
         bill._changed = True
-        bis._changed = True
-        bill.set_temporary_session(session)
 
     _update(bill, 'name_en', bd['LongTitleEn'])
 
     if not bill.status_code:
-        # This is presumably our first import of the bill; check if this
-        # looks like a reintroduced bill and we want to merge with an
-        # older Bill object.
         bill._newbill = True
-        try:
-            if previous_session:
-                mergebill = Bill.objects.get(sessions=previous_session,
-                                             number=bill.number,
-                                             name_en__iexact=bill.name_en)
-
-                if bill.id:
-                    # If the new bill has already been saved, let's not try
-                    # to merge automatically
-                    logger.error("Bill %s may need to be merged. IDs: %s %s" %
-                                 (bill.number, bill.id, mergebill.id))
-                else:
-                    logger.warning("Merging bill %s" % bill.number)
-                    bill = mergebill
-                    bis.bill = bill
-        except Bill.DoesNotExist:
-            # Nothing to merge
-            pass
 
     _update(bill, 'name_fr', bd['LongTitleFr'])
     _update(bill, 'short_title_en', bd['ShortTitleEn'])
     _update(bill, 'short_title_fr', bd['ShortTitleFr'])
 
-    if not bis.sponsor_politician and bill.number[0] == 'C' and bd.get('SponsorPersonId'):
+    if not bill.sponsor_politician and bill.number[0] == 'C' and bd.get('SponsorPersonId'):
         # We don't deal with Senate sponsors yet
         pol_id = bd['SponsorPersonId']
         try:
-            bis.sponsor_politician = Politician.objects.get_by_parl_mp_id(pol_id)
+            bill.sponsor_politician = Politician.objects.get_by_parl_mp_id(pol_id)
         except Politician.DoesNotExist:
             logger.error("Couldn't find sponsor politician for bill %s, pol ID %s, name %s" % (
                 bill.number, pol_id, bd.get('SponsorPersonName')))
-        bis._changed = True
+        bill._changed = True
         try:
-            bis.sponsor_member = ElectedMember.objects.get_by_pol(politician=bis.sponsor_politician,
+            bill.sponsor_member = ElectedMember.objects.get_by_pol(politician=bill.sponsor_politician,
                                                                    session=session)
         except Exception:
             logger.error("Couldn't find ElectedMember for bill %s, pol %r" %
-                         (bill.number, bis.sponsor_politician))
-        if not bill.sponsor_politician:
-            bill.sponsor_politician = bis.sponsor_politician
-            bill.sponsor_member = bis.sponsor_member
-            bill._changed = True
+                         (bill.number, bill.sponsor_politician))
 
     introduced = bd['PassedHouseFirstReadingDateTime']
     if bd['PassedSenateFirstReadingDateTime'] and ((not introduced) or bd['PassedSenateFirstReadingDateTime'] < introduced):
         introduced = bd['PassedSenateFirstReadingDateTime']
-    _update(bis, 'introduced', introduced)
-    if not bill.introduced:
-        bill.introduced = bis.introduced
+    _update(bill, 'introduced', introduced)
 
     status_name = bd['StatusName']
     status_code = Bill.STATUS_STRING_TO_STATUS_CODE.get(status_name)
@@ -221,17 +175,22 @@ def _import_bill(bd: BillData, session: Session,
     except IndexError:
         pass
 
-    _update(bis, 'legisinfo_id', bd['Id'])
-    _update(bis, 'library_summary_available', bd.get('IsFullLegislativeSummaryAvailable'))
+    _update(bill, 'legisinfo_id', bd['Id'])
+    _update(bill, 'library_summary_available', bd.get('IsFullLegislativeSummaryAvailable'))
 
     billstages_json = json.dumps(bd.get('BillStages'))
-    _update(bis, 'billstages_json', billstages_json)
+    _update(bill, 'billstages_json', billstages_json)
 
     if getattr(bill, '_changed', False):
         bill.save()
-    if getattr(bis, '_changed', False):
-        bis.bill = bis.bill # bizarrely, the django orm makes you do this
-        bis.save()        
+
+    if bd.get('SimilarBills'):
+        for similar in bd['SimilarBills']:
+            try:
+                similar_bill = Bill.objects.get_by_legisinfo_id(similar['Id'])
+                bill.similar_bills.add(similar_bill)
+            except Bill.DoesNotExist:
+                logger.error("Couldn't find similar bill %s while importing %s", similar['NumberCode'], bill)
 
     if getattr(bill, '_newbill', False) and not session.end:
         bill.save_sponsor_activity()

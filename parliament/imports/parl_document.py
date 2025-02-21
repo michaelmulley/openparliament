@@ -18,7 +18,7 @@ from django.db import transaction, models
 from lxml import etree
 import requests
 
-from parliament.bills.models import Bill, BillInSession, VoteQuestion
+from parliament.bills.models import Bill, VoteQuestion
 from parliament.core.models import Politician, ElectedMember, Session
 from parliament.hansards.models import Statement, Document, OldSlugMapping
 from .alpheus import parse_bytes as alpheus_parse_bytes
@@ -275,9 +275,8 @@ def _process_related_link(match, statement):
         statement._mentioned_pols.add(pol)
     elif link_type == 'legislation':
         try:
-            bis = BillInSession.objects.get_by_legisinfo_id(hocid)
-            bill = bis.bill
-            url = bis.get_absolute_url()
+            bill = Bill.objects.get_by_legisinfo_id(hocid)
+            url = bill.get_absolute_url()
         except Bill.DoesNotExist:
             match = re.search(r'\b[CS]\-\d+[A-E]?\b', text)
             if not match:

@@ -196,9 +196,13 @@ class SpeechesView(ModelListView):
             help="e.g. time__range=2012-10-19 10:00,2012-10-19 11:00"),
         'mentioned_politician': APIFilters.politician('mentioned_politicians'),
         'mentioned_bill': APIFilters.fkey(lambda u: {
-            'bills__billinsession__session': u[-2],
-            'bills__number': u[-1]
-        }, help="e.g. /bills/41-1/C-14/")
+            'mentioned_bills__session': u[-2],
+            'mentioned_bills__number': u[-1]
+        }, help="e.g. /bills/41-1/C-14/"),
+        'debated_bill': APIFilters.fkey(lambda u: {
+            'debated_bill__session': u[-2],
+            'debated_bill__number': u[-1]
+        }, help="e.g. /bills/41-1/C-14/")        
     }
 
     resource_name = 'Speeches'

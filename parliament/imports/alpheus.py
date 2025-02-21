@@ -467,7 +467,7 @@ class ParseHandler(object):
         assert not _n2s(el.tail).strip()
         if el.get('TocType') == 'TPC':
             if openclose == TAG_OPEN:
-                stage_match = _r_bill_stage.match(el.text)
+                stage_match = _r_bill_stage.match(_text_content(el))
                 if stage_match or self.current_attributes.get('bill_stage'):
                     if stage_match:
                         bill_number = stage_match.group('cs') + '-' + stage_match.group('number_only')

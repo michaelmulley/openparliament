@@ -149,8 +149,10 @@ def replace_links(old, new, allow_self_relation=False):
                     continue
                 else:
                     raise Exception("Relation to self!")
-            print(relation.field.name)
-            relation.related_model._default_manager.filter(**{relation.field.name: old}).update(**{relation.field.name: new})
+            print(f"{relation.related_model.__name__}.{relation.field.name}")
+            print(
+                relation.related_model._default_manager.filter(**{relation.field.name: old}).update(**{relation.field.name: new})
+            )
         elif relation.many_to_many:
             if relation.related_model == old.__class__:
                 raise Exception("Relation to self!")

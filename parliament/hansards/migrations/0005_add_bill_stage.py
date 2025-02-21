@@ -20,12 +20,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='statement',
             name='bill_debated',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='+', to='bills.bill'),
+            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='statements_from_debates', to='bills.bill'),
         ),
         migrations.AlterField(
             model_name='statement',
             name='bills',
-            field=models.ManyToManyField(blank=True, db_table='hansards_statement_bills', related_name='+', to='bills.bill'),
+            field=models.ManyToManyField(blank=True, db_table='hansards_statement_bills', related_name='statements_with_mentions', to='bills.bill'),
         ),
         migrations.RenameField(
             model_name='statement',

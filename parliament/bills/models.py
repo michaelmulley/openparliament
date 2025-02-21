@@ -29,7 +29,7 @@ class BillManager(models.Manager):
         return a Bill, creating it if necessary."""
         legisinfo_id = int(legisinfo_id)
         try:
-            return self.get(billinsession__legisinfo_id=legisinfo_id)
+            return self.get(legisinfo_id=legisinfo_id)
         except Bill.DoesNotExist:
             from parliament.imports import legisinfo
             return legisinfo.import_bill_by_id(legisinfo_id)
@@ -42,18 +42,16 @@ class BillManager(models.Manager):
         """
         if legisinfo_id:
             legisinfo_id = int(legisinfo_id)
-            if BillInSession.objects.filter(legisinfo_id=int(legisinfo_id)).exists():
+            if Bill.objects.filter(legisinfo_id=legisinfo_id).exists():
                 raise Bill.MultipleObjectsReturned(
                     "There's already a bill with LEGISinfo id %s" % legisinfo_id)
         try:
-            bill = Bill.objects.get(number=number, sessions=session)
+            bill = Bill.objects.get(number=number, session=session)
             logger.error("Potential duplicate LEGISinfo ID: %s in %s exists, but trying to create with ID %s" %
                 (number, session, legisinfo_id))
             return bill
         except Bill.DoesNotExist:
-            bill = self.create(number=number)
-            BillInSession.objects.create(bill=bill, session=session,
-                    legisinfo_id=legisinfo_id)
+            bill = self.create(number=number, session=session, legisinfo_id=legisinfo_id)
             return bill
 
     def recently_active(self, number=12):
@@ -123,13 +121,13 @@ class Bill(models.Model):
     name_fr = models.TextField(blank=True)
     short_title_en = models.TextField(blank=True)
     short_title_fr = models.TextField(blank=True)
-    number = models.CharField(max_length=10)
+    number = models.CharField(max_length=10, db_index=True)
     number_only = models.SmallIntegerField()
     institution = models.CharField(max_length=1, db_index=True, choices=CHAMBERS)
-    sessions = models.ManyToManyField(Session, through='BillInSession')
+    session = models.ForeignKey(Session, on_delete=models.PROTECT)
     privatemember = models.BooleanField(blank=True, null=True)
-    sponsor_member = models.ForeignKey(ElectedMember, blank=True, null=True, on_delete=models.CASCADE)
-    sponsor_politician = models.ForeignKey(Politician, blank=True, null=True, on_delete=models.CASCADE)
+    sponsor_member = models.ForeignKey(ElectedMember, blank=True, null=True, on_delete=models.SET_NULL)
+    sponsor_politician = models.ForeignKey(Politician, blank=True, null=True, on_delete=models.SET_NULL)
     law = models.BooleanField(blank=True, null=True)
 
     status_date = models.DateField(blank=True, null=True, db_index=True)
@@ -139,6 +137,13 @@ class Bill(models.Model):
     introduced = models.DateField(blank=True, null=True)
     text_docid = models.IntegerField(blank=True, null=True,
         help_text="The parl.gc.ca document ID of the latest version of the bill's text")
+    
+    legisinfo_id = models.PositiveIntegerField(db_index=True, blank=True, null=True)
+
+    billstages_json = models.TextField(blank=True, null=True) # a raw chunk of the LEGISinfo JSON
+    library_summary_available = models.BooleanField(default=False)
+
+    similar_bills = models.ManyToManyField("self", blank=True)
     
     objects = BillManager()
 
@@ -152,11 +157,8 @@ class Bill(models.Model):
         return "%s - %s" % (self.number, self.name)
         
     def get_absolute_url(self):
-        return self.url_for_session(self.session)
-
-    def url_for_session(self, session):
         return reverse('bill', kwargs={
-            'session_id': session.id, 'bill_number': self.number})
+            'session_id': self.session_id, 'bill_number': self.number})
         
     def get_legisinfo_url(self, lang='en'):
         return LEGISINFO_BILL_URL % {
@@ -195,10 +197,9 @@ class Bill(models.Model):
             return ''
         
     def get_library_summary_url(self, lang=settings.LANGUAGE_CODE) -> str | None:
-        summary_session = (self.billinsession_set.filter(library_summary_available=True)
-                           .order_by('-introduced').values_list('session', flat=True).first())
-        if summary_session:
-            return f"https://loppublicservices.parl.ca/PublicWebsiteProxy/Publication/GoToLS?billNumber={self.number}&lang={lang}_CA&parlSession={summary_session.replace('-', '')}"
+        if not self.library_summary_available:
+            return None
+        return f"https://loppublicservices.parl.ca/PublicWebsiteProxy/Publication/GoToLS?billNumber={self.number}&lang={lang}_CA&parlSession={self.session_id.replace('-', '')}"
 
     @property
     def latest_date(self):
@@ -223,27 +224,12 @@ class Bill(models.Model):
                 date=self.introduced if self.introduced else (self.added - datetime.timedelta(days=1)),
                 variety='billsponsor',
             )
-        
-    def get_session(self):
-        """Returns the most recent session this bill belongs to."""
-        if hasattr(self, '_session'):
-            return self._session
-        self._session = self.sessions.all().order_by('-start')[0]
-        return self._session
-
-    def set_temporary_session(self, session):
-        """To deal with tricky save logic, saves a session to the object for cases
-        when self.sessions.all() won't get exist in the DB."""
-        self._session = session
 
     @memoize_property
-    def _get_house_bill_stages_json(self):
-        raw_json = self.billinsession_set.order_by('-session').values_list('billstages_json', flat=True)
-        r = []
-        for rj in raw_json:
-            if rj:
-                r.extend(json.loads(rj).get('HouseBillStages', []))
-        return r
+    def _get_house_bill_stages_json(self) -> list:
+        if not self.billstages_json:
+            return []
+        return json.loads(self.billstages_json).get('HouseBillStages', [])
 
     def get_committee_meetings(self):
         """Return a QuerySet of CommitteeMeetings where this bill was considered."""
@@ -262,8 +248,6 @@ class Bill(models.Model):
     def get_debate_at_stage(self, stage: Literal[1,2,3,'report']) -> models.QuerySet[Statement]:
         return Statement.objects.filter(bill_debated=self, bill_debate_stage=str(stage)).order_by(
             '-document__session', 'document__date', 'sequence')
-
-    session = property(get_session)
 
     @property
     def status(self):
@@ -307,108 +291,37 @@ class Bill(models.Model):
         return Bill.objects.all().prefetch_related(
             'sponsor_politician', 'sponsor_member', 'sponsor_member__party'
         )
-
-class BillInSessionManager(models.Manager):
-
-    def get_by_legisinfo_id(self, legisinfo_id):
-        legisinfo_id = int(legisinfo_id)
-        try:
-            return self.get(legisinfo_id=legisinfo_id)
-        except BillInSession.DoesNotExist:
-            from parliament.imports import legisinfo
-            legisinfo.import_bill_by_id(legisinfo_id)
-            return self.get(legisinfo_id=legisinfo_id)
-
-
-class BillInSession(models.Model):
-    """Represents a bill, as introduced in a single session.
-
-    All bills are, technically, introduced only in a single session.
-    But, in a decision which ended up being pretty complicated, we combine
-    reintroduced bills into a single Bill object. But it's this model
-    that maps one-to-one to most IDs used elsewhere.
-    """
-    bill = models.ForeignKey(Bill, on_delete=models.CASCADE)
-    session = models.ForeignKey(Session, on_delete=models.CASCADE)
-
-    legisinfo_id = models.PositiveIntegerField(db_index=True, blank=True, null=True)
-    introduced = models.DateField(blank=True, null=True, db_index=True)
-    sponsor_politician = models.ForeignKey(Politician, blank=True, null=True, on_delete=models.CASCADE)
-    sponsor_member = models.ForeignKey(ElectedMember, blank=True, null=True, on_delete=models.CASCADE)
-
-    billstages_json = models.TextField(blank=True, null=True)
-    library_summary_available = models.BooleanField(default=False)
-
-    objects = BillInSessionManager()
-
-    def __str__(self):
-        return "%s in session %s" % (self.bill, self.session_id)
-
-    def get_absolute_url(self):
-        return self.bill.url_for_session(self.session)
-
-    def get_legisinfo_url(self, lang='en'):
-        return LEGISINFO_BILL_ID_URL % {
-            'lang': lang,
-            'id': self.legisinfo_id
-        }
-
+    
     def to_api_dict(self, representation):
         d = {
             'session': self.session_id,
             'legisinfo_id': self.legisinfo_id,
             'introduced': str(self.introduced) if self.introduced else None,
             'name': {
-                'en': self.bill.name_en,
-                'fr': self.bill.name_fr
+                'en': self.name_en,
+                'fr': self.name_fr
             },
-            'number': self.bill.number
+            'number': self.number
         }
         if representation == 'detail':
             d.update(
-                short_title={'en': self.bill.short_title_en, 'fr': self.bill.short_title_fr},
-                home_chamber=self.bill.get_institution_display(),
-                law=self.bill.law,
+                short_title={'en': self.short_title_en, 'fr': self.short_title_fr},
+                home_chamber=self.get_institution_display(),
+                law=self.law,
                 sponsor_politician_url=self.sponsor_politician.get_absolute_url() if self.sponsor_politician else None,
                 sponsor_politician_membership_url=reverse('politician_membership',
                     kwargs={'member_id': self.sponsor_member_id}) if self.sponsor_member_id else None,
-                text_url=self.bill.get_billtext_url(),
-                other_session_urls=[self.bill.url_for_session(s)
-                    for s in self.bill.sessions.all()
-                    if s.id != self.session_id],
-                vote_urls=[vq.get_absolute_url() for vq in VoteQuestion.objects.filter(bill=self.bill_id)],
-                private_member_bill=self.bill.privatemember,
+                text_url=self.get_billtext_url(),
+                # other_session_urls=[self.bill.url_for_session(s)
+                #     for s in self.bill.sessions.all()
+                #     if s.id != self.session_id],
+                vote_urls=[vq.get_absolute_url() for vq in VoteQuestion.objects.filter(bill=self)],
+                private_member_bill=self.privatemember,
                 legisinfo_url=self.get_legisinfo_url(),
-                status_code=self.bill.status_code,
-                status={'en': self.bill.status}
+                status_code=self.status_code,
+                status={'en': self.status}
             )
-        return d
-
-
-class BillEvent(models.Model):
-    bis = models.ForeignKey(BillInSession, on_delete=models.CASCADE)
-
-    date = models.DateField(db_index=True)
-
-    source_id = models.PositiveIntegerField(unique=True, db_index=True)
-
-    institution = models.CharField(max_length=1, choices=Bill.CHAMBERS)
-
-    status_en = models.TextField()
-    status_fr = models.TextField(blank=True)
-
-    debate = models.ForeignKey('hansards.Document', blank=True, null=True, on_delete=models.SET_NULL)
-    committee_meetings = models.ManyToManyField('committees.CommitteeMeeting', blank=True)
-
-    status = language_property('status')
-
-    def __str__(self):
-        return "%s: %s, %s" % (self.status, self.bis.bill.number, self.date)
-
-    @property
-    def bill_number(self):
-        return self.bis.bill.number
-
+        return d    
 
 class BillText(models.Model):
 
