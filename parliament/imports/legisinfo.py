@@ -179,13 +179,17 @@ def _import_bill(bd: BillData, session: Session) -> Bill:
     _update(bill, 'library_summary_available', bd.get('IsFullLegislativeSummaryAvailable'))
 
     billstages_json = json.dumps(bd.get('BillStages'))
-    _update(bill, 'billstages_json', billstages_json)
+    if session.parliamentnum >= 39:
+        _update(bill, 'billstages_json', billstages_json)
 
     if getattr(bill, '_changed', False):
         bill.save()
 
     if bd.get('SimilarBills'):
         for similar in bd['SimilarBills']:
+            if similar['ParliamentNumber'] < 37:
+                # Don't import super-old bills, it complicates things
+                continue
             try:
                 similar_bill = Bill.objects.get_by_legisinfo_id(similar['Id'])
                 bill.similar_bills.add(similar_bill)
