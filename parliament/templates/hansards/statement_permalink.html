@@ -1,8 +1,8 @@
 {% extends "hansards/base.html" %}
-{% block breadcrumbs %}<li><a href="{% url "debates" %}">Debates</a></li> <li><a href="{% url "debates_by_year" year=hansard.date.year %}">{{ hansard.date.year }}</a></li> <li><a href="{{ statement_url }}">{{ hansard.date|date:"F jS, Y" }}</a></li> <li>Statement by {{ who }}</li>{% endblock %}
+{% block breadcrumbs %}<li><a href="{% url "debates" %}">Debates</a></li> <li><a href="{% url "debates_by_year" year=document.date.year %}">{{ document.date.year }}</a></li> <li><a href="{{ statement_url }}">{{ document.date|date:"F jS, Y" }}</a></li> <li>Statement by {{ who }}</li>{% endblock %}
 {% block content %}
 <div class="row align-right">
-	<div class="main-col"><p>In the House of Commons on {{ doc.date|date:"F jS, Y" }}. <a href="{{ statement_url }}">See this statement in context</a>.</p></div>
+	<div class="main-col"><p>In the House of Commons on {{ document.date|date:"F jS, Y" }}. <a href="{{ statement_url }}">See this statement in context</a>.</p></div>
 </div>
 <div id="paginated" class="disable_more_links">
 {% include "hansards/statement_page.inc" %}

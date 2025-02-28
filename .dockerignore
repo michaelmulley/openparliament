@@ -44,3 +44,4 @@ design/
 fabfile
 *.code-workspace
 settings.py
+build

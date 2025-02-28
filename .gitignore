@@ -25,3 +25,4 @@ node_modules/
 hansard-cache/
 *.code-workspace
 docker-compose.yml
+build

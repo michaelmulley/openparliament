@@ -250,7 +250,7 @@ def statement_permalink(request, doc, statement, template, **kwargs):
         'title': title,
         'who': who,
         'page': {'object_list': [statement]},
-        'doc': doc,
+        'document': doc,
         'statement': statement,
         'statements_full_date': True,
         'statement_url': statement.get_absolute_url(),
