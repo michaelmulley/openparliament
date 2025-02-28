@@ -88,7 +88,8 @@ class BillDetailView(ModelDetailView):
             'title': ('Bill %s' % bill.number) + (' (Historical)' if bill.session.end else ''),
             'statements_full_date': True,
             'statements_context_link': tab == 'mentions',
-            'similar_bills': bill.similar_bills.all().order_by('-introduced')
+            'similar_bills': bill.similar_bills.all().order_by('-session_id', '-introduced')[:8],
+            'same_number_bills': Bill.objects.filter(number=bill.number).exclude(id=bill.id).order_by('-session_id')[:6],
         }
 
         if tab == 'mentions':

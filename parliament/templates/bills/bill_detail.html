@@ -92,7 +92,19 @@ $(function () {
 {% if bill.name %}
 <div class="row">
   <div class="context-col"><h2>Elsewhere</h2></div>
-  <div class="main-col"><p>All sorts of information on this bill is available at <a href="{{ bill.legisinfo_url }}">LEGISinfo</a>, an excellent resource from the Library of Parliament.{% if bill.text_docid %} You can also read the <a href="{{ bill.get_billtext_url }}">full text of the bill</a>.{% endif %}</p></div>
+  <div class="main-col"><p>All sorts of information on this bill is available at <a href="{{ bill.legisinfo_url }}">LEGISinfo</a>, an excellent resource from Parliament.{% if bill.text_docid %} You can also read the <a href="{{ bill.get_billtext_url }}">full text of the bill</a>.{% endif %}</p>
+  {% if same_number_bills %}<p>Bill numbers are reused for different bills each new session. Perhaps you were looking for one of these other {{ bill.number }}s:</p>
+    <div class="row tile small-up-1 medium-up-2">
+      {% for same_number_bill in same_number_bills %}{% if same_number_bill not in similar_bills %}
+      <div class="column column-block threeline overflowtip">
+        <a href="{{ same_number_bill.get_absolute_url }}">{{ same_number_bill.number }} ({% if same_number_bill.introduced %}{{ same_number_bill.introduced.year }}{% else %}{{ same_number_bill.session.start.year }}{% endif %})</a>
+        {% if same_number_bill.law %}<span class="tag bill_law">Law</span>{% endif %}
+        {% if same_number_bill.short_title %}{{ same_number_bill.short_title }}{% else %}{{ same_number_bill.name }}{% endif %}
+      </div>
+      {% endif %}{% endfor %}
+    </div>
+  {% endif %}
+  </div>
 </div>
 {% endif %}
 
