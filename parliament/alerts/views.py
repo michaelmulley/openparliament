@@ -203,11 +203,21 @@ def unsubscribe(request, key):
     try:
         subscription_id = Signer(salt='alerts_unsubscribe').unsign(key)
         subscription = get_object_or_404(Subscription, id=subscription_id)
-        subscription.active = False
-        subscription.save()
-        if settings.PARLIAMENT_DB_READONLY:
-            mail_admins("Unsubscribe request", subscription_id)
+        
+        if request.method == 'POST':
+            # Only unsubscribe on POST request
+            if settings.PARLIAMENT_DB_READONLY:
+                mail_admins("Unsubscribe request", subscription_id)
+            else:
+                subscription.active = False
+                subscription.save()
+            ctx['unsubscribed'] = True
+        else:
+            ctx['unsubscribed'] = not subscription.active
+
         ctx['query'] = subscription.topic
+        ctx['email'] = subscription.user.email
+        ctx['key'] = key
     except BadSignature:
         ctx['key_error'] = True
     t = loader.get_template("alerts/unsubscribe.html")

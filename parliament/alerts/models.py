@@ -212,7 +212,10 @@ class Subscription(models.Model):
             rendered['text'],
             '"openparliament.ca alerts" <alerts@contact.openparliament.ca>',
             [self.user.email],
-            headers={'List-Unsubscribe': '<' + self.get_unsubscribe_url(full=True) + '>'}
+            headers={
+                'List-Unsubscribe': '<' + self.get_unsubscribe_url(full=True) + '>',
+                'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click'
+            }
         )
         if getattr(settings, 'PARLIAMENT_ALERTS_BCC', ''):
             msg.bcc = [settings.PARLIAMENT_ALERTS_BCC]

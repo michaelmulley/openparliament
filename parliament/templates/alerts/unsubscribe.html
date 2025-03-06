@@ -3,7 +3,21 @@
 {% block content %}
 <div class="row align-right">
 <div class="main-col">
-    {% if key_error %}<p>There was a problem with your link. Try copying and pasting it from your e-mail program to the address bar above.</p>{% else %}<h3>You're off the list</h3><p>You shouldn't get any more e-mails from us for the topic <em>{{ query }}</em>.</p>{% endif %}
+    {% if key_error %}
+        <p>There was a problem with your link. Try copying and pasting it from your e-mail program to the address bar above.</p>
+    {% elif unsubscribed %}
+        <h3>You're off the list</h3>
+        <p>You've been unsubscribed from email alerts for the topic <em>{{ query }}</em>.</p>
+    {% else %}
+        <h3>Confirm Unsubscribe</h3>
+        <p>Are you sure you want to unsubscribe <strong>{{ email }}</strong> from email alerts for the topic <em>{{ query }}</em>?</p>
+        
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="button">Yes, unsubscribe me</button>
+            <a href="{% url 'alerts_list' %}" class="button secondary">Cancel</a>
+        </form>
+    {% endif %}
 </div>
 </div>
 {% endblock %}
