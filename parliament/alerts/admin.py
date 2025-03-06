@@ -2,14 +2,6 @@ from django.contrib import admin
 
 from parliament.alerts.models import *
 
-class PoliticianAlertAdmin(admin.ModelAdmin):
-    
-    list_display = ('email', 'politician', 'active', 'created')
-    search_fields = ('email', 'politician__name')
-    
-admin.site.register(PoliticianAlert, PoliticianAlertAdmin)
-
-
 class TopicAdmin(admin.ModelAdmin):
 
     list_display = ['query', 'created', 'last_found']

@@ -238,25 +238,3 @@ class Subscription(models.Model):
             logger.error("settings.PARLIAMENT_SEND_EMAIL must be True to send mail")
             print(msg.subject)
             print(msg.body)
-
-
-class PoliticianAlert(models.Model):
-    
-    email = models.EmailField('Your e-mail')
-    politician = models.ForeignKey(Politician, on_delete=models.CASCADE)
-    active = models.BooleanField(default=False)
-    created = models.DateTimeField(default=datetime.datetime.now)
-    
-    objects = models.Manager()
-    public = ActiveManager()
-    
-    def get_key(self):
-        h = hashlib.sha1()
-        h.update(str(self.id))
-        h.update(self.email)
-        h.update(settings.SECRET_KEY)
-        return base64.urlsafe_b64encode(h.digest()).replace('=', '')
-    
-    def __str__(self):
-        return "%s for %s (%s)" % \
-            (self.email, self.politician.name, 'active' if self.active else 'inactive')
