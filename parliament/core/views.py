@@ -8,7 +8,7 @@ from django.utils.html import conditional_escape
 from django.views.decorators.cache import never_cache
 
 from parliament.core.models import Session, SiteNews
-from parliament.bills.models import VoteQuestion
+from parliament.bills.models import VoteQuestion, Bill
 from parliament.hansards.models import Document
 from parliament.core.templatetags.markup import markdown
 from parliament.text_analysis.models import TextAnalysis
@@ -16,12 +16,17 @@ from parliament.text_analysis.models import TextAnalysis
 def home(request):
     t = loader.get_template("home.html")
     latest_hansard = Document.debates.filter(date__isnull=False, public=True)[0]
+    recently_debated_bills = Bill.objects.filter(
+            latest_debate_date__isnull=False).order_by('-latest_debate_date').values(
+                'session', 'number', 'name_en', 'short_title_en'
+            )[:6]
     c = {
         'latest_hansard': latest_hansard,
         'sitenews': SiteNews.objects.filter(active=True,
             date__gte=datetime.datetime.now() - datetime.timedelta(days=90))[:6],
         'votes': VoteQuestion.objects.filter(session=Session.objects.current())
             .select_related('bill')[:6],
+        'recently_debated_bills': recently_debated_bills,
         'wordcloud_js': TextAnalysis.objects.get_wordcloud_js(
             key=latest_hansard.get_text_analysis_url())
     }

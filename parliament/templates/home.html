@@ -1,4 +1,4 @@
-{% extends "base.html" %}{% load i18n %}
+{% extends "base.html" %}{% load i18n ours %}
 
 {% block pagetitle %}Keeping tabs on Canada’s Parliament{% endblock %}
 {% block breadcrumbs_all %}{% endblock %}
@@ -32,6 +32,14 @@
     </div>
   </div>
 </div>
+{% if recently_debated_bills %}
+<div class="row">
+  <div class="context-col"><h2>Recently debated bills</h2></div>
+  <div class="columns"><div class="row tile small-up-1 medium-up-2">
+    {% for bill in recently_debated_bills %}<div class="column column-block twoline overflowtip"><a href="{% url "bill" session_id=bill.session bill_number=bill.number %}">{{ bill.number }}</a> {% if bill.short_title_en %}{{ bill.short_title_en|strip_act }}{% else %}{{ bill.name_en|strip_act }}{% endif %}</div>{% endfor %}
+  </div></div>
+  </div>
+{% endif %}
 {% if votes %}
 <div class="row">
   <div class="context-col"><h2>Recent votes</h2></div>
