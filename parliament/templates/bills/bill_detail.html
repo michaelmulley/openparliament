@@ -13,6 +13,22 @@ $(function () {
   	window.history.pushState(null, null, this.href);
     window.OP.AJAXNavigate(this.href);
 	});
+  
+  // Redirect links within summary to appear within the bill page
+  document.addEventListener("click", function (event) {
+    let target = event.target.closest(".ai_summary a");
+    if (target && target.getAttribute("href")?.startsWith("/debates/")) {
+        event.preventDefault();
+        // Call AJAXNavigate with the URL of this page, with ?speech= plus the URL of the target a,
+        // stripped of the #anchor part
+        let href = target.getAttribute("href");
+        let url = new URL(window.location.href);
+        let anchor = href.split("#")[1];
+        url.searchParams.set("speech", href.split('#')[0]);
+        url.searchParams.delete("page");
+        window.OP.AJAXNavigate(url.href, '#' + anchor)
+    }
+  });
 
 	$(window).on('contentLoad', function() {
     // General pagination code takes care of most of the work; we just need to update

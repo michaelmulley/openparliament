@@ -1,4 +1,5 @@
 import datetime
+import logging
 from urllib.parse import urlencode
 
 from django.contrib.syndication.views import Feed
@@ -18,6 +19,8 @@ from parliament.core.models import Session
 from parliament.core.utils import is_ajax
 from parliament.hansards.models import Statement, Document
 from parliament.summaries.models import Summary
+
+logger = logging.getLogger(__name__)
 
 def bill_pk_redirect(request, bill_id):
     bill = get_object_or_404(Bill, pk=bill_id)
@@ -43,6 +46,13 @@ class BillDetailView(ModelDetailView):
             pagenum = int(request.GET.get('page', '1'))
         except ValueError:
             pagenum = 1
+
+        if request.GET.get('speech'):
+            try:
+                idx = list(qs.values_list('urlcache', flat=True)).index(request.GET['speech'])
+                pagenum = int(idx / per_page) + 1
+            except ValueError:
+                logger.warning("Speech %s not found in BillDetailView", request.GET['speech'])            
         try:
             return paginator.page(pagenum)
         except (EmptyPage, InvalidPage):
@@ -90,7 +100,7 @@ class BillDetailView(ModelDetailView):
             'statements_full_date': True,
             'statements_context_link': tab == 'mentions',
             'similar_bills': bill.similar_bills.all().order_by('-session_id', '-introduced')[:8],
-            'same_number_bills': Bill.objects.filter(number=bill.number).exclude(id=bill.id).order_by('-session_id')[:6],
+            'same_number_bills': Bill.objects.filter(number=bill.number).exclude(id=bill.id).order_by('-session_id')[:4],
         }
 
         if tab == 'mentions':

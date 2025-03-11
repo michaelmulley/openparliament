@@ -47,10 +47,9 @@ def _get_pagination_context(context):
     # Add 'django.core.context_processors.request' to settings.TEMPLATE_CONTEXT_PROCESSORS beforehand
     request = context['request']
     params = request.GET.copy()
-    if 'page' in params:
-        del params['page']
-    if 'partial' in params:
-        del params['partial']
+    for exclude_param in ('page', 'partial', 'speech'):
+        if exclude_param in params:
+            del params[exclude_param]
     get_params = params.urlencode()
 
     return {
