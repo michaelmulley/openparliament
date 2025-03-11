@@ -133,6 +133,11 @@ class Bill(models.Model):
     status_date = models.DateField(blank=True, null=True, db_index=True)
     status_code = models.CharField(max_length=50, blank=True)
 
+    # The date of the latest major debate on this bill (2nd/3rd/report). This is set
+    # when importing Hansard and is intended only for a recently-debated-bills list;
+    # it shouldn't be considered complete or authoritative.
+    latest_debate_date = models.DateField(blank=True, null=True, db_index=True)
+
     added = models.DateField(default=datetime.date.today, db_index=True)
     introduced = models.DateField(blank=True, null=True)
     text_docid = models.IntegerField(blank=True, null=True,

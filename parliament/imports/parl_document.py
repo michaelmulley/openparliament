@@ -223,6 +223,12 @@ def import_document(document: Document, allow_reimport=True, prompt_on_slug_chan
             s._related_vote.context_statement = s
             s._related_vote.save()
 
+    bills_debated = set(s.bill_debated for s in statements if s.bill_debated and s.bill_debate_stage not in ('other', '1'))
+    for bill in bills_debated:
+        if bill.latest_debate_date is None or bill.latest_debate_date < document.date:
+            bill.latest_debate_date = document.date
+            bill.save()
+
     document.last_imported = datetime.datetime.now()
     if not (old_statements or document.first_imported):
         document.first_imported = document.last_imported
