@@ -1,6 +1,6 @@
+import ipaddress
 import json
 import urllib.request, urllib.parse, urllib.error
-import urllib.request, urllib.error, urllib.parse
 from functools import wraps
 
 from django.db import models
@@ -145,6 +145,6 @@ def is_ajax(request):
 
 def get_client_ip(request) -> str:
     ip = request.META['REMOTE_ADDR']
-    if ip in ('127.0.0.1', '::1') and 'HTTP_X_REAL_IP' in request.META:
+    if ipaddress.ip_address(ip).is_private and 'HTTP_X_REAL_IP' in request.META:
         ip = request.META['HTTP_X_REAL_IP']
     return ip
