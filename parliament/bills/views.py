@@ -333,8 +333,11 @@ class BillListFeed(Feed):
     
 class BillFeed(Feed):
 
-    def get_object(self, request, bill_id):
-        return get_object_or_404(Bill, pk=bill_id)
+    def get_object(self, request, bill_id=None, session_id=None, bill_number=None):
+        if bill_id:
+            return get_object_or_404(Bill, pk=bill_id)
+        else:
+            return get_object_or_404(Bill, session=session_id, number=bill_number)
 
     def title(self, bill):
         return "Bill %s" % bill.number
