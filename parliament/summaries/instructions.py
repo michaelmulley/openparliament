@@ -20,7 +20,7 @@ Use the following structure:
     }
 ]
 
-Here's an example:
+Here's an example (for a different bill):
 [
     {
         "headline": "Supports bill C-95",
@@ -40,3 +40,15 @@ Here's an example:
 ]
 
 """
+
+BILL_READING_INSTRUCTIONS_PARTY_SCHEMA = {
+    "type": "ARRAY",
+    "items": {
+        "type": "OBJECT",
+        "properties": {
+            "headline": {"type":"STRING"},
+            "source_paragraph_url": {"type":"STRING"},
+            "summary": {"type":"STRING"}
+        }
+    }
+}

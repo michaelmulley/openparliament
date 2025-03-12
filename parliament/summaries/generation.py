@@ -12,7 +12,7 @@ from django.db.models import Sum, Max, Count
 from parliament.hansards.models import Statement
 from parliament.hansards.utils import get_major_speeches, group_by_party
 from parliament.bills.models import Bill
-from .llm import get_llm_response
+from .llm import get_llm_response, LLMProviderError
 from .models import Summary
 from . import instructions
 
@@ -22,17 +22,17 @@ class LinkError(Exception):
     pass
 
 
-def _statement_to_text(s: Statement) -> str:
+def _statement_to_text(s: Statement, para_urls=True) -> str:
     r = f"Name: {s.name_info['display_name']}\n"
     r += f"URL: {s.urlcache}\n"
     if s.member and not s.name_info.get('speaker'):
         r += f"Party: {s.member.party.short_name}\nRiding: {s.member.riding.name}\n"
     if s.name_info.get('post'):
         r += f"Title: {s.name_info['post']}\n"
-    return r + "\n\n" + s.text_plain(include_paragraph_urls=True)
+    return r + "\n\n" + s.text_plain(include_paragraph_urls=para_urls)
 
-def get_transcript(statements: Iterable[Statement]) -> str:
-    return "\n\n----\n\n".join(_statement_to_text(s) for s in statements)
+def get_transcript(statements: Iterable[Statement], para_urls=True) -> str:
+    return "\n\n----\n\n".join(_statement_to_text(s, para_urls=para_urls) for s in statements)
 
 def _load_json_response(llm_response: str) -> dict:
     if llm_response.startswith('```json'):
@@ -58,6 +58,8 @@ def retry(times: int, exceptions: tuple[Exception]):
                         '%d of %d' % (e, func, attempt, times)
                     )
                     attempt += 1
+                    if isinstance(e, LLMProviderError):
+                        sleep(45)
             return func(*args, **kwargs)
         return newfn
     return decorator    
@@ -102,7 +104,7 @@ def _gen_string(length=6):
     return ''.join(random.choices(characters, k=length))
 
 def _call_llm_with_munged_urls(instructions: str, text: str, model: str | None = None,
-                     chat_history = []) -> tuple[str, dict]:
+                     **kwargs) -> tuple[str, dict]:
     # In developing this, I often had problems where LLMs would hallucinate URLs when asked
     # to link back to specific paragraphs. But they weren't wholesale hallucinations, they were
     # little modifications to the actual URLs. I found this occurred much less often if the URLs
@@ -122,8 +124,7 @@ def _call_llm_with_munged_urls(instructions: str, text: str, model: str | None =
             urls_lookup[new_url] = url
         return urls[url]
     text2 = re.sub(r'/(?:debates|committees)/[^\s\]]+', replace_url, text)
-    resp, meta = get_llm_response(instructions, text2, model=model, 
-                                  chat_history=chat_history)
+    resp, meta = get_llm_response(instructions, text2, model=model, **kwargs)
     def unreplace_url(match):
         try:
             return urls_lookup[match.group(0)]
@@ -151,10 +152,11 @@ def create_reading_summary(bill: Bill, reading: Literal['2','3','report'], model
     metadata.append(meta)
 
     # For each party, get individual summary bullets
-    @retry(1, (LinkError, json.JSONDecodeError, KeyError))
+    @retry(2, (LinkError, json.JSONDecodeError, KeyError, LLMProviderError))
     def _get_party_summary(party_name, party_speeches):
         party_transcript = get_transcript(party_speeches)
-        resp, meta = _call_llm_with_munged_urls(instructions.BILL_READING_INSTRUCTIONS_PARTY, party_transcript)
+        resp, meta = _call_llm_with_munged_urls(instructions.BILL_READING_INSTRUCTIONS_PARTY, party_transcript,
+                                                json_schema=instructions.BILL_READING_INSTRUCTIONS_PARTY_SCHEMA)
         json_resp = _load_json_response(resp)
         party_summary = f"**{party_name}**\n\n"
         for bullet in json_resp:
@@ -167,8 +169,9 @@ def create_reading_summary(bill: Bill, reading: Literal['2','3','report'], model
     # Start with the party of the bill's sponsor
     if bill.sponsor_member:
         sponsor_party = bill.sponsor_member.party.short_name
-        _get_party_summary(sponsor_party, major_speeches_by_party[sponsor_party])
-        del major_speeches_by_party[sponsor_party]
+        if sponsor_party in major_speeches_by_party:
+            _get_party_summary(sponsor_party, major_speeches_by_party[sponsor_party])
+            del major_speeches_by_party[sponsor_party]
 
     for party_name, party_speeches in major_speeches_by_party.items():
         _get_party_summary(party_name, party_speeches)
@@ -185,6 +188,8 @@ def update_reading_summaries(session):
     debates_avail = debate_states.values('bill_debated', 'bill_debate_stage').annotate(
         words=Sum("wordcount"), latest=Max("time"), count=Count("id"))
     
+    tasks = []
+    
     for row in debates_avail:
         if row['words'] < 2000:
             continue
@@ -199,6 +204,10 @@ def update_reading_summaries(session):
         except Summary.DoesNotExist:
             pass
 
-        summ = create_reading_summary(bill, row['bill_debate_stage'])
-        print(summ)
-        sleep(21)
+        tasks.append((bill, row['bill_debate_stage']))
+
+    if tasks:
+        print(f"{len(tasks)} summaries to generate")
+        for bill, stage in tasks:
+            summ = create_reading_summary(bill, stage)
+            print(summ)

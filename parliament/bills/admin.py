@@ -5,8 +5,8 @@ from parliament.bills.models import *
 class BillOptions(admin.ModelAdmin):
     search_fields = ['number']
     raw_id_fields = ('sponsor_member','sponsor_politician','similar_bills')
-    list_display = ('number', 'name', 'session', 'privatemember', 'sponsor_politician', 'added', 'introduced')
-    list_filter = ('institution', 'privatemember', 'added', 'session', 'introduced', 'status_date')
+    list_display = ('number', 'name', 'session', 'privatemember', 'sponsor_politician', 'added', 'introduced', 'latest_debate_date')
+    list_filter = ('institution', 'privatemember', 'added', 'session', 'introduced', 'status_date', 'latest_debate_date')
     ordering = ['-introduced']
 
 class BillTextOptions(admin.ModelAdmin):

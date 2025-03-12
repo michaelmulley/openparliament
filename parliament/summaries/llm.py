@@ -1,3 +1,6 @@
+from collections import deque
+from functools import wraps
+import time
 from typing import Literal
 
 from django.conf import settings
@@ -11,20 +14,55 @@ class LLMProviderError(Exception):
     pass
 
 def get_llm_response(instructions: str, text: str, model: str | None = None,
-                     chat_history: list[tuple[Literal["user", "model"], str]] = []) -> tuple[str, dict]:
+                     chat_history: list[tuple[Literal["user", "model"], str]] = [],
+                     json_schema: dict = {}) -> tuple[str, dict]:
     if model is None:
         model = DEFAULT_MODEL
     provider, model = model.split(':', 1)
     if provider == 'google':
-        response_text, metadata = _get_llm_response_google(instructions, text, model, chat_history)
+        response_text, metadata = _get_llm_response_google(instructions, text, model, chat_history, json_schema)
     elif provider == 'or':
+        if json_schema:
+            raise NotImplementedError
         response_text, metadata = _get_llm_response_openrouter(instructions, text, model, chat_history)
     else:
         raise ValueError(f"Unknown provider: {provider}")
     metadata['instructions'] = instructions
     return (response_text, metadata)
 
-def _get_llm_response_google(instructions, text, model, chat_history) -> tuple[str, dict]:
+def rate_limit(n_calls: int, per: int):
+    """
+    A decorator that limits the rate of function calls to n_calls every per seconds..
+    If the function is called more frequently, the decorator will make the caller
+    sleep until the rate limit allows another call.
+    """
+    def decorator(func):
+        call_timestamps = deque()
+        
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            current_time = time.time()
+            
+            while call_timestamps and current_time - call_timestamps[0] > per:
+                call_timestamps.popleft()
+            
+            # If we've reached the limit, sleep until we can make another call
+            if len(call_timestamps) >= n_calls:
+                oldest_timestamp = call_timestamps[0]
+                sleep_time = per - (current_time - oldest_timestamp)
+                if sleep_time > 0:
+                    time.sleep(sleep_time)
+                    current_time = time.time()
+            
+            call_timestamps.append(current_time)
+            return func(*args, **kwargs)
+        
+        return wrapper
+    
+    return decorator
+
+@rate_limit(n_calls=15, per=75)
+def _get_llm_response_google(instructions, text, model, chat_history, json_schema) -> tuple[str, dict]:
     api_key = settings.GEMINI_API_KEY
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 
@@ -41,6 +79,12 @@ def _get_llm_response_google(instructions, text, model, chat_history) -> tuple[s
             "parts": {"text": instructions}
         }
     }
+
+    if json_schema:
+        req['generationConfig'] = {
+            "response_mime_type": "application/json",
+            "response_schema": json_schema
+        }
 
     response = requests.post(url, json=req, params=dict(key=api_key), headers={
         "Content-Type": "application/json",
