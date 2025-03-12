@@ -63,12 +63,19 @@
     // Share textbox URL
     $element.find('input.statement-url').val(OP.BASE_URL + $statement.attr('data-url'));
 
-    var parldocurl = $('a[data-hoc-doc-url]').attr('href');
     var statementid = $statement.attr('data-hocid');
-    if (parldocurl && statementid) {
-      $element.find('.parl-links').show().find('.transcript').attr('href', parldocurl + '#Int-' + statementid);
+    if (statementid && /^\d+$/.test(statementid)) {
+      // Only statement IDs that are just digits are actually original, so only use those
+      var parldocurl = $('a[data-hoc-doc-url]').attr('href');    
+      if (parldocurl) {
+        var parlstateurl = parldocurl + '#Int-' + statementid;
+      }
+      else {
+        var parlstateurl = $statement.attr('data-url') + 'parl-redirect/';
+      }
+      $element.find('.parl-links').show().find('.transcript').attr('href', parlstateurl);
       $element.find('.parl-links .video').attr('href', 
-        'http://parlvu.parl.gc.ca/Embed/' + OP.LANG.toLowerCase() + '/i/' + statementid + '?ml='
+        'https://www.ourcommons.ca/embed/' + OP.LANG.toLowerCase() + '/i/' + statementid + '?ml='
         + OP.LANG.toLowerCase() + '&vt=watch');
     }
     else {

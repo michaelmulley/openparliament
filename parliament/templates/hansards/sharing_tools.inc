@@ -6,6 +6,5 @@
 		</div>
 	</div>
 	<p>Share on <a class="twitter">Twitter</a> or <a class="facebook">Facebook</a></p>
-	<!-- <p class="parl-links">Go to Parliament&rsquo;s site: <a class="transcript">transcript</a> or <a class="video">video</a>.</p> -->
-	<p class="parl-links">View on <a target="_blank" class="transcript">Parliament&rsquo;s site</a></p>
+	<p class="parl-links">Go to Parliament&rsquo;s site: <a class="transcript" target="_blank">transcript</a> or <a class="video" target="_blank">video</a>.</p>
 </div>

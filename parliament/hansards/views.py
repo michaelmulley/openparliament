@@ -258,6 +258,14 @@ def statement_permalink(request, doc, statement, template, **kwargs):
     }
     ctx.update(kwargs)
     return HttpResponse(t.render(ctx, request))
+
+def statement_ourcommons_redirect(doc, slug):
+    """Redirect to the statement on ourcommons.ca."""
+    statement = _get_statement_by_slug(doc, slug)
+    return HttpResponseRedirect(doc.url + '#' + statement.source_id)
+
+def hansard_ourcommons_redirect(request, year, month, day, slug):
+    return statement_ourcommons_redirect(_get_hansard(year, month, day), slug)
     
 def document_cache(request, document_id, language):
     document = get_object_or_404(Document, pk=document_id)

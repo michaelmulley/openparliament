@@ -9,7 +9,7 @@
 {% block content %}
 <div class="row align-right">
 <div class="main-col">
-	<p>Evidence of meeting #{{ meeting.number }} for <a href="{{ committee.get_absolute_url }}">{{ committee.name }}</a> in the {{ meeting.session }}. (The <a href="{{ document.url }}">original version</a> is on Parliament&rsquo;s site{% if meeting.minutes_url %}, as are the <a href="{{ meeting.minutes_url }}">minutes</a>{% endif %}.)
+	<p>Evidence of meeting #{{ meeting.number }} for <a href="{{ committee.get_absolute_url }}">{{ committee.name }}</a> in the {{ meeting.session }}. (The <a href="{{ document.url }}" data-hoc-doc-url>original version</a> is on Parliament&rsquo;s site{% if meeting.minutes_url %}, as are the <a href="{{ meeting.minutes_url }}">minutes</a>{% endif %}.)
 		{% if document.most_frequent_word %}The <span class="tipunderline" data-tooltip title="Most frequently spoken word, compared to other similar meetings.">winning word</span> was <strong>{{ document.most_frequent_word }}</strong>.{% endif %}</p>
 {% if meeting.webcast_url %}<p>A <a href="{{ meeting.webcast_url }}" target="_blank">{% if meeting.televised %}video{% else %}recording{% endif %}</a> is available from Parliament.</p>{% endif %}
 </div>

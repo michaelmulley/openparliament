@@ -10,7 +10,7 @@ from django.template import loader
 from parliament.committees.models import Committee, CommitteeMeeting, CommitteeActivity
 from parliament.core.api import ModelListView, ModelDetailView, APIFilters
 from parliament.core.models import Session
-from parliament.hansards.views import document_view, statement_permalink
+from parliament.hansards.views import document_view, statement_permalink, statement_ourcommons_redirect
 from parliament.hansards.models import Statement, Document
 from parliament.text_analysis.models import TextAnalysis
 from parliament.text_analysis.views import TextAnalysisView
@@ -182,6 +182,10 @@ class CommitteeMeetingView(ModelDetailView):
                 'committee': meeting.committee
             })
 committee_meeting = CommitteeMeetingView.as_view()
+
+def evidence_ourcommons_redirect(request, committee_slug, session_id, number, slug):
+    meeting = _get_meeting(committee_slug, session_id, number)
+    return statement_ourcommons_redirect(meeting.evidence, slug)
 
 class EvidenceAnalysisView(TextAnalysisView):
 
