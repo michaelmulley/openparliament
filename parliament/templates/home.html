@@ -24,12 +24,10 @@
   <div class="context-col"><h2>What they’re talking about</h2></div>
   <div class="main-col">
     <p>The latest House transcript is from <strong>{{ latest_hansard.date|date:"F jS"}}</strong>{% if latest_hansard.most_frequent_word %}, when the <span class="tipunderline" data-tooltip title="Most frequently spoken word, compared to other recent debates.">word of the day</span> was <strong>{{ latest_hansard.most_frequent_word }}</strong>{% endif %}. These are the topics that were discussed.</p>
-    <div class="row tile dense small-up-2 medium-up-3 large-up-4">
-  	  {% with latest_hansard.get_absolute_url as latest_hansard_url %}
-      {% for topic in latest_hansard.topics_with_qp %}
-        <div class="column column-block oneline overflowtip"><a href="{{ latest_hansard_url }}{{ topic.1 }}/#hl">{{ topic.0 }}</a></div>{% endfor %}
-      {% endwith %}
-    </div>
+    {% if hansard_topics_ai_summary %}{% include "ai_warning.inc" %}{% endif %}
+    {% include "hansards/topics_list.inc" with topics_data=hansard_topics_data document=latest_hansard only %}
+    {% if hansard_topics_ai_summary %}{% include "summary_poll.inc" with summary=hansard_topics_ai_summary %}{% endif %}
+
   </div>
 </div>
 {% if recently_debated_bills %}

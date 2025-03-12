@@ -221,6 +221,7 @@ class Document(models.Model):
                     'slug': st[2],
                     'politician': bool(st[3]),
                     'minister': bool(st[3] and ('Minister ' in st[1] or 'Ministre ' in st[1])),
+                    'source_id': st[4],
                 }
                 if st[1]:
                     info['description'] = st[1]

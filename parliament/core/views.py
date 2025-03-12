@@ -10,18 +10,22 @@ from django.views.decorators.cache import never_cache
 from parliament.core.models import Session, SiteNews
 from parliament.bills.models import VoteQuestion, Bill
 from parliament.hansards.models import Document
+from parliament.hansards.utils import get_hansard_sections_or_summary
 from parliament.core.templatetags.markup import markdown
 from parliament.text_analysis.models import TextAnalysis
 
 def home(request):
     t = loader.get_template("home.html")
     latest_hansard = Document.debates.filter(date__isnull=False, public=True)[0]
+    hansard_topics_data, hansard_topics_summary_obj = get_hansard_sections_or_summary(latest_hansard)
     recently_debated_bills = Bill.objects.filter(
             latest_debate_date__isnull=False).order_by('-latest_debate_date').values(
                 'session', 'number', 'name_en', 'short_title_en'
             )[:6]
     c = {
         'latest_hansard': latest_hansard,
+        'hansard_topics_data': hansard_topics_data,
+        'hansard_topics_ai_summary': hansard_topics_summary_obj,
         'sitenews': SiteNews.objects.filter(active=True,
             date__gte=datetime.datetime.now() - datetime.timedelta(days=90))[:6],
         'votes': VoteQuestion.objects.filter(session=Session.objects.current())

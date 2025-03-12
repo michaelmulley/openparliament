@@ -1,5 +1,5 @@
 {% extends "hansards/base.html" %}
-{% block pagetitle %}{% if highlight_statement %}{{ highlight_statement.name_info.display_name }}, &quot;{{ highlight_statement.topic }}&quot; on {% else %}Debates of {% endif %}{{ hansard.date|date:"N jS, Y" }}{% endblock %}
+{% block pagetitle %}{% if highlight_statement %}{% if highlight_statement.name_info.display_name %}{{ highlight_statement.name_info.display_name }}, {% endif %}&quot;{{ highlight_statement.topic }}&quot; on {% else %}Debates of {% endif %}{{ hansard.date|date:"N jS, Y" }}{% endblock %}
 {% block pageheading %}Debates of {{ hansard.date|date:"N jS, Y" }}{% endblock %}
 
 {% block breadcrumbs %}<li><a href="{% url "debates" %}">Debates</a></li> <li><a href="{% url "debates_by_year" year=hansard.date.year %}">{{ hansard.date.year }}</a></li> <li>{{ hansard.date|date:"F jS" }}</li>{% endblock %}
@@ -22,12 +22,12 @@
 
 <div class="row">
 	<div class="context-col"><h2>Topics</h2></div>
-	<div class="main-col"><div class="row tile dense small-up-2 medium-up-3 large-up-4">
-{% with hansard.get_absolute_url as my_url %}
-	{% for topic in hansard.topics_with_qp %}<div class="column column-block oneline overflowtip"><a href="{% if singlepage %}#s{{ topic.1 }}{% else %}{{ my_url }}{{ topic.1 }}/#hl{% endif %}">{{ topic.0 }}</a></div>{% endfor %}
-{% endwith %}
-	</div></div>
-</div>
+	<div class="main-col">
+		{% if hansard_topics_ai_summary %}{% include "ai_warning.inc" %}{% endif %}
+		{% include "hansards/topics_list.inc" with topics_data=hansard_topics_data document=hansard only %}
+		{% if hansard_topics_ai_summary %}{% include "summary_poll.inc" with summary=hansard_topics_ai_summary %}{% endif %}
+	</div>
+</div>	
 
 <div id="paginated">
 

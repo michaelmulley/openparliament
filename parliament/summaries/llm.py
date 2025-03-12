@@ -7,27 +7,29 @@ from django.conf import settings
 
 import requests
 
-DEFAULT_MODEL = 'google:gemini-2.0-flash'
-# DEFAULT_MODEL = 'gemini-2.0-pro-exp-02-05'
+class llms:
+    QUICK = 'google:gemini-2.0-flash'
+    THINKING = 'google:gemini-2.5-flash-preview-04-17'
+    EXPERT = 'google:gemini-2.5-pro-exp-03-25'
 
 class LLMProviderError(Exception):
     pass
 
 def get_llm_response(instructions: str, text: str, model: str | None = None,
                      chat_history: list[tuple[Literal["user", "model"], str]] = [],
-                     json_schema: dict = {}) -> tuple[str, dict]:
+                     json: bool | dict = False, temperature: float | None = None,
+                     top_p: float | None = None) -> tuple[str, dict]:
     if model is None:
-        model = DEFAULT_MODEL
+        model = llms.QUICK
     provider, model = model.split(':', 1)
     if provider == 'google':
-        response_text, metadata = _get_llm_response_google(instructions, text, model, chat_history, json_schema)
-    elif provider == 'or':
-        if json_schema:
-            raise NotImplementedError
-        response_text, metadata = _get_llm_response_openrouter(instructions, text, model, chat_history)
+        response_text, metadata = _get_llm_response_google(instructions, text, model, chat_history, json,
+                                                            temperature, top_p)
+    elif provider == 'or':  
+        response_text, metadata = _get_llm_response_openrouter(instructions, text, model, chat_history, json)
     else:
         raise ValueError(f"Unknown provider: {provider}")
-    metadata['instructions'] = instructions
+
     return (response_text, metadata)
 
 def rate_limit(n_calls: int, per: int):
@@ -62,7 +64,8 @@ def rate_limit(n_calls: int, per: int):
     return decorator
 
 @rate_limit(n_calls=15, per=75)
-def _get_llm_response_google(instructions, text, model, chat_history, json_schema) -> tuple[str, dict]:
+def _get_llm_response_google(instructions, text, model, chat_history, json,
+                             temperature, top_p) -> tuple[str, dict]:
     api_key = settings.GEMINI_API_KEY
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
 
@@ -77,14 +80,19 @@ def _get_llm_response_google(instructions, text, model, chat_history, json_schem
         } for c in contents],
         "system_instruction": {
             "parts": {"text": instructions}
-        }
+        },
+        'generationConfig': {}
     }
 
-    if json_schema:
-        req['generationConfig'] = {
-            "response_mime_type": "application/json",
-            "response_schema": json_schema
-        }
+    if json:
+        req['generationConfig']['response_mime_type'] = "application/json"
+        if isinstance(json, dict):
+            req['generationConfig']['response_schema'] = json
+
+    if temperature:
+        req['generationConfig']['temperature'] = temperature
+    if top_p:
+        req['generationConfig']['topP'] = top_p
 
     response = requests.post(url, json=req, params=dict(key=api_key), headers={
         "Content-Type": "application/json",
@@ -96,18 +104,27 @@ def _get_llm_response_google(instructions, text, model, chat_history, json_schem
             message = response.text
         raise LLMProviderError(f"Google responded with status {response.status_code}: {message}")
     response_json = response.json()
+    if response_json['candidates'][0]['finishReason'] != 'STOP':
+        raise LLMProviderError(f"Google responded with finish reason {response_json['candidates'][0]['finishReason']}")
     response_text = response_json['candidates'][0]['content']['parts'][0]['text']
+    thought_tokens = response_json['usageMetadata'].get('thoughtsTokenCount', 0)
     metadata = {
         "model": response_json['modelVersion'],
         "provider": "google-gemini",
         "tokens": {
             "request": response_json['usageMetadata']['promptTokenCount'],
-            "response": response_json['usageMetadata']['candidatesTokenCount']
+            "response": response_json['usageMetadata']['candidatesTokenCount'] - thought_tokens,
+            "thought": thought_tokens
         }
     }
+    if temperature:
+        metadata["temperature"] = temperature
+    if top_p:
+        metadata["top_p"] = top_p
+
     return (response_text, metadata)
 
-def _get_llm_response_openrouter(instructions, text, model, chat_history) -> tuple[str, dict]:
+def _get_llm_response_openrouter(instructions, text, model, chat_history, json) -> tuple[str, dict]:
     messages = [("system", instructions)] + chat_history + [("user", text)]
     req = {
         "model": model, 
@@ -119,6 +136,9 @@ def _get_llm_response_openrouter(instructions, text, model, chat_history) -> tup
         ],
         "provider": {"allow_fallbacks": False}
     }
+    if json:
+        # haven't written code for schemas in openrouter yet, just request json response
+        req['response_format'] = dict(type='json_object')
     resp = requests.post(
       url="https://openrouter.ai/api/v1/chat/completions",
       headers={

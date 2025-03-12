@@ -1,6 +1,8 @@
-import datetime, re, types
+import datetime, re
 
 from django import template
+from django.utils.html import conditional_escape
+from django.utils.safestring import mark_safe
 
 from parliament.core.models import PROVINCE_LOOKUP
 
@@ -104,3 +106,25 @@ def list_prefix(value, arg):
 @register.filter(name='list_filter')
 def list_filter(value, arg):
     return [x for x in value if x != arg]
+
+@register.filter(name='round')
+def roundfilter(value, arg):
+    return round(value, int(arg))
+
+@register.filter(name='friendly_minutes')
+def friendly_minutes(mins):
+    if mins <= 45:
+        return f'{mins} minutes'
+    hours = round(mins / 60)
+    return "1 hour" if hours == 1 else f"{hours} hours"
+
+@register.filter(name="markdown_links")
+def markdown_links(text):
+    """
+    Process Markdown, but only links and bold to prevent unexpected results.
+    """
+    text = conditional_escape(text)
+    text = re.sub(r'\[(.*?)\]\((/.*?)\)', r'<a href="\2">\1</a>', text)
+    # Also convert Markdown bolded text
+    text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
+    return mark_safe(text)

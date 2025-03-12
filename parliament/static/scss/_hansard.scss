@@ -232,7 +232,7 @@ span.wordoftheday {
 }
 .ai_warning_text {
   font-style: italic;
-  span {
+  .hl {
     background-color: #fcf1d5;
   }
 }
@@ -240,10 +240,25 @@ span.wordoftheday {
   text-align: right;
   span {
     font-style: italic;
+  }
+  .hl {
     background-color: #fcf1d5;
   }
   button {
     margin: 10px 5px;
+  }
+}
+
+#hansard-topics .hansard-topics-subsection {
+  row-gap: 2rem;
+  &.dense {
+    row-gap: .6rem;
+  }
+  border-left: 2px #cacaca solid;
+  margin-left: .1rem; 
+  margin-bottom: 1.6rem;
+  .column {
+    margin-bottom: 0;
   }
 }
 

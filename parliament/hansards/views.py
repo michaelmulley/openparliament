@@ -15,6 +15,7 @@ from parliament.core.utils import is_ajax
 from parliament.hansards.models import Document, Statement, OldSlugMapping
 from parliament.text_analysis.models import TextAnalysis
 from parliament.text_analysis.views import TextAnalysisView
+from .utils import get_hansard_sections_or_summary
 
 def _get_hansard(year, month, day):
     try:
@@ -126,7 +127,7 @@ def document_view(request, document, meeting=None, slug=None):
                 s for s in statements.object_list if s.sequence == highlight_statement_seq)
         except StopIteration:
             raise Http404
-        
+                
     ctx = {
         'document': document,
         'page': statements,
@@ -136,6 +137,9 @@ def document_view(request, document, meeting=None, slug=None):
     }
     if document.document_type == Document.DEBATE:
         ctx['hansard'] = document
+        topics_data, topics_ai_summary_obj = get_hansard_sections_or_summary(document)
+        ctx['hansard_topics_data'] = topics_data
+        ctx['hansard_topics_ai_summary'] = topics_ai_summary_obj
         if highlight_statement:
             ctx['pagination_url'] = document.get_absolute_url()
     elif document.document_type == Document.EVIDENCE:
@@ -158,9 +162,9 @@ def document_view(request, document, meeting=None, slug=None):
 
     return HttpResponse(t.render(ctx, request))
 
-
 class SpeechesView(ModelListView):
 
+    @staticmethod
     def document_filter(qs, view, filter_name, filter_extra, val):
         u = val.strip('/').split('/')
         if len(u) < 4:

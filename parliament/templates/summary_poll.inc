@@ -1,4 +1,4 @@
-<div class="summary_poll"><span>Was this summary helpful and accurate?</span><br>
+<div class="summary_poll"><span {% if hl %}class="hl"{% endif %}>Was this summary helpful and accurate?</span><br>
     <button class="button hollow small" onclick="OP.summary_poll_vote(3, '{{summary.id}}', '{{ summary|escapejs }}')">Yes</button>
     <button class="button hollow small" onclick="OP.summary_poll_vote(2, '{{summary.id}}', '{{ summary|escapejs }}')">Sort of</button>
     <button class="button hollow small" onclick="OP.summary_poll_vote(1, '{{summary.id}}', '{{ summary|escapejs }}')">No</button></div>
