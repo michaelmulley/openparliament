@@ -1,3 +1,5 @@
+// EDITED mm@openparliament -- see EDITED comment below
+
 // This is the annotated source code for
 // [VisualSearch.js](http://documentcloud.github.com/visualsearch/),
 // a rich search box for real data.
@@ -213,9 +215,12 @@ VS.ui.SearchBox = Backbone.View.extend({
       if (view.model == model) return true;
     });
 
-    _.defer(function() {
-      facetView.enableEdit();
-    });
+    if (model.get('value') == '') {
+      // EDITED mm@openparliament: don't focus added facet if it already has a value
+      _.defer(function() {
+        facetView.enableEdit();
+      });
+    }
   },
 
   // Changing a facet programmatically re-renders it.
