@@ -100,7 +100,7 @@ def import_document(document: Document, allow_reimport=True, prompt_on_slug_chan
 
         if pstate.meta.get('bill_stage'):
             bill_number, stage = pstate.meta['bill_stage'].split(',', maxsplit=1)
-            s.bill_debated = Bill.objects.get(number=bill_number, sessions=document.session)
+            s.bill_debated = Bill.objects.get(number=bill_number, session=document.session)
             if stage in ['1', '2', '3', 'report', 'senate']:
                 s.bill_debate_stage = stage
             else:
