@@ -145,7 +145,9 @@ class AmbiguousPostcodeException(Exception):
 EC_POSTCODE_URL = 'https://www.elections.ca/Scripts/vis/FindED?L=e&QID=-1&PAGEID=20&PC=%s'
 r_ec_edid = re.compile(r'&ED=(\d{5})&')
 def postcode_to_edid_ec(postcode):
-    resp = requests.get(EC_POSTCODE_URL % postcode.replace(' ', ''), allow_redirects=False)
+    resp = requests.get(EC_POSTCODE_URL % postcode.replace(' ', ''), allow_redirects=False,
+                        verify=False) # verify=False because EC had some certificate chain issues;
+                                      # I think the risk of MITM to return bad riding IDs is low
     if resp.status_code != 302:
         return None
     redirect_url = resp.headers['Location']
