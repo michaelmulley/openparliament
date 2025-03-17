@@ -329,6 +329,9 @@ class BillListFeed(Feed):
         
     def item_link(self, item):
         return item.get_absolute_url()
+    
+    def item_pubdate(self, item):
+        return datetime.datetime(item.introduced.year, item.introduced.month, item.introduced.day, 12)
         
     
 class BillFeed(Feed):
