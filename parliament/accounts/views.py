@@ -52,7 +52,7 @@ def token_login(request, token):
     redirect_url = reverse('alerts_list')
 
     try:
-        lt = LoginToken.validate(token=token, login_ip=_get_ip(request))
+        lt = LoginToken.validate(token=token, login_ip=get_client_ip(request))
     except TokenError as e:
         messages.error(request, str(e))
         return HttpResponseRedirect(redirect_url)
