@@ -116,7 +116,13 @@ def _update(obj, field, value):
         setattr(obj, field, value)
         obj._changed = True
 
+class OldBillException(Exception):
+    pass
+
 def _import_bill(bd: BillData, session: Session) -> Bill:
+    if session.parliamentnum < 37:
+        raise OldBillException()
+    
     if not bd.is_detailed:
         # Right now it looks like the data model requires one request per bill;
         # I can at some point look closer to see if there's a method at looking

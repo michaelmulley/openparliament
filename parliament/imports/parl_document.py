@@ -22,6 +22,7 @@ from parliament.bills.models import Bill, VoteQuestion
 from parliament.core.models import Politician, ElectedMember, Session
 from parliament.hansards.models import Statement, Document, OldSlugMapping
 from .alpheus import parse_bytes as alpheus_parse_bytes
+from .legisinfo import OldBillException
 
 import logging
 logger = logging.getLogger(__name__)
@@ -291,6 +292,9 @@ def _process_related_link(match, statement):
             bill = Bill.objects.create_temporary_bill(legisinfo_id=hocid,
                 number=match.group(0), session=statement.document.session)
             url = bill.get_absolute_url()
+        except OldBillException:
+            logger.info(f"Old bill, not importing: #{hocid} {text}")
+            return text
         title = bill.name
         statement._mentioned_bills.add(bill)
     elif link_type == 'vote':
