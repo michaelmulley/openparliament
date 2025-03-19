@@ -66,8 +66,12 @@ class Committee(models.Model):
         return self.committeeinsession_set.order_by('-session__start')[0].get_source_url()
 
     def get_acronym(self, session):
-        return CommitteeInSession.objects.get(
-            committee=self, session=session).acronym
+        if not hasattr(self, '_acronyms'):
+            self._acronyms = {}
+        if session not in self._acronyms:
+            self._acronyms[session] = CommitteeInSession.objects.get(
+                committee=self, session=session).acronym
+        return self._acronyms[session]
 
     def latest_session(self):
         return self.sessions.order_by('-start')[0]
