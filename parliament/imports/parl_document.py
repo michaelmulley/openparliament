@@ -21,7 +21,7 @@ import requests
 from parliament.bills.models import Bill, VoteQuestion
 from parliament.core.models import Politician, ElectedMember, Session
 from parliament.hansards.models import Statement, Document, OldSlugMapping
-from .alpheus import parse_bytes as alpheus_parse_bytes
+from . import alpheus
 from .legisinfo import OldBillException
 
 import logging
@@ -33,7 +33,7 @@ class ReimportException(Exception):
 @transaction.atomic
 def import_document(document: Document, allow_reimport=True, prompt_on_slug_change=False,
                     xml_en: bytes | None = None, xml_fr: bytes | None = None):
-    old_statements = None
+    old_statements = was_multilingual = None
     if document.statement_set.all().exists():
         if not allow_reimport:
             raise Exception("Statements already exist for %r and allow_reimport is False" % document)
@@ -42,11 +42,10 @@ def import_document(document: Document, allow_reimport=True, prompt_on_slug_chan
     
     if not xml_en:
         xml_en = document.get_cached_xml('en')
-    pdoc_en = alpheus_parse_bytes(xml_en)
-
+    pdoc_en = alpheus.parse_bytes(xml_en)
     if not xml_fr:
         xml_fr = document.get_cached_xml('fr')
-    pdoc_fr = alpheus_parse_bytes(xml_fr)
+    pdoc_fr = alpheus.parse_bytes(xml_fr)
     
     if document.date and document.date != pdoc_en.meta['date']:
         # Sometimes they get the date wrong
@@ -109,6 +108,44 @@ def import_document(document: Document, allow_reimport=True, prompt_on_slug_chan
 
         statements.append(s)
 
+    _incorporate_french_document(document, statements, pdoc_fr)
+
+    if old_statements:
+        if was_multilingual and not document.multilingual:
+            raise ReimportException("Document was multilingual but now isn't")
+        _assign_slugs_on_reimport(
+            document, statements, old_statements, prompt_on_slug_change)
+        document.statement_set.all().delete()
+    else:
+        Statement.set_slugs(statements)
+        
+    for s in statements:
+        s.save()
+
+        s.mentioned_politicians.add(*list(s._mentioned_pols))
+        s.mentioned_bills.add(*[b for b in s._mentioned_bills if b != s.bill_debated])
+        if getattr(s, '_related_vote', False):
+            s._related_vote.context_statement = s
+            s._related_vote.save()
+
+    bills_debated = set(s.bill_debated for s in statements 
+                        if s.bill_debated and s.bill_debate_stage not in ('other', '1'))
+    for bill in bills_debated:
+        if bill.latest_debate_date is None or bill.latest_debate_date < document.date:
+            bill.latest_debate_date = document.date
+            bill.save()
+
+    document.last_imported = datetime.datetime.now()
+    if not (old_statements or document.first_imported):
+        document.first_imported = document.last_imported
+    document.save()
+
+    return document
+
+def _incorporate_french_document(document: Document, statements: list[Statement],
+                                 pdoc_fr: alpheus.AlpheusDocument) -> None:
+    """Given an Alpheus import of a French XML document, adds French metadata
+    and text to the existing Statement objects (derived from the English import)."""
     if len(statements) != len(pdoc_fr.statements):
         logger.info("French and English statement counts don't match for %r" % document)
 
@@ -162,80 +199,57 @@ def import_document(document: Document, allow_reimport=True, prompt_on_slug_chan
                 st.h2_fr = fr_data.meta.get('h2', '')
                 st.h3_fr = fr_data.meta.get('h3', '')
                 if st.h1_fr and not st.h2_fr:
-                    st.h2_fr = s.h3_fr
+                    st.h2_fr = st.h3_fr
                     st.h3_fr = ''
                 st.who_fr = fr_data.meta.get('person_attribution', '')[:300]
                 st.who_context_fr = fr_data.meta.get('person_context', '')[:300]
 
-    if old_statements:
-        if was_multilingual and not document.multilingual:
-            raise ReimportException("Document was multilingual but now isn't")
-        
-        old_slugs = set(s.slug for s in old_statements)
-        
-        # Check if we already had, from a previous reimport, slugs in the form of joe-blow-a
-        initial_slug_substitutions = dict()
-        for s in old_slugs:
-            match = re.search(r'^(.+)(-[a-z])(-\d+)$', s)
-            if match:
-                initial_slug_substitutions.setdefault(match.group(1), match.group(1) + match.group(2))
-                if initial_slug_substitutions[match.group(1)] != match.group(1) + match.group(2):
-                    raise ReimportException(f"Processing slug {s}, found existing conflicting substition: {initial_slug_substitutions[match.group(1)]}")
-        Statement.set_slugs(statements, substitute_names=initial_slug_substitutions)
+def _assign_slugs_on_reimport(document: Document, statements: list[Statement],
+                              old_statements: list[Statement], prompt_on_slug_change: bool) -> None:
+    """When reimporting, if there are now a different number of statements by a given person,
+    we want to ensure that existing links that used a statement slug remained valid.
+    
+    This function assign slugs to all statements in `statements`, keeping in mind the previous
+    slugs from `old_statements`. If necessary, OldSlugMapping objects are saved to keep existing links working."""
+    old_slugs = set(s.slug for s in old_statements)
+    
+    # Check if we already had, from a previous reimport, slugs in the form of joe-blow-a
+    initial_slug_substitutions = dict()
+    for s in old_slugs:
+        match = re.search(r'^(.+)(-[a-z])(-\d+)$', s)
+        if match:
+            initial_slug_substitutions.setdefault(match.group(1), match.group(1) + match.group(2))
+            if initial_slug_substitutions[match.group(1)] != match.group(1) + match.group(2):
+                raise ReimportException(f"Processing slug {s}, found existing conflicting substition: {initial_slug_substitutions[match.group(1)]}")
+    Statement.set_slugs(statements, substitute_names=initial_slug_substitutions)
 
-        new_slugs = set(s.slug for s in statements)
-        if old_slugs != new_slugs:
-            logger.warning("Statement slugs changed for %r: %r",
-                           document, old_slugs.symmetric_difference(new_slugs))
-            new_slug_names = initial_slug_substitutions.copy()
-            changed_slug_names = set(re.sub(r'-\d+$', '', s) for s in 
-                                     _map_changed_slugs(old_statements, statements).keys())
-            for n in changed_slug_names:
-                if re.search(r'-[a-z]$', n):
-                    # joe-blow-a -> joe-blow-b
-                    # joe-blow -> joe-blow-b
-                    new_slug_names[n] = re.sub(r'-[a-z]$', lambda match: '-' + chr(ord(match.group()[-1]) + 1), n)
-                    new_slug_names[re.sub(r'-[a-z]$', '', n)] = new_slug_names[n]
-                else:
-                    # joe-blow -> joe-blow-a
-                    new_slug_names[n] = n + '-a'
-            Statement.set_slugs(statements, substitute_names=new_slug_names)
-            slugmap = _map_changed_slugs(old_statements, statements)            
-            print(slugmap)
-            if not slugmap.keys().isdisjoint(slugmap.values()):
-                raise Exception("Overlap between old and new slugs in map_changed_slugs: %r" % slugmap)            
-            if prompt_on_slug_change:
-                sys.stderr.write("Delete and reimport anyway? (y/n) ")
-                if input().strip() != 'y':
-                    raise ReimportException("Not reimporting %r because statement slugs changed" % document)
-            for old_slug, new_slug in slugmap.items():
-                OldSlugMapping(document=document, old_slug=old_slug, new_slug=new_slug).save()
-        document.statement_set.all().delete()
-    else:
-        # if not old_statements, this is much more straightforward
-        Statement.set_slugs(statements)
-        
-    for s in statements:
-        s.save()
-
-        s.mentioned_politicians.add(*list(s._mentioned_pols))
-        s.mentioned_bills.add(*[b for b in s._mentioned_bills if b != s.bill_debated])
-        if getattr(s, '_related_vote', False):
-            s._related_vote.context_statement = s
-            s._related_vote.save()
-
-    bills_debated = set(s.bill_debated for s in statements if s.bill_debated and s.bill_debate_stage not in ('other', '1'))
-    for bill in bills_debated:
-        if bill.latest_debate_date is None or bill.latest_debate_date < document.date:
-            bill.latest_debate_date = document.date
-            bill.save()
-
-    document.last_imported = datetime.datetime.now()
-    if not (old_statements or document.first_imported):
-        document.first_imported = document.last_imported
-    document.save()
-
-    return document
+    new_slugs = set(s.slug for s in statements)
+    if old_slugs != new_slugs:
+        logger.warning("Statement slugs changed for %r: %r",
+                        document, old_slugs.symmetric_difference(new_slugs))
+        new_slug_names = initial_slug_substitutions.copy()
+        changed_slug_names = set(re.sub(r'-\d+$', '', s) for s in 
+                                    _map_changed_slugs(old_statements, statements).keys())
+        for n in changed_slug_names:
+            if re.search(r'-[a-z]$', n):
+                # joe-blow-a -> joe-blow-b
+                # joe-blow -> joe-blow-b
+                new_slug_names[n] = re.sub(r'-[a-z]$', lambda match: '-' + chr(ord(match.group()[-1]) + 1), n)
+                new_slug_names[re.sub(r'-[a-z]$', '', n)] = new_slug_names[n]
+            else:
+                # joe-blow -> joe-blow-a
+                new_slug_names[n] = n + '-a'
+        Statement.set_slugs(statements, substitute_names=new_slug_names)
+        slugmap = _map_changed_slugs(old_statements, statements)            
+        print(slugmap)
+        if not slugmap.keys().isdisjoint(slugmap.values()):
+            raise Exception("Overlap between old and new slugs in map_changed_slugs: %r" % slugmap)            
+        if prompt_on_slug_change:
+            sys.stderr.write("Delete and reimport anyway? (y/n) ")
+            if input().strip() != 'y':
+                raise ReimportException("Not reimporting %r because statement slugs changed" % document)
+        for old_slug, new_slug in slugmap.items():
+            OldSlugMapping(document=document, old_slug=old_slug, new_slug=new_slug).save()
 
 _r_paragraphs = re.compile(r'<p[^>]* data-HoCid=.+?</p>')
 _r_paragraph_id = re.compile(r'<p[^>]* data-HoCid="(?P<id>\d+)"')
