@@ -77,6 +77,8 @@ class BillDetailView(ModelDetailView):
         tab = request.GET.get('tab', '')
         if tab == 'major-speeches': # keep compatibility with old URLs
             tab = 'stage-2'
+        if tab not in ('stage-1', 'stage-2', 'stage-3', 'stage-report', 'mentions', 'meetings'):
+            tab = ''            
         if not tab:
             for priority in ('3','2','1'):
                 if debate_stages.get(priority):
