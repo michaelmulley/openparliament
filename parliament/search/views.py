@@ -88,23 +88,19 @@ def try_postcode_first(request):
     if not match:
         return False
     postcode = match.group(1) + match.group(2)
+    edid = None
     try:
-        x = InternalXref.objects.filter(schema='edid_postcode', text_value=postcode)[0]
-        edid = x.target_id
-    except IndexError:
-        try:
-            edid = postcode_to_edid_ec(postcode)
-            assert edid
-            InternalXref.objects.get_or_create(schema='edid_postcode', text_value=postcode, target_id=edid)
-        except AmbiguousPostcodeException as e:
-            ec_url = e.ec_url if e.ec_url else 'http://elections.ca/'
-            return flatpage_response(request, "You’ve got a confusing postcode",
-                mark_safe("""Some postal codes might cross riding boundaries. It looks like yours is one of them.
-                    If you need to find out who your MP is, visit <a href="%s">this Elections Canada page</a> and
-                    tell them your full address.""" % ec_url))
-        except Exception:
-            logger.exception("elections.ca problem", extra={'request': request})
-            edid = postcode_to_edid_represent(postcode)
+        edid = postcode_to_edid(postcode)
+    except AmbiguousPostcodeException as e:
+        # for example, K7L4V3 or J7B1R5
+        ec_url = e.ec_url if e.ec_url else 'http://elections.ca/'
+        return flatpage_response(request, "You’ve got a confusing postcode",
+            mark_safe("""Some postal codes might cross riding boundaries. It looks like yours is one of them.
+                To find out who your MP is, visit <a href="%s">Elections Canada</a> and
+                tell them your full address.""" % ec_url))
+    except Exception:
+        logger.exception(f"postcode search problem for {postcode}")
+
     if not edid:
         return flatpage_response(request, "Can’t find that postcode",
             mark_safe("""We’re having trouble figuring out where that postcode is.
@@ -121,6 +117,28 @@ def try_postcode_first(request):
             % Riding.objects.get(current=True, edid=edid).dashed_name))
     except ElectedMember.MultipleObjectsReturned:
         raise Exception("Too many MPs for postcode %s" % postcode)
+    
+def postcode_to_edid(postcode: str) -> int | None:
+    x = InternalXref.objects.filter(schema='edid_postcode', text_value=postcode).first()
+    if x:
+        return x.target_id
+    
+    try:
+        edid = postcode_to_edid_ourcommons(postcode)
+        if edid:
+            InternalXref.objects.get_or_create(schema='edid_postcode', text_value=postcode, target_id=edid)
+            return edid
+    except AmbiguousPostcodeException as e:
+        raise
+    except Exception:
+        logger.exception(f"ourcommons.ca postcode search problem {postcode}")
+    
+    edid = postcode_to_edid_ec(postcode)
+    if edid:
+        InternalXref.objects.get_or_create(schema='edid_postcode', text_value=postcode, target_id=edid)
+        return edid
+    
+    return None
 
 def postcode_to_edid_represent(postcode):
     url = 'https://represent.opennorth.ca/postcodes/%s/' % postcode.replace(' ', '')
@@ -156,6 +174,21 @@ def postcode_to_edid_ec(postcode):
         return int(match.group(1))
     raise AmbiguousPostcodeException(postcode=postcode, ec_url=urljoin(EC_POSTCODE_URL, redirect_url))
 
+def postcode_to_edid_ourcommons(postcode):
+    resp = requests.post("https://www.ourcommons.ca/Members/search/members", json={"searchText": postcode})
+    resp.raise_for_status()
+    content = resp.json()
+    if len(content['currentMembers']) == 1:
+        riding_name = content['currentMembers'][0]['constituencyNameEn']
+    elif len(content['currentMembers']) > 1:
+        raise AmbiguousPostcodeException(postcode=postcode)
+    elif len(content['currentMembers']) == 0 and content['pastMembers']:
+        riding_name = content['pastMembers'][0]['constituencyNameEn']
+    else:
+        raise Exception(f"Cannot understand ourcommons response for postcode {postcode}")
+    
+    riding = Riding.objects.get_by_name(riding_name)
+    return riding.edid
 
 def try_politician_first(request):
     try:

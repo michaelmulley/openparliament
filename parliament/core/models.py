@@ -639,7 +639,7 @@ class RidingManager(models.Manager):
         slug = parsetools.slugify(name)
         if slug in RidingManager.FIX_RIDING:
             slug = RidingManager.FIX_RIDING[slug]
-        return self.get_queryset().get(slug=slug)
+        return self.get_queryset().get(slug=slug, current=True)
 
 if settings.LANGUAGE_CODE.startswith('fr'):
     PROVINCE_CHOICES = (
