@@ -197,10 +197,11 @@ class Document(models.Model):
         Keys are names, suitable for displays. Values are dicts with keys:
             slug: Slug of first statement by the person
             politician: Boolean -- is this an MP?
+            minister: Boolean -- is this an elected minister?
             description: Short title or affiliation
         """
         ids_seen = set()
-        speakers = OrderedDict()
+        speakers = dict()
         for st in self.statement_set.filter(who_hocid__isnull=False).values_list(
                 'who_' + settings.LANGUAGE_CODE,            # 0
                 'who_context_' + settings.LANGUAGE_CODE,    # 1
@@ -218,7 +219,8 @@ class Document(models.Model):
             if who not in speakers:
                 info = {
                     'slug': st[2],
-                    'politician': bool(st[3])
+                    'politician': bool(st[3]),
+                    'minister': bool(st[3] and ('Minister ' in st[1] or 'Ministre ' in st[1])),
                 }
                 if st[1]:
                     info['description'] = st[1]
@@ -226,16 +228,12 @@ class Document(models.Model):
         return speakers
 
     def outside_speaker_summary(self):
-        """Same as speaker_summary, but only non-MPs."""
-        return OrderedDict(
-            [(k, v) for k, v in list(self.speaker_summary().items()) if not v['politician']]
-        )
+        """Same as speaker_summary, but not the committee members."""
+        return {k: v for k, v in self.speaker_summary().items() if v['minister'] or not (v['politician'] or k.startswith('Clerk '))}
 
     def mp_speaker_summary(self):
-        """Same as speaker_summary, but only MPs."""
-        return OrderedDict(
-            [(k, v) for k, v in list(self.speaker_summary().items()) if v['politician']]
-        )
+        """Same as speaker_summary, but just the committee members."""
+        return {k: v for k, v in self.speaker_summary().items() if v['politician'] and not v['minister']}
     
     def save_activity(self):
         statements = self.statement_set.filter(procedural=False).select_related('member', 'politician')

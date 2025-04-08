@@ -25,7 +25,7 @@
 {% endif %}
 
 <div class="row">
-	<div class="context-col"><h2>MPs speaking</h2></div>
+	<div class="context-col"><h2>Members speaking</h2></div>
 	<div class="main-col">
 		<div class="row tile dense small-up-1 medium-up-2 large-up-3">
 			{% for speaker_name, speaker_info in document.mp_speaker_summary.items %}<div class="column column-block"><a href="{{ document.get_absolute_url }}{{ speaker_info.slug }}/" {# data-marginalia="{{ speaker_info.description }}" #}>{{ speaker_name }}</a></div>{% endfor %}
@@ -33,14 +33,16 @@
 	</div>
 </div>
 
+{% with document.outside_speaker_summary as outside_speakers %}{% if outside_speakers %}
 <div class="row">
-	<div class="context-col"><h2>Also speaking</h2></div>
+	<div class="context-col"><h2>Before the committee</h2></div>
 	<div class="main-col">
 		<div class="row tile dense small-up-1 medium-up-2">
-			{% for speaker_name, speaker_info in document.outside_speaker_summary.items %}<div class="column column-block"><a href="{{ document.get_absolute_url }}{{ speaker_info.slug }}/">{{ speaker_name }}</a> &nbsp;{{ speaker_info.description }}</div>{% endfor %}
+			{% for speaker_name, speaker_info in outside_speakers.items %}<div class="column column-block"><a href="{{ document.get_absolute_url }}{{ speaker_info.slug }}/">{{ speaker_name }}</a> &nbsp;{{ speaker_info.description }}</div>{% endfor %}
 		</div>
 	</div>
 </div>
+{% endif %}{% endwith %}
 
 <div id="paginated">
 
