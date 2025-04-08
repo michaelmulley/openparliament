@@ -351,10 +351,8 @@ class ParseHandler(object):
                 
     def _is_person(self):
         """Do we know who's speaking the current text?"""
-        if self.current_statement:
-            return bool(self.current_statement.meta.get('person_attribution'))
-        else:
-            return bool(self.one_time_attributes.get('person_attribution'))
+        attributes = self.current_statement.meta if self.current_statement else self.one_time_attributes
+        return bool(attributes.get('person_attribution') or attributes.get('person_id'))
     
     def handle_ParaText(self, el, openclose, procedural=None):
         if openclose == TAG_OPEN:
@@ -422,7 +420,11 @@ class ParseHandler(object):
             self.in_para = True
             
             if not self._is_person():
-                procedural = True
+                if self.current_attributes.get('h2', '').lower() in ('speech from the throne', 'le discours du trône') \
+                        and not self.current_attributes.get('h3'):
+                    self.handle_ThroneSpeech(el, TAG_OPEN)
+                else:
+                    procedural = True
                 
             if mytext.startswith('moved') or mytext.startswith('demande'):
                 procedural = True

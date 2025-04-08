@@ -1,0 +1,883 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<Hansard xml:lang="FR" id="8759785">
+  <StartPageNumber>9</StartPageNumber>
+  <DocumentTitle>
+    <DocumentName>COMPTE RENDU OFFICIEL (HANSARD)</DocumentName>
+  </DocumentTitle>
+  <ExtractedInformation>
+    <ExtractedItem Name="InstitutionDebate">Débats de la Chambre des communes</ExtractedItem>
+    <ExtractedItem Name="Volume">VOLUME 148</ExtractedItem>
+    <ExtractedItem Name="Number">NUMÉRO 002</ExtractedItem>
+    <ExtractedItem Name="Session">1<Sup>re</Sup> SESSION</ExtractedItem>
+    <ExtractedItem Name="Parliament">42<Sup>e</Sup> LÉGISLATURE</ExtractedItem>
+    <ExtractedItem Name="Date">Le vendredi 4 décembre 2015</ExtractedItem>
+    <ExtractedItem Name="SpeakerName">Présidence de l'honorable Geoff Regan</ExtractedItem>
+    <ExtractedItem Name="Institution">CHAMBRE DES COMMUNES</ExtractedItem>
+    <ExtractedItem Name="Country">CANADA</ExtractedItem>
+    <ExtractedItem Name="TOCNote">(La table des matières quotidienne des délibérations se trouve à la fin du présent numéro.)</ExtractedItem>
+    <ExtractedItem Name="HeaderTitle">DÉBATS DES COMMUNES</ExtractedItem>
+    <ExtractedItem Name="HeaderDate"> 4 décembre 2015</ExtractedItem>
+    <ExtractedItem Name="MetaDocumentCategory">DEBATES</ExtractedItem>
+    <ExtractedItem Name="MetaTitle">Edited Hansard * Table of Contents * Number 002 (Official Version)</ExtractedItem>
+    <ExtractedItem Name="MetaTitleEn">Official Report * Table of Contents * Number 002 (Official Version)</ExtractedItem>
+    <ExtractedItem Name="MetaTitleFr">Compte rendu officiel * Table des matières * Numéro 002 (Version officielle)</ExtractedItem>
+    <ExtractedItem Name="MetaVolumeNumber">148</ExtractedItem>
+    <ExtractedItem Name="MetaNumberNumber">002</ExtractedItem>
+    <ExtractedItem Name="MetaDateNumDay">04</ExtractedItem>
+    <ExtractedItem Name="MetaDateNumMonth">12</ExtractedItem>
+    <ExtractedItem Name="MetaDateNumYear">2015</ExtractedItem>
+    <ExtractedItem Name="MetaCreationTime">2015/12/04 14:35:00</ExtractedItem>
+    <ExtractedItem Name="MetaInstitution">House of Commons</ExtractedItem>
+    <ExtractedItem Name="InstitutionDebateFr">Débats de la Chambre des communes</ExtractedItem>
+    <ExtractedItem Name="InstitutionDebateEn">House of Commons Debates</ExtractedItem>
+    <ExtractedItem Name="ParliamentNumber">42</ExtractedItem>
+    <ExtractedItem Name="SessionNumber">1</ExtractedItem>
+    <ExtractedItem Name="InCameraNote" />
+  </ExtractedInformation>
+  <HansardBody>
+    <Intro>
+      <ParaText id="4170570">La séance est ouverte à 14 h 30.</ParaText>
+      <Prayer>Prière</Prayer>
+      <SubjectOfBusiness id="8759803">
+        <SubjectOfBusinessTitle>Ouverture de la législature</SubjectOfBusinessTitle>
+        <CatchLine>Ouverture de la législature</CatchLine>
+        <SubjectOfBusinessContent>
+          <ParaText id="4170571">L'huissier du bâton noir apporte le message suivant:</ParaText>
+          <ParaText id="4170572">
+            <Quote inline="block">
+              <QuotePara Align="Left" IndentFirst="2" IndentRest="1">Monsieur le Président, c'est le désir de Son Excellence le gouverneur général que cette honorable Chambre se rende immédiatement auprès de lui dans la salle du Sénat.</QuotePara>
+            </Quote>
+          </ParaText>
+          <ParaText id="4170573">En conséquence, le Président et les députés se rendent au Sénat.</ParaText>
+        </SubjectOfBusinessContent>
+      </SubjectOfBusiness>
+      <SubjectOfBusiness id="8759829">
+        <Timestamp Hr="14" Mn="35">(1435)</Timestamp>
+        <FloorLanguage language="EN">[<I>Traduction</I>]</FloorLanguage>
+        <SubjectOfBusinessContent>
+          <ParaText id="4170574">
+            <I>Et les députés étant revenus à la Chambre des communes:</I>
+          </ParaText>
+          <Intervention Type="Debate" ToC="Yes" id="8759804" ToCText="Le Président">
+            <PersonSpeaking>
+              <Affiliation DbId="214706" Type="15">Le Président</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170575">À l'ordre, s'il vous plaît. J'ai l'honneur de vous informer que, les Communes s'étant rendues au Sénat sur l'invitation de Son Excellence le gouverneur général, j'ai annoncé à Son Excellence que j'avais été choisi Président. En votre nom, j'ai réclamé les privilèges qui vous sont accordés d'ordinaire et que Son Excellence a bien voulu confirmer.</ParaText>
+            </Content>
+          </Intervention>
+        </SubjectOfBusinessContent>
+      </SubjectOfBusiness>
+      <SubjectOfBusiness id="8759830">
+        <Timestamp Hr="15" Mn="50">(1550)</Timestamp>
+        <SubjectOfBusinessTitle>Les serments d'office</SubjectOfBusinessTitle>
+        <SubjectOfBusinessContent>
+          <Intervention Type="Debate" ToC="Yes" ToCText="M. Trudeau" id="8759831">
+            <PersonSpeaking>
+              <Affiliation DbId="214296" Type="1">Le très hon. Justin Trudeau (premier ministre, Lib.) </Affiliation>
+            </PersonSpeaking>
+            <Content>
+              <ProceduralText TocType="TPC" id="1">Projet de loi C-1. Présentation et première lecture</ProceduralText>
+              <ParaText id="4170576"> demande à présenter le projet de loi <Document DbId="8060929" Type="3">C-1</Document>, Loi concernant la prestation de serments d'office.</ParaText>
+              <ProceduralText TocType="TCC" TocText="Adoption des motions; première lecture du projet de loi" id="2">(Les motions sont réputées adoptées et le projet de loi est lu pour la première fois.)</ProceduralText>
+            </Content>
+          </Intervention>
+        </SubjectOfBusinessContent>
+      </SubjectOfBusiness>
+      <SubjectOfBusiness id="8759861">
+        <SubjectOfBusinessTitle>Le discours du Trône</SubjectOfBusinessTitle>
+        <SubjectOfBusinessContent>
+          <Intervention Type="Debate" ToC="Yes" ToCText="Le Président" id="8759810">
+            <PersonSpeaking>
+              <Affiliation DbId="214706" Type="15">Le Président</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170577">J'ai l'honneur d'informer la Chambre que, lorsque celle-ci s'est rendue auprès de Son Excellence le gouverneur général aujourd'hui, au Sénat, il a plu à Son Excellence de prononcer un discours devant les deux Chambres du Parlement. Afin d'éviter les erreurs, j'en ai obtenu le texte, que voici: </ParaText>
+            </Content>
+          </Intervention>
+          <ParaText id="4170578">
+            <I>Honorables Sénatrices et Sénateurs,
+</I>
+          </ParaText>
+          <ParaText id="4170579">
+            <I>Mesdames et Messieurs les Députés,
+</I>
+          </ParaText>
+          <ParaText id="4170580">
+            <I>Mesdames et Messieurs,
+</I>
+          </ParaText>
+          <ParaText id="4170581">En tant que représentant de Sa Majesté la Reine, je suis heureux d’être ici pour prononcer le discours du Trône.</ParaText>
+          <ParaText id="4170582">
+Je souhaite la cordiale bienvenue à ceux qui reprennent leurs fonctions de parlementaires, ainsi qu’à ceux qui reviennent après une absence. Sachez que votre expérience est précieuse.</ParaText>
+          <ParaText id="4170583">
+Je souhaite également la bienvenue aux 197 députés nouvellement élus. Notre pays a besoin de votre enthousiasme et de nouvelles idées.
+</ParaText>
+          <ParaText id="4170584">J’invite tous les parlementaires à travailler ensemble dans un nouvel esprit d’innovation, d’ouverture et de collaboration.
+</ParaText>
+          <ParaText id="4170585">En tant que gouverneur général, j’ai moi-même vu combien le Canada est un grand pays, d’un océan à l’autre.</ParaText>
+          <ParaText id="4170586">
+Je sais aussi qu’il peut être meilleur.
+</ParaText>
+          <ParaText id="4170587">Comment?
+</ParaText>
+          <ParaText id="4170588">Nous devons plus que jamais être avisés et bienveillants.
+</ParaText>
+          <ParaText id="4170589">Notre époque n’exige rien de moins.</ParaText>
+          <ParaText id="4170590">
+Le Canada prospère en grande partie parce que les diverses perspectives et opinions y sont célébrées, et non tues.</ParaText>
+          <ParaText id="4170591">
+Il en sera de même au Parlement.
+</ParaText>
+          <ParaText id="4170592">Tous les membres y seront honorés, respectés et entendus, peu importe leur allégeance. Car ici, en ces chambres, la voix de tous les Canadiens et Canadiennes est importante. 
+</ParaText>
+          <ParaText id="4170593">N’oublions pas toutefois que les Canadiens et Canadiennes ont clairement indiqué qu’ils souhaitaient un réel changement. Ils veulent que leur gouvernement fasse différentes choses, et ce, différemment.
+</ParaText>
+          <ParaText id="4170594">Ils veulent pouvoir faire confiance à leur gouvernement. 
+</ParaText>
+          <ParaText id="4170595">En outre, ils veulent un leadership axé sur ce qui est le plus important pour eux.
+</ParaText>
+          <ParaText id="4170596">Par exemple, des mesures qui favorisent la croissance économique, créent des emplois, renforcent la classe moyenne et aident ceux et celles qui travaillent fort pour en faire partie.
+</ParaText>
+          <ParaText id="4170597">En écoutant attentivement et en se comportant de façon respectueuse, le gouvernement peut relever ces défis et tous les autres qui se présenteront à lui.
+</ParaText>
+          <ParaText id="4170598">En concertant ses efforts au service de tous les Canadiens et Canadiennes, le gouvernement peut apporter de vrais changements. 
+</ParaText>
+          <ParaText id="4170599">Et voici comment il s’y prendra.
+<ForceColumnBreak /></ParaText>
+          <ParaText id="4170600">
+            <B>CROISSANCE DE LA CLASSE MOYENNE</B>
+          </ParaText>
+          <ParaText id="4170601">Premièrement, le gouvernement estime que tous les Canadiens et Canadiennes devraient avoir des chances réelles et égales de réussite, laquelle repose sur le renforcement et la croissance de la classe moyenne. 
+</ParaText>
+          <ParaText id="4170602">La priorité immédiate du gouvernement sera donc une baisse d’impôts pour la classe moyenne. 
+</ParaText>
+          <ParaText id="4170603">Pour l’économie canadienne, il s’agit d’une mesure équitable et judicieuse. 
+</ParaText>
+          <ParaText id="4170604">Le gouvernement s’est aussi engagé à accorder une aide directe à ceux qui en ont besoin en donnant moins à ceux pour qui ce n’est pas le cas. Et c’est exactement ce que permettra de faire la nouvelle Allocation canadienne aux enfants.
+</ParaText>
+          <ParaText id="4170605">En outre, puisque l’investissement public est essentiel pour stimuler et soutenir la croissance économique, la création d’emplois et la prospérité économique, le gouvernement fera de nouveaux investissements majeurs dans le transport en commun, les infrastructures vertes et les infrastructures sociales.
+</ParaText>
+          <ParaText id="4170606">Afin de donner aux Canadiens et aux Canadiennes une retraite plus sûre, le gouvernement travaillera avec les provinces et les territoires en vue d’améliorer le Régime de pensions du Canada.
+</ParaText>
+          <ParaText id="4170607">Le système d’assurance-emploi sera renforcé pour qu’il soutienne plus efficacement à la fois l’économie du pays et tous les Canadiens et Canadiennes qui en ont besoin.
+</ParaText>
+          <ParaText id="4170608">Afin d’améliorer les perspectives d’avenir des jeunes Canadiens et Canadiennes, particulièrement ceux provenant de familles à revenu faible ou moyen, le gouvernement travaillera avec les provinces et les territoires pour rendre l’éducation postsecondaire plus abordable.
+</ParaText>
+          <ParaText id="4170609">Et pour contribuer à la santé et au bien-être de l’ensemble des citoyens, le gouvernement amorcera le travail avec les provinces et les territoires pour mettre en place un nouvel accord sur la santé.
+</ParaText>
+          <ParaText id="4170610">Le gouvernement réalisera ces initiatives, parmi d’autres, tout en respectant un plan de gestion financière responsable et transparent, et adapté aux périodes économiques difficiles.
+</ParaText>
+          <ParaText id="4170611">
+            <B>UN GOUVERNEMENT OUVERT ET TRANSPARENT</B>
+          </ParaText>
+          <ParaText id="4170612">Deuxièmement, le gouvernement s’engage à être ouvert et transparent.</ParaText>
+          <ParaText id="4170613">
+La confiance des Canadiens et Canadiennes à l’égard des institutions publiques — y compris le Parlement — a parfois été brisée. En faisant preuve de plus d’ouverture et de transparence, le Parlement peut rétablir cette confiance. 
+</ParaText>
+          <ParaText id="4170614">Pour veiller à ce que chaque vote compte, le gouvernement mènera des consultations sur la réforme électorale, puis fera en sorte que l’élection de 2015 aura été la dernière à être menée selon le système électoral majoritaire à un tour.
+</ParaText>
+          <ParaText id="4170615">Pour rétablir la confiance de la population et mettre fin à la partisanerie, le gouvernement respectera son engagement concernant la réforme du Sénat en mettant sur pied un nouveau processus non partisan et fondé sur le mérite afin de conseiller le premier ministre concernant les nominations au Sénat. 
+</ParaText>
+          <ParaText id="4170616">Et pour que les Canadiens et Canadiennes se fassent mieux entendre à la Chambre des communes, il favorisera la tenue de débats ouverts et le recours au vote libre. En outre, il réformera et renforcera les comités. 
+</ParaText>
+          <ParaText id="4170617">Il faut également souligner ce que le gouvernement ne fera pas: il n’utilisera pas les publicités du gouvernement à des fins partisanes, il n’entravera pas le travail des agents parlementaires, et il n’aura pas recours à des mécanismes tels que la prorogation et les projets de loi omnibus pour éviter les examens minutieux.
+</ParaText>
+          <ParaText id="4170618">
+            <B>UN ENVIRONNEMENT SAIN ET UNE ÉCONOMIE FORTE</B>
+          </ParaText>
+          <ParaText id="4170619">Troisièmement, le gouvernement prouvera aux Canadiens et Canadiennes ainsi qu’au monde entier qu’un environnement sain et une économie forte vont de pair. L’un est impossible sans l’autre. 
+</ParaText>
+          <ParaText id="4170620">La protection de l’environnement et la croissance de l’économie ne sont pas des objectifs incompatibles; en fait, notre succès futur repose sur les deux.</ParaText>
+          <ParaText id="4170621">
+La semaine dernière, les premiers ministres se sont réunis avant les discussions internationales sur les changements climatiques. Il s’agissait de la première étape d’un important processus en cours.
+</ParaText>
+          <ParaText id="4170622">En travaillant ensemble, le gouvernement continuera d’assurer un leadership alors que le Canada travaille à mettre un prix sur le carbone et à réduire la pollution par le carbone.
+</ParaText>
+          <ParaText id="4170623">Pour favoriser la croissance économique, le gouvernement réalisera des investissements stratégiques dans les technologies propres, fournira un soutien accru aux entreprises qui cherchent à exporter ces technologies, et prêchera par l’exemple en ce qui en trait à leur utilisation.
+</ParaText>
+          <ParaText id="4170624">Et dans le cadre des efforts destinés à rétablir la confiance de la population, le gouvernement mettra en place de nouveaux processus d’évaluation environnementale.
+</ParaText>
+          <ParaText id="4170625">Les commentaires du public seront sollicités et pris en compte, les effets sur l’environnement seront compris et atténués, les décisions seront fondées sur les données scientifiques, et les peuples autochtones participeront davantage à l’examen et à la surveillance des grands projets d’exploitation des ressources. 
+</ParaText>
+          <ParaText id="4170626">
+            <B>LA DIVERSITÉ FAIT LA FORCE DU CANADA </B>
+          </ParaText>
+          <ParaText id="4170627">Quatrièmement, le programme du gouvernement tient compte de la diversité qui fait la force du Canada.
+</ParaText>
+          <ParaText id="4170628">Les Canadiens et Canadiennes ont élu un gouvernement qui nous rassemblera, et non qui nous opposera les uns aux autres. Le Canada est fort, non pas malgré nos différences, mais grâce à elles.
+</ParaText>
+          <ParaText id="4170629">La force du Canada réside entre autres dans nos expériences communes, dans la diversité qui inspire notre pays et le monde, et dans la façon dont nous nous traitons mutuellement.</ParaText>
+          <ParaText id="4170630"> 
+Parce qu’il s’agit de la bonne marche à suivre et aussi d’une façon de stimuler la croissance économique, le gouvernement rétablira la relation de nation à nation entre le Canada et les peuples autochtones, une relation fondée sur la reconnaissance des droits, le respect, la coopération et le partenariat.</ParaText>
+          <ParaText id="4170631">
+Entre autres mesures, le gouvernement collaborera à la mise en œuvre de recommandations de la Commission de vérité et réconciliation du Canada, lancera une enquête sur les femmes et les filles autochtones disparues et assassinées, et travaillera avec les Premières Nations afin que chaque enfant d’une Première Nation reçoive une éducation de qualité.
+</ParaText>
+          <ParaText id="4170632">Le gouvernement facilitera le processus permettant aux immigrants de s’établir et de réussir au Canada, d’être réunis avec leur famille et de contribuer au succès économique de l’ensemble des citoyens canadiens.</ParaText>
+          <ParaText id="4170633">
+En réponse au besoin urgent qui se fait sentir à l’échelle internationale, et en se fondant sur le désir d’aider qu’expriment les Canadiens et Canadiennes, le gouvernement accueillera 25 000 nouveaux citoyens en provenance de la Syrie d’ici la fin février 2016.
+</ParaText>
+          <ParaText id="4170634">En reconnaissance des services rendus par les anciens combattants du Canada, le gouvernement déploiera davantage d’efforts pour les aider ainsi que leur famille.
+</ParaText>
+          <ParaText id="4170635">Le gouvernement appuiera la société CBC/Radio-Canada, encouragera l’utilisation des langues officielles du pays, et investira dans les industries culturelles et créatives canadiennes.
+</ParaText>
+          <ParaText id="4170636">
+            <B>SÉCURITÉ ET POSSIBILITÉS</B>
+          </ParaText>
+          <ParaText id="4170637">Cinquièmement, le gouvernement s’engage à accroître la sécurité des Canadiens et Canadiennes et à leur offrir plus de possibilités.
+</ParaText>
+          <ParaText id="4170638">Le peuple canadien est ouvert, tolérant et généreux. Nous savons qu’en aidant ceux dans le besoin, nous renforçons nos collectivités et les rendons plus sûres et plus prospères.</ParaText>
+          <ParaText id="4170639"> 
+Le gouvernement renforcera ses relations avec ses alliés, notamment avec les États-Unis, son meilleur ami et partenaire.</ParaText>
+          <ParaText id="4170640">
+Sur le plan international, le gouvernement axera ses efforts d’aide au développement sur l’assistance aux plus pauvres et aux plus vulnérables.
+</ParaText>
+          <ParaText id="4170641">Pour aider à faire avancer la paix dans le monde, le gouvernement renouvellera l’engagement du Canada à l’égard des opérations de maintien de la paix des Nations Unies et continuera de collaborer avec ses alliés dans la lutte contre le terrorisme.
+</ParaText>
+          <ParaText id="4170642">Pour assurer la sécurité des Canadiens et Canadiennes et être prêt à agir au besoin, le gouvernement lancera un processus d’examen ouvert et transparent des capacités de défense actuelles, et investira pour bâtir une force militaire rationalisée, plus souple et mieux équipée. 
+</ParaText>
+          <ParaText id="4170643">Afin d’élargir les possibilités économiques offertes aux Canadiens et Canadiennes, le gouvernement négociera des ententes commerciales avantageuses et saisira d’autres occasions dans les marchés émergents.
+</ParaText>
+          <ParaText id="4170644">Le gouvernement reconnaît que le Canada est un pays fondamentalement sécuritaire où la paix règne, et il travaillera à assurer la sécurité de la population tout en protégeant les droits et les libertés que nous chérissons.
+</ParaText>
+          <ParaText id="4170645">Cela comprend le dépôt de mesures législatives qui accroîtront le soutien aux survivants de la violence conjugale et d’agressions sexuelles, qui contribueront à faire disparaître de nos rues les armes de poing et d’assaut, et qui légaliseront et réglementeront la consommation de marijuana et limiteront l’accès à cette substance. 
+</ParaText>
+          <ParaText id="4170646">
+            <B>CONCLUSION</B>
+          </ParaText>
+          <ParaText id="4170647">Le programme présenté aujourd’hui est certes ambitieux, mais il n’a pas été élaboré en vase clos.</ParaText>
+          <ParaText id="4170648">
+Il s’agit plutôt du fruit de conversations avec les Canadiens et Canadiennes, lesquels ont clairement et franchement indiqué au gouvernement ce dont ils ont besoin pour réussir.
+</ParaText>
+          <ParaText id="4170649">Les Canadiens et Canadiennes sont des gens confiants. Nous nous connaissons et savons dans quel pays nous souhaitons vivre.
+</ParaText>
+          <ParaText id="4170650">Nous savons que le Canada est capable de grandes réalisations, et que le succès ne se définit pas uniquement que par nos réussites personnelles, mais aussi par le legs à nos enfants d’un monde meilleur, plus pacifique et prospère.
+</ParaText>
+          <ParaText id="4170651">Lorsque vous songerez à l’importante tâche qui vous attend, n’oubliez pas que les Canadiens et Canadiennes vous ont accordé leur confiance, et que c’est maintenant à vous qu’incombe la responsabilité sacrée de contribuer à bâtir ce monde meilleur.</ParaText>
+          <ParaText id="4170652">
+En mettant l’accent sur la croissance de la classe moyenne; sur un gouvernement ouvert et transparent; sur un environnement sain et une économie forte; sur un Canada plus fort; et sur une meilleure sécurité et plus de possibilités, le gouvernement réalisera le vrai changement. 
+</ParaText>
+          <ParaText id="4170653">Cela prouvera non seulement qu’un monde meilleur est possible, mais qu’il s’agit en fait du résultat inévitable lorsque les Canadiens et Canadiennes travaillent de concert.</ParaText>
+          <ParaText id="4170654">
+Mesdames et Messieurs les Députés, vous serez appelés à voter les crédits nécessaires au financement des services et des dépenses approuvés par le Parlement. 
+</ParaText>
+          <ParaText id="4170655">Honorables Sénateurs et Sénatrices, Mesdames et Messieurs les Députés, puisse la Divine Providence vous guider dans vos réflexions et vous rendre dignes de la confiance qui vous est accordée.
+</ParaText>
+          <FloorLanguage language="FR">[<I>Français</I>]</FloorLanguage>
+          <Intervention Type="Debate" ToC="Yes" ToCText="M. Trudeau" id="8759879">
+            <PersonSpeaking>
+              <Affiliation DbId="214296" Type="1">Le très hon. Justin Trudeau (premier ministre, Lib.) </Affiliation>
+            </PersonSpeaking>
+            <Content>
+              <ProceduralText TocType="TPC" id="3">Motion</ProceduralText>
+              <ParaText id="4170656"> propose:</ParaText>
+              <ParaText id="4170657">
+                <Quote>
+                  <QuotePara Align="Left" IndentFirst="2" IndentRest="1">Que le discours du Trône que Son Excellence a prononcé aujourd'hui devant les deux Chambres du Parlement soit pris en considération plus tard aujourd'hui.</QuotePara>
+                </Quote>
+              </ParaText>
+              <ProceduralText TocType="TCC" TocText="Adoption de la motion" id="4">(La motion est adoptée.)</ProceduralText>
+            </Content>
+          </Intervention>
+        </SubjectOfBusinessContent>
+      </SubjectOfBusiness>
+      <SubjectOfBusiness id="8759863">
+        <SubjectOfBusinessTitle> L'École polytechnique de Montréal</SubjectOfBusinessTitle>
+        <CatchLine>Hommage</CatchLine>
+        <SubjectOfBusinessContent>
+          <Intervention Type="Debate" ToC="Yes" ToCText="Le Président" id="8759847">
+            <PersonSpeaking>
+              <Affiliation DbId="214706" Type="15">Le Président</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170658">À la suite des discussions entre les représentants de tous les partis à la Chambre, je crois comprendre qu'il y a consentement pour observer un moment de silence. </ParaText>
+              <ParaText id="4170659">J'invite les députés à se lever et à observer une minute de silence en mémoire des victimes de l'événement tragique survenu il y a 26 ans à l'École polytechnique de Montréal.</ParaText>
+              <ParaText id="4170660">
+                <I>[On observe un moment de silence.] </I>
+              </ParaText>
+            </Content>
+          </Intervention>
+        </SubjectOfBusinessContent>
+      </SubjectOfBusiness>
+      <SubjectOfBusiness id="8759862">
+        <FloorLanguage language="EN">[<I>Traduction</I>]</FloorLanguage>
+        <SubjectOfBusinessTitle>L'ex-greffière de la Chambre des communes</SubjectOfBusinessTitle>
+        <CatchLine>Ouverture de la législature</CatchLine>
+        <SubjectOfBusinessContent>
+          <Intervention Type="Debate" ToC="Yes" ToCText="M. LeBlanc" id="8759811">
+            <PersonSpeaking>
+              <Affiliation DbId="214317" Type="4">L'hon. Dominic LeBlanc (leader du gouvernement à la Chambre des communes, Lib.)</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170661">Monsieur le Président, il y a eu consultations entre les partis et vous constaterez qu’il y a consentement unanime à l'égard de la motion suivante:</ParaText>
+              <FloorLanguage language="FR">[<I>Français</I>]</FloorLanguage>
+              <ProceduralText TocType="TPC" id="5">Motion</ProceduralText>
+              <ParaText id="4177555">
+                <Quote>
+                  <QuotePara Align="Left" IndentFirst="2" IndentRest="1">Que la Chambre, désirant témoigner sa profonde reconnaissance des longs et distingués services que madame Audrey Elizabeth O'Brien a rendus en sa qualité de greffière de la Chambre des communes, la nomme greffière  émérite et haute fonctionnaire honoraire de la Chambre avec droits d'entrée à la Chambre et lui réserve un siège au bureau.</QuotePara>
+                </Quote>
+              </ParaText>
+            </Content>
+          </Intervention>
+          <FloorLanguage language="EN">[<I>Traduction</I>]</FloorLanguage>
+          <Intervention Type="Debate" ToC="No" ToCText="Le Président" id="8759813">
+            <PersonSpeaking>
+              <Affiliation DbId="214706" Type="15">Le Président</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170663">Le ministre a-t-il le consentement unanime de la Chambre pour présenter la motion?</ParaText>
+              <ParaText id="4170664">
+                <B>Des voix:</B> D'accord. </ParaText>
+              <ParaText id="4170665">
+                <B>Le Président:</B> La Chambre a entendu la motion. Plaît-il à la Chambre de l'adopter? </ParaText>
+              <ParaText id="4170666">
+                <B>Des voix:</B> D'accord.</ParaText>
+              <ProceduralText TocType="TCC" TocText="Adoption de la motion" id="6">(La motion est adoptée.)</ProceduralText>
+            </Content>
+          </Intervention>
+        </SubjectOfBusinessContent>
+      </SubjectOfBusiness>
+      <SubjectOfBusiness id="8759867">
+        <FloorLanguage language="FR">[<I>Français</I>]</FloorLanguage>
+        <SubjectOfBusinessTitle>Le Bureau de régie interne</SubjectOfBusinessTitle>
+        <SubjectOfBusinessContent>
+          <Intervention Type="Debate" ToC="Yes" ToCText="Le Président" id="8759866">
+            <PersonSpeaking>
+              <Affiliation DbId="214706" Type="15">Le Président</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170667">J'ai l'honneur d'informer la Chambre que les députés suivants ont été nommés à titre de membres du Bureau de régie interne, aux fins et en vertu des dispositions du paragraphe 50(2) de la Loi sur le Parlement du Canada. Il s'agit des  honorables <Affiliation DbId="170282" Type="2">Dominic LeBlanc</Affiliation> et <Affiliation DbId="214500" Type="2">Judy Foote</Affiliation>, membres du Conseil privé de la Reine; de <Affiliation DbId="214167" Type="2">M.  Andrew Leslie</Affiliation>, représentant du caucus du parti gouvernemental; de <Affiliation DbId="170616" Type="2">MM. Andrew Scheer</Affiliation> et <Affiliation DbId="214426" Type="2">Gordon Brown</Affiliation>, représentants du caucus du Parti conservateur; et de <Affiliation DbId="170651" Type="2">M. Peter Julian</Affiliation>, représentant du caucus du Nouveau Parti démocratique.</ParaText>
+            </Content>
+          </Intervention>
+        </SubjectOfBusinessContent>
+      </SubjectOfBusiness>
+      <SubjectOfBusiness id="8759837">
+        <FloorLanguage language="EN">[<I>Traduction</I>]</FloorLanguage>
+        <SubjectOfBusinessTitle>Travaux des subsides</SubjectOfBusinessTitle>
+        <SubjectOfBusinessContent>
+          <Intervention Type="Debate" ToC="Yes" ToCText="M. Brison" id="8759814">
+            <PersonSpeaking>
+              <Affiliation DbId="214341" Type="4">L'hon. Scott Brison (président du Conseil du Trésor, Lib.)</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ProceduralText TocType="TPC" id="7">Motion</ProceduralText>
+              <ParaText id="4170672">Monsieur le Président, je propose:</ParaText>
+              <ParaText id="4170673">
+                <Quote>
+                  <QuotePara Align="Left" IndentFirst="2" IndentRest="1">Que la Chambre étudie les travaux des subsides à la prochaine séance.</QuotePara>
+                </Quote>
+              </ParaText>
+              <ProceduralText TocType="TCC" TocText="Adoption de la motion" id="8">(La motion est adoptée.)</ProceduralText>
+            </Content>
+          </Intervention>
+          <Timestamp Hr="15" Mn="55">(1555)</Timestamp>
+          <FloorLanguage language="FR">[<I>Français</I>]</FloorLanguage>
+          <Intervention Type="Debate" ToC="No" ToCText="The Speaker" id="8759816">
+            <PersonSpeaking>
+              <Affiliation DbId="214706" Type="15">Le Président</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170674">Il est de mon devoir d'informer la Chambre qu'un jour au total devra être désigné pour la période des subsides se terminant le 10 décembre 2015.</ParaText>
+            </Content>
+          </Intervention>
+        </SubjectOfBusinessContent>
+      </SubjectOfBusiness>
+      <SubjectOfBusiness id="8759852">
+        <FloorLanguage language="EN">[<I>Traduction</I>]</FloorLanguage>
+        <SubjectOfBusinessTitle>Les Comités pléniers</SubjectOfBusinessTitle>
+        <SubjectOfBusinessQualifier>Nomination du président</SubjectOfBusinessQualifier>
+        <SubjectOfBusinessContent>
+          <Intervention Type="Debate" ToC="Yes" ToCText="Le Président" id="8759818">
+            <PersonSpeaking>
+              <Affiliation DbId="214706" Type="15">Le Président</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ProceduralText TocType="TPC" id="9">Motion</ProceduralText>
+              <ParaText id="4170675">Après mon élection à la présidence, j'ai consulté les chefs des partis reconnus au sujet de la nomination des autres occupants du fauteuil. Je suis maintenant prêt à soumettre à l'approbation de la Chambre un candidat au poste de vice-président de la Chambre et président des comités pléniers.</ParaText>
+              <ParaText id="4170676">Conformément à l'article 7 du Règlement, je propose que M. Stanton soit nommé vice-président de la Chambre et président des comités pléniers.</ParaText>
+              <ParaText id="4170677">La motion est proposée et appuyée d'office. Plaît-il à la Chambre de l'adopter?</ParaText>
+              <ParaText id="4170679">
+                <B>Des voix:</B> D'accord.</ParaText>
+              <ProceduralText TocType="TCC" TocText="Adoption de la motion" id="10">(La motion est adoptée.)</ProceduralText>
+            </Content>
+          </Intervention>
+        </SubjectOfBusinessContent>
+      </SubjectOfBusiness>
+      <SubjectOfBusiness id="8759902">
+        <SubjectOfBusinessTitle>Les comités de la Chambre</SubjectOfBusinessTitle>
+        <SubjectOfBusinessQualifier>Procédure et affaires de la Chambre</SubjectOfBusinessQualifier>
+        <SubjectOfBusinessContent>
+          <Intervention Type="Debate" ToC="Yes" ToCText="M. LeBlanc" id="8759819">
+            <PersonSpeaking>
+              <Affiliation DbId="214317" Type="4">L'hon. Dominic LeBlanc (leader du gouvernement à la Chambre des communes, Lib.)</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170680">Monsieur le Président, je propose:</ParaText>
+              <ParaText id="4170681">
+                <Quote>
+                  <QuotePara Align="Left" IndentFirst="2" IndentRest="1">Que le Comité permanent de la procédure et des affaires de la Chambre soit constitué, afin de dresser et de présenter une liste des députés qui doivent faire partie des comités permanents et mixtes permanents de la Chambre et que ce comité se compose de Larry Bagnell, Arnold Chan, David Graham, Ginette Petitpas Taylor, Ruby Sahota, Anita Vandenbeld, Scott Reid, Randy Hoback, Blake Richards, et David Christopherson.</QuotePara>
+                </Quote>
+              </ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Debate" ToC="No" ToCText="The Speaker" id="8759821">
+            <PersonSpeaking>
+              <Affiliation DbId="214706" Type="15">Le Président</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170682">Plaît-il à la Chambre d'adopter la motion?</ParaText>
+              <ParaText id="4170683">
+                <B>Des voix:</B> D'accord.</ParaText>
+              <ProceduralText TocType="TCC" TocText="Adoption de la motion" id="11">(La motion est adoptée.)</ProceduralText>
+            </Content>
+          </Intervention>
+        </SubjectOfBusinessContent>
+      </SubjectOfBusiness>
+      <SubjectOfBusiness id="8759835">
+        <FloorLanguage language="FR">[<I>Français</I>]</FloorLanguage>
+        <SubjectOfBusinessTitle>Discours du Trône</SubjectOfBusinessTitle>
+        <SubjectOfBusinessQualifier>L'Adresse en réponse</SubjectOfBusinessQualifier>
+        <CatchLine>L'Adresse</CatchLine>
+        <SubjectOfBusinessContent>
+          <ParaText id="4170684">La Chambre passe à l'étude du discours prononcé par Son Excellence le gouverneur général à l'ouverture de la session.</ParaText>
+          <Intervention Type="Debate" ToC="Yes" ToCText="M. Massé (Avignon—La Mitis—Matane—Matapédia)" id="8759828">
+            <PersonSpeaking>
+              <Affiliation DbId="214108" Type="2">M. Rémi Massé (Avignon—La Mitis—Matane—Matapédia, Lib.)</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170685">Monsieur le Président, je suis particulièrement fier d'être ici, à la Chambre, aujourd'hui. Je tiens à remercier les citoyens d'Avignon—La Mitis—Matane—Matapédia de m'avoir fait confiance et de m'avoir élu en tant que député. Je leur en suis très reconnaissant et je travaillerai d'arrache-pied pour bien représenter l'ensemble de nos citoyens au cours de mon mandat. </ParaText>
+              <ParaText id="4170686">Nous nous étions engagés à apporter du vrai changement, et c'est exactement ce que le gouvernement s'engage à faire en faisant les choses différemment. Les Canadiens veulent un gouvernement qui respecte ses engagements et qui se concentre sur ce qui leur importe le plus, comme la croissance économique, la création d'emplois, le renforcement de la classe moyenne et l'aide aux personnes qui travaillent fort pour en faire partie. C'est exactement ce que le discours du Trône vient de réaffirmer aujourd'hui.</ParaText>
+              <ParaText id="4170687"> Concrètement, notre gouvernement réduira les impôts de la classe moyenne. Il instaurera l'allocation canadienne pour enfants, qui sera bonifiée par rapport à ce que les familles ont reçu jusqu'à maintenant, et de surcroît, elle sera non imposable. Ce sera de l'argent qui restera dans les poches des familles.</ParaText>
+              <ParaText id="4170688">Nous serons en mesure de réaliser ces engagements, car nous demandons aux plus riches d'en faire un peu plus pour aider à rééquilibrer la richesse au Canada.</ParaText>
+              <ParaText id="4170689"> Après avoir travaillé fort toute leur vie, les citoyens d'Avignon—La Mitis—Matane—Matapédia, tout comme les autres Canadiennes et Canadiens, méritent une retraite digne et sûre. Nous aiderons les Canadiens à concrétiser cet objectif par un programme de revenu de retraite stable et bien établi. Nous collaborerons avec les provinces et les territoires, les travailleurs, les employeurs et les organismes de retraite pour améliorer le Régime de pensions du Canada. </ParaText>
+              <ParaText id="4170690">Par ailleurs, nous rétablirons l'âge d'admissibilité à la Sécurité de la vieillesse et au Supplément de revenu garanti à 65 ans. Nous augmenterons le Supplément de revenu garanti pour les aînés à faible revenu vivant seuls. Ils disposeront donc de fonds supplémentaires. En outre, pour tenir compte du coût de la vie propre aux aînés, nous avons pris l'engagement d'établir l'indice des prix à la consommation pour aînés. Enfin, nous n'éliminerons pas le fractionnement du revenu de retraite pour les aînés. </ParaText>
+              <ParaText id="4170691">En ce qui concerne nos jeunes, nous favoriserons leur engagement politique. Nous créerons le conseil consultatif jeunesse du premier ministre, qui aura pour but de fournir à celui-ci des conseils objectifs sur les enjeux de l'heure. Ce conseil sera formé de jeunes Canadiens et Canadiennes âgés de 16 à 24 ans de partout au Canada.</ParaText>
+              <ParaText id="4170692">J'ai déjà reçu une lettre de Samuel Perreault, un jeune homme de 16 ans de Mont-Joli qui souhaite faire partie de ce comité. Samuel, Jonathan, Simon, Gabriel et Christina, comme d'autres jeunes engagés et dynamiques, ont travaillé sans relâche pour nous appuyer tout au long de la campagne électorale. Ces jeunes hommes et jeunes femmes sont nos leaders de demain, et je sais qu'avec eux, mes enfants — nos enfants — sont entre de bonnes mains.</ParaText>
+              <ParaText id="4170693">D'autre part, nous renforcerons le système d'assurance-emploi pour le rendre plus flexible, pour offrir des prestations aux Canadiennes et aux Canadiens quand ils en ont vraiment besoin, pour les aider à développer les compétences requises pour leur prochain emploi, et pour que l'assurance-emploi reflète notre marché du travail.</ParaText>
+              <ParaText id="4170694">Nous réduirons les cotisations à l'assurance-emploi pour alléger les charges salariales des employeurs et des employés. Nous réduirons le délai de carence de deux à une semaine pour l'obtention des prestations d'assurance-emploi.</ParaText>
+              <Timestamp Hr="16" Mn="00">(1600)</Timestamp>
+              <ParaText id="4170695">Nous mettrons en oeuvre des normes de service plus élevées, y compris la réduction du délai d'attente.</ParaText>
+              <ParaText id="4170696">Tel qu'il est énoncé dans le discours du Trône, notre gouvernement mettra en oeuvre des mesures en matière d'infrastructure.</ParaText>
+              <FloorLanguage language="EN">[<I>Traduction</I>]</FloorLanguage>
+              <ParaText id="4170697">Le moment n'a jamais été aussi crucial: les taux d'intérêt pour les nouveaux investissements sont au plus bas; nos infrastructures sont vieillissantes; et la croissance économique canadienne a besoin d'un urgent coup de fouet.</ParaText>
+              <ParaText id="4170698">Au cours de la prochaine décennie, nous augmenterons régulièrement chaque année les investissements fédéraux en matière d'infrastructure. Nous allons presque doubler le montant de ces investissements, qui atteindra près de 125 milliards de dollars sur 10 ans. Il s'agira des nouveaux investissements en infrastructure les plus importants de l'histoire canadienne.</ParaText>
+              <FloorLanguage language="FR">[<I>Français</I>]</FloorLanguage>
+              <ParaText id="4170699">Notre gouvernement quadruplera l'investissement fédéral dans le transport collectif sur une période de 10 ans. Notre financement s'adaptera aux exigences des municipalités, de façon à maximiser le nombre de projets de transport en commun qui seront menés à bien au Canada.</ParaText>
+              <ParaText id="4170700">Enfin, dans le cadre de l'engagement d'un gouvernement libéral à faire un investissement historique dans les infrastructures sociales, nous accorderons la priorité à l'investissement dans les logements abordables et les résidences pour personnes âgées. Nous investirons aussi dans les infrastructures de loisirs et culturelles.</ParaText>
+              <ParaText id="4170701">Notre plan encouragera la construction de plus de logements et la rénovation de logements existants; il renouvellera les ententes de coopératives existantes et accordera un soutien financier opérationnel aux municipalités. </ParaText>
+              <ParaText id="4170702">Nous allouerons des fonds pour réaliser des investissements dans les infrastructures vertes, afin de réaliser des projets sur le plan des réseaux d'aqueduc et des usines de traitement des eaux usées, des infrastructures résistantes aux changements climatiques, de l'énergie propre et de l'assainissement des terrains contaminés pour permettre de nouvelles constructions.</ParaText>
+              <ParaText id="4170703">Nous investirons également dans un programme d'innovation. Nous apporterons un soutien direct aux incubateurs et aux accélérateurs d'entreprises, aux installations de recherche, en plus d'accorder un financement et d'autres formes d'aide aux petites entreprises qui souhaitent se développer et exporter. Ce financement contribuera aussi à moderniser et à améliorer les fonctions de transfert technologique et de commercialisation dans les universités et les collèges.</ParaText>
+              <FloorLanguage language="EN">[<I>Traduction</I>]</FloorLanguage>
+              <ParaText id="4170704">Chaque année, nous investirons davantage pour créer des stratégies sectorielles qui appuient l'innovation et les technologies propres dans les secteurs de la foresterie, des pêches, des mines, de l'énergie et de l'agriculture. Ces stratégies, qui seront issues de la collaboration entre le secteur privé, le gouvernement et les établissements de recherche, viseront à développer de véritables innovations qui pourront être mises en oeuvre dans les secteurs associés aux ressources naturelles, puis commercialisées, appliquées à grande échelle et exportées.</ParaText>
+              <ParaText id="4170705">Nous investirons auprès des producteurs de technologies propres afin qu'ils puissent s'attaquer aux problèmes environnementaux les plus urgents du Canada, que ceux-ci soient liés à l'air, à l'eau ou au sol. Autrement dit, sur une base annuelle, nous investirons davantage dans les organismes qui appuient déjà avec succès l'émergence d'entreprises de technologies propres, notamment Technologies du développement durable Canada. Nous travaillerons également en partenariat avec le secteur privé afin d'accroître la disponibilité du capital de risque pour de nouvelles technologies propres.</ParaText>
+              <Timestamp Hr="16" Mn="05">(1605)</Timestamp>
+              <FloorLanguage language="FR">[<I>Français</I>]</FloorLanguage>
+              <ParaText id="4170706">Comme il a été souligné dans le discours du Trône, notre gouvernement garantira l'accès à l'éducation et à des possibilités économiques pour les Premières Nations, fondés sur la reconnaissance, le respect des droits ancestraux et issus des traités. Nous nous assurerons de combler l'écart qui existe en matière de financement à l'égard de l'éducation des Premières Nations.</ParaText>
+              <FloorLanguage language="EN">[<I>Traduction</I>]</FloorLanguage>
+              <ParaText id="4170707">Par exemple, de l'argent frais sera accordé chaque année au titre du financement de base alloué aux programmes allant de la maternelle à la 12<Sup>e</Sup> année, ce qui comprend les sommes engagées par le gouvernement précédent qui n'ont pas encore été versées et des fonds supplémentaires. Au cours des quatre prochaines années, cela représente de nouveaux investissements de l'ordre de 2,6 milliards de dollars pour aider les élèves des Premières Nations à apprendre et à réussir.</ParaText>
+              <FloorLanguage language="FR">[<I>Français</I>]</FloorLanguage>
+              <ParaText id="4170708">Nous investirons également plus d'argent dans les infrastructures scolaires pour les Premières Nations. Nous injecterons aussi plus d'argent dans le Programme d'aide aux étudiants de niveau postsecondaire. Nous accorderons de nouveaux crédits aux communautés autochtones pour qu'elles puissent promouvoir et préserver leur langage et leur culture.</ParaText>
+              <FloorLanguage language="EN">[<I>Traduction</I>]</FloorLanguage>
+              <ParaText id="4170709">Il est temps que le Canada rétablisse une relation de nation à nation avec les peuples autochtones; une relation fondée sur la reconnaissance, les droits, le respect, la coopération et le partenariat. C'est la bonne chose à faire et une façon sûre de stimuler la croissance économique.</ParaText>
+              <Timestamp Hr="16" Mn="10">(1610)</Timestamp>
+              <FloorLanguage language="FR">[<I>Français</I>]</FloorLanguage>
+              <ParaText id="4170710">Je n'avais jamais pensé faire de la politique, et je n'avais jamais eu cet objectif. Si je suis ici aujourd'hui, c'est que ma circonscription, <Affiliation DbId="214108" Type="2">Avignon—La Mitis—Matane—Matapédia</Affiliation>, située en Gaspésie, fait face à un contexte économique excessivement difficile. Ma région fait partie des 10 circonscriptions les plus pauvres au Canada. Ma région compte sept des dix villes et villages les plus dévitalisés au Québec. Notre taux de chômage s'élève à près de 17 %, et plus on se dirige vers l'est, plus le taux de chômage s'accentue.</ParaText>
+              <FloorLanguage language="EN">[<I>Traduction</I>]</FloorLanguage>
+              <ParaText id="4170711">Il y a deux formidables collectivités micmaques dans ma circonscription: Listuguj et Gesgapegiag. Je les remercie de leur soutien et je leur dis <I>wela'lin</I>, ce qui signifie « merci ».</ParaText>
+              <ParaText id="4170712">Dans ces collectivités, le taux de chômage atteint presque 40 %.</ParaText>
+              <FloorLanguage language="FR">[<I>Français</I>]</FloorLanguage>
+              <ParaText id="4170713">Les familles quittent notre région, car elles ont de la difficulté à trouver un emploi. Elles quittent notre merveilleuse région pour aller dans des grands centres comme Québec et Montréal, où les chances de trouver un emploi sont meilleures. Nos industries roulent au ralenti. Nos entreprises ferment sur une base régulière et depuis trop longtemps. Chez nous, des entreprises familiales en opération depuis 40 ans sont maintenant fermées. Nous avions une belle entreprise de vélo qui avait pignon sur rue au centre-ville, mais elle n'existe plus.</ParaText>
+              <ParaText id="4170714">Je me suis impliqué en politique pour aider ma région. J'ai passé 17 ans à travailler pour le gouvernement du Canada, dans des ministères comme le ministère de la Justice du Canada, Agriculture et Agroalimentaire Canada, Santé Canada, ici dans la région de la capitale nationale, et pour Travaux publics et services gouvernementaux Canada, à Matane, où j'ai ensuite dirigé le cégep.</ParaText>
+              <ParaText id="4170715">Ma conjointe et moi avons quatre jeunes garçons. Je peux assurer à la Chambre que je n'étais ni à la recherche d'un nouveau défi ni à la recherche d'un nouvel emploi. J'aimais profondément mon travail, mes employés et mes étudiants. Si j'ai décidé, avec l'appui de ma conjointe, Hélène, de m'impliquer activement en politique, c'est pour mettre mon expérience et mes connaissances au service de l'ensemble de nos citoyens. Ma circonscription, la Gaspésie et bon nombre de régions au Canada, comme la nôtre, ont besoin d'un solide coup de main, de leviers et d'outils.</ParaText>
+              <ParaText id="4170716">Nous avons besoin de créer un environnement favorable au développement économique de notre région. Nous avons besoin d'emplois durables. Nous avons besoin d'investissements en infrastructure pour permettre au port de Matane, par exemple, d'assurer sa viabilité à long terme, afin de tirer pleinement et durablement profit de notre potentiel maritime; pour appuyer le projet de refonte du quai de Carleton-sur-Mer afin que les plaisanciers, les touristes et les pêcheurs puissent avoir accès à une infrastructure de qualité; et pour permettre l'allongement de la piste de l'aéroport de Mont-Joli et la décontamination de ses terrains pour en faire un aéroport régional affirmé, afin d'appuyer le développement du Nord.</ParaText>
+              <ParaText id="4170717">Depuis 2006, le nombre de fonctionnaires fédéraux a diminué de près de 28 % dans ma circonscription dans les deux circonscriptions qui forment la Gaspésie et les Îles-de-la-Madeleine; il y a eu des pertes de plus d'une centaine d'emplois. Chez nous, une centaine d'emplois équivaut à 1 000 emplois dans les grands centres. Il y a eu des pertes d'emplois à New Richmond, à Gaspé, à Pointe-à-la-Croix, à Rivière-au-Renard et à Mont-Joli. Voici une illustration des répercussions de ces pertes d'emplois: une citoyenne de Mont-Joli a dû faire huit heures de route, cette semaine, pour se rendre à Québec afin de s'assurer que le renouvellement du passeport de son fils soit fait à temps pour qu'elle puisse partir en voyage à la mi-décembre. Bien sûr, cette dame avait d'abord soumis ses formulaires par la poste.</ParaText>
+              <ParaText id="4170718">Malheureusement, ils lui ont été retournés car il manquait un élément d'information. Elle n'a eu d'autre choix que de perdre une journée de travail et de s'aventurer sur les routes en décembre afin de se présenter en personne au bureau de Passeport Canada, à Québec, pour recevoir un traitement accéléré. </ParaText>
+              <ParaText id="4170719">Ce n'est qu'un simple exemple pour démontrer l'importance de conserver les services du gouvernement du Canada en région. Ces emplois sont importants pour nous. Ces fonctionnaires contribuent au développement économique, social et culturel de notre région. Ces femmes et ces hommes permettent aux prestataires d'assurance-emploi de recevoir leur paiement. Ces travailleurs en région assurent la numérisation de documents. Ces hommes et ces femmes contribuent à préserver et à rendre disponibles les archives du Canada. Ce sont des hommes et des femmes qui assurent le rapprochement bancaire de tous les paiements émis par le gouvernement du Canada. Ce sont des travailleurs consciencieux, engagés et dévoués, qui sont là pour offrir des services de qualité aux Canadiens. Ces organisations existent car nous avons cru à leur potentiel en région. </ParaText>
+              <ParaText id="4170720">Mon souhait est de recouvrer ces emplois en créant de nouvelles occasions. Je souhaite aussi soutenir le développement de différents secteurs et y contribuer. Les orientations du gouvernement soulignées dans le discours du Trône sont en lien direct avec les besoins des citoyens de ma circonscription. </ParaText>
+              <ParaText id="4170721">J'ai confiance en notre région, en nos jeunes, en nos artistes, en nos créateurs et en nos entrepreneurs. J'ai travaillé fort au cours des dernières années. Dans mon nouveau rôle, je poursuivrai en ce sens, avec la même fougue et la même détermination. </ParaText>
+              <ParaText id="4170722">Je suis fier de faire partie de notre gouvernement et j'ai confiance en lui. </ParaText>
+              <ParaText id="4170723">Avec l’appui de la députée de <Affiliation DbId="214009" Type="2">Brampton-Nord</Affiliation>, je propose que la motion suivante concernant l'Adresse en réponse au discours du Trône soit présentée à Son Excellence le gouverneur général du Canada:</ParaText>
+              <Timestamp Hr="16" Mn="15">(1615)</Timestamp>
+              <FloorLanguage language="EN">[<I>Traduction</I>]</FloorLanguage>
+              <ProceduralText TocType="TPC" id="12">Motion</ProceduralText>
+              <ParaText id="4170724">
+                <LegislationQuote>
+                  <QuotePara Align="Left" IndentFirst="2" IndentRest="1">À Son Excellence le très honorable David Johnston, Chancelier et Compagnon principal de l'Ordre du Canada, Chancelier et Commandeur de l'Ordre du Mérite militaire, Chancelier et Commandeur de l'Ordre du Mérite des corps policiers, Gouverneur général et Commandant en chef du Canada. </QuotePara>
+                </LegislationQuote>
+              </ParaText>
+              <ParaText id="4170725">
+                <LegislationQuote>
+                  <QuotePara IndentFirst="2" IndentRest="1">Qu'il plaise à Votre Excellence:</QuotePara>
+                </LegislationQuote>
+              </ParaText>
+              <ParaText id="4170726">
+                <LegislationQuote>
+                  <QuotePara IndentFirst="2" IndentRest="1">Nous, sujets très dévoués et fidèles de Sa Majesté, la Chambre des communes du Canada, assemblée en Parlement, prions respectueusement Votre Excellence d'agréer nos humbles remerciements pour le gracieux discours que Votre Excellence  avez adressé aux deux Chambres du Parlement.</QuotePara>
+                </LegislationQuote>
+              </ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Debate" ToC="Yes" ToCText="Mme Stubbs" id="8759836">
+            <PersonSpeaking>
+              <Affiliation DbId="214419" Type="2">Mme Shannon Stubbs (Lakeland, PCC)</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170727">Monsieur le Président, je suis fière de prendre la parole au nom des habitants de la circonscription de <Affiliation DbId="214419" Type="2">Lakeland</Affiliation>, située au coeur d'une région agricole, forestière, pétrolière et gazière. Les hommes, les femmes et les entreprises de cette circonscription contribuent de façon exceptionnelle à la création d'emploi, à l'innovation et aux recettes publiques pour tout le Canada.</ParaText>
+              <ParaText id="4170728">Toutefois, les entreprises canadiennes et les travailleurs du secteur de l'énergie sont en difficulté. La chute du prix du pétrole à l'échelle mondiale, les obstacles aux marchés d'exportation et l'incertitude financière et réglementaire entraînent des pertes massives d'emploi. Je suis sûre que cela nous préoccupe tous, car une Alberta forte et un Canada fort vont de pair.</ParaText>
+              <ParaText id="4170729">La réduction des impôts permet aux entreprises de créer des emplois et augmente les recettes publiques. Cela signifie plus d'argent dans les poches des Canadiens pour investir dans leur avenir, leur famille, leurs organisations caritatives et leur collectivité. L'annulation du fractionnement du revenu, la récupération concernant le compte d'épargne libre d'impôt, l'augmentation des charges sociales et l'imposition d'une taxe sur le carbone ne feraient qu'empirer les choses.</ParaText>
+              <ParaText id="4170730">Le député pourrait-il nous expliquer comment la hausse des impôts et le fait de déposséder davantage les Canadiens et les entreprises permettront de protéger les emplois?</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" ToCText="M. Massé (Avignon—La Mitis—Matane—Matapédia)" id="8759840">
+            <PersonSpeaking>
+              <Affiliation DbId="214108" Type="2">M. Rémi Massé</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170731">Monsieur le Président, les Canadiens se sont prononcés clairement en octobre dernier. Ils ont choisi un chef qui a une vision, une équipe solide et un programme clair et inspirant.</ParaText>
+              <Timestamp Hr="16" Mn="20">(1620)</Timestamp>
+              <FloorLanguage language="FR">[<I>Français</I>]</FloorLanguage>
+              <ParaText id="4170732">Je fais confiance à notre ministère des Finances et à notre<Affiliation DbId="214320" Type="4"> ministre des Finances</Affiliation>, et je suis convaincu qu'ils concrétiseront leur intention d'équilibrer le budget en respectant les échéanciers présentés.</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Debate" ToC="Yes" ToCText="Mme Trudel" id="8759842">
+            <PersonSpeaking>
+              <Affiliation DbId="214168" Type="2">Mme Karine Trudel (Jonquière, NPD)</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170733">Monsieur le Président, je tiens à remercier mon collègue d'<Affiliation DbId="214108" Type="2">Avignon—La Mitis—Matane—Matapédia</Affiliation> de son excellent premier discours à la Chambre.</ParaText>
+              <ParaText id="4170734">Comme c'est la première fois que je me lève à la Chambre, j'aimerais profiter de cette occasion pour remercier les citoyens de la circonscription de Jonquière qui m'ont fait confiance. Au cours de cette session, je ferai un travail acharné et je les représenterai du mieux que je le peux.</ParaText>
+              <ParaText id="4170735">Je tiens aussi à vous féliciter, monsieur le Président, pour votre réélection en tant que député, mais aussi pour votre élection en tant que Président. </ParaText>
+              <ParaText id="4170736">En ce qui concerne les commentaires de mon collègue, le ministre responsable de Postes Canada a indiqué aujourd'hui que son gouvernement ne rétablirait pas le service de livraison à domicile dans son intégralité. Pourtant, les libéraux avaient promis de rétablir le système de livraison postale à domicile. La livraison postale à domicile est un enjeu important pour les citoyens de la circonscription de Jonquière, mais aussi pour tous les citoyens du Canada.</ParaText>
+              <ParaText id="4170737">Mon collègue d'en face ne pense-t-il pas aussi que le service de livraison du courrier à domicile est essentiel pour la vitalité de nos communautés et qu'il doit être rétabli?</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" ToCText="M. Massé (Avignon—La Mitis—Matane—Matapédia)" id="8759844">
+            <PersonSpeaking>
+              <Affiliation DbId="214108" Type="2">M. Rémi Massé</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170738">Monsieur le Président, je vais être très clair.</ParaText>
+              <ParaText id="4170739"> Le gouvernement s'était engagé à mettre en place un moratoire. Nous avons été particulièrement clairs lorsque nous avons présenté de façon transparente l'ensemble des lettres de mandat de tous les ministres. Nos engagements étaient clairs, et le moratoire figurait parmi ceux-ci.</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Debate" ToC="Yes" ToCText="M. DeCourcey" id="8759846">
+            <PersonSpeaking>
+              <Affiliation DbId="214123" Type="2">M. Matt DeCourcey (Fredericton, Lib.)</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170740">Monsieur le Président, je vous félicite à nouveau pour votre élection bien méritée. Je suis certain que notre bon ami et mon mentor, Andy Scott, nous observe aujourd'hui avec fierté.</ParaText>
+              <ParaText id="4170741">J'aimerais aussi féliciter mon ami et cher collègue pour son bon discours. Il a bien parlé de la façon dont nous allons réaliser de vrais changements pour les Canadiens et du travail acharné que nous aurons à faire au cours de cette législature.</ParaText>
+              <FloorLanguage language="EN">[<I>Traduction</I>]</FloorLanguage>
+              <ParaText id="4170742">Je dois également remercier les habitants de Fredericton ainsi que les membres de ma famille pour leur soutien et la confiance qu'ils me témoignent en me permettant de les représenter dans cette enceinte. Les habitants de Fredericton espèrent ardemment que le gouvernement tiendra compte de leur région, ainsi que de toutes les régions, et qu'il investira dans les gens et les collectivités.</ParaText>
+              <ParaText id="4170743">Mes concitoyens m'ont signalé qu'ils attendent avec impatience que le gouvernement fédéral aille de l'avant avec un programme ambitieux et novateur qui, dans ma région, favorisera l'entrepreneuriat et les projets scientifiques dans nos universités de renommée mondiale et dans le secteur de la technologie de pointe.</ParaText>
+              <FloorLanguage language="FR">[<I>Français</I>]</FloorLanguage>
+              <ParaText id="4170744">Ils sont prêts à démontrer que, avec le  leadership du gouvernement fédéral, le Nouveau-Brunswick peut être un pionnier avec une approche innovatrice en ce qui concerne la façon dont nous livrons les services de santé.</ParaText>
+              <FloorLanguage language="EN">[<I>Traduction</I>]</FloorLanguage>
+              <ParaText id="4170745">À la plus grande base d'entraînement militaire au Canada, on désire vivement que le gouvernement se soucie de nouveau des anciens combattants.</ParaText>
+              <ParaText id="4170746">Voilà les priorités des résidants de la circonscription que je représente.</ParaText>
+              <FloorLanguage language="FR">[<I>Français</I>]</FloorLanguage>
+              <ParaText id="4170747">Mon honorable collègue peut-il me dire quelles sont les priorités de sa propre circonscription?</ParaText>
+            </Content>
+          </Intervention>
+          <Timestamp Hr="16" Mn="25">(1625)</Timestamp>
+          <Intervention Type="Interjection" ToC="No" ToCText="M. Massé (Avignon—La Mitis—Matane—Matapédia)" id="8759849">
+            <PersonSpeaking>
+              <Affiliation DbId="214108" Type="2">M. Rémi Massé</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170748">Monsieur le Président, les Canadiens veulent un gouvernement qui respecte ses engagements et qui se concentre sur ce qui importe le plus, c'est-à-dire la croissance économique, la création d'emplois, le renforcement de la classe moyenne et l'aide aux personnes qui travaillent fort pour en faire partie.</ParaText>
+              <ParaText id="4170749">J'ai trois priorités dans ma circonscription: la relance économique de ma région, la relance économique de ma région et la relance économique de ma région.</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Debate" ToC="Yes" ToCText="M. Paul-Hus" id="8759851">
+            <PersonSpeaking>
+              <Affiliation DbId="214522" Type="2">M. Pierre Paul-Hus (Charlesbourg—Haute-Saint-Charles, PCC)</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170750">Monsieur le Président, chère assemblée et cher Parlement, le gouvernement a décidé, sans consulter les Canadiens, sans adopter de résolution aux Communes et sans aucune forme de responsabilité, de retirer nos avions CF-18 d'Irak et de Syrie.</ParaText>
+              <ParaText id="4170751"> J'ai passé 22 ans dans les Forces armées canadiennes. Le leadership, ce n'est pas battre en retraite devant l'ennemi. Faire cela, c'est concéder la victoire avant que la bataille ne soit livrée.</ParaText>
+              <ParaText id="4170752">Alors que se forme une coalition internationale pour détruire le groupe État islamique, une coalition à laquelle le Canada doit participer, notre pays ne peut pas se défiler en offrant seulement de la formation. </ParaText>
+              <ParaText id="4170753">Le <Affiliation DbId="214296" Type="1">premier ministre</Affiliation> limite l'engagement du Canada contre le groupe État islamique en Irak à de la formation, alors qu'il s'agit d'une lutte armée contre le groupe État islamique. C'est un mode d'action libéral de rester caché, alors que nous parlons ici d'un conflit armé pour détruire le groupe État islamique.</ParaText>
+              <ParaText id="4170754">Le gouvernement va-t-il revenir sur sa décision et maintenir nos avions de combat CF-18 en Irak et en Syrie et, à défaut de leadership, au moins tenir un débat à la Chambre des communes pour que tous les élus puissent voter là-dessus?</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" ToCText="M. Massé (Avignon—La Mitis—Matane—Matapédia)" id="8759854">
+            <PersonSpeaking>
+              <Affiliation DbId="214108" Type="2">M. Rémi Massé</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170755">Monsieur le Président, je vais répéter exactement ce que j'ai dit tout à l'heure. En octobre, les Canadiens ont fait un choix clair: ils ont choisi un leader et une vision. C'est cela qui va faire la différence au Canada. Nous travaillerons tous ensemble, l'ensemble des députés réunis à la Chambre, pour livrer et mettre en oeuvre le plan envers lequel nous nous sommes engagés.</ParaText>
+            </Content>
+          </Intervention>
+          <FloorLanguage language="EN">[<I>Traduction</I>]</FloorLanguage>
+          <Intervention Type="Debate" ToC="Yes" ToCText="Mme Sahota" id="8759856">
+            <PersonSpeaking>
+              <Affiliation DbId="214009" Type="2">Mme Ruby Sahota (Brampton-Nord, Lib.)</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170756">Monsieur le Président, je tiens d'abord à remercier le gouverneur général d'avoir présenté au Parlement et aux Canadiens le programme du gouvernement. </ParaText>
+              <ParaText id="4170757">C'est pour moi un grand honneur d'appuyer la motion de mon estimé collègue, M. <Affiliation DbId="214108" Type="2">Rémi Massé</Affiliation>, concernant l'adresse en réponse au discours du Trône...</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Debate" ToC="No" ToCText="Le Président" id="8759857">
+            <PersonSpeaking>
+              <Affiliation DbId="214706" Type="15">Le Président</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170758">À l'ordre. La députée est nouvellement élue, mais je tiens à lui rappeler à elle et aux autres députés qu'on ne doit pas désigner un député par son nom, mais par le nom de sa circonscription.</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" ToCText="Mme Sahota" id="8759858">
+            <PersonSpeaking>
+              <Affiliation DbId="214009" Type="2">Mme Ruby Sahota</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170759">Je suis désolée, monsieur le Président, il s'agit de la motion de mon collègue le député d'<Affiliation DbId="214108" Type="2">Avignon—La Mitis—Matane—Matapédia</Affiliation>.</ParaText>
+              <ParaText id="4170760">J'aimerais également remercier le <Affiliation DbId="214296" Type="1">premier ministre</Affiliation> de m'avoir donné la possibilité de le faire. </ParaText>
+              <ParaText id="4170761">Je profite aussi de l'occasion pour féliciter chaque député élu à la Chambre et souligner qu'aucun d'entre nous ne serait ici sans l'appui de personnes très importantes dans nos vies. Je remercie mes parents, mon époux, Tejinder Sahota, ainsi que notre fils, Nihal, pour leur encouragement et leur soutien. </ParaText>
+              <ParaText id="4170762">C'est un grand honneur et un privilège de représenter les habitants de Brampton-Nord pour cette 42<Sup>e</Sup> législature. Je tiens à les remercier de m'accorder leur confiance. En retour, je m'engage à les représenter avec beaucoup d'intégrité et d'humilité, et en travaillant avec acharnement.</ParaText>
+              <ParaText id="4170763">J'ai grandi dans la ville de Brampton. J'ai fréquenté les écoles et les parcs de cette ville, et c'est là que j'ai rencontré mes plus proches amis. C'est l'endroit où ma famille a choisi de s'établir. Je sais d'expérience à quel point c'est une ville dynamique et prometteuse. Je crois qu'elle reflète le véritable potentiel que le Canada recèle d'un océan à l'autre. Brampton incarne la diversité du Canada avec sa population de 600 000 habitants qui continue de grandir, ce qui en fait la neuvième ville en importance au pays. Les Canadiens qui y vivent sont de diverses origines, puisque 50 % de ses habitants sont nés à l'étranger. Plus de 65 % des habitants de Brampton sont issus des minorités visibles et parlent plus de 80 langues différentes, notamment le pendjabi, le portugais, l'ourdou, l'espagnol, le goudjarati et l'hindi. Au cours des 30 dernières années, j'ai souvent vu cette communauté renforcée et unie dans sa diversité.</ParaText>
+              <ParaText id="4170764">Son Excellence a dit que le Canada que nous connaissons et que nous chérissons aujourd'hui est le résultat de la diversité et des expériences de ses habitants, ainsi que de la façon dont ils traitent leurs semblables. C'est pourquoi le gouvernement s'engage fermement à accueillir et à intégrer 25 000 Néo-Canadiens en provenance de la Syrie. Ces réfugiés ont dû faire face à des situations extrêmement éprouvantes et tragiques. Nous veillerons à ce qu'ils puissent, comme tous les Canadiens, avoir une chance réelle et équitable de réussir. C'est dans la nature des Canadiens.</ParaText>
+              <ParaText id="4170765">Par ailleurs, dans notre propre pays, les Premières Nations et les Autochtones doivent aussi faire face à des situations extrêmement difficiles et injustes. La disparition ou la mort de près de 1 200 femmes et filles autochtones est une tragédie nationale qui se poursuit et à laquelle il faut mettre un terme. C'est pourquoi nous allons immédiatement lancer une enquête publique nationale sur les femmes et les filles autochtones assassinées ou disparues au Canada.</ParaText>
+              <ParaText id="4170766">Aux dernières élections, les Canadiens ont refusé catégoriquement de céder devant la politique de la peur. J'ai reçu de nombreux courriels et appels téléphoniques de la part de mes électeurs qui ont dit appuyer les mesures prises par le gouvernement à l'étranger. Nous allons continuer de renforcer nos relations avec nos alliés et de collaborer avec eux afin de lutter contre le terrorisme.</ParaText>
+              <Timestamp Hr="16" Mn="30">(1630)</Timestamp>
+              <ParaText id="4170767">Le gouvernement renouvellera notre engagement à l’égard des opérations de maintien de la paix des Nations unies, et il renforcera notre réputation en matière de saine gestion de l'environnement. Une fois de plus, le Canada prêchera par l'exemple et, pour ce faire, il doit investir dans son avenir — donc dans l'infrastructure. </ParaText>
+              <ParaText id="4170768">L'engagement historique du gouvernement à l'égard de l'infrastructure joue un rôle essentiel dans la prospérité des villes du Canada, comme celle où j'habite. Les dépenses au titre de l'infrastructure du transport en commun non seulement permettront de réduire la congestion routière dans ma ville, mais aideront les Canadiens à passer plus de temps avec leurs proches et à trouver des emplois plus près de chez eux.</ParaText>
+              <ParaText id="4170769">Le développement de l'infrastructure sociale est à la base d'une société forte. L'une des valeurs canadiennes fondamentales consiste à s'occuper des personnes vulnérables. À Brampton, les personnes qui veulent obtenir un logement abordable doivent attendre 10 ans, ce qui est révoltant. Une telle période d'attente est inacceptable, et le gouvernement est déterminé à faire preuve de leadership et à favoriser la construction de nouveaux logements, la rénovation des logements existants et le renouvellement des ententes sur le logement coopératif, de même qu'à accroître le financement destiné à appuyer les municipalités. Cette approche aidera les personnes qui sont le plus dans le besoin, plus particulièrement les familles à faible revenu qui ont de la difficulté à joindre les deux bouts, les familles monoparentales et les aînés vulnérables.</ParaText>
+              <ParaText id="4170770">Pour offrir plus de souplesse aux familles en ce qui concerne la garde de leurs enfants, nous créerons l'Allocation canadienne aux enfants, qui permettra aux familles de la classe moyenne et aux familles à faible revenu de conserver une plus grande partie de leur argent et nous aidera à sortir 315 000 enfants canadiens de la pauvreté. Cette mesure, qui s'ajoute à l'infrastructure sociale, améliorera le sort des femmes, en plus de donner un bon départ dans la vie aux enfants et d'offrir aux familles la souplesse nécessaire pour s'adapter aux réalités du XXI<Sup>e</Sup> siècle.</ParaText>
+              <ParaText id="4170771">Par ailleurs, les soins de santé universels sont l'un des traits distinctifs de notre pays, et nous ne pouvons pas accuser du retard dans ce domaine; nous devons améliorer ces soins pour qu'ils répondent aux besoins croissants des Canadiens. Le gouvernement demeurera à l'avant-garde de l'innovation et de la recherche et, parallèlement, il collaborera avec les provinces et les territoires pour conclure un nouvel accord sur la santé.</ParaText>
+              <ParaText id="4170772">Certes, il est essentiel que le Canada investisse dans le transport en commun et l'infrastructure sociale, mais il est tout aussi important qu'il prépare l'avenir et investisse dans les technologies vertes. Les Canadiens affectionnent particulièrement la nature et ils estiment avoir la responsabilité de protéger notre environnement pour les générations futures. Par conséquent, nous collaborerons avec les provinces pour lutter contre les changements climatiques, investir dans les technologies propres et créer des emplois propres.</ParaText>
+              <ParaText id="4170773">Nous sommes convaincus qu'un environnement sain et une économie forte peuvent aller de pair. La classe moyenne joue un rôle essentiel dans l'économie canadienne. La meilleure façon de favoriser la croissance économique consiste donc à renforcer la classe moyenne et à donner un coup de pouce aux personnes qui travaillent fort pour en faire partie. Notre grand objectif, c'est que les Canadiens puissent composer avec le coût de la vie. Comme je l'ai constaté pendant mes innombrables visites et discussions avec les citoyens, c'est la priorité des Canadiens; ce sera aussi celle du gouvernement.</ParaText>
+              <Timestamp Hr="16" Mn="35">(1635)</Timestamp>
+              <ParaText id="4170774">Les gens de la classe moyenne n'ont pas reçu de véritable augmentation de salaire depuis 30 ans et ont du mal à joindre les deux bouts. Le coût de la vie grimpe sans cesse. C'est pourquoi notre première mesure législative visera à réduire l'impôt de la classe moyenne.</ParaText>
+              <ParaText id="4170775">Dans la même optique, la nouvelle Allocation canadienne pour enfants sera aussi conçue pour aider les gens qui en ont le plus besoin. En effet, la prospérité de l'ensemble du pays passe par la prospérité de la classe moyenne.</ParaText>
+              <ParaText id="4170776">Comme le gouverneur général l'a mentionné, les Canadiens nous ont clairement donné le mandat de gouverner le pays, mais nous ne pourrons pas remplir ce mandat de nous seuls. Nous sommes résolus à collaborer avec les autres partis de la Chambre, de même qu'avec les administrations provinciales et municipales, afin d'obtenir des résultats optimaux pour les Canadiens.</ParaText>
+              <ParaText id="4170777">En Ontario, mes collègues et moi avons été chaleureusement accueillis par les maires, les conseillers municipaux et régionaux ainsi que les députés provinciaux. J'ai hâte de collaborer à divers dossiers, dont l'amélioration du Régime de pensions du Canada. Ainsi, les Canadiens qui ont tant fait pour bâtir notre pays pourront prendre leur retraite dans la dignité tout en bénéficiant d'une meilleure sécurité du revenu.</ParaText>
+              <ParaText id="4170778">Nous travaillerons également avec les provinces et les territoires pour rendre l'éducation postsecondaire plus abordable afin qu'il soit encore possible dans un pays comme le nôtre pour les personnes de tous les milieux socioéconomiques de réaliser le rêve canadien et d'inscrire leurs enfants à une école de renommée mondiale sans devoir s'endetter encore davantage, et aussi afin que les jeunes ne soient pas dissuadés de faire des études supérieures pour obtenir les compétences dont ils ont besoin pour se tailler une place dans l'économie mondiale.</ParaText>
+              <ParaText id="4170779">Son Excellence a également fait valoir combien il est important de rétablir la confiance à l'égard de nos institutions politiques et de faire en sorte que les Canadiens se fassent mieux entendre au Parlement. C'est l'engagement qu'a pris le gouvernement. L'année 2015 marque non seulement la première fois qu'un nombre égal d'hommes et de femmes sont nommés au Cabinet, mais aussi la dernière élection fédérale à être menée selon le système électoral majoritaire à un tour.</ParaText>
+              <ParaText id="4170780">En plus de réformer le système en vertu duquel les députés sont élus, nous réformerons également le Sénat afin que les nouveaux sénateurs y soient nommés selon un processus non partisan et fondé sur le mérite, renforçant ainsi le rôle indépendant de la  Chambre haute.</ParaText>
+              <ParaText id="4170781">Les Canadiens constatent déjà que le gouvernement est plus ouvert et transparent; nous maintiendrons le cap en favorisant la tenue de débats ouverts et le recours au vote libre à la Chambre, en renforçant nos collectivités et en étant réceptifs aux opinions des Canadiens ordinaires.</ParaText>
+              <ParaText id="4170782">Malgré son vaste territoire, le Canada est uni dans son dévouement à l'égard de la paix, de l'ordre et de la bonne gouvernance.</ParaText>
+              <Timestamp Hr="16" Mn="40">(1640)</Timestamp>
+              <ParaText id="4170783">Je suis convaincue que le nouveau gouvernement, sous la direction du très honorable <Affiliation DbId="214296" Type="1">premier ministre</Affiliation>, inaugurera une nouvelle ère de changements positifs et de prospérité, renoncera aux tactiques de la division et se distancera de la politique de la peur.</ParaText>
+              <ParaText id="4170784">Tâchons de ne jamais oublier que, loin d'être une faiblesse, la diversité est l'un de nos plus précieux atouts nationaux. C'est pourquoi je suis fière de faire partie d'un gouvernement qui aide les immigrants à réussir leur vie au Canada, à retrouver leur famille, à profiter de débouchés économiques et à contribuer à la prospérité du Canada. Pour beaucoup d'entre nous, si nous sommes ici aujourd'hui, c'est parce qu'à un moment donné nos familles ont immigré ici et ont été accueillies à bras ouverts. C'est grâce à cet accueil qu'elles ont pu contribuer à l'édification du pays et que chacun d'entre nous peut à son tour faire de même.</ParaText>
+              <ParaText id="4170785">J'encourage tous les députés à appuyer la motion d'aujourd'hui. Je suis une femme, une mère et une épouse, et je suis fière d'être née de parents immigrants. C'est un honneur et un plaisir pour moi d'appuyer la motion sur l'Adresse en réponse au discours du Trône.</ParaText>
+            </Content>
+          </Intervention>
+          <Timestamp Hr="16" Mn="45">(1645)</Timestamp>
+          <Intervention Type="Debate" ToC="Yes" ToCText="Mme Watts" id="8759869">
+            <PersonSpeaking>
+              <Affiliation DbId="214421" Type="2">Mme Dianne Watts (Surrey-Sud—White Rock, PCC)</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170786">Monsieur le Président, c'est un honneur de représenter les gens de ma circonscription, Surrey-Sud—White Rock.</ParaText>
+              <ParaText id="4170787">J'ai trouvé étonnant que le gouvernement ait omis d'indiquer clairement dans le discours du Trône le montant qu'il comptait emprunter et la façon dont il entendait le dépenser. Durant la campagne électorale, les libéraux ont promis que le déficit ne dépasserait pas la barre des 10 milliards de dollars par année au cours des trois prochaines années. Cependant, dans son rapport publié cette semaine, le directeur parlementaire du budget prédit déjà que le gouvernement enregistrera un déficit de 12 milliards de dollars supérieur à ce plafond annuel. Il faut faire preuve d'ouverture et de transparence envers les Canadiens en ce qui concerne les dépenses réelles de l'État.</ParaText>
+              <ParaText id="4170788">Par souci d'ouverture et de transparence, la députée aurait-elle l'obligeance d'exposer le plan du gouvernement dans ses grandes lignes pour que les Canadiens sachent au juste combien d'impôts supplémentaires ils devront payer?</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" ToCText="Mme Sahota" id="8759871">
+            <PersonSpeaking>
+              <Affiliation DbId="214009" Type="2">Mme Ruby Sahota</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170789">Monsieur le Président, je tiens à féliciter la députée pour son élection.</ParaText>
+              <ParaText id="4170790">Le gouvernement a reçu un mandat clair: investir dans le pays. C'est ce que nous avons l'intention de faire. Nous allons baisser les impôts de la classe moyenne et faire preuve d'ouverture et de transparence quant à nos dépenses. Le budget sera présenté au cours des prochaines semaines, et les députés recevront des réponses à leurs questions. Je peux toutefois affirmer d'ores et déjà qu'il y aura baisse des impôts. </ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Debate" ToC="Yes" ToCText="Mme Kwan" id="8759873">
+            <PersonSpeaking>
+              <Affiliation DbId="214258" Type="2">Mme Jenny Kwan (Vancouver-Est, NPD)</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170791">Monsieur le Président, puisqu'il s'agit de la première occasion que j'ai de prendre la parole à la Chambre, permettez-moi de vous féliciter pour votre réélection en tant que député et pour votre élection, hier, en tant que Président.</ParaText>
+              <ParaText id="4170792">J'aimerais également féliciter la députée de <Affiliation DbId="214009" Type="2">Brampton-Nord</Affiliation> pour son élection et pour son excellent premier discours. Je suis impatiente de collaborer avec elle et avec tous les députés pour faire du Canada un endroit meilleur pour l'ensemble des Canadiens ainsi que pour les générations à venir.</ParaText>
+              <ParaText id="4170793">Bien entendu, je m'en voudrais de ne pas remercier les bonnes gens de Vancouver-Est de m'avoir élue et envoyée ici à Ottawa pour que Vancouver-Est ait une voix forte à la Chambre des communes. J'ai l'intention de parler plus longuement de ma belle circonscription et des priorités des gens de ma collectivité dans les jours à venir, lorsque je prononcerai mon premier discours à la Chambre des communes.</ParaText>
+              <ParaText id="4170794">J'aimerais interroger ma collègue de Brampton-Nord au sujet de ce que le gouvernement a dit dans le discours du Trône concernant son engagement à lutter contre les changements climatiques. Le discours du Trône laisse entendre que le gouvernement introduira un nouveau processus d'évaluation environnementale. Voilà qui est certainement très encourageant. </ParaText>
+              <ParaText id="4170795">Or, le processus d'évaluation environnementale doit aller de pair avec des objectifs réalisables de réduction des émissions. Je voudrais donc savoir, en premier lieu, si le gouvernement établira des objectifs ambitieux et responsables de réduction des émissions, et s'il produira des rapports annuels sur les progrès réalisés par rapport aux objectifs qui sont déjà inscrits dans la loi.</ParaText>
+              <ParaText id="4170796">En second lieu, le nouveau processus d'évaluation environnementale du gouvernement inclura-t-il des évaluations des répercussions climatiques, pour empêcher que les nouveaux projets déraillent?</ParaText>
+              <ParaText id="4170797">Et en troisième lieu, est-ce que le nouveau processus d'évaluation environnementale s'appliquerait à l'actuel...</ParaText>
+            </Content>
+          </Intervention>
+          <Timestamp Hr="16" Mn="50">(1650)</Timestamp>
+          <Intervention Type="Debate" ToC="No" ToCText="Le Président" id="8759874">
+            <PersonSpeaking>
+              <Affiliation DbId="214706" Type="15">Le Président</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170798">À l'ordre, s'il vous plaît.</ParaText>
+              <ParaText id="4170799">La députée de Brampton-Nord a la parole.</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" ToCText="Mme Sahota" id="8759875">
+            <PersonSpeaking>
+              <Affiliation DbId="214009" Type="2">Mme Ruby Sahota</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170800">Monsieur le Président, je remercie ma collègue de <Affiliation DbId="214258" Type="2">Vancouver-Est</Affiliation> de sa merveilleuse question. </ParaText>
+              <ParaText id="4170801">J'aimerais également vous féliciter pour votre élection...</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Debate" ToC="No" ToCText="Le Président" id="8759876">
+            <PersonSpeaking>
+              <Affiliation DbId="214706" Type="15">Le Président</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170802">À l'ordre, s'il vous plaît. Je rappelle aux députés qu'ils doivent s'adresser à la présidence.</ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" ToCText="Mme Sahota" id="8759877">
+            <PersonSpeaking>
+              <Affiliation DbId="214009" Type="2">Mme Ruby Sahota</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170803">Monsieur le Président, notre mandat en matière d'environnement a été exprimé clairement dans les lettres de mandat des ministres, qui ont été publiées en ligne pour la première fois de l'histoire du gouvernement. C'est un grand pas vers l'ouverture et la transparence du gouvernement.</ParaText>
+              <ParaText id="4170804">Nous nous engageons également à travailler avec les provinces pour veiller à répondre à leurs besoins et à ce qu'elles prennent les mesures nécessaires pour lutter contre les changements climatiques.</ParaText>
+            </Content>
+          </Intervention>
+          <FloorLanguage language="FR">[<I>Français</I>]</FloorLanguage>
+          <Intervention Type="Debate" ToC="Yes" ToCText="M. Nater" id="8759880">
+            <PersonSpeaking>
+              <Affiliation DbId="214434" Type="2">M. John Nater (Perth—Wellington, PCC)</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170805">Monsieur le Président, je suis fier de représenter les gens de Perth—Wellington à la Chambre. </ParaText>
+              <ParaText id="4170806">Dans ma circonscription, comme ailleurs dans le sud de l'Ontario, les emplois sont toujours la préoccupation numéro un. Le nouveau gouvernement libéral propose maintenant d'augmenter les impôts des créateurs d'emplois et vacille sur les accords commerciaux internationaux. </ParaText>
+              <ParaText id="4170807">Comme nous le savons tous, le Canada est une nation commerçante qui compte sur l'ouverture des marchés. </ParaText>
+              <ParaText id="4170808">La députée peut-elle rassurer les Canadiens et affirmer à la Chambre, aujourd'hui, que son parti appuiera le Partenariat transpacifique et abandonnera son plan visant à augmenter les taxes sur les emplois?</ParaText>
+            </Content>
+          </Intervention>
+          <Timestamp Hr="16" Mn="55">(1655)</Timestamp>
+          <FloorLanguage language="EN">[<I>Traduction</I>]</FloorLanguage>
+          <Intervention Type="Interjection" ToC="No" ToCText="Mme Sahota" id="8759883">
+            <PersonSpeaking>
+              <Affiliation DbId="214009" Type="2">Mme Ruby Sahota</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170809">Monsieur le Président, je remercie mon collègue de <Affiliation DbId="214434" Type="2">Perth—Wellington</Affiliation> de sa question et je le félicite également pour son élection. </ParaText>
+              <ParaText id="4170810">Le gouvernement s'engage à collaborer avec les députés d'en face au sujet des accords internationaux et à veiller à ce que le commerce soit une priorité au pays pour faire croître notre économie. Nous devons toutefois tenir compte des intérêts des Canadiens dans ces accords. Le gouvernement s'engage à rechercher le juste équilibre à cet égard. </ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Debate" ToC="Yes" ToCText="M. Bittle" id="8759885">
+            <PersonSpeaking>
+              <Affiliation DbId="214512" Type="2">M. Chris Bittle (St. Catharines, Lib.)</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170811">Monsieur le Président, je suis honoré d'être ici et de prendre la parole à la Chambre pour la première fois.</ParaText>
+              <ParaText id="4170812">J'aimerais profiter de l'occasion pour remercier les gens de St. Catharines, en Ontario, de m'avoir fait confiance, de même que ma famille pour son soutien pendant cette longue campagne électorale et cette période de transition.</ParaText>
+              <ParaText id="4170813">J'ai une question importante pour ma collègue. Bien que les gens de St. Catharines soient optimistes, près de 23 % des enfants de ma circonscription vivent dans la pauvreté. C'est presque une personne sur quatre qui, chaque jour, a de la difficulté à joindre les deux bouts, comme de nombreux autres Canadiens.</ParaText>
+              <ParaText id="4170814">Ma collègue pourrait-elle expliquer à la Chambre comment le gouvernement compte s'attaquer au problème de la pauvreté au Canada et à St Catharines? </ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Interjection" ToC="No" ToCText="Mme Sahota" id="8759888">
+            <PersonSpeaking>
+              <Affiliation DbId="214009" Type="2">Mme Ruby Sahota</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170815">Monsieur le Président, je tiens à féliciter mon collègue de <Affiliation DbId="214512" Type="2">St. Catharines</Affiliation> pour son élection.</ParaText>
+              <ParaText id="4170816">Le gouvernement créera l'Allocation canadienne aux enfants, qui permettra à neuf familles sur 10 de recevoir l'aide dont elles ont besoin et à 315 000 enfants de se sortir de la pauvreté. </ParaText>
+            </Content>
+          </Intervention>
+          <FloorLanguage language="FR">[<I>Français</I>]</FloorLanguage>
+          <Intervention Type="Debate" ToC="Yes" ToCText="Mme Ambrose" id="8759890">
+            <PersonSpeaking>
+              <Affiliation DbId="214611" Type="96">L'hon. Rona Ambrose (chef de l'opposition, PCC)</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170817">Monsieur le Président, je remercie de leurs discours les députés qui ont déposé et appuyé la motion. Quand le débat sur l'Adresse en réponse au discours du Trône reprendra, je poursuivrai mon discours et donnerai l'autre version de l'histoire.</ParaText>
+              <FloorLanguage language="EN">[<I>Traduction</I>]</FloorLanguage>
+              <ParaText id="4170818">Je préfère avertir la Chambre d'une chose. À notre retour, la semaine prochaine, je répondrai au discours du Trône. Ma réponse ne sera peut-être pas aussi rose que les propos des députés d'en face. Quoi qu'il en soit, j'ai bien hâte.</ParaText>
+              <ParaText id="4170819">Voici donc ce que tout le monde attendait. Je propose:</ParaText>
+              <ProceduralText TocType="TPC" id="13">Motion</ProceduralText>
+              <ParaText id="4170820">
+                <Quote>
+                  <QuotePara Align="Left" IndentFirst="2" IndentRest="1">Que le débat soit maintenant ajourné.</QuotePara>
+                </Quote>
+              </ParaText>
+              <ProceduralText TocType="TCC" TocText="Ajournement du débat, motion de Mme Ambrose" id="14">(Sur la motion de Mme Ambrose, le débat est ajourné.)</ProceduralText>
+            </Content>
+          </Intervention>
+        </SubjectOfBusinessContent>
+      </SubjectOfBusiness>
+      <SubjectOfBusiness id="8759901">
+        <SubjectOfBusinessTitle>Les travaux de la Chambre</SubjectOfBusinessTitle>
+        <SubjectOfBusinessContent>
+          <Intervention Type="Debate" ToC="Yes" ToCText="M. LeBlanc" id="8759893">
+            <PersonSpeaking>
+              <Affiliation DbId="214317" Type="4">L'hon. Dominic LeBlanc (leader du gouvernement à la Chambre des communes, Lib.)</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170823">Monsieur le Président, il y a eu consultations entre les partis et vous constaterez qu'il y a consentement unanime à l'égard de la motion suivante:</ParaText>
+              <ProceduralText TocType="TPC" id="15">Motion</ProceduralText>
+              <ParaText id="4170824">
+                <Quote>
+                  <QuotePara Align="Left" IndentFirst="2" IndentRest="1">Que, nonobstant tout article du Règlement ou usage habituel de la Chambre:</QuotePara>
+                </Quote>
+              </ParaText>
+              <ParaText id="4170825">
+                <Quote>
+                  <QuotePara Align="Left" IndentFirst="2" IndentRest="1"> Jusqu'au 10 décembre 2015, l'article 81 du Règlement soit modifié comme suit:</QuotePara>
+                </Quote>
+              </ParaText>
+              <Timestamp Hr="17" Mn="00">(1700)</Timestamp>
+              <ParaText id="4170826">
+                <Quote>
+                  <QuotePara Align="Left" IndentFirst="2" IndentRest="1">Le paragraphe (5) est remplacé par ce qui suit:</QuotePara>
+                </Quote>
+              </ParaText>
+              <ParaText id="4170827">
+                <Quote>
+                  <QuotePara Align="Left" IndentFirst="2" IndentRest="1">Un budget supplémentaire des dépenses est réputé renvoyé à un comité plénier de la Chambre dès sa présentation à la Chambre. Un comité plénier doit étudier ce budget et en faire rapport, ou est censé en avoir fait rapport, à la Chambre au plus tard un jour de séance avant la dernière séance ou le dernier jour désigné de la période en cours.</QuotePara>
+                </Quote>
+              </ParaText>
+              <ParaText id="4170828">
+                <Quote>
+                  <QuotePara Align="Left" IndentFirst="2" IndentRest="1">Au jour désigné par un ministre de la Couronne, un comité plénier de la Chambre examine pendant au plus trois heures le budget supplémentaire des dépenses immédiatement après la prise en considération d’une motion aux termes des articles 83(3) et 83(4) du Règlement.</QuotePara>
+                </Quote>
+              </ParaText>
+              <ParaText id="4170829">
+                <Quote>
+                  <QuotePara Align="Left" IndentFirst="2" IndentRest="1">Durant cette période d'étude du budget supplémentaire des dépenses menée en conformité avec le présent paragraphe, la présidence ne peut recevoir ni demande de quorum, ni motion dilatoire, ni demande de consentement unanime; aucun député n’a la parole pendant plus de 15 minutes à la fois, ce qui comprend au plus dix minutes pour participer au débat.</QuotePara>
+                </Quote>
+              </ParaText>
+              <ParaText id="4170830">
+                <Quote>
+                  <QuotePara Align="Left" IndentFirst="2" IndentRest="1">Ces 15 minutes peuvent servir à participer au débat et à poser des questions au ministre ou au secrétaire parlementaire agissant au nom du ministre. Quand la parole est accordée à un député, celui-ci indique comment les 15 minutes seront réparties.</QuotePara>
+                </Quote>
+              </ParaText>
+              <ParaText id="4170831">
+                <Quote>
+                  <QuotePara Align="Left" IndentFirst="2" IndentRest="1">Par ailleurs, à l’intérieur de chaque période de 15 minutes, chaque parti peut allouer du temps à un ou plusieurs de ses députés pour des discours ou des questions et réponses, à condition que, dans le cas des questions et réponses, la réponse du ministre corresponde approximativement au temps pris par la question, et que, dans le cas des discours, les députés du parti auquel la période est consacrée puissent parler les uns après les autres.</QuotePara>
+                </Quote>
+              </ParaText>
+              <ParaText id="4170832">
+                <Quote>
+                  <QuotePara IndentFirst="2" IndentRest="1">À l’expiration de la période réservée à l’étude visée par le présent article, le comité lève la séance, il est réputé avoir été fait rapport du budget étudié, et la Chambre ajourne immédiatement au jour de séance suivant;</QuotePara>
+                </Quote>
+              </ParaText>
+              <ParaText id="4170833">
+                <Quote>
+                  <QuotePara IndentFirst="2" IndentRest="1">Que, sous réserve des présentes dispositions, les travaux des subsides se déroulent conformément à l’article 81 du Règlement.</QuotePara>
+                </Quote>
+              </ParaText>
+            </Content>
+          </Intervention>
+          <FloorLanguage language="FR">[<I>Français</I>]</FloorLanguage>
+          <Intervention Type="Debate" ToC="No" ToCText="Le Président" id="8759895">
+            <PersonSpeaking>
+              <Affiliation DbId="214706" Type="15">Le Président</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170834">La Chambre a entendu l'énoncé de la motion. Plaît-il à la Chambre d'adopter cette motion?</ParaText>
+              <ParaText id="4170835">
+                <B>Des voix:</B> Oui.</ParaText>
+              <ProceduralText TocType="TCC" TocText="Adoption de la motion" id="16">(La motion est adoptée.)</ProceduralText>
+            </Content>
+          </Intervention>
+          <FloorLanguage language="EN">[<I>Traduction</I>]</FloorLanguage>
+          <Intervention Type="Debate" ToC="Yes" ToCText="M. LeBlanc" id="8759896">
+            <PersonSpeaking>
+              <Affiliation DbId="214317" Type="4">L'hon. Dominic LeBlanc (leader du gouvernement à la Chambre des communes, Lib.)</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170836">Monsieur le Président, j'invoque le Règlement simplement pour faire une très courte déclaration. Je suis désolé de la motion très longue que je viens de présenter au sujet des travaux de la Chambre pour la semaine prochaine. Comme nous n'avons pas eu la question habituelle du jeudi, je tenais à donner à mes collègues un aperçu très rapide de nos plans pour la semaine prochaine.</ParaText>
+              <ParaText id="4170837">Lundi, nous aurons à la Chambre le premier jour de débat sur l'Adresse en réponse au discours du Trône.</ParaText>
+              <ParaText id="4170838">Mardi, ce sera la deuxième journée prévue pour ce débat.</ParaText>
+              <ParaText id="4170839">Mercredi, conformément à la motion qui vient d'être gracieusement adoptée par la Chambre, après la prise en considération d'une motion de voies et moyens, la Chambre se formera en comité plénier pour étudier le Budget supplémentaire des dépenses.</ParaText>
+              <ParaText id="4170840">Jeudi sera le premier et dernier jour désigné de la période des subsides de l'automne réservé au Parti conservateur.</ParaText>
+              <ParaText id="4170841">Vendredi, nous aurons à la Chambre le troisième des six jours prévus pour le débat sur l'Adresse en réponse au discours du Trône. La Chambre s'ajournera ensuite au 25 janvier 2016.</ParaText>
+              <ParaText id="4170842"> Monsieur le Président, je propose:</ParaText>
+              <ProceduralText TocType="TPC" id="17">Motion</ProceduralText>
+              <ParaText id="4170843">
+                <Quote>
+                  <QuotePara Align="Left">Que la Chambre s'ajourne maintenant.</QuotePara>
+                </Quote>
+              </ParaText>
+            </Content>
+          </Intervention>
+          <Intervention Type="Debate" ToC="No" ToCText="Le Président" id="8759897">
+            <PersonSpeaking>
+              <Affiliation DbId="214706" Type="15">Le Président</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170844">Plaît-il à la Chambre d'adopter la motion?</ParaText>
+              <ParaText id="4170845">
+                <B>Des voix:</B> D'accord.</ParaText>
+              <ProceduralText TocType="TCC" TocText="Adoption de la motion" id="18">(La motion est adoptée.)</ProceduralText>
+            </Content>
+          </Intervention>
+          <Timestamp Hr="17" Mn="05">(1705)</Timestamp>
+          <Intervention Type="Debate" ToC="No" ToCText="The Speaker" id="8759914">
+            <PersonSpeaking>
+              <Affiliation DbId="214706" Type="15">Le Président</Affiliation>: </PersonSpeaking>
+            <Content>
+              <ParaText id="4170846">Les députés sont tous invités à une réception tenue dans le hall d’Honneur à l'occasion du discours du Trône.</ParaText>
+              <ParaText id="4170847">La Chambre s'ajourne à lundi prochain, à 11 heures, conformément au paragraphe 24(1) du Règlement.</ParaText>
+              <ParaText id="4170848">(La séance est levée à 17 h 5.)</ParaText>
+            </Content>
+          </Intervention>
+        </SubjectOfBusinessContent>
+      </SubjectOfBusiness>
+    </Intro>
+  </HansardBody>
+</Hansard>
