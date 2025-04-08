@@ -199,9 +199,9 @@ class SpeechesView(ModelListView):
             'mentioned_bills__session': u[-2],
             'mentioned_bills__number': u[-1]
         }, help="e.g. /bills/41-1/C-14/"),
-        'debated_bill': APIFilters.fkey(lambda u: {
-            'debated_bill__session': u[-2],
-            'debated_bill__number': u[-1]
+        'bill_debated': APIFilters.fkey(lambda u: {
+            'bill_debated__session': u[-2],
+            'bill_debated__number': u[-1]
         }, help="e.g. /bills/41-1/C-14/")        
     }
 
