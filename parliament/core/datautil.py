@@ -166,14 +166,6 @@ def _merge_pols(good, bad):
     #Candidacy.objects.filter(candidate=bad).update(candidate=good)
     #Statement.objects.filter(politician=bad).update(politician=good)
     replace_links(old=bad, new=good)
-    seen = set()
-    for xref in InternalXref.objects.filter(schema__startswith='pol_', target_id=bad.id):
-        if (xref.int_value, xref.text_value) in seen:
-            xref.delete()
-        else:
-            xref.target_id = good.id
-            xref.save()
-            seen.add((xref.int_value, xref.text_value))
     print(bad.delete())
 
     pi_seen = set()

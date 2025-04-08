@@ -13,6 +13,11 @@ class RidingOptions (admin.ModelAdmin):
     list_display = ('name_en', 'current', 'province', 'edid', 'name_fr')
     search_fields = ('name_en', 'edid')
     list_filter = ('province', 'current')
+
+class RidingPostcodeCacheOptions(admin.ModelAdmin):
+    list_display = ('postcode', 'riding', 'source', 'timestamp')
+    search_fields = ('postcode', 'riding__name_en')
+    list_filter = ('source', 'timestamp')
     
 class SessionOptions (admin.ModelAdmin):
     list_display = ('name', 'start', 'end')
@@ -20,13 +25,7 @@ class SessionOptions (admin.ModelAdmin):
 class ElectedMemberOptions(admin.ModelAdmin):
     list_display = ('politician', 'riding', 'party', 'start_date', 'end_date')
     list_filter = ('party',)
-    search_fields = ('politician__name',)
-    
-class InternalXrefOptions(admin.ModelAdmin):
-    list_display = ('schema', 'text_value', 'int_value', 'target_id')
-    search_fields = ('schema', 'text_value', 'int_value', 'target_id')
-    list_editable = ('text_value', 'int_value', 'target_id')
-    
+    search_fields = ('politician__name',)    
 class PartyOptions(admin.ModelAdmin):
     list_display = ('name_en', 'short_name', 'name_fr', 'short_name_fr')
     
@@ -45,10 +44,11 @@ class SiteNewsOptions(admin.ModelAdmin):
 
 admin.site.register(ElectedMember, ElectedMemberOptions)
 admin.site.register(Riding, RidingOptions)
+admin.site.register(RidingPostcodeCache, RidingPostcodeCacheOptions)
 admin.site.register(Session, SessionOptions)
 admin.site.register(Politician, PoliticianOptions)
 admin.site.register(Party, PartyOptions)
-admin.site.register(InternalXref, InternalXrefOptions)
+admin.site.register(PartyAlternateName)
 admin.site.register(PoliticianInfo, PoliticianInfoOptions)
 admin.site.register(SiteNews, SiteNewsOptions)
 

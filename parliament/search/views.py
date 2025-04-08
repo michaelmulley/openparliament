@@ -14,7 +14,7 @@ from django.views.decorators.vary import vary_on_headers
 
 import requests
 
-from parliament.core.models import Politician, Session, ElectedMember, Riding, InternalXref
+from parliament.core.models import Politician, Session, ElectedMember, Riding, RidingPostcodeCache
 from parliament.core.views import closed, flatpage_response
 from parliament.core.utils import is_ajax
 from parliament.search.solr import SearchQuery
@@ -88,12 +88,12 @@ def try_postcode_first(request):
     if not match:
         return False
     postcode = match.group(1) + match.group(2)
-    edid = None
+    riding = None
     try:
-        edid = postcode_to_edid(postcode)
+        riding = postcode_to_riding(postcode)
     except AmbiguousPostcodeException as e:
         # for example, K7L4V3 or J7B1R5
-        ec_url = e.ec_url if e.ec_url else 'http://elections.ca/'
+        ec_url = e.ec_url if e.ec_url else EC_POSTCODE_URL % postcode
         return flatpage_response(request, "You’ve got a confusing postcode",
             mark_safe("""Some postal codes might cross riding boundaries. It looks like yours is one of them.
                 To find out who your MP is, visit <a href="%s">Elections Canada</a> and
@@ -101,12 +101,12 @@ def try_postcode_first(request):
     except Exception:
         logger.exception(f"postcode search problem for {postcode}")
 
-    if not edid:
+    if not riding:
         return flatpage_response(request, "Can’t find that postcode",
             mark_safe("""We’re having trouble figuring out where that postcode is.
                 Try asking <a href="http://elections.ca/">Elections Canada</a> who your MP is."""))
     try:
-        member = ElectedMember.objects.get(end_date__isnull=True, riding__edid=edid)
+        member = ElectedMember.objects.get(end_date__isnull=True, riding=riding)
         return adaptive_redirect(request, member.politician.get_absolute_url())
     except ElectedMember.DoesNotExist:
         return flatpage_response(request, "Ain’t nobody lookin’ out for you",
@@ -114,20 +114,20 @@ def try_postcode_first(request):
             Member of Parliament for that riding. By law, a byelection must be called within
             180 days of a resignation causing a vacancy. (If you think we’ve got our facts
             wrong about your riding or MP, please send an <a class='maillink'>e-mail</a>.)"""
-            % Riding.objects.get(current=True, edid=edid).dashed_name))
+            % riding.dashed_name))
     except ElectedMember.MultipleObjectsReturned:
         raise Exception("Too many MPs for postcode %s" % postcode)
     
-def postcode_to_edid(postcode: str) -> int | None:
-    x = InternalXref.objects.filter(schema='edid_postcode', text_value=postcode).first()
-    if x:
-        return x.target_id
+def postcode_to_riding(postcode: str) -> Riding | None:
+    cached = RidingPostcodeCache.objects.filter(postcode=postcode).first()
+    if cached:
+        return cached.riding
     
     try:
-        edid = postcode_to_edid_ourcommons(postcode)
-        if edid:
-            InternalXref.objects.get_or_create(schema='edid_postcode', text_value=postcode, target_id=edid)
-            return edid
+        riding = postcode_to_riding_ourcommons(postcode)
+        if riding:
+            RidingPostcodeCache.objects.get_or_create(postcode=postcode, riding=riding, source='ourcommons')
+            return riding
     except AmbiguousPostcodeException as e:
         raise
     except Exception:
@@ -135,8 +135,9 @@ def postcode_to_edid(postcode: str) -> int | None:
     
     edid = postcode_to_edid_ec(postcode)
     if edid:
-        InternalXref.objects.get_or_create(schema='edid_postcode', text_value=postcode, target_id=edid)
-        return edid
+        riding = Riding.objects.get(edid=edid, current=True)
+        RidingPostcodeCache.objects.get_or_create(postcode=postcode, riding=riding, source='ec')
+        return riding
     
     return None
 
@@ -162,7 +163,7 @@ class AmbiguousPostcodeException(Exception):
 
 EC_POSTCODE_URL = 'https://www.elections.ca/Scripts/vis/FindED?L=e&QID=-1&PAGEID=20&PC=%s'
 r_ec_edid = re.compile(r'&ED=(\d{5})&')
-def postcode_to_edid_ec(postcode):
+def postcode_to_edid_ec(postcode: str) -> int | None:
     resp = requests.get(EC_POSTCODE_URL % postcode.replace(' ', ''), allow_redirects=False,
                         verify=False) # verify=False because EC had some certificate chain issues;
                                       # I think the risk of MITM to return bad riding IDs is low
@@ -174,7 +175,7 @@ def postcode_to_edid_ec(postcode):
         return int(match.group(1))
     raise AmbiguousPostcodeException(postcode=postcode, ec_url=urljoin(EC_POSTCODE_URL, redirect_url))
 
-def postcode_to_edid_ourcommons(postcode):
+def postcode_to_riding_ourcommons(postcode):
     resp = requests.post("https://www.ourcommons.ca/Members/search/members", json={"searchText": postcode})
     resp.raise_for_status()
     content = resp.json()
@@ -187,8 +188,7 @@ def postcode_to_edid_ourcommons(postcode):
     else:
         raise Exception(f"Cannot understand ourcommons response for postcode {postcode}")
     
-    riding = Riding.objects.get_by_name(riding_name)
-    return riding.edid
+    return Riding.objects.get_by_name(riding_name)
 
 def try_politician_first(request):
     try:

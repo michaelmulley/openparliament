@@ -30,33 +30,14 @@ logger = logging.getLogger(__name__)
 POL_AFFIL_ID_LOOKUP_URL = 'https://apps.ourcommons.ca/ParlDataWidgets/en/aff/%s'
 POL_PERSON_ID_LOOKUP_URL = 'https://www.ourcommons.ca/Members/en/openparliamentdotca-lookup(%s)'
 
-class InternalXref(models.Model):
-    """A general-purpose table for quickly storing internal links."""
-    text_value = models.CharField(max_length=250, blank=True, db_index=True)
-    int_value = models.IntegerField(blank=True, null=True, db_index=True)
-    target_id = models.IntegerField(db_index=True)
-    
-    # CURRENT SCHEMAS
-    # party_names
-    # bill_callbackid
-    # session_legisin -- LEGISinfo ID for a session
-    # edid_postcode -- the EDID -- which points to a riding, but is NOT the primary  key -- for a postcode
-    schema = models.CharField(max_length=15, db_index=True)
-    
-    def __str__(self):
-        return "%s: %s %s for %s" % (self.schema, self.text_value, self.int_value, self.target_id)
-
 class PartyManager(models.Manager):
     
     def get_by_name(self, name):
-        x = InternalXref.objects.filter(schema='party_names', text_value=name.strip().lower())
-        if len(x) == 0:
+        name = name.strip().lower()
+        try:
+            return PartyAlternateName.objects.get(name=name).party
+        except PartyAlternateName.DoesNotExist:
             raise Party.DoesNotExist()
-        elif len(x) > 1:
-            raise Exception("More than one party matched %s" % name.strip().lower())
-        else:
-            return self.get_queryset().get(pk=x[0].target_id)
-            
 class Party(models.Model):
     """A federal political party."""
     name_en = models.CharField(max_length=100)
@@ -75,39 +56,29 @@ class Party(models.Model):
     class Meta:
         verbose_name_plural = 'Parties'
 
-    def __init__(self, *args, **kwargs):
-        # If we're creating a new object, set a flag to save the name to the alternate-names table.
-        super(Party, self).__init__(*args, **kwargs)
-        self._saveAlternate = True
-
-    def save(self):
+    def save(self, *args, **kwargs):
         if not self.name_fr:
             self.name_fr = self.name_en
         if not self.short_name_en:
             self.short_name_en = self.name_en
         if not self.short_name_fr:
             self.short_name_fr = self.name_fr
-        super(Party, self).save()
-        if getattr(self, '_saveAlternate', False):
-            self.add_alternate_name(self.name_en)
-            self.add_alternate_name(self.name_fr)
-
-    def delete(self):
-        InternalXref.objects.filter(schema='party_names', target_id=self.id).delete()
-        super(Party, self).delete()
+        super(Party, self).save(*args, **kwargs)
+        self.add_alternate_name(self.name_en)
+        self.add_alternate_name(self.name_fr)
 
     def add_alternate_name(self, name):
         name = name.strip().lower()
-        # check if exists
-        x = InternalXref.objects.filter(schema='party_names', text_value=name)
-        if len(x) == 0:
-            InternalXref(schema='party_names', target_id=self.id, text_value=name).save()
-        else:
-            if x[0].target_id != self.id:
-                raise Exception("Name %s already points to a different party" % name.strip().lower())
+        PartyAlternateName.objects.get_or_create(name=name, party=self)
                 
     def __str__(self):
-        return self.name
+        return self.name    
+class PartyAlternateName(models.Model):
+    name = models.CharField(max_length=100, primary_key=True)
+    party = models.ForeignKey(Party, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return f"{self.name} -> {self.party.name_en}"
 
 class Person(models.Model):
     """Abstract base class for models representing a person."""
@@ -161,7 +132,6 @@ class PoliticianManager(models.Manager):
         
         """
         
-        # Alternate names for a pol are in the InternalXref table. Assemble a list of possibilities
         poss = PoliticianInfo.sr_objects.filter(schema='alternate_name', value=parsetools.normalizeName(name))
         if len(poss) >= 1:
             # We have one or more results
@@ -406,11 +376,6 @@ class Politician(Person):
     @property
     def identifier(self):
         return self.slug if self.slug else self.id
-        
-    # temporary, hackish, for stupid api framework
-    @property
-    def url(self):
-        return "http://openparliament.ca" + self.get_absolute_url()
 
     @property
     def parlpage(self):
@@ -703,6 +668,16 @@ class Riding(models.Model):
         
     def __str__(self):
         return "%s (%s)" % (self.dashed_name, self.get_province_display())
+    
+class RidingPostcodeCache(models.Model):
+    """Cache of which riding a postcode is in."""
+    postcode = models.CharField(max_length=6, primary_key=True)
+    riding = models.ForeignKey(Riding, on_delete=models.CASCADE)
+    source = models.CharField(max_length=30, blank=True)
+    timestamp = models.DateTimeField(default=datetime.datetime.now)
+
+    def __str__(self):
+        return f"{self.postcode} -> {self.riding.name_en}"
         
 class ElectedMemberManager(models.Manager):
     
