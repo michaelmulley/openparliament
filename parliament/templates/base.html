@@ -92,6 +92,7 @@
 
 <div id="notifications">
   {% block notifications %}{# e.g. <div class="top-notification success"><div class="row columns">Hello!</div></div> #}{% endblock %}{% if fr %}<div class="top-notification warning"><div class="row columns">Ceci est un site <strong>expérimental</strong> et <strong>incomplet</strong>. Voir <a href="https://openparliament.ca/">openparliament.ca</a>, en anglais, pour un site plus fiable.</div></div>{% endif %}
+  {% if GLOBAL_BANNER %}<div class="top-notification warning"><div class="row columns">{{ GLOBAL_BANNER }}</div></div>{% endif %}
 </div>
 
 
