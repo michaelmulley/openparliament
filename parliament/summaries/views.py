@@ -1,3 +1,4 @@
+from django.core.mail import mail_admins
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.views.generic import View
 
@@ -21,3 +22,21 @@ class SummaryPollView(View):
         return HttpResponse('OK')
     
 summary_poll = SummaryPollView.as_view()
+
+class SummaryFeedbackView(View):
+    def post(self, request):
+        summary_id = request.POST.get('summary_id')
+        try:
+            summary = Summary.objects.get(id=summary_id)
+        except Summary.DoesNotExist:
+            return HttpResponseBadRequest('Invalid summary ID')
+        feedback = request.POST.get('feedback')
+        if not feedback:
+            return HttpResponseBadRequest('Feedback is required')
+        mail_admins(
+            subject=f"Summary feedback for {summary}",
+            message=f"Feedback: {feedback}\nVote: {request.POST.get('vote')}\nDescription: {request.POST.get('description')}",
+            fail_silently=True,
+        )
+        return HttpResponse('OK')
+summary_feedback = SummaryFeedbackView.as_view()

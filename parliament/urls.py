@@ -9,7 +9,6 @@ from parliament.core.api import no_robots
 from parliament.core.sitemap import sitemaps
 from parliament.core.views import SiteNewsFeed, home, closed
 from parliament.hansards.views import document_redirect, speeches
-from parliament.summaries.views import summary_poll
 
 urlpatterns = [
     path('search/', include('parliament.search.urls')),
@@ -28,7 +27,7 @@ urlpatterns = [
     re_path(r'^accounts/', include('parliament.accounts.urls')),
     path(r'labs/haiku/', include('parliament.haiku.urls')),
     re_path(r'^$', home),
-    path('summaries/poll/', summary_poll),
+    path('summaries/', include('parliament.summaries.urls')),
     re_path(r'^sitemap\.xml$', sitemap_view, {'sitemaps': sitemaps}),
     re_path(r'^sitenews/rss/$', SiteNewsFeed(), name='sitenews_feed'),
     re_path(r'^robots\.txt$', no_robots),
