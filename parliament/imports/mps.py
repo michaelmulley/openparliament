@@ -120,25 +120,27 @@ def update_ridings_from_represent(boundary_set='federal-electoral-districts'):
 
     base_url = 'http://represent.opennorth.ca/'
     riding_list = requests.get(
-        urljoin(base_url, '/boundaries/federal-electoral-districts/?limit=500')).json()
+        urljoin(base_url, f'/boundaries/{boundary_set}/?limit=500')).json()
     riding_urls = [r['url'] for r in riding_list['objects']]
     for riding_url in riding_urls:
-        riding_data = requests.get(urljoin(base_url, riding_url)).json()
+        resp = requests.get(urljoin(base_url, riding_url))
+        resp.raise_for_status()
+        riding_data = resp.json()
         edid = int(riding_data['external_id'])
-        name = riding_data['metadata']['ENNAME']
-        name_fr = riding_data['metadata']['FRNAME']
-        prov = riding_data['metadata']['PROVCODE']
+        name = riding_data['metadata']['ED_NAMEE']
+        name_fr = riding_data['metadata']['ED_NAMEF']
+        prov = riding_data['metadata'].get('PROVCODE')
         try:
-            riding = Riding.objects.get_by_name(name)
-            riding.name = name  # just in case of slight punctuation differences
+            riding = Riding.objects.get_by_name(name, current=False)
+            riding.name_en = name  # just in case of slight punctuation differences
         except Riding.DoesNotExist:
-            riding = Riding(name=name)
+            riding = Riding(name_en=name)
         riding.edid = edid
         riding.name_fr = name_fr
         riding.province = prov
         riding.current = True
         riding.save()
-        sleep(.1)
+        sleep(.5)
 
 
 # This section of code lifted from

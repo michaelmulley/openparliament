@@ -600,11 +600,14 @@ class RidingManager(models.Manager):
         #'edmonton-mill-woods-beaumont': 'edmonton-beaumont',
     }
     
-    def get_by_name(self, name):
+    def get_by_name(self, name, current=True):
         slug = parsetools.slugify(name)
         if slug in RidingManager.FIX_RIDING:
             slug = RidingManager.FIX_RIDING[slug]
-        return self.get_queryset().get(slug=slug, current=True)
+        qs = self.get_queryset()
+        if current:
+            qs = qs.filter(current=True)
+        return qs.get(slug=slug)
 
 if settings.LANGUAGE_CODE.startswith('fr'):
     PROVINCE_CHOICES = (
@@ -660,12 +663,33 @@ class Riding(models.Model):
     def save(self):
         if not self.slug:
             self.slug = parsetools.slugify(self.name_en)
+        if self.edid and not self.province:
+            self.province = Riding.province_from_edid(self.edid)
         super(Riding, self).save()
         
     @property
     def dashed_name(self):
         return self.name.replace('--', '—')
-        
+    
+    @classmethod
+    def province_from_edid(cls, edid: int | str) -> str:
+        provcode = str(edid)[0:2]
+        return {
+            '10': 'NL',
+            '11': 'PE',
+            '12': 'NS',
+            '13': 'NB',
+            '24': 'QC',
+            '35': 'ON',
+            '46': 'MB',
+            '47': 'SK',
+            '48': 'AB',
+            '59': 'BC',
+            '60': 'YT',
+            '61': 'NT',
+            '62': 'NU',
+        }[provcode]
+
     def __str__(self):
         return "%s (%s)" % (self.dashed_name, self.get_province_display())
     
