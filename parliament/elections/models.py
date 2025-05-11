@@ -55,7 +55,7 @@ class Election (models.Model):
 class CandidacyManager(models.Manager):
     
     def create_from_name(self, first_name, last_name, riding, party, election,
-            votetotal, elected, votepercent=None, occupation='', interactive=True):
+            votetotal, elected, votepercent=None, interactive=True):
         """Create a Candidacy based on a candidate's name; checks for prior
         Politicians representing the same person.
         
@@ -99,8 +99,7 @@ class CandidacyManager(models.Manager):
             election=election,
             votetotal=votetotal,
             elected=elected,
-            votepercent=votepercent,
-            occupation=occupation
+            votepercent=votepercent
         )
         
 
@@ -109,7 +108,6 @@ class Candidacy (models.Model):
     riding = models.ForeignKey(Riding, on_delete=models.CASCADE)
     party = models.ForeignKey(Party, on_delete=models.CASCADE)
     election = models.ForeignKey(Election, on_delete=models.CASCADE)
-    occupation = models.CharField(max_length=100, blank=True)
     votetotal = models.IntegerField(blank=True, null=True)
     votepercent = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True)
     elected = models.BooleanField(blank=True, null=True)

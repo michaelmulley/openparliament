@@ -269,7 +269,6 @@ class Politician(Person):
         ('F', 'Female'),
     )
 
-    dob = models.DateField(blank=True, null=True)
     gender = models.CharField(max_length=1, blank=True, choices=GENDER_CHOICES)
     headshot = models.ImageField(upload_to='polpics', blank=True, null=True)
     headshot_thumbnail = models.ImageField(blank=True, null=True, upload_to='polpics/thumbnail')
