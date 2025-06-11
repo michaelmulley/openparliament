@@ -11,6 +11,7 @@ from parliament.hansards.models import Document
 from parliament.activity import utils as activityutils
 from parliament.activity.models import Activity
 from parliament.text_analysis import corpora
+from parliament.summaries.generation import update_hansard_summaries, update_reading_summaries
 
 import logging
 logger = logging.getLogger(__name__)
@@ -88,3 +89,7 @@ def corpus_for_debates():
 
 def corpus_for_committees():
     corpora.generate_for_committees()
+
+def summaries():
+    update_hansard_summaries()
+    update_reading_summaries(Session.objects.current())

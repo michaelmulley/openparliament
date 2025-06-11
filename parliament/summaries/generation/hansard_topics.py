@@ -215,7 +215,7 @@ def _summarize_qp(section, statements):
     
 def _summarize_subheds(section, statements):
     instructions = HANSARD_TOPIC_INSTRUCTIONS_INTRO
-    instructions += "For each statement, a URL is provided. It's a relative URL -- that's fine, ues it as-is.\n\n"
+    instructions += "For each statement, a URL is provided. It's a relative URL -- that's fine, use it as-is.\n\n"
 
     section_type = 'petition' if section['display_heading'].startswith('Petition') else 'statement'
     if section_type == 'petition':

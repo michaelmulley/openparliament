@@ -21,7 +21,7 @@ OP.summary_poll_vote = function(vote, summaryId, description) {
         var message = "Thanks for your feedback!";
         if (vote < 3) {
             var maillink = '<a href="mailto:michael@openparliament.ca?subject=' + encodeURIComponent('Summary feedback: ' + description + " " + summaryId) + '">email</a>';
-            message += " We'd appreciate an " + maillink + " to point out inaccuracies or problems, or write below:";
+            message += " I'd appreciate an " + maillink + " to point out what you didn't like, or write below:";
             pollDiv.innerHTML = `
                 <span>${message}</span><br>
                 <textarea id="summary_feedback_text" rows="3" style="width: 100%; max-width: 600px; display: inline-block; margin: 5px 0;" placeholder="What was inaccurate or unhelpful?"></textarea><br>
