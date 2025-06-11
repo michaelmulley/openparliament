@@ -502,10 +502,12 @@ class ParseHandler(object):
     
     @_only_open
     def handle_ThroneSpeech(self, el, openclose):
+        throne = ("The Governor General", "Le gouverneur général")
+        if int(self.parliament) == 45 and int(self.session) == 1:
+            throne = ("King Charles III", "Le roi Charles III")
         self._new_person(None, 
-            "The Governor General" if self.document_language[0] == 'e' 
-            else "Le gouverneur général")
-            
+            throne[0] if self.document_language[0] == 'e' else throne[1])
+
     def handle_B(self, el, openclose):
         # Fallout from new-speaker special case in ParaText
         if el.text == ':':
