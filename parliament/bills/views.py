@@ -160,7 +160,7 @@ class BillListView(ModelListView):
         len(sessions) # evaluate it
         bills = Bill.objects.filter(session=sessions[0]).select_related('sponsor_member', 'sponsor_member__party')
         votes = VoteQuestion.objects.select_related('bill').filter(session=sessions[0])[:6]
-        recently_debated = Bill.objects.filter(latest_debate_date__isnull=False).order_by('-latest_debate_date')[:12]
+        recently_debated = bills.filter(latest_debate_date__isnull=False).order_by('-latest_debate_date')[:12]
 
         t = loader.get_template('bills/index.html')
         c = {
