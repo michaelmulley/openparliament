@@ -9,8 +9,8 @@ import requests
 
 class llms:
     QUICK = 'google:gemini-2.0-flash'
-    THINKING = 'google:gemini-2.5-flash-preview-04-17'
-    EXPERT = 'google:gemini-2.5-pro-exp-03-25'
+    THINKING = 'google:gemini-2.5-flash'
+    EXPERT = 'google:gemini-2.5-pro'
 
 class LLMProviderError(Exception):
     pass
