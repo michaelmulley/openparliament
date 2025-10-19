@@ -185,7 +185,7 @@ def _scrape_ourcommons_row(row):
     d['party_name'] = row.xpath(
         './/div[@class="ce-mip-mp-party"][1]')[0].text_content()
 
-    url = row.xpath('.//a[@class="ce-mip-mp-tile"]/@href')[0]
+    url = row.xpath('.//a[@class="ce-mip-mp-tile-link"]/@href')[0]
     url = urljoin(OURCOMMONS_MPS_URL, url)
     mp_page = _scrape_url(url)
     d['url'] = url
