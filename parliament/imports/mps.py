@@ -83,8 +83,7 @@ def _import_mps(objs, download_headshots=False, update_all_headshots=False):
                 if office.get('tel'):
                     formatted += '\nPhone: %s' % office['tel']
                 constituency_offices.append(formatted.replace('\n\n', '\n'))
-        if constituency_offices:
-            _update('constituency_offices', '\n\n'.join(constituency_offices))
+        _update('constituency_offices', '\n\n'.join(constituency_offices))
 
         if mp_info.get('photo_url') and (update_all_headshots or (not pol.headshot)):
             if is_photo_real(mp_info.get('photo_url')):
