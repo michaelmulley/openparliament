@@ -27,7 +27,7 @@
 		<div class="row">
 			<div class="context-col"><h2>Subcommittee{{ subcommittees|pluralize }}</h2></div>
 			<div class="main-col">
-				<ul class="row tile dense small-up-1 medium-up-2">
+				<div class="row tile dense small-up-1 medium-up-2">
 					{% for subc in subcommittees %}<div class="column column-block"><a href="{{ subc.get_absolute_url }}">{{ subc }}</a></div>{% endfor %}
 				</div>
 			</div>
@@ -39,7 +39,9 @@
 		<div class="context-col"><h2>Recent studies</h2></div>
 		<div class="main-col">
 			<div class="row tile dense small-up-1 medium-up-2">
-				{% for study in recent_studies %}<div class="column column-block twoline overflowtip"><a href="{{ study.get_absolute_url }}">{{ study }}</a></div>{% endfor %}
+				{% for study in recent_studies %}
+					<div class="column column-block twoline overflowtip"><a href="{{ study.get_absolute_url }}">{{ study }}</a></div>
+				{% endfor %}
 			</div>
 		</div>
 	</div>
