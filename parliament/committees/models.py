@@ -56,7 +56,7 @@ class Committee(models.Model):
                 self.slug = self.parent.slug + '-' + self.slug
             self.slug = self.slug[:46]
             while Committee.objects.filter(slug=self.slug).exists():
-                self.slug += '-' + random.choice(string.lowercase)
+                self.slug += '-' + random.choice(string.ascii_lowercase)
         super(Committee, self).save(*args, **kwargs)
     
     def get_absolute_url(self):
