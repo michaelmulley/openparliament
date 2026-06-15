@@ -8,8 +8,8 @@ from django.conf import settings
 import requests
 
 class llms:
-    QUICK = 'google:gemini-2.0-flash'
-    THINKING = 'google:gemini-2.5-flash'
+    QUICK = 'or:@preset/op-quick'
+    THINKING = 'or:@preset/op-thinking'
     EXPERT = 'google:gemini-2.5-pro'
 
 class LLMProviderError(Exception):
@@ -137,8 +137,18 @@ def _get_llm_response_openrouter(instructions, text, model, chat_history, json) 
         "provider": {"allow_fallbacks": False}
     }
     if json:
-        # haven't written code for schemas in openrouter yet, just request json response
-        req['response_format'] = dict(type='json_object')
+        if isinstance(json, dict):
+            req['response_format'] = {
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "op-json",
+                    "strict": True,
+                    "schema": json
+                }
+            }
+        else:
+            req['response_format'] = dict(type='json_object')
+
     resp = requests.post(
       url="https://openrouter.ai/api/v1/chat/completions",
       headers={
@@ -146,12 +156,32 @@ def _get_llm_response_openrouter(instructions, text, model, chat_history, json) 
       },
       json=req)
 
-    try:
-        resp.raise_for_status()
-        rj = resp.json()
-        response_text = rj['choices'][0]['message']['content']
-    except Exception as e:
-        raise LLMProviderError(f"OpenRouter responded with status {resp.status_code}: {resp.text}")
+    if resp.status_code != 200:
+        try:
+            message = resp.json()['error']['message']
+        except:
+            message = resp.text
+        raise LLMProviderError(f"OpenRouter responded with status {resp.status_code}: {message}")
+
+    rj = resp.json()
+    if rj.get('error'):
+        raise LLMProviderError(f"OpenRouter responded with error: {rj['error']}")
+    choice = rj['choices'][0]
+    finish_reason = choice.get('finish_reason')
+    if finish_reason != 'stop':
+        native_finish_reason = choice.get('native_finish_reason')
+        error_message = choice.get('error', {}).get('message')
+        details = []
+        if native_finish_reason and native_finish_reason != finish_reason:
+            details.append(f"native finish reason {native_finish_reason}")
+        if error_message:
+            details.append(error_message)
+        detail_suffix = f" ({'; '.join(details)})" if details else ""
+        raise LLMProviderError(
+            f"OpenRouter responded with finish reason {finish_reason}{detail_suffix}"
+        )
+
+    response_text = choice['message']['content']
     metadata = {
         "model": model if model == rj.get('model') else f"{rj.get('model')} (requested: {model})",
         "provider": f"openrouter: {rj.get('provider')}",

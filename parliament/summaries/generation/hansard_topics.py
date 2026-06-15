@@ -92,7 +92,7 @@ def _summarize_hansard_section(section, doc):
         instructions = strip_markdown_links(instructions)    
         
     transcript = get_transcript(statements, para_urls=False)
-    resp, meta = call_llm_with_munged_urls(instructions, transcript, model=llms.THINKING, temperature=0.7)
+    resp, meta = call_llm_with_munged_urls(instructions, transcript)
     check_markdown_links(resp, transcript)
     check_length(resp, 850)
     section['summary_text'] = resp
@@ -126,15 +126,17 @@ def _summarize_adjournment(section, statements):
         """
 
         SCHEMA = {
-            "type": "OBJECT",
+            "type": "object",
             "properties": {
-                "topic": {"type":"STRING"},
-                "summary": {"type":"STRING"}
-            }
-        } # Gemini really does not like this schema for some reason?
+                "topic": { "type": "string" },
+                "summary": { "type": "string" }
+            },
+            "required": ["topic", "summary"],
+            "additionalProperties": False
+        }
 
         transcript = get_transcript(chunk_statements, para_urls=False)
-        resp, meta = get_llm_response(instructions, transcript, json=True)
+        resp, meta = get_llm_response(instructions, transcript, json=SCHEMA)
         meta['tag'] = f"adjournment - {h2}"
         metadata.append(meta)
         json_resp = load_json_response(resp)

@@ -41,7 +41,7 @@ Use the following structure:
 ]
 
 Here's an example (for a different bill):
-[
+{"bullet_points": [
     {
         "headline": "Supports bill C-95",
         "source_paragraph_url": "/st/h38f",
@@ -57,20 +57,27 @@ Here's an example (for a different bill):
         "source_paragraph_url": "/st/9KKp4d",
         "summary": "Christine Guy-Marcil highlights an increase in femicide and domestic violence. She argues that Parliament has a responsibility to try and reverse the trend, that concrete action is slow in coming, but that this bill is a step to improve victims' experience with the justice system and start rebuilding trust."
     }
-]
+]}
 
 """
 
 BILL_READING_INSTRUCTIONS_PARTY_SCHEMA = {
-    "type": "ARRAY",
-    "items": {
-        "type": "OBJECT",
+  "type": "object",
+  "properties": {
+    "bullet_points": {
+      "type": "array",
+      "items": {
+        "type": "object",
         "properties": {
-            "headline": {"type":"STRING"},
-            "source_paragraph_url": {"type":"STRING"},
-            "summary": {"type":"STRING"}
-        }
+          "headline": { "type": "string" },
+          "source_paragraph_url": { "type": "string" },
+          "summary": { "type": "string" }
+        },
+        "required": ["headline", "source_paragraph_url", "summary"]
+      }
     }
+  },
+  "required": ["bullet_points"]
 }
 
 def create_reading_summary(bill: Bill, reading: Literal['2','3','report'], model: str | None = None) -> Summary:
@@ -86,7 +93,7 @@ def create_reading_summary(bill: Bill, reading: Literal['2','3','report'], model
     summary_parts = []
 
     # Get overall summary from major_speeches
-    resp, meta = get_llm_response(BILL_SUMMARY_FROM_SPEECHES, get_transcript(major_speeches, para_urls=True), temperature=0.7)
+    resp, meta = get_llm_response(BILL_SUMMARY_FROM_SPEECHES, get_transcript(major_speeches, para_urls=True))
     check_length(resp, 420)
     summary_parts.append(resp)
     metadata.append(meta)
@@ -97,8 +104,8 @@ def create_reading_summary(bill: Bill, reading: Literal['2','3','report'], model
         party_transcript = get_transcript(party_speeches, para_urls=True)
         resp, meta = call_llm_with_munged_urls(BILL_READING_INSTRUCTIONS_PARTY, party_transcript,
                                                 json=BILL_READING_INSTRUCTIONS_PARTY_SCHEMA,
-                                                model=llms.THINKING, temperature=0.7)
-        json_resp = load_json_response(resp)
+                                                model=llms.THINKING)
+        json_resp = load_json_response(resp)["bullet_points"]
         party_summary = f"**{party_name}**\n\n"
         for bullet in json_resp:
             party_summary += f"- [{bullet['headline']}]({bullet['source_paragraph_url']}): {bullet['summary']}\n"
