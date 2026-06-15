@@ -7,6 +7,7 @@ from django.http import HttpResponse, Http404, HttpResponseBadRequest
 from django.middleware.cache import FetchFromCacheMiddleware as DjangoFetchFromCacheMiddleware
 from django.shortcuts import render
 from django.utils.html import escape
+from django.views.decorators.cache import never_cache
 from django.views.generic import View
 
 from webob.acceptparse import MIMEAccept
@@ -311,12 +312,12 @@ class ModelDetailView(APIView):
     def get_related_resources(self, request, obj, result) -> dict[str, str] | None:
         return None
 
-
+@never_cache
 def no_robots(request):
     host = request.get_host().lower()
-    if host.startswith('api.') or host.startswith('op.') or getattr(settings, 'PARLIAMENT_NO_ROBOTS', False):
-        return HttpResponse('User-agent: *\nDisallow: /\n', content_type='text/plain')
-    return HttpResponse(settings.PARLIAMENT_ROBOTS_TXT, content_type='text/plain')
+    if any((host == allowed or allowed == '*') for allowed in settings.PARLIAMENT_ALLOW_ROBOTS_HOST):
+        return HttpResponse(settings.PARLIAMENT_ROBOTS_TXT, content_type='text/plain')
+    return HttpResponse('User-agent: *\nDisallow: /\n', content_type='text/plain')
 
 def docs(request):
     return render(request, 'api/doc.html', {'title': 'API'})
