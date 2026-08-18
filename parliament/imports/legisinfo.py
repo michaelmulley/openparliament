@@ -51,14 +51,17 @@ class BillData:
 
     @property
     def is_detailed(self):
-        return bool(self.get('BillStages'))
+        stages = self.get('BillStages')
+        if not stages:
+            return False
+        return bool(stages.get('HouseBillStages') or stages.get('SenateBillStages'))
 
     @property
     def detailed_json_url(self):
         return LEGISINFO_DETAIL_URL % {
             'parlnum': self['ParliamentNumber'],
             'sessnum': self['SessionNumber'],
-            'billnumber': self['BillNumberFormatted'].lower()
+            'billnumber': self['NumberCode'].lower()
         }
 
     def get_detailed(self):
