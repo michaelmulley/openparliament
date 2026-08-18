@@ -269,6 +269,16 @@ def _download_evidence(meeting, evidence_viewer_url):
         logger.error("No source ID in evidence for %s, using constructed ID %s" % (
             evidence_viewer_url, source_id))
 
+    # Add a check that the evidence ID isn't duplicated upstream
+    # (it happens!)
+    existing = Document.objects.filter(source_id=source_id).first()
+    if existing:
+        logger.error(
+            "Evidence XML for %s reports source_id %s already used by document %s "
+            "(%s) — likely a duplicate id upstream, skipping" % (
+                meeting, source_id, existing.pk, xml_url_en))
+        return
+
     meeting.evidence = Document.objects.create(
         source_id=source_id,
         date=meeting.date,
