@@ -7,10 +7,11 @@ from django.contrib.sitemaps.views import sitemap as sitemap_view
 from parliament.core.api import docs as api_docs
 from parliament.core.api import no_robots
 from parliament.core.sitemap import sitemaps
-from parliament.core.views import SiteNewsFeed, home, closed
+from parliament.core.views import SiteNewsFeed, home, closed, healthz
 from parliament.hansards.views import document_redirect, speeches
 
 urlpatterns = [
+    path('healthz', healthz, name='healthz'),
     path('search/', include('parliament.search.urls')),
     path('debates/', include('parliament.hansards.urls')),
     re_path(r'documents/(?P<document_id>\d+)/$', document_redirect, name='document_redirect'),
@@ -51,6 +52,7 @@ if getattr(settings, 'ADMIN_URL', False):
     
 if getattr(settings, 'PARLIAMENT_SITE_CLOSED', False):
     urlpatterns = [
+        path('healthz', healthz, name='healthz'),
         re_path(r'.*', closed)
     ] + urlpatterns
     

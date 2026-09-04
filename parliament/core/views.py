@@ -2,6 +2,7 @@ import datetime
 
 from django.conf import settings
 from django.contrib.syndication.views import Feed
+from django.db import connection
 from django.http import HttpResponse, Http404, HttpResponseRedirect, HttpResponsePermanentRedirect
 from django.template import loader
 from django.utils.html import conditional_escape
@@ -36,6 +37,14 @@ def home(request):
     }
     return HttpResponse(t.render(c, request))
     
+@never_cache
+def healthz(request):
+    """Health-check endpoint."""
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT 1")
+        cursor.fetchone()
+    return HttpResponse("ok", content_type="text/plain")
+
 @never_cache
 def closed(request, message=None):
     if not message:
