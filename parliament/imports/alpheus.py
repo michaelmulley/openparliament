@@ -105,10 +105,18 @@ def _get_housemet_time(number, ampm):
     else:
         return datetime.time(hour=int(hour), minute=int(minute))
         
+# Committee evidence for a meeting that's suspended and resumed on a later day keeps the
+# original date and encodes the later day in the hour (e.g. Hr="60" is noon two days later);
+# offsets of ~100 days occur in real data. Anything beyond this is garbage in the source XML
+# (e.g. Hr="17716692", seen in 2022, which would put a statement in the year 4043).
+MAX_TIMESTAMP_DAYS_AFTER_DOCUMENT = 366
+
 def _time_to_datetime(hour, minute, date):
     """Given hour, minute, and a datetime.date, returns a datetime.datetime.
 
-    Necessary to deal with the occasional wacky 25 o'clock timestamps in Hansard.
+    Necessary to deal with the occasional wacky 25 o'clock timestamps in Hansard,
+    and the much larger hour values used for resumed committee meetings (see
+    MAX_TIMESTAMP_DAYS_AFTER_DOCUMENT above).
     """
     if hour < 24:
         return datetime.datetime.combine(date, datetime.time(hour=hour, minute=minute))
@@ -570,8 +578,14 @@ class ParseHandler(object):
     @_only_open
     def handle_Timestamp(self, el, openclose):
         if el.get('Hr'):
-            self.current_attributes['timestamp'] = _time_to_datetime(
+            timestamp = _time_to_datetime(
                 hour=int(el.get('Hr').replace(' ', '')), minute=int(el.get('Mn', 0)), date=self.date)
+            if (timestamp.date() - self.date).days > MAX_TIMESTAMP_DAYS_AFTER_DOCUMENT:
+                # Bad source data; leave the previous timestamp in effect.
+                logger.warning("Ignoring implausible timestamp %s in document dated %s",
+                               etree.tostring(el, encoding='unicode').strip(), self.date)
+                return NO_DESCEND
+            self.current_attributes['timestamp'] = timestamp
             if self.current_statement and not self.current_statement.meta.get('has_non_procedural'):
                 # If there's only been procedural text so far, make this timestamp apply to the current
                 # statement
