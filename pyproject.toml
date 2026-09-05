@@ -3,9 +3,9 @@ name = "openparliament"
 version = "0.1.0"
 description = "A website to present the goings-on of Canada's House of Commons"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 dependencies = [
-    "Django >=5.2,<5.3",
+    "Django >=6.1,<6.2",
     "dj-database-url",
     "django-compressor",
     "django-extensions",
@@ -18,7 +18,7 @@ dependencies = [
     "Markdown",
     "pysolr",
     "requests",
-    "psycopg",
+    "psycopg[pool]",
     "webob",
     "oauth2client",
     "whitenoise",
@@ -26,11 +26,13 @@ dependencies = [
 
 [project.optional-dependencies]
 production = [
-    "redis<6",
-    "hiredis<3",
-    "gunicorn",
-    "gevent", # only used for gunicorn workers
+    "redis",
+    "hiredis",
+    "gunicorn[gevent]",
     "calmjs",
     "sentry-sdk"
 ]
+
+[tool.uv]
+exclude-newer = "1 week"
 

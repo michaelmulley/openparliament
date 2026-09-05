@@ -1,4 +1,4 @@
-FROM python:3.13
+FROM python:3.14-slim
 
 # Prevents Python from writing pyc files.
 ENV PYTHONDONTWRITEBYTECODE=1
@@ -8,6 +8,8 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends libpq5 curl && rm -rf /var/lib/apt/lists/*
 
 # Create a non-privileged user that the app will run under.
 # See https://docs.docker.com/go/dockerfile-user-best-practices/
@@ -22,7 +24,7 @@ WORKDIR /app
 #     appuser
 
 # Package installation code copied from https://github.com/astral-sh/uv-docker-example/blob/main/Dockerfile
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+COPY --from=ghcr.io/astral-sh/uv:0.12 /uv /uvx /bin/
 ENV UV_COMPILE_BYTECODE=1
 ENV UV_LINK_MODE=copy
 
@@ -33,7 +35,7 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 
 # Then, add the rest of the project source code and install it
 # Installing separately from its dependencies allows optimal layer caching
-ADD . /app
+COPY . /app
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-dev --extra production
 
