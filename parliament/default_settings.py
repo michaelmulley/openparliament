@@ -211,4 +211,7 @@ LOGGING = {
     },
 }
 
-
+# Search
+PARLIAMENT_ES_URL = 'http://elasticsearch:9200'
+# Alias through which the live index is reached (see parliament.search.es_index)
+PARLIAMENT_ES_INDEX = 'parliament'

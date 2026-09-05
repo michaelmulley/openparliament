@@ -6,6 +6,11 @@
 			<div class="columns small-12 medium-8 sort_options">{% if 'date' in sort %}<a href="?q={{ query|urlencode }}" data-sort="">Sort by relevance</a>{% else %}Sorted by relevance{% endif %} | {% if 'date' in sort %}Sorted{% else %}Sort{% endif %} by date: {% if 'desc' in sort %}newest first{% else %}<a href="?q={{ query|urlencode }}&amp;sort=date+desc" data-sort="date desc">newest first</a>{% endif %} / {% if 'asc' in sort %}oldest first{% else %}<a href="?q={{ query|urlencode }}&amp;sort=date+asc" data-sort="date asc">oldest first</a>{% endif %}</div>
 		{% endif %}
 </div>
+{% if suggestion %}
+<div class="row search_suggestion">
+	<div class="columns small-12"><p>Did you mean <a href="?q={{ suggestion|urlencode }}"><strong>{{ suggestion }}</strong></a>?</p></div>
+</div>
+{% endif %}
 {% for result in page.object_list %}
 <div class="row result" data-url="{{ result.url }}">
 

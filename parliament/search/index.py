@@ -1,10 +1,13 @@
 import itertools
+import logging
 
 from django.conf import settings
 from django.db.models import signals
 
+from parliament.search import es_index
 from parliament.search.models import IndexingTask
-from parliament.search.solr import get_pysolr_instance
+
+logger = logging.getLogger(__name__)
 
 _search_model_registry = set()
 def register_search_model(cls):
@@ -23,8 +26,14 @@ def register_search_model(cls):
     _search_model_registry.add(cls)
     return cls
 
+def get_search_models():
+    return sorted(_search_model_registry, key=get_content_type_for_model)
+
+def get_content_type_for_model(model_cls) -> str:
+    return f"{model_cls._meta.app_label}.{model_cls._meta.model_name}"
+
 def get_content_type(model_obj) -> str:
-    return f"{model_obj._meta.app_label}.{model_obj._meta.model_name}"
+    return get_content_type_for_model(model_obj._meta.model)
 
 def get_identifier(model_obj) -> str:
     return f"{get_content_type(model_obj)}.{model_obj.pk}"
@@ -53,26 +62,33 @@ if getattr(settings, 'PARLIAMENT_TRACK_INDEXING_TASKS', False):
 def get_search_dict(obj):
     d = obj.search_dict()
     d['django_ct'] = get_content_type(obj)
-    d['django_id'] = obj.pk
+    d['django_id'] = str(obj.pk)
     d['id'] = get_identifier(obj)
     return {k:v for k,v in d.items() if v is not None}
 
-def index_model(model_cls):
-    return index_qs(model_cls.search_get_qs())
+def index_model(model_cls, index=None, progress=None):
+    return index_qs(model_cls.search_get_qs(), index=index, progress=progress)
 
-def index_all():
-    for model_cls in _search_model_registry:
-        index_model(model_cls)
+def index_all(index=None, progress=None):
+    for model_cls in get_search_models():
+        index_model(model_cls, index=index, progress=progress)
 
-def index_qs(qs, batchsize=1000):
+def index_qs(qs, batchsize=1000, index=None, progress=None):
+    """Index every object in a queryset. `progress(n)` is called after each
+    batch with the running count of objects processed."""
+    total = 0
     batches = itertools.batched(qs.iterator(chunk_size=batchsize), batchsize)
-    for i, batch in enumerate(batches):
-        index_objects(batch)
-        print(i * batchsize)
+    for batch in batches:
+        index_objects(batch, index=index)
+        total += len(batch)
+        if progress:
+            progress(total)
+    return total
 
-def index_objects(model_objs):
+def index_objects(model_objs, index=None):
     prepared_objs = [get_search_dict(o)
                         for o in model_objs if o.search_should_index()]
-    get_pysolr_instance().add(prepared_objs)
+    return es_index.index_documents(prepared_objs, index=index)
 
-
+def delete_identifiers(identifiers):
+    return es_index.delete_documents(identifiers)

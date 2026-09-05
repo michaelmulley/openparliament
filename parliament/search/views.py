@@ -17,7 +17,7 @@ import requests
 from parliament.core.models import Politician, Session, ElectedMember, Riding, RidingPostcodeCache
 from parliament.core.views import closed, flatpage_response
 from parliament.core.utils import is_ajax
-from parliament.search.solr import SearchQuery
+from parliament.search.es import SearchQuery
 from parliament.search.utils import SearchPaginator
 from parliament.utils.views import adaptive_redirect
 
@@ -60,6 +60,7 @@ def search(request):
         ctx = dict(
             query=query,
             pagenum=pagenum,
+            suggestion=query_obj.suggestion,
             discontinuity=query_obj.discontinuity,
             chart_years=[c[0] for c in query_obj.date_counts],
             chart_values=[c[1] for c in query_obj.date_counts],

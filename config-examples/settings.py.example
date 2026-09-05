@@ -1,3 +1,4 @@
+import os
 
 from .default_settings import *
 
@@ -38,10 +39,9 @@ CACHES = {
 
 CACHE_MIDDLEWARE_SECONDS = 60 * 60 * 3
 
-# For search to work, you need to have a running instance of Apache Solr
-# (If you just leave this as an invalid URL, the site will work with the
+# Search runs on Elasticsearch. (The site will run without it, with the
 # exception of search features.)
-PARLIAMENT_SOLR_URL = 'http://solr:8983/solr/parliament-en'
+PARLIAMENT_ES_URL = os.getenv('PARLIAMENT_ES_URL', 'http://elasticsearch:9200')
 # If True, will keep track of updated or deleted items and leave notes in the
 # IndexingTask table; the consume_indexing_queue mangement command will then
 # perform all those tasks when called.

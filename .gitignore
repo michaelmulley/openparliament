@@ -26,3 +26,5 @@ hansard-cache/
 *.code-workspace
 docker-compose.yml
 build
+docker-compose.override.yml
+eval_queries.txt

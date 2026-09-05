@@ -22,6 +22,7 @@ from PIL import Image, ImageOps
 from parliament.core import parsetools
 from parliament.core.utils import memoize_property, ActiveManager, language_property
 from parliament.search.index import register_search_model
+from parliament.search.utils import title_key
 
 import logging
 logger = logging.getLogger(__name__)
@@ -476,24 +477,22 @@ class Politician(Person):
     def search_dict(self):
         member = self.latest_member        
         d = {
-            'text': '',
             'politician': self.name,
-            'party': member.party.short_name,
+            'party': member.party.short_name_en,
+            'party_slug': member.party.slug,
             'province': member.riding.province,
+            'riding': member.riding.name_en,
+            'riding_search': ' '.join(filter(None, {member.riding.name_en: 1, member.riding.name_fr: 1})),
+            'title_key': list(filter(None, dict.fromkeys(
+                title_key(n) for n in [self.name, member.riding.name_en, member.riding.name_fr]))) or None,
+            'end_year': member.end_date.year if member.end_date else None,
             'url': self.get_absolute_url(),
             'doctype': 'mp',
+            'boosted': ' '.join(filter(None, [
+                self.name, *self.alternate_names(),
+                member.party.name_en, member.party.name_fr, member.party.short_name_en,
+            ])),
         }
-        d['boosted'] = f"""
-            {self.name} {' '.join(self.alternate_names())}
-            {member.party.name} {member.party.short_name}
-            {member.riding}
-        """
-
-        d['text'] = f"""
-        {'was' if member.end_date else ''}
-        <span class="tag partytag_{ member.party.slug.lower() }">{member.party.short_name }</span>
-        MP for { member.riding } {('until ' + str(member.end_date.year)) if member.end_date else ''}
-        """
         return d
 
 class PoliticianInfoManager(models.Manager):

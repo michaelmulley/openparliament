@@ -15,6 +15,7 @@ from parliament.core.utils import language_property, memoize_property
 from parliament.hansards.models import Document, Statement
 from parliament.activity import utils as activity
 from parliament.search.index import register_search_model
+from parliament.search.utils import title_key
 
 import logging
 logger = logging.getLogger(__name__)
@@ -268,25 +269,38 @@ class Bill(models.Model):
     
     def search_dict(self):
         d = {
-            'text': self.get_text(),
-            'title': self.name,
+            'bill_text_en': self.get_text('en'),
+            'bill_text_fr': self.get_text('fr') or None,
+            'title_en': self._search_title('en'),
+            'title_fr': self._search_title('fr'),
             'number': self.number,
             'url': self.get_absolute_url(),
             'session': str(self.session),
-            'doctype': 'bill'
+            'doctype': 'bill',
+            # Short titles are what people call bills ("Online Streaming Act")
+            'topic_en': self.short_title_en or None,
+            'topic_fr': self.short_title_fr or None,
+            'title_key': list(filter(None, {title_key(self.short_title_en): 1, title_key(self.short_title_fr): 1})) or None,
+            'boosted': f"Bill {self.number}",
         }
-        if self.introduced:
-            d['date'] = self.introduced.isoformat() + 'T12:00:00Z'
+        # Without a date, the recency boost would treat an old bill as new
+        date = self.introduced or self.session.start
+        d['date'] = date.isoformat() + 'T12:00:00Z'
         if self.sponsor_politician:
             d['politician'] = self.sponsor_politician.name
             d['politician_id'] = self.sponsor_politician.identifier
         if self.sponsor_member:
-            d['party'] = self.sponsor_member.party.short_name
-        d['searchtext'] = f"{self.name} {self.short_title_en} {d['text']}"
-        d['boosted'] = f"Bill {self.number}"
-        if len(d['title']) >= 150:
-            d['title'] = self.short_title if self.short_title else (self.name[:140] + '…')
+            d['party'] = self.sponsor_member.party.short_name_en
         return d
+
+    def _search_title(self, language):
+        name = getattr(self, 'name_' + language)
+        if not name:
+            return None
+        if len(name) >= 150:
+            short_title = getattr(self, 'short_title_' + language)
+            return short_title if short_title else (name[:140] + '…')
+        return name
     
     def search_should_index(self):
         return True # index all bills
@@ -294,7 +308,7 @@ class Bill(models.Model):
     @classmethod
     def search_get_qs(cls):
         return Bill.objects.all().prefetch_related(
-            'sponsor_politician', 'sponsor_member', 'sponsor_member__party'
+            'session', 'sponsor_politician', 'sponsor_member', 'sponsor_member__party'
         )
     
     def to_api_dict(self, representation):

@@ -16,12 +16,12 @@ dependencies = [
     "lxml_html_clean",
     "cssselect",
     "Markdown",
-    "pysolr",
     "requests",
     "psycopg[pool]",
     "webob",
     "oauth2client",
     "whitenoise",
+    "elasticsearch>=9,<10",
 ]
 
 [project.optional-dependencies]
@@ -30,7 +30,7 @@ production = [
     "hiredis",
     "gunicorn[gevent]",
     "calmjs",
-    "sentry-sdk"
+    "sentry-sdk",
 ]
 
 [tool.uv]

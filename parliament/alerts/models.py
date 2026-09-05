@@ -15,7 +15,7 @@ from django.template import loader
 from parliament.core.models import Politician
 from parliament.core.templatetags.ours import english_list
 from parliament.core.utils import ActiveManager
-from parliament.search.solr import SearchQuery
+from parliament.search.es import SearchQuery
 
 import logging
 logger = logging.getLogger(__name__)
@@ -55,9 +55,7 @@ class Topic(models.Model):
         query_obj = SearchQuery(self.query, limit=limit,
             user_params={'sort': 'date desc'},
             full_text=self.politician_hansard_alert,
-            solr_params={
-                'mm': '100%' # match all query terms
-            })
+            minimum_should_match='100%')  # match all query terms
 
         # Only look for items newer than 60 days
         today = datetime.date.today()

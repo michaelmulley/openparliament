@@ -13,9 +13,9 @@ services:
       - postgres    
 
   postgres:
-    image: postgres:16
+    image: postgres:18
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - pgdata:/var/lib/postgresql
     environment:
       - POSTGRES_USER=op
       - POSTGRES_PASSWORD=op
@@ -23,17 +23,15 @@ services:
       - PGUSER=op
       - PGDATABASE=parliament
 
-  solr:
-    image: solr:9.5
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.5.3
     volumes:
-      - solrdata:/var/solr
-      - ./solr-config:/parliament-config
-    command:
-      - solr-precreate
-      - parliament-en
-      - /parliament-config
+      - esdata:/usr/share/elasticsearch/data
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
     ports:
-      - "8983:8983"
+      - "9200:9200"
 
   # pgadmin:
   #   image: dpage/pgadmin4
@@ -46,4 +44,4 @@ services:
 volumes:
   pgdata:
   opmedia:
-  solrdata:
+  esdata:

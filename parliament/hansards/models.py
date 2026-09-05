@@ -453,27 +453,33 @@ class Statement(models.Model):
             .replace('&amp;', '&')
         ).strip()
 
-    def search_dict(self):      
+    def search_dict(self):
         name = self.name_info
+        committee = (self.document.committeemeeting.committee
+                     if self.document.document_type == Document.EVIDENCE else None)
         d = {
-            "text": self.text_plain(),
+            "text_en": self.text_plain('en'),
+            "text_fr": self.text_plain('fr') if self.content_fr else None,
             # the date is local Ottawa time, not UTC, but we'll pretend for search
             "date": self.time.isoformat() + 'Z',
             "who_hocid": self.who_hocid,
-            "topic": self.h2,
+            "topic_en": self.h2_en,
+            "topic_fr": self.h2_fr or None,
             "url": self.get_absolute_url(),
             "doc_url": self.document.get_absolute_url(),
-            "committee": self.committee_name,
-            "committee_slug": self.committee_slug
+            "committee_en": committee.short_name_en if committee else None,
+            "committee_fr": (committee.short_name_fr or committee.short_name_en) if committee else None,
+            "committee_slug": committee.slug if committee else None,
+            "doctype": 'committee' if committee else 'debate',
+            "politician": name['display_name'],
+            "procedural": self.procedural,
+            "wordcount": self.wordcount,
         }
         if self.member:
-            d['party'] = self.member.party.short_name
+            d['party'] = self.member.party.short_name_en
             d['province'] = self.member.riding.province
             d['politician_id'] = self.member.politician.identifier
-
-        d['doctype'] = 'committee' if d['committee'] else 'debate'
-        d['politician'] = name['display_name']
-        d['searchtext'] = f"{name['display_name']} {name['post'] if name['post'] else ''} {d.get('party', '')} {d['topic']} {d['text']}"
+        d['speaker'] = ' '.join(filter(None, [name['display_name'], name['post'], d.get('party')]))
         return d
     
     def search_should_index(self):
@@ -481,13 +487,10 @@ class Statement(models.Model):
     
     @classmethod
     def search_get_qs(cls):
-        qs = cls.objects.all().prefetch_related(
+        return cls.objects.all().prefetch_related(
             'member__politician', 'member__party', 'member__riding', 'document',
             'document__committeemeeting__committee'
         ).order_by()
-        if settings.LANGUAGE_CODE.startswith('fr'):
-            qs = qs.exclude(content_fr='')
-        return qs
 
     def _generate_wordcounts(self):
         paragraphs = [

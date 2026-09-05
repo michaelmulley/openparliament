@@ -25,8 +25,8 @@ Usage
 This is the source code for a specific site and isn't adapted for reuse or
 other purposes. But if it's useful to you, that's great!
 
-The application runs on a recent version of Python (3.12 as of this writing).
-Your best bet to get an environment running is probably Docker. A sample
+The application runs on a recent version of Python (3.14 as of this writing).
+Your best bet to get an environment running is Docker. A sample
 docker-compose.yml is provided in the config-examples directory; copy it into the
 same directory as this file and run `docker compose up`.
 
