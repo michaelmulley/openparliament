@@ -2,12 +2,13 @@ import logging
 
 from django.core.management.base import BaseCommand
 
+from parliament.alerts.matching import record_matches
 from parliament.search.index import index_objects, delete_identifiers
 
 logger = logging.getLogger(__name__)
 
 class Command(BaseCommand):
-    help = "Runs any queued-up search indexing tasks."
+    help = "Runs any queued-up search indexing tasks, and matches what was indexed against alert topics."
 
     def handle(self, **options):
 
@@ -30,6 +31,11 @@ class Command(BaseCommand):
                     update_objs.setdefault(t.identifier, t.content_object)
 
             index_objects(update_objs.values())
+
+            # If this fails, the tasks stay queued and are retried (and the
+            # objects harmlessly re-indexed) next time, rather than the
+            # alerts silently missing them.
+            record_matches(update_objs.keys())
 
             IndexingTask.objects.filter(id__in=[t.id for t in update_tasks]).delete()
 

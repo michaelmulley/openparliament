@@ -18,4 +18,13 @@ class SubscriptionAdmin(admin.ModelAdmin):
 
 admin.site.register(Topic, TopicAdmin)
 admin.site.register(Subscription, SubscriptionAdmin)
-admin.site.register(SeenItem)
+
+
+class TopicMatchAdmin(admin.ModelAdmin):
+
+    list_display = ['topic', 'item_id', 'date', 'created', 'sent']
+    list_filter = ['sent', 'created']
+    search_fields = ['topic__query', 'item_id']
+    ordering = ['-created']
+
+admin.site.register(TopicMatch, TopicMatchAdmin)

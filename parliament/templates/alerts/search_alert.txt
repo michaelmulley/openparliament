@@ -15,7 +15,10 @@ https://openparliament.ca{{ document.url }}
 https://openparliament.ca{{ document.url }}
 {{ document.text|text_highlight }}
 {% endif %}
-{% endfor %}
+{% endfor %}{% if more %}
+...and {{ more }} more. See them all, newest first, at:
+{{ search_url }}
+{% endif %}
 
 ************
 You're receiving this e-mail because you signed up at openparliament.ca to

@@ -218,11 +218,12 @@ def build_search_body(bare_query: str, filters: dict[str, str], *,
                       facet: bool = False, full_text: bool = False,
                       minimum_should_match: str = MINIMUM_SHOULD_MATCH, language: str = 'en',
                       now: datetime.datetime | None = None,
-                      date_facet_start: int = 1994) -> dict:
+                      date_facet_start: int = 1994, ids: list[str] | None = None) -> dict:
     """Build an Elasticsearch request body.
 
     `filters` maps index field names (politician_id, party, date, ...) to
-    the user-supplied filter value.
+    the user-supplied filter value. `ids` restricts the search to those
+    document identifiers (used to match newly indexed items against alerts).
     """
     now = now or datetime.datetime.now().replace(minute=0, second=0, microsecond=0)
     fields = QUERY_FIELDS[language]
@@ -240,6 +241,9 @@ def build_search_body(bare_query: str, filters: dict[str, str], *,
             post_filters.append((tag, clause))
         else:
             query_filters.append((tag, clause))
+
+    if ids:
+        query_filters.append(('fids', {'ids': {'values': list(ids)}}))
 
     # -- The text query
     normalized, explicit_operators = normalize_query(bare_query)
@@ -504,7 +508,7 @@ class SearchQuery(BaseSearchQuery):
 
     def __init__(self, query, start=0, limit=15, user_params={},
                  facet=False, full_text=False, minimum_should_match=MINIMUM_SHOULD_MATCH,
-                 language=None):
+                 language=None, ids=None):
         super().__init__(query)
         self.start = start
         self.limit = limit
@@ -512,6 +516,7 @@ class SearchQuery(BaseSearchQuery):
         self.facet = facet
         self.full_text = full_text
         self.minimum_should_match = minimum_should_match
+        self.ids = ids  # restrict to these document identifiers
         self.language = language or settings.LANGUAGE_CODE[:2]
         if self.language not in QUERY_FIELDS:
             self.language = 'en'
@@ -546,6 +551,7 @@ class SearchQuery(BaseSearchQuery):
             minimum_should_match=self.minimum_should_match,
             language=self.language,
             date_facet_start=2006 if self.committees_only else 1994,
+            ids=self.ids,
         )
 
     @property

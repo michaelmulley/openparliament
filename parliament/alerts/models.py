@@ -9,6 +9,7 @@ from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.core.signing import Signer
 from django.urls import reverse
+from urllib.parse import urlencode
 from django.db import models
 from django.template import loader
 
@@ -32,13 +33,22 @@ class TopicManager(models.Manager):
             raise ValueError("Invalid query")
         return self.get_or_create(query=normalized_query)
 
+    def active(self):
+        """Topics somebody is currently subscribed to."""
+        return self.filter(subscription__active=True).distinct()
+
 
 class Topic(models.Model):
-    """A search that one or more people have saved."""
+    """A search that one or more people have saved.
+
+    Statements and bills are matched against every active topic as they are
+    indexed (parliament.alerts.matching records a TopicMatch for each hit),
+    and send_email_alerts mails out the matches recorded since its last run.
+    """
     query = models.CharField(max_length=800, unique=True)
     created = models.DateTimeField(default=datetime.datetime.now)
-    last_checked = models.DateTimeField(blank=True, null=True)
-    last_found = models.DateTimeField(blank=True, null=True)
+    last_checked = models.DateTimeField(blank=True, null=True)  # last time alerts were sent for it
+    last_found = models.DateTimeField(blank=True, null=True)  # last time a new item matched it
 
     objects = TopicManager()
 
@@ -47,60 +57,23 @@ class Topic(models.Model):
             return '%s in House debates' % self.person_name
         return self.query
 
-    def save(self, *args, **kwargs):
-        super(Topic, self).save(*args, **kwargs)
-        self.initialize_if_necessary()
+    def search_query(self, ids, full_text=False):
+        """The topic's search, restricted to the given search identifiers
+        (e.g. hansards.statement.123), newest first, every term required."""
+        return SearchQuery(self.query, limit=len(ids), user_params={'sort': 'date desc'},
+                           full_text=full_text, minimum_should_match='100%', ids=list(ids))
 
-    def get_search_query(self, limit=25):
-        query_obj = SearchQuery(self.query, limit=limit,
-            user_params={'sort': 'date desc'},
-            full_text=self.politician_hansard_alert,
-            minimum_should_match='100%')  # match all query terms
-
-        # Only look for items newer than 60 days
-        today = datetime.date.today()
-        past = today - datetime.timedelta(days=60)
-        query_obj.filters['Date'] = '%d-%02d to %d-12' % (
-            past.year,
-            past.month,
-            today.year)
-
-        return query_obj
-
-    def initialize_if_necessary(self):
-        if (not self.last_checked) or (
-                (datetime.datetime.now() - self.last_checked) > datetime.timedelta(hours=24)):
-            self.get_new_items(limit=40)
-
-    def get_new_items(self, label_as_seen=True, limit=25):
-        query_obj = self.get_search_query(limit=limit)
-        result_ids = set((result['url'] for result in query_obj.documents))
-        if result_ids:
-            ids_seen = set(
-                SeenItem.objects.filter(topic=self, item_id__in=list(result_ids))
-                    .values_list('item_id', flat=True)
-            )
-            result_ids -= ids_seen
-
-        self.last_checked = datetime.datetime.now()
-        if result_ids:
-            self.last_found = datetime.datetime.now()
-        self.save()
-
-        if label_as_seen and result_ids:
-            SeenItem.objects.bulk_create([
-                SeenItem(topic=self, item_id=result_id)
-                for result_id in result_ids
-            ])
-
-        items = [r for r in reversed(query_obj.documents) if r['url'] in result_ids]
-
+    def get_documents(self, matches):
+        """Search-result documents for TopicMatch objects, newest first, with
+        the highlighted snippets the alert e-mails show."""
+        if not matches:
+            return []
+        documents = self.search_query([m.item_id for m in matches],
+                                      full_text=self.politician_hansard_alert).documents
         if self.politician_hansard_alert:
-            # Remove procedural stuff by the Speaker
-            items = [r for r in items
-                if 'Speaker' not in r['politician'] or len(r['full_text']) > 1200]
-
-        return items
+            # Leave out the procedural odds and ends
+            documents = [d for d in documents if not d.get('procedural')]
+        return documents
 
     @property
     def politician_hansard_alert(self):
@@ -116,20 +89,33 @@ class Topic(models.Model):
         if match:
             return Politician.objects.get_by_slug_or_id(match.group(1)).name
 
+    def get_search_url(self, full=True):
+        return (settings.SITE_URL if full else '') + reverse('search') + '?' + urlencode(
+            {'q': self.query, 'sort': 'date desc'})
 
-class SeenItem(models.Model):
-    """A record that users have already seen a given item for a topic."""
-    topic = models.ForeignKey(Topic, on_delete=models.CASCADE)
-    item_id = models.CharField(max_length=400, db_index=True)
-    timestamp = models.DateTimeField(default=datetime.datetime.now)
+
+class TopicMatch(models.Model):
+    """A newly indexed item that matched a topic: waiting to be e-mailed, or
+    (once `sent` is set) already sent.
+
+    Keyed on the item's URL, not its search identifier: re-importing a
+    Hansard document replaces its statements (new primary keys) but keeps
+    their slugs, and a re-import isn't news. When a re-import does change
+    slugs, matching follows OldSlugMapping to carry the record forward."""
+    topic = models.ForeignKey(Topic, on_delete=models.CASCADE, related_name='matches')
+    url = models.CharField(max_length=400)
+    item_id = models.CharField(max_length=100)  # current search identifier, e.g. hansards.statement.123
+    date = models.DateTimeField()  # the item's own date
+    created = models.DateTimeField(default=datetime.datetime.now)
+    sent = models.DateTimeField(blank=True, null=True, db_index=True)
 
     class Meta:
         unique_together = [
-            ('topic', 'item_id')
+            ('topic', 'url')
         ]
 
     def __str__(self):
-        return '%s seen for %s' % (self.item_id, self.topic)
+        return '%s matched %s' % (self.item_id, self.topic)
 
 
 class SubscriptionManager(models.Manager):
@@ -159,20 +145,16 @@ class Subscription(models.Model):
     def __str__(self):
         return '%s: %s' % (self.user, self.topic)
 
-    def save(self, *args, **kwargs):
-        new = not self.id
-        super(Subscription, self).save(*args, **kwargs)
-        if new:
-            self.topic.initialize_if_necessary()
-
     def get_unsubscribe_url(self, full=False):
         key = Signer(salt='alerts_unsubscribe').sign(str(self.id))
         return (settings.SITE_URL if full else '') + reverse(
             'alerts_unsubscribe', kwargs={'key': key})
 
-    def render_message(self, documents):
+    def render_message(self, documents, more=0):
         ctx = {
             'documents': documents,
+            'more': more,  # matches beyond those shown
+            'search_url': self.topic.get_search_url(),
             'unsubscribe_url': self.get_unsubscribe_url(full=True)
         }
 
@@ -203,8 +185,8 @@ class Subscription(models.Model):
             subj = 'New from openparliament.ca for %s' % self.topic.query
         return subj[:200]
 
-    def send_email(self, documents):
-        rendered = self.render_message(documents)
+    def send_email(self, documents, more=0):
+        rendered = self.render_message(documents, more=more)
         msg = EmailMultiAlternatives(
             self.get_subject_line(documents),
             rendered['text'],

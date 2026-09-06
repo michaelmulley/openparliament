@@ -217,6 +217,11 @@ class QueryBuilderTests(SimpleTestCase):
         self.assertEqual(body['query']['function_score']['query']['bool']['filter'],
                          [{'term': {'party': 'Liberal'}}])
 
+    def test_ids_restrict_the_search(self):
+        body = build_search_body('tax', {}, ids=['hansards.statement.1', 'bills.bill.2'], now=NOW)
+        self.assertIn({'ids': {'values': ['hansards.statement.1', 'bills.bill.2']}},
+                      body['query']['function_score']['query']['bool']['filter'])
+
     def test_witness_filter_must_be_numeric(self):
         body = build_search_body('', {'who_hocid': '12345'}, now=NOW)
         self.assertEqual(body['query']['bool']['filter'], [{'term': {'who_hocid': 12345}}])
@@ -477,6 +482,9 @@ class ElasticsearchIntegrationTests(SimpleTestCase):
         self.assertEqual(self.urls('Date: "2016-08-02"'), [])
         self.assertEqual(self.urls('Date: "2016-01 to 2024-12"', user_params={'sort': 'date asc'}),
                          ['/debates/2016/8/1/b-1/', '/bills/44-1/C-11/', '/committees/finance/44-1/12/c-1/'])
+
+    def test_ids(self):
+        self.assertEqual(self.urls('tax', ids=['hansards.statement.2', 'bills.bill.10']), ['/debates/2016/8/1/b-1/'])
 
     def test_sorting(self):
         self.assertEqual(self.urls('tax', user_params={'sort': 'date asc'}),
