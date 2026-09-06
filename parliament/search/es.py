@@ -542,12 +542,12 @@ class SearchQuery(BaseSearchQuery):
     def index_filters(self) -> dict[str, str]:
         return {self.ALLOWABLE_FILTERS[name]: value for name, value in self.filters.items()}
 
-    def get_search_body(self, bare_query=None) -> dict:
+    def get_search_body(self, bare_query=None, facet=None) -> dict:
         return build_search_body(
             self.bare_query if bare_query is None else bare_query, self.index_filters,
             start=self.start, limit=self.limit,
             sort=self.validated_user_params.get('sort', 'score desc'),
-            facet=self.facet, full_text=self.full_text,
+            facet=self.facet if facet is None else facet, full_text=self.full_text,
             minimum_should_match=self.minimum_should_match,
             language=self.language,
             date_facet_start=2006 if self.committees_only else 1994,
@@ -604,7 +604,10 @@ class SearchQuery(BaseSearchQuery):
         suggested = apply_suggestions(self.bare_query, response)
         if not suggested or suggested == self.bare_query:
             return None
-        count = client.count(index=get_alias_name(), query=self.get_search_body(suggested)['query'])['count']
+        # facet=False puts every filter in the query itself (with facets on,
+        # some are post-filters), so the count reflects what the user would see.
+        count = client.count(index=get_alias_name(),
+                             query=self.get_search_body(suggested, facet=False)['query'])['count']
         if count <= self.hits or count < SUGGEST_BELOW_HITS:
             return None
         return (suggested + (' ' if self.filters else '') + ' '.join(

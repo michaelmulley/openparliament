@@ -1,5 +1,6 @@
 import datetime
 import unittest
+from unittest import mock
 
 from django.test import SimpleTestCase, override_settings
 
@@ -245,6 +246,24 @@ class QueryBuilderTests(SimpleTestCase):
         body = q.get_search_body()
         self.assertNotIn('_source', body)
         self.assertEqual(sqs(body)['minimum_should_match'], '100%')
+
+    def test_suggestion_count_applies_the_users_filters(self):
+        q = SearchQuery('carbn tax Party: "Conservative"', facet=True)
+        # Search: no results; suggester: a correction; count: enough results
+        client = mock.Mock()
+        client.search.side_effect = [
+            {'hits': {'total': {'value': 0}, 'hits': []}, 'aggregations': {}},
+            {'suggest': {'terms': [{'text': 'carbn', 'offset': 0, 'length': 5,
+                                    'options': [{'text': 'carbon'}]},
+                                   {'text': 'tax', 'offset': 6, 'length': 3, 'options': []}]}},
+        ]
+        client.count.return_value = {'count': 12}
+        with mock.patch('parliament.search.es.get_es_client', return_value=client):
+            self.assertEqual(q.suggestion, 'carbon tax Party: "Conservative"')
+        counted = client.count.call_args.kwargs['query']
+        # Facets put the party filter in a post_filter; the count must apply it
+        self.assertIn({'term': {'party': 'Conservative'}}, counted['function_score']['query']['bool']['filter'])
+        self.assertEqual(sqs({'query': counted})['query'], 'carbon tax')
 
     def test_french(self):
         body = build_search_body('taxe', {}, language='fr', now=NOW)
