@@ -8,6 +8,8 @@ from parliament.search import es_index
 from parliament.search.es import (
     MINIMUM_SHOULD_MATCH, SearchQuery, apply_suggestions, build_search_body,
     build_suggest_body, find_bill_numbers, normalize_query, split_negations)
+from parliament.search.management.commands.consume_indexing_queue import collapse_tasks
+from parliament.search.models import IndexingTask
 from parliament.search.utils import parse_date_filter, politician_result_html, title_key
 
 NOW = datetime.datetime(2026, 9, 5, 12)
@@ -589,3 +591,26 @@ class ElasticsearchIntegrationTests(SimpleTestCase):
         es_index.delete_documents(['hansards.statement.99', 'hansards.statement.does-not-exist'], client=self.es)
         self.es.indices.refresh(index=TEST_ALIAS)
         self.assertEqual(self.urls('zebra'), [])
+
+
+class CollapseTasksTests(SimpleTestCase):
+
+    def _t(self, action, identifier):
+        return IndexingTask(action=action, identifier=identifier)
+
+    def test_last_action_wins(self):
+        tasks = [
+            self._t('update', 'hansards.statement.1'),
+            self._t('update', 'hansards.statement.1'),
+            self._t('update', 'hansards.statement.2'),
+            self._t('delete', 'hansards.statement.2'),
+            self._t('delete', 'bills.bill.3'),
+            self._t('update', 'bills.bill.3'),
+        ]
+        updates, deletes = collapse_tasks(tasks)
+        self.assertEqual(set(updates), {'hansards.statement.1', 'bills.bill.3'})
+        self.assertIs(updates['hansards.statement.1'], tasks[1])
+        self.assertEqual(deletes, {'hansards.statement.2'})
+
+    def test_empty(self):
+        self.assertEqual(collapse_tasks([]), ({}, set()))

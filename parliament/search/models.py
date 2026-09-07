@@ -10,6 +10,7 @@ class IndexingTask(models.Model):
     identifier = models.CharField(max_length=100)
 
     timestamp = models.DateTimeField(default=datetime.datetime.now)
+    processed = models.DateTimeField(null=True, blank=True, db_index=True)
 
     content_type = models.ForeignKey(ContentType, null=True, blank=True, on_delete=models.CASCADE)
     object_id = models.CharField(max_length=20, blank=True)
