@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 ALERTABLE_PREFIXES = ('hansards.statement.', 'bills.bill.')
 # Items dated longer ago than this never alert, however recently indexed:
 # a re-imported old sitting isn't news. Late-published committee evidence is.
-ALERT_MAX_AGE_DAYS = 90
+ALERT_MAX_AGE_DAYS = 35
 
 IDS_PER_SEARCH = 500
 TOPICS_PER_MSEARCH = 100
