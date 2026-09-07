@@ -11,6 +11,7 @@ from django.core.files.base import ContentFile
 from django.urls import reverse
 from django.db import models
 from django.template.defaultfilters import slugify
+from django.utils import dateformat
 from django.utils.safestring import mark_safe
 
 import lxml.etree
@@ -770,6 +771,49 @@ class ElectedMember(models.Model):
     def current(self):
         return not bool(self.end_date)
         
+class SittingDayManager(models.Manager):
+
+    def next(self, today=None):
+        """The next scheduled sitting day on or after today, or None."""
+        if today is None:
+            today = datetime.date.today()
+        return self.get_queryset().filter(date__gte=today).order_by('date').first()
+
+class SittingDay(models.Model):
+    """A day the House of Commons is scheduled to sit, from the calendar
+    at https://www.ourcommons.ca/en/sitting-calendar"""
+    date = models.DateField(unique=True)
+    tentative = models.BooleanField(default=False,
+        help_text="Marked as subject to change on the House calendar (S.O. 28(2)(b))")
+
+    objects = SittingDayManager()
+
+    class Meta:
+        ordering = ('date',)
+
+    def __str__(self):
+        return self.date.isoformat()
+
+    def days_away(self, today=None):
+        if today is None:
+            today = datetime.date.today()
+        return (self.date - today).days
+
+    def when(self, today=None):
+        """An English phrase locating the sitting relative to today:
+        'today', 'tomorrow', 'on Thursday', or 'on Monday, September 21st'."""
+        if today is None:
+            today = datetime.date.today()
+        days_away = self.days_away(today)
+        if days_away == 0:
+            return 'today'
+        if days_away == 1:
+            return 'tomorrow'
+        if 1 < days_away < 7:
+            return 'on ' + dateformat.format(self.date, 'l')
+        fmt = 'l, F jS' if self.date.year == today.year else 'l, F jS, Y'
+        return 'on ' + dateformat.format(self.date, fmt)
+
 class SiteNews(models.Model):
     """Entries for the semi-blog on the openparliament homepage."""
     date = models.DateTimeField(default=datetime.datetime.now)

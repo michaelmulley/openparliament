@@ -8,7 +8,7 @@ from django.template import loader
 from django.utils.html import conditional_escape
 from django.views.decorators.cache import never_cache
 
-from parliament.core.models import Session, SiteNews
+from parliament.core.models import Session, SiteNews, SittingDay
 from parliament.bills.models import VoteQuestion, Bill
 from parliament.hansards.models import Document
 from parliament.hansards.utils import get_hansard_sections_or_summary
@@ -25,6 +25,7 @@ def home(request):
             )[:6]
     c = {
         'latest_hansard': latest_hansard,
+        **next_sitting_context(latest_hansard.date),
         'hansard_topics_data': hansard_topics_data,
         'hansard_topics_ai_summary': hansard_topics_summary_obj,
         'sitenews': SiteNews.objects.filter(active=True,
@@ -36,7 +37,21 @@ def home(request):
             key=latest_hansard.get_text_analysis_url())
     }
     return HttpResponse(t.render(c, request))
-    
+
+
+def next_sitting_context(latest_hansard_date, today=None):
+    """How the homepage should talk about the House's schedule."""
+    if today is None:
+        today = datetime.date.today()
+    next_sitting = SittingDay.objects.next(today)
+    sitting_today = next_sitting is not None and next_sitting.date == today
+    return {
+        'next_sitting': next_sitting,
+        'sitting_today': sitting_today,
+        'next_sitting_far': next_sitting is not None and not sitting_today
+            and next_sitting.days_away(latest_hansard_date) > 7,
+    }
+
 @never_cache
 def healthz(request):
     """Health-check endpoint."""

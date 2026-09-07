@@ -23,7 +23,8 @@
 <div class="row">
   <div class="context-col"><h2>What they’re talking about</h2></div>
   <div class="main-col">
-    <p>The latest House transcript is from <strong>{{ latest_hansard.date|date:"F jS"}}</strong>{% if latest_hansard.most_frequent_word %}, when the <span class="tipunderline" data-tooltip title="Most frequently spoken word, compared to other recent debates.">word of the day</span> was <strong>{{ latest_hansard.most_frequent_word }}</strong>{% endif %}. These are the topics that were discussed.</p>
+    {% if next_sitting_far %}<p class="next-sitting">The House isn’t sitting right now. MPs are scheduled to be back in the House of Commons <strong>{{ next_sitting.when }}</strong>.</p>{% endif %}
+    <p>The latest House transcript is from <strong>{{ latest_hansard.date|date:"l, F jS"}}</strong>{% if latest_hansard.most_frequent_word %}, when the <span class="tipunderline" data-tooltip title="Most frequently spoken word, compared to other recent debates.">word of the day</span> was <strong>{{ latest_hansard.most_frequent_word }}</strong>{% endif %}.{% if sitting_today %} The House is sitting today; transcript are usually available the next morning.{% elif next_sitting and not next_sitting_far %} The House sits again {{ next_sitting.when }}.{% endif %} These are the topics that were discussed.</p>
     {% if hansard_topics_ai_summary %}{% include "ai_warning.inc" %}{% endif %}
     {% include "hansards/topics_list.inc" with topics_data=hansard_topics_data document=latest_hansard only %}
     {% if hansard_topics_ai_summary %}{% include "summary_poll.inc" with summary=hansard_topics_ai_summary %}{% endif %}

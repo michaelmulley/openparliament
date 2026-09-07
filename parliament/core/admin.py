@@ -42,6 +42,11 @@ class PoliticianInfoOptions(admin.ModelAdmin):
 class SiteNewsOptions(admin.ModelAdmin):
     list_display = ('title', 'date', 'active')
 
+class SittingDayOptions(admin.ModelAdmin):
+    list_display = ('date', 'tentative')
+    list_filter = ('tentative',)
+    date_hierarchy = 'date'
+
 admin.site.register(ElectedMember, ElectedMemberOptions)
 admin.site.register(Riding, RidingOptions)
 admin.site.register(RidingPostcodeCache, RidingPostcodeCacheOptions)
@@ -51,4 +56,5 @@ admin.site.register(Party, PartyOptions)
 admin.site.register(PartyAlternateName)
 admin.site.register(PoliticianInfo, PoliticianInfoOptions)
 admin.site.register(SiteNews, SiteNewsOptions)
+admin.site.register(SittingDay, SittingDayOptions)
 
