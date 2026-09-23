@@ -92,6 +92,10 @@ def import_bill_by_id(legisinfo_id: int | str) -> Bill:
     # can then tack /json on to
     url = LEGISINFO_BILL_ID_URL % {'id': legisinfo_id, 'lang': 'en'}
     resp = requests.get(url)
+    if 'ErrorPage' in resp.url or resp.status_code == 404:
+        # Unknown IDs get redirected to an error page, which (as of 2026-09)
+        # returns a 403 rather than redirecting on to the overview page
+        raise Bill.DoesNotExist("Could not find bill for LEGISinfo ID %s" % legisinfo_id)
     resp.raise_for_status()
 
     if not re.search(r'-\d+$', resp.url):
