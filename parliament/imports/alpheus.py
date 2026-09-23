@@ -369,6 +369,10 @@ class ParseHandler(object):
             if not mytext and not _text_content(el):
                 # Ignore empty paragraphs
                 return NO_DESCEND
+            if el.xpath('Document[@Type="91972"]'):
+                # "[For text of questions and responses, see Written Questions website]"
+                # isn't something said in the House, and we link to the questions directly
+                return NO_DESCEND
             # ParaText has a bunch of special cases
             if _r_housemet.search(mytext) and el.getparent().tag == 'Intro':
                 # "The House met at 10 a.m."
@@ -657,7 +661,19 @@ class ParseHandler(object):
         self._add_tag_text(el, openclose)
             
     def handle_Document(self, el, openclose):
-        if el.get('DbId'):
+        if el.get('Type') == '11':
+            # A written question; the text is the question number
+            qnum = _text_content(el).strip()
+            if re.fullmatch(r'\d+', qnum):
+                if openclose == TAG_OPEN:
+                    self._add_code(_build_tag('a', {'href': '%s/%s-%s/q-%s' % (
+                        'https://www.noscommunes.ca/questions-ecrites' if self.document_language[0] == 'f'
+                            else 'https://www.ourcommons.ca/written-questions',
+                        self.parliament, self.session, qnum)}))
+                else:
+                    self._add_code('</a>')
+        elif el.get('DbId') and el.get('DbId') != '0' and el.get('Type') not in ('55', '57'):
+            # (Types 55 and 57 are motions, which we leave as plain text)
             if openclose == TAG_OPEN:
                 attrs = {
                     'href': 'http://www.parl.gc.ca/LegisInfo/BillDetails.aspx?&Mode=1&billId=%s&Language=%s' % (
