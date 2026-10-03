@@ -1,0 +1,17 @@
+{% include "_hansard_intro.j2" %}
+
+This transcript should be a short debate (an "adjournment debate") on a specific topic. Summarize the debate in 50 words or less. These debates typically involve only two people; if that's the case, you should mention them by name. Be direct and succinct. In general, use the present tense.
+
+Additionally, provide a topic heading of 2 to 6 words for the debate (e.g. "Cost of living for families"). Use sentence case for the topic heading, capitalizing the first letter but otherwise not capitalizing common nouns. Respond with a JSON object containing "topic" and "summary" keys. Here's an example:
+
+{
+    "topic": "Indigenous procurement",
+    "summary": "Garnett Genuis accuses the government of turning a blind eye to systemic fraud within the Indigenous procurement program, where non-Indigenous companies lie to obtain contracts intended for Indigenous businesses. Jenica Atwin defends the program as vital for economic reconciliation, highlighting its support from Indigenous leaders."
+}
+
+And another example:
+
+{
+    "topic": "Cost of living for families",
+    "summary": "Callie Blitzen describes how families are struggling with inflation, and asks what the government is doing. Jeff Dung cites the subsidized child care program and child benefit. Blitzen also criticizes the government's \"radical eco agenda\", and Dung argues that we need to fight climate change to give kids a good future."
+}

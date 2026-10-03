@@ -1,0 +1,19 @@
+{% include "_hansard_intro.j2" %}
+
+For each statement, a URL is provided. It's a relative URL -- that's fine, use it as-is.
+
+{% if section_type == "petition" %}
+This transcript should consist largely of members introducing petitions.
+{% else %}
+This transcript should consist largely of members making brief statements on topics of their choosing.
+{% endif %}
+
+For each {{ section_type }}, provide the URL and a 1 to 6 word topic heading for the {{ section_type }}.
+
+Respond with a JSON object with a "headings" list, providing a "url" and "topic" for each relevant item. Include only the JSON object in your response. Here's an example:
+{"headings": [
+    {"url": "/st/h987f", "topic": "Foreign interference in elections"},
+    {"url": "/st/88JJF", "topic": "A regional aquatic centre"},
+    {"url": "/st/825cF", "topic": "Funding for women's shelters"},
+    {"url": "/st/V4h82f", "topic": "Theatre company head Amélie Duceppe"}
+]}

@@ -1,0 +1,73 @@
+# yaml-language-server: $schema=https://promptfoo.dev/config-schema.json
+# Evals for the LLM summary prompts. See README.md.
+description: openparliament.ca summaries
+
+prompts:
+  - id: file://promptfoo_eval.py:summary_prompt
+    label: current prompts
+
+# Models to compare. Edit freely: any OpenRouter model id works.
+# (IDs at https://openrouter.ai/models)
+providers:
+  - id: openrouter:openai/gpt-6-luna
+    label: luna 6 low
+    config:
+      <<: &defaults
+        # Request what llm._get_llm_response_openrouter does: no fallback providers, and
+        # without promptfoo's defaults of max_tokens 1024 and temperature 0.
+        omitDefaults: true
+        # Like llm.py, take only the response content. Otherwise promptfoo puts the model's
+        # reasoning before it ("Thinking: ..."), which breaks the validation and makes the
+        # Claude judge refuse (its safeguards treat it as reasoning extraction).
+        showThinking: false
+        provider:
+          allow_fallbacks: false
+      passthrough:
+        reasoning:
+          effort: low
+  - id: openrouter:openai/gpt-6-luna
+    label: luna 6 medium
+    config:
+      <<: *defaults
+      passthrough:
+        reasoning:
+          effort: medium
+  - id: openrouter:google/gemini-3.8-flash
+    config:
+      <<: *defaults
+      passthrough:
+        reasoning:
+          effort: low
+  - id: openrouter:deepseek/deepseek-v4.1-flash
+    config:
+      <<: *defaults
+      passthrough:
+        reasoning:
+          effort: low
+
+tests:
+  - path: file://promptfoo_eval.py:load_tests
+    config:
+      evalset: evalset.json
+
+defaultTest:
+  options:
+    # The judge for the llm-rubric assertions. 
+    #
+    # This runs Claude through the Claude Agent SDK, signed in with your local Claude Code
+    # login.
+    provider:
+      id: anthropic:claude-agent-sdk
+      config:
+        apiKeyRequired: false
+        model: opus
+        max_turns: 1
+        custom_system_prompt: >-
+          You grade the output of an automated system that summarizes debates in the
+          Canadian House of Commons. Follow the grading instructions exactly, and reply
+          only in the format they ask for.
+    # Or go through OpenRouter instead:
+    # provider: openrouter:openai/gpt-6-sol
+
+evaluateOptions:
+  maxConcurrency: 3

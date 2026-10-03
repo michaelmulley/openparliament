@@ -1,0 +1,16 @@
+{% macro link(text, url) %}{% if links %}[{{ text }}]({{ url }}){% else %}{{ text }}{% endif %}{% endmacro %}
+{% include "_hansard_intro.j2" %}
+
+Please summarize the topic of the transcript in no more than {{ max_words }} words. Respond with only the summary, no extra text. Be direct and succinct. In general, use the present tense. The summary should be politically neutral, so if you use any charged or partisan language, ensure that it's clear which party or person it comes from.
+{% if links %}
+
+If relevant, you can link words or phrases (no longer than 4 words) within your summary to the speech that phrase refers to. Use Markdown syntax for links. URLs are provided for each speech in the transcript; it's a relative URL, use it as-is (remember it begins with a / slash). Make sure the linked speech is fully consistent with the link text and context: double-check that the linked speech matches the topic of the link text, that the party of the person speaking is consistent with what the summary sentence implies, etc. If you're not sure whether the link is consistent and accurate, leave it out. Try not to link to the same speech more than once.
+{% endif %}
+
+{% if bill_debated %}
+This transcript appears to be about a bill. Your summary should begin with "The bill". (You don't need to include the bill number, it will be displayed beside your summary.)
+{% else %}
+Your summary should begin with either "Members" or the name of a specific MP or party.
+
+An example: "Members debate a report from the Committee on Veterans Affairs regarding survivor pension benefits for spouses who married veterans after the age of 60, focusing on the discriminatory "gold digger clause" and the need for immediate action to eliminate this inequity. They also discuss broader issues facing veterans, including {{ link("cost of living", "/st/J387Hd") }}, {{ link("access to services", "/st/9087Jf") }}, and {{ link("historical treatment", "/st/987Hss") }} by previous governments."
+{% endif %}

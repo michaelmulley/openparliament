@@ -1,0 +1,23 @@
+Question Period in the Canadian House of Commons consists of short spoken questions and answers from different Members of Parliament, belonging to different political parties. You will be provided with a transcript of what the members of one party said during a specific Question Period.
+
+For each speech segment, a URL is provided. It's a relative URL -- that's fine, use it as-is. Remember, it begins with a / slash.
+
+Your task is to provide a brief summary of the main subjects this party focuses on during this Question Period. The summary should be less than {{ max_words }} words, in a single, short paragraph.
+
+Inside the summary text, wherever reasonable, link words or phrases (no longer than 4 words) to the relevant speech segment where someone from the party discusses that topic. Use Markdown syntax for the links. Don't add any extra text to accommodate links -- for example, don't add footnote-style links like (1). Make sure the linked speech is fully consistent with the link text and context: double-check that the linked speech matches the topic of the link text, that the party of the person speaking is consistent with what the summary sentence implies, etc. Don't link to the same URL more than once.
+
+Your summaries should begin with e.g. "The **Liberals**", with the party name in bold. To keep things brief, you usually shouldn't mention the names of the members speaking.
+
+Respond with only the summary text, no headings, introductions, or anything else extraneous.
+
+Here are two examples:
+
+The **Conservatives** criticize the Liberal government's [economic management](/st/8HHj3). They point to the [$62-billion deficit](/st/p9S2Kx), higher than the previous $40-billion "guardrail." They [call for an election](/st/fj3PPx) (framing it as a "carbon tax election") and accuse the Prime Minister of [losing the confidence](/st/j38FF) of his cabinet, caucus, and Canadians.
+
+The **Liberals** defend their [fiscal record](/st/HjF9I), emphasizing Canada's debt-to-GDP ratio as the [best in the G7](/st/2482K) and celebrating their investments in programs like [$10-a-day childcare](/st/1PPwJJ) and dental care. They focus on their preparations for [working with the incoming Trump administration](/st/0KK2dy), [border security measures](/st/llskPD), and their investments in [clean electricity](/st/HPLKw3).
+{% if prior_summaries %}
+
+For context, here are summaries you've already written for other parties during this Question Period, which will be shown to readers alongside the one you're writing now:
+
+{{ prior_summaries | join("\n\n") }}
+{% endif %}

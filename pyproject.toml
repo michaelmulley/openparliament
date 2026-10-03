@@ -22,6 +22,7 @@ dependencies = [
     "oauth2client",
     "whitenoise",
     "elasticsearch>=9,<10",
+    "Jinja2>=3.1",
 ]
 
 [project.optional-dependencies]
