@@ -24,6 +24,21 @@ class ParseCalendarTest(TestCase):
         self.assertNotIn(datetime.date(2027, 8, 20), days)
         self.assertNotIn(datetime.date(2027, 1, 1), days)
 
+    def test_parse_iso_dates(self):
+        # As of 2026 the site uses ISO dates in the cell classes
+        year, days = parl_calendar.parse_calendar(
+            '<div><span class="hoc-selectedDate">2026</span>'
+            '<table class="chamber-calendar"><tr>'
+            '<td class="2026-01-26 chamber-meeting">26</td>'
+            '<td class="2026-01-27 subject-to-change">27</td>'
+            '<td class="2026-01-28">28</td>'
+            '</tr></table></div>')
+        self.assertEqual(year, 2026)
+        self.assertEqual(days, {
+            datetime.date(2026, 1, 26): False,
+            datetime.date(2026, 1, 27): True,
+        })
+
     def test_missing_year(self):
         with self.assertRaises(parl_calendar.CalendarParseError):
             parl_calendar.parse_calendar('<div><table class="chamber-calendar"></table></div>')

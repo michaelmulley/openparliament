@@ -2,8 +2,9 @@
 
 Two sources. The sitting calendar gives the planned days for the year: it
 marks each one as a table cell whose class attribute carries the date
-(M/D/YYYY) plus either "chamber-meeting" or, for the following year's
-calendar before it's finalized under S.O. 28(2)(b), "subject-to-change".
+(YYYY-MM-DD, or M/D/YYYY in older pages) plus either "chamber-meeting"
+or, for the following year's calendar before it's finalized under
+S.O. 28(2)(b), "subject-to-change".
 The calendar gets revised after the fact (e.g. after a prorogation), but
 it doesn't reflect ad hoc changes like adjourning a week early or being
 recalled. For those, the "In the House" box on the ourcommons.ca homepage
@@ -28,7 +29,11 @@ HOUSE_STATUS_URL = 'https://www.ourcommons.ca/en'
 # How many years, starting with the current one, to try fetching
 MAX_YEARS = 4
 
-DATE_CLASS_RE = re.compile(r'^(\d{1,2})/(\d{1,2})/(\d{4})$')
+# The site switched from M/D/YYYY to ISO dates in 2026; accept either
+DATE_CLASS_RES = [
+    re.compile(r'^(?P<year>\d{4})-(?P<month>\d{2})-(?P<day>\d{2})$'),
+    re.compile(r'^(?P<month>\d{1,2})/(?P<day>\d{1,2})/(?P<year>\d{4})$'),
+]
 ADJOURNED_UNTIL_RE = re.compile(r'adjourned until (\w+, \w+ \d{1,2}, \d{4})', re.I)
 
 
@@ -57,13 +62,11 @@ def parse_calendar(html) -> tuple[int, dict[datetime.date, bool]]:
             tentative = True
         else:
             continue
-        for cls in classes:
-            match = DATE_CLASS_RE.match(cls)
-            if match:
-                break
-        else:
+        match = next((m for cls in classes for regex in DATE_CLASS_RES
+                      if (m := regex.match(cls))), None)
+        if not match:
             raise CalendarParseError("Sitting-day cell without a date: %r" % td.get('class'))
-        month, day, cell_year = (int(g) for g in match.groups())
+        cell_year, month, day = (int(match.group(g)) for g in ('year', 'month', 'day'))
         if cell_year != year:
             raise CalendarParseError("Cell dated %s on the %s calendar" % (match.group(0), year))
         days[datetime.date(cell_year, month, day)] = tentative
