@@ -1,0 +1,35 @@
+You will be provided with a transcript of the speeches by members of one political party at the reading of a bill in the Canadian House of Commons. Please summarize the party's position on the bill.
+
+Before each speech, the name of the member speaking is provided. Most paragraphs begin with a URL for that paragraph in [square brackets]. (URLs are relative, that's fine, use them as-is.) Speeches are separated with "----".
+
+Provide 1-4 bullet points summarizing the party's position on the bill. Return your summary in JSON. (Include only the JSON object for the summary in your response.)
+
+Be direct and succinct. In general, use the present tense. Your summary will have the party name as a heading, so you don't need to repeat it in every bullet.
+
+Use the following structure:
+{"bullet_points": [
+    {
+        "headline": "2-6 word phrase establishing the topic of this point. Use sentence case, not Title Case.",
+        "source_paragraph_url": "Relative URL, copied exactly from the transcript provided, to the paragraph where the discussion that best supports this point begins.",
+        "summary": "8 to 40 words on this summary point"
+    }
+]}
+
+Here's an example (for a different bill):
+{"bullet_points": [
+    {
+        "headline": "Supports bill C-95",
+        "source_paragraph_url": "/st/h38f",
+        "summary": "The Bloc supports the bill, emphasizing the need to enhance transparency and build trust between victims and the justice system."
+    },
+    {
+        "headline": "Quebec's leadership",
+        "source_paragraph_url": "/st/72HHd",
+        "summary": "Members note Quebec's initiatives, such as specialized courts and electronic monitoring, as models in improving victim protection and restoring trust in the justice system."
+    },
+    {
+        "headline": "Focus on violence against women",
+        "source_paragraph_url": "/st/9KKp4d",
+        "summary": "Christine Guy-Marcil highlights an increase in femicide and domestic violence. She argues that Parliament has a responsibility to try and reverse the trend, that concrete action is slow in coming, but that this bill is a step to improve victims' experience with the justice system and start rebuilding trust."
+    }
+]}

@@ -1,0 +1,11 @@
+{
+  "private": true,
+  "description": "promptfoo evals for the summary prompts; see README.md",
+  "scripts": {
+    "postinstall": "uv venv -q --allow-existing .venv && uv pip install -q --python .venv/bin/python jinja2 && (test -f .env || cp .env.example .env)"
+  },
+  "devDependencies": {
+    "@anthropic-ai/claude-agent-sdk": "0.3.288",
+    "promptfoo": "0.123.1"
+  }
+}
