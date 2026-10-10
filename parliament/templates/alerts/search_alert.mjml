@@ -1,0 +1,25 @@
+{% extends "alerts/email_base.mjml" %}{% load alerts %}
+{% block title %}{{ subject }}{% endblock %}
+{% block preview %}{{ preview|truncatechars:150 }}{% endblock %}
+{% block intro %}Your alert for <strong>{{ topic }}</strong> has new results in Parliament:{% endblock %}
+{% block items %}{% for document in documents %}
+        <mj-text padding="0 24px 16px">
+          <div style="padding-top:16px;{% if not forloop.first %}border-top:1px solid #dddddd;{% endif %}">
+          {% if document.django_ct == 'hansards.statement' %}
+            <p style="margin:0;font-size:13px;color:#666666;">{{ document.date|date:"F jS, P" }}</p>
+            <p style="margin:2px 0 6px 0;font-weight:bold;"><a href="{{ site_url }}{{ document.url }}" style="color:#1A59C7;text-decoration:none;">{% if document.politician %}{{ document.politician }}{% if document.topic %} on {{ document.topic }}{% elif document.committee %} at the {{ document.committee }} committee{% endif %}{% elif document.topic %}{{ document.topic }}{% elif document.committee %}{{ document.committee }} committee{% else %}In Parliament{% endif %}</a></p>
+          {% elif document.django_ct == 'bills.bill' %}
+            <p style="margin:0;font-size:13px;color:#666666;">Bill {{ document.number }}</p>
+            <p style="margin:2px 0 6px 0;font-weight:bold;"><a href="{{ site_url }}{{ document.url }}" style="color:#1A59C7;text-decoration:none;">{{ document.title }}</a></p>
+          {% else %}
+            <p style="margin:0 0 6px 0;font-weight:bold;"><a href="{{ site_url }}{{ document.url }}" style="color:#1A59C7;text-decoration:none;">{{ document.title|default:"Read more" }}</a></p>
+          {% endif %}
+          {% for snippet in document.snippets %}
+            <p style="margin:0 0 6px 0;">{% if not forloop.first %}… {% endif %}{{ snippet|html_highlight }}</p>
+          {% endfor %}{% if document.more_snippets %}
+            <p style="margin:0;"><a href="{{ site_url }}{{ document.url }}" style="color:#1A59C7;">More mentions in the full text</a></p>
+          {% endif %}
+          </div>
+        </mj-text>{% endfor %}
+{% endblock %}
+{% block subscribed_to %}<strong>{{ topic }}</strong>{% endblock %}

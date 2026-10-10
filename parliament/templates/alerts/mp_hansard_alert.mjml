@@ -1,0 +1,15 @@
+{% extends "alerts/email_base.mjml" %}{% load alerts %}
+{% block title %}{{ subject }}{% endblock %}
+{% block preview %}{{ preview|truncatechars:150 }}{% endblock %}
+{% block intro %}Here's what <strong>{{ person_name }}</strong> had to say in the House of Commons.{% endblock %}
+{% block items %}{% for document in documents %}
+        <mj-text padding="0 24px 16px">
+          <div style="padding-top:16px;{% if not forloop.first %}border-top:1px solid #dddddd;{% endif %}">
+            <p style="margin:0;font-size:13px;color:#666666;">{{ document.date|date:"F jS, P" }}</p>
+            <p style="margin:2px 0 10px 0;font-weight:bold;"><a href="{{ site_url }}{{ document.url }}" style="color:#1A59C7;text-decoration:none;">{{ document.topic|default:"In the House" }}</a></p>
+            {{ document.email_text|email_paragraphs }}{% if document.email_text_truncated %}
+            <p style="margin:0;"><a href="{{ site_url }}{{ document.url }}" style="color:#1A59C7;">{% if document.email_text %}Continue reading{% else %}Read it{% endif %} on openparliament.ca</a></p>{% endif %}
+          </div>
+        </mj-text>{% endfor %}
+{% endblock %}
+{% block subscribed_to %}<strong>{{ person_name }}</strong>{% endblock %}

@@ -1,6 +1,7 @@
 import base64
 import datetime
 import hashlib
+import html
 import re
 from smtplib import SMTPException
 import time
@@ -12,6 +13,8 @@ from django.urls import reverse
 from urllib.parse import urlencode
 from django.db import models
 from django.template import loader
+from django.utils.html import strip_tags
+import mrml
 
 from parliament.core.models import Politician
 from parliament.core.templatetags.ours import english_list
@@ -20,6 +23,38 @@ from parliament.search.es import SearchQuery
 
 import logging
 logger = logging.getLogger(__name__)
+
+# Highlighted passages shown per item in a search alert
+ALERT_SNIPPETS = 2
+
+# Gmail clips messages over about 102KB of HTML, hiding the footer and its
+# unsubscribe link. MP alerts carry whole speeches, so their HTML includes at
+# most this many characters of speech; the rest is a link away.
+HTML_EMAIL_TEXT_BUDGET = 40000
+
+
+def _budget_full_text(documents, budget=HTML_EMAIL_TEXT_BUDGET):
+    """Copies of search documents, each with an `email_text`: its full
+    text, cut short at a word boundary once `budget` characters have been
+    used (`email_text_truncated` is then set)."""
+    result = []
+    for doc in documents:
+        text = doc.get('full_text', '')
+        truncated = len(text) > budget
+        if truncated:
+            # No excerpt at all beats a uselessly short one
+            text = text[:budget].rsplit(None, 1)[0] + '…' if budget >= 300 else ''
+        budget -= len(text)
+        result.append(dict(doc, email_text=text, email_text_truncated=truncated))
+    return result
+
+
+def render_mjml(template_name, ctx):
+    """Renders a Django template of MJML and compiles it to e-mail HTML."""
+    output = mrml.to_html(loader.render_to_string(template_name, ctx))
+    for warning in output.warnings:
+        logger.warning("MJML warning in %s: %s", template_name, warning)
+    return output.content
 
 
 class TopicManager(models.Manager):
@@ -61,7 +96,8 @@ class Topic(models.Model):
         """The topic's search, restricted to the given search identifiers
         (e.g. hansards.statement.123), newest first, every term required."""
         return SearchQuery(self.query, limit=len(ids), user_params={'sort': 'date desc'},
-                           full_text=full_text, minimum_should_match='100%', ids=list(ids))
+                           full_text=full_text, minimum_should_match='100%', ids=list(ids),
+                           snippets=ALERT_SNIPPETS)
 
     def get_documents(self, matches):
         """Search-result documents for TopicMatch objects, newest first, with
@@ -155,21 +191,24 @@ class Subscription(models.Model):
             'documents': documents,
             'more': more,  # matches beyond those shown
             'search_url': self.topic.get_search_url(),
-            'unsubscribe_url': self.get_unsubscribe_url(full=True)
+            'unsubscribe_url': self.get_unsubscribe_url(full=True),
+            'site_url': settings.SITE_URL,
+            'subject': self.get_subject_line(documents),
         }
 
         if self.topic.politician_hansard_alert:
             ctx['person_name'] = documents[0]['politician']
-            t = loader.get_template('alerts/mp_hansard_alert.txt')
-            text = t.render(ctx)
-            return dict(text=text)
+            text = loader.render_to_string('alerts/mp_hansard_alert.txt', ctx)
+            ctx.update(documents=_budget_full_text(documents),
+                       preview=documents[0].get('full_text', ''))
+            return dict(text=text, html=render_mjml('alerts/mp_hansard_alert.mjml', ctx))
 
         ctx.update(
-            topic=self.topic
+            topic=self.topic,
+            preview=html.unescape(strip_tags(documents[0]['text'])),
         )
-        t = loader.get_template('alerts/search_alert.txt')
-        text = t.render(ctx)
-        return dict(text=text)
+        text = loader.render_to_string('alerts/search_alert.txt', ctx)
+        return dict(text=text, html=render_mjml('alerts/search_alert.mjml', ctx))
 
     def get_subject_line(self, documents):
         if self.topic.politician_hansard_alert:

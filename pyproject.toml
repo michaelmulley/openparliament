@@ -23,6 +23,7 @@ dependencies = [
     "whitenoise",
     "elasticsearch>=9,<10",
     "Jinja2>=3.1",
+    "mrml>=0.2.4",
 ]
 
 [project.optional-dependencies]

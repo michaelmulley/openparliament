@@ -4,18 +4,17 @@
 {{ document.politician }} {% if document.topic %}on {{ document.topic }}{% elif document.committee %}at the {{ document.committee }} committee{% endif %}
 https://openparliament.ca{{ document.url }}
 ----------------------------------------------------------
-
-{{ document.text|text_highlight }}
 {% elif document.django_ct == 'bills.bill' %}
 Bill {{ document.number }}
 {{ document.title }}
 https://openparliament.ca{{ document.url }}
-{{ document.text|text_highlight }}
 {% else %}
 https://openparliament.ca{{ document.url }}
-{{ document.text|text_highlight }}
-{% endif %}
-{% endfor %}{% if more %}
+{% endif %}{% for snippet in document.snippets %}
+{% if not forloop.first %}... {% endif %}{{ snippet|text_highlight }}
+{% endfor %}{% if document.more_snippets %}
+More mentions in the full text, at the link above.
+{% endif %}{% endfor %}{% if more %}
 ...and {{ more }} more. See them all, newest first, at:
 {{ search_url }}
 {% endif %}

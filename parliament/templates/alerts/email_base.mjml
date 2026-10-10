@@ -1,0 +1,42 @@
+{% comment %}
+MJML for an alert e-mail; Subscription.render_message compiles it to HTML.
+Styles go inline on elements (or as mj-attributes, which MJML inlines),
+since some clients drop <style> blocks.
+{% endcomment %}<mjml lang="en">
+  <mj-head>
+    <mj-title>{% block title %}{% endblock %}</mj-title>
+    <mj-preview>{% block preview %}{% endblock %}</mj-preview>
+    <mj-attributes>
+      <mj-all font-family="'Helvetica Neue', Helvetica, Arial, sans-serif" />
+      <mj-text font-size="15px" line-height="1.5" color="#222222" padding="0 24px" />
+    </mj-attributes>
+  </mj-head>
+  <mj-body background-color="#eeeeee" width="600px">
+    <mj-section background-color="#2f6970" padding="14px 24px">
+      <mj-column>
+        <mj-image src="{{ site_url }}/static/images/logotype-white-2x.png" alt="openparliament.ca" href="{{ site_url }}/"
+          width="220px" height="34px" align="left" padding="0" />
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#ffffff" padding="20px 0 8px">
+      <mj-column>
+        <mj-text font-size="17px" padding="0 24px 4px">{% block intro %}{% endblock %}</mj-text>
+        {% block items %}{% endblock %}
+        {% if more %}
+        <mj-text padding="0 24px 16px">
+          <p style="margin:0;padding-top:16px;border-top:1px solid #dddddd;">…and {{ more }} more. <a href="{{ search_url }}" style="color:#1A59C7;">See them all, newest first</a></p>
+        </mj-text>
+        {% endif %}
+      </mj-column>
+    </mj-section>
+    <mj-section padding="16px 0 24px">
+      <mj-column>
+        <mj-text font-size="13px" color="#555555">
+          <p style="margin:0 0 8px 0;">You're receiving this e-mail because you signed up at openparliament.ca to receive alerts about {% block subscribed_to %}{% endblock %}.</p>
+          <p style="margin:0 0 8px 0;"><a href="{{ unsubscribe_url }}" style="color:#555555;">Unsubscribe from this alert</a> · <a href="{{ site_url }}/alerts/" style="color:#555555;">Manage your alerts</a></p>
+          <p style="margin:0;">love,<br>openparliament.ca</p>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
