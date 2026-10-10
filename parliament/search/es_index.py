@@ -8,6 +8,7 @@ the background and then swap the alias atomically.
 
 import datetime
 import logging
+import re
 
 from django.conf import settings
 
@@ -170,7 +171,7 @@ MAPPINGS = {
         "procedural": {"type": "boolean"},
         "wordcount": {"type": "integer"},
 
-        # Searchable text. `speaker` is the speaker's name, post and party;
+        # Searchable text. `speaker` is the speaker's name;
         # `boosted` holds the strings that should dominate for a name-like
         # query: MP names, bill numbers and short titles.
         "text_en": _searchable_text('en', highlight=True),
@@ -194,6 +195,15 @@ def _write_index_pattern() -> str:
     return f"{get_alias_name()}-*"
 
 
+def _is_write_index(name: str, alias: str) -> bool:
+    """Whether name is "<alias>-YYYYMMDD-HHMMSS", as made by new_index_name().
+
+    The "<alias>-*" glob alone is too loose: with the "parliament" alias it
+    would also match test indices like "parliament-test-20261004-215953".
+    """
+    return re.fullmatch(rf'{re.escape(alias)}-\d{{8}}-\d{{6}}', name) is not None
+
+
 def get_write_indices(client: Elasticsearch | None = None) -> list[str]:
     """All concrete indices behind the alias, including any being built.
 
@@ -202,7 +212,9 @@ def get_write_indices(client: Elasticsearch | None = None) -> list[str]:
     rebuild.
     """
     client = client or get_es_client()
-    return sorted(client.indices.get(index=_write_index_pattern(), ignore_unavailable=True).keys())
+    alias = get_alias_name()
+    names = client.indices.get(index=_write_index_pattern(), ignore_unavailable=True).keys()
+    return sorted(n for n in names if _is_write_index(n, alias))
 
 
 def get_live_indices(client: Elasticsearch | None = None) -> list[str]:
@@ -272,8 +284,8 @@ def index_documents(docs, index: str | None = None, client: Elasticsearch | None
     targets = [index] if index else get_write_indices(client)
     if not targets:
         raise NoSearchIndexError(
-            "No Elasticsearch index matches %s; run `manage.py rebuild_search_index`"
-            % _write_index_pattern())
+            "No Elasticsearch index named %s-YYYYMMDD-HHMMSS; run `manage.py rebuild_search_index`"
+            % get_alias_name())
     for target in targets:
         actions = (
             {"_op_type": "index", "_index": target, "_id": doc['id'], "_source": doc}

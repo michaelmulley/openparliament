@@ -131,6 +131,12 @@ class QueryBuilderTests(SimpleTestCase):
         self.assertEqual(set(body['highlight']['fields']), {'text_en', 'bill_text_en'})
         self.assertEqual(body['highlight']['fields']['text_en'], {'matched_fields': ['text_en', 'text_en.exact']})
         self.assertEqual(body['_source'], {'excludes': ['text_*', 'bill_text_*']})
+        # Just the best passage...
+        self.assertEqual(body['highlight']['number_of_fragments'], 1)
+        self.assertNotIn('order', body['highlight'])
+        # ...or several, best first, plus one to tell whether there are other matches
+        highlight = build_search_body('carbon tax', {}, now=NOW, snippets=2)['highlight']
+        self.assertEqual((highlight['number_of_fragments'], highlight['order']), (3, 'score'))
 
     def test_phrase_boosts_only_for_multiple_terms(self):
         should = build_search_body('carbon tax', {}, now=NOW)['query']['function_score']['query']['bool']['should']
@@ -292,7 +298,7 @@ DOCS = [
         'doctype': 'debate', 'date': '2026-08-01T14:00:00Z', 'url': '/debates/2026/8/1/a-1/',
         'doc_url': '/debates/2026/8/1/', 'politician': 'Amélie Bélanger', 'politician_id': 'amelie-belanger',
         'party': 'Liberal', 'province': 'QC', 'topic_en': 'Taxation', 'procedural': False, 'wordcount': 40,
-        'speaker': 'Amélie Bélanger Minister of Finance Liberal',
+        'speaker': 'Amélie Bélanger',
         'text_en': 'The carbon tax rebate is a <b>good</b> thing for taxes generally.',
         'text_fr': "Le remboursement de la taxe sur le carbone est une bonne chose.",
     },
@@ -301,7 +307,7 @@ DOCS = [
         'doctype': 'debate', 'date': '2016-08-01T14:00:00Z', 'url': '/debates/2016/8/1/b-1/',
         'doc_url': '/debates/2016/8/1/', 'politician': 'Bob Smith', 'politician_id': 'bob-smith',
         'party': 'Conservative', 'province': 'AB', 'topic_en': 'Taxation', 'procedural': False, 'wordcount': 40,
-        'speaker': 'Bob Smith Conservative',
+        'speaker': 'Bob Smith',
         'text_en': 'We taxed nothing. The rebate was never delivered.',
     },
     {
@@ -309,7 +315,7 @@ DOCS = [
         'doctype': 'committee', 'date': '2024-03-10T11:00:00Z', 'url': '/committees/finance/44-1/12/c-1/',
         'doc_url': '/committees/finance/44-1/12/', 'politician': 'Jane Witness', 'who_hocid': 999,
         'committee_slug': 'finance', 'committee_en': 'Finance', 'procedural': False, 'wordcount': 40,
-        'speaker': 'Jane Witness Chief Economist',
+        'speaker': 'Jane Witness',
         'text_en': 'Bill C-11, the Online Streaming Act, would change how streaming is regulated.',
     },
     {

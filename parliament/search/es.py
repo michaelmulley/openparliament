@@ -14,8 +14,8 @@ How a query is interpreted and ranked
 - Every term is required for queries of up to three terms; longer queries may
   miss a quarter of theirs. With four million short documents, recall is
   never the problem.
-- Relevance is BM25 across statement text, heading, bill title, speaker and
-  the `boosted` field (MP names, bill numbers and short titles), with a
+- Relevance is BM25 across statement text, heading, bill title, speaker name
+  and the `boosted` field (MP names, bill numbers and short titles), with a
   bonus for terms appearing close together.
 - Recency is a bounded multiplier: current material scores fully, old
   material no less than RECENCY_FLOOR of its relevance.
@@ -218,12 +218,16 @@ def build_search_body(bare_query: str, filters: dict[str, str], *,
                       facet: bool = False, full_text: bool = False,
                       minimum_should_match: str = MINIMUM_SHOULD_MATCH, language: str = 'en',
                       now: datetime.datetime | None = None,
-                      date_facet_start: int = 1994, ids: list[str] | None = None) -> dict:
+                      date_facet_start: int = 1994, ids: list[str] | None = None,
+                      snippets: int = 1) -> dict:
     """Build an Elasticsearch request body.
 
     `filters` maps index field names (politician_id, party, date, ...) to
     the user-supplied filter value. `ids` restricts the search to those
     document identifiers (used to match newly indexed items against alerts).
+    `snippets` is how many highlighted passages to show per result. With more
+    than one, one extra is requested, to tell whether there are further
+    matches (the results' `more_snippets`).
     """
     now = now or datetime.datetime.now().replace(minute=0, second=0, microsecond=0)
     fields = QUERY_FIELDS[language]
@@ -353,7 +357,8 @@ def build_search_body(bare_query: str, filters: dict[str, str], *,
         # subfield, be highlighted in the stemmed parent field.
         'fields': {f: {'matched_fields': [f, f + '.exact']} for f in HIGHLIGHT_FIELDS[language]},
         'fragment_size': HIGHLIGHT_FRAGMENT_SIZE,
-        'number_of_fragments': 1,
+        'number_of_fragments': snippets + 1 if snippets > 1 else 1,
+        **({'order': 'score'} if snippets > 1 else {}),
         'no_match_size': HIGHLIGHT_FRAGMENT_SIZE,
         'pre_tags': ['<em>'],
         'post_tags': ['</em>'],
@@ -435,7 +440,7 @@ def _parse_date(value: str) -> datetime.datetime:
     return datetime.datetime.fromisoformat(value.replace('Z', ''))
 
 
-def _process_hit(hit: dict, language: str, full_text: bool) -> dict:
+def _process_hit(hit: dict, language: str, full_text: bool, snippets: int = 1) -> dict:
     doc = hit['_source']
     doc['id'] = hit['_id']
     doc['score'] = hit.get('_score')
@@ -457,16 +462,22 @@ def _process_hit(hit: dict, language: str, full_text: bool) -> dict:
             if full_text and doc.get('text'):
                 doc['full_text'] = doc['text']
             doc['text'] = mark_safe(highlight[0])
+            # The best passages, best first; more_snippets if there are other
+            # matches (only known when more than one snippet was asked for)
+            doc['snippets'] = [mark_safe(h) for h in highlight[:snippets]]
+            doc['more_snippets'] = len(highlight) > snippets
         else:
             doc.setdefault('text', '')
+    doc.setdefault('snippets', [doc['text']] if doc['text'] else [])
+    doc.setdefault('more_snippets', False)
     return doc
 
 
 class SearchResults:
 
-    def __init__(self, response: dict, language: str, full_text: bool):
+    def __init__(self, response: dict, language: str, full_text: bool, snippets: int = 1):
         self.hits = response['hits']['total']['value']
-        self.docs = [_process_hit(h, language, full_text) for h in response['hits']['hits']]
+        self.docs = [_process_hit(h, language, full_text, snippets) for h in response['hits']['hits']]
         self.aggregations = response.get('aggregations', {})
 
     @property
@@ -508,7 +519,7 @@ class SearchQuery(BaseSearchQuery):
 
     def __init__(self, query, start=0, limit=15, user_params={},
                  facet=False, full_text=False, minimum_should_match=MINIMUM_SHOULD_MATCH,
-                 language=None, ids=None):
+                 language=None, ids=None, snippets=1):
         super().__init__(query)
         self.start = start
         self.limit = limit
@@ -517,6 +528,7 @@ class SearchQuery(BaseSearchQuery):
         self.full_text = full_text
         self.minimum_should_match = minimum_should_match
         self.ids = ids  # restrict to these document identifiers
+        self.snippets = snippets  # highlighted passages per result
         self.language = language or settings.LANGUAGE_CODE[:2]
         if self.language not in QUERY_FIELDS:
             self.language = 'en'
@@ -552,13 +564,14 @@ class SearchQuery(BaseSearchQuery):
             language=self.language,
             date_facet_start=2006 if self.committees_only else 1994,
             ids=self.ids,
+            snippets=self.snippets,
         )
 
     @property
     def results(self) -> SearchResults:
         if not getattr(self, '_results', None):
             response = get_es_client().search(index=get_alias_name(), body=self.get_search_body())
-            self._results = SearchResults(response, self.language, self.full_text)
+            self._results = SearchResults(response, self.language, self.full_text, self.snippets)
         return self._results
 
     @property

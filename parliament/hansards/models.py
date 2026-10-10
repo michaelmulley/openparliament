@@ -479,7 +479,7 @@ class Statement(models.Model):
             d['party'] = self.member.party.short_name_en
             d['province'] = self.member.riding.province
             d['politician_id'] = self.member.politician.identifier
-        d['speaker'] = ' '.join(filter(None, [name['display_name'], name['post'], d.get('party')]))
+        d['speaker'] = name['display_name']
         return d
     
     def search_should_index(self):
