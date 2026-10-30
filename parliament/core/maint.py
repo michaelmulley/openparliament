@@ -17,7 +17,7 @@ def memcached_status(request):
 
     # get first memcached URI
     m = re.match(
-        "memcached://([.\w]+:\d+)", settings.CACHE_BACKEND
+        r"memcached://([.\w]+:\d+)", settings.CACHE_BACKEND
     )
     if not m:
         raise http.Http404
